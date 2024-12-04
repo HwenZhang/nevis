@@ -9,6 +9,7 @@ function [pd,oo] = nevis_defaults(pd,oo)
 %
 % 20 July 2014 : taken from hydro_nondimension
 % 22 Sept 2014 : changed default melt to 0
+% 27 Nov 2024  : Include blister
 
 if nargin<1 || isempty(pd), pd = struct; end
 if nargin<2, oo = struct; end
@@ -73,6 +74,16 @@ if ~isfield(pd,'p_a_reg'), pd.p_a_reg = 1*pd.rho_w*pd.g; end       % pressure ra
 if ~isfield(pd,'E_lapse'), pd.E_lapse = 0*60/1000/pd.td/10^3; end  % surface melt lapse rate [m/s/m]
 if ~isfield(pd,'E_amp'), pd.E_amp = 0; end                         % diurnal input amplitude 
 
+% blister
+if ~isfield(pd,'mu'), pd.mu = 1.0e-3; end                           % water viscosity (Pa s)
+if ~isfield(pd,'K_1c'), pd.K_1c = 1.0e8; end                        % ice bed toughness (Pa m^{1/2})
+if ~isfield(pd,'k_bed'), pd.k_bed = 1.0e-12; end                    % ice bed permeability (m^2)
+if ~isfield(pd,'alpha_b'), pd.alpha_b = 1/3; end                    % shape parameter of the blister
+if ~isfield(pd,'nu'), pd.nu = 0.33; end                             % Poisson's ratio of ice
+if ~isfield(pd,'E_e'), pd.E_e = 8.8e9; end                          % Young's modulus of ice
+if ~isfield(pd,'Q_0'), pd.Q_0 = 1.0e3; end                           % scale for influx from the lake to the blister (m^3/s)
+if ~isfield(pd,'R_i'), pd.R_i = 0.0; end                             % initial radius of a blister (m)
+
 %% Default options
 %method options
 if ~isfield(oo,'no_channels'), oo.no_channels = 0; end
@@ -80,6 +91,8 @@ if ~isfield(oo,'no_sheet'), oo.no_sheet = 0; end
 if ~isfield(oo,'noXi'), oo.noXi = 1; end
 if ~isfield(oo,'combine_sheet'), oo.combine_sheet = 1; end
 if ~isfield(oo,'mean_perms'), oo.mean_perms = 0; end
+if ~isfield(oo,'blister'), oo.blister = 1; end
+
 % if ~isfield(oo,'method'), oo.method = 'lrtb_vel'; end % [ obsolete ]
 % if ~isfield(oo,'include_moulins'), oo.include_moulins = 1; end  % [ obsolete ]
 % if ~isfield(oo,'include_diag'), oo.include_diag = 1; end  % [ obsolete ]

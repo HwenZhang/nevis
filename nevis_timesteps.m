@@ -123,9 +123,6 @@ while t<t_stop+oo.dt_min
 
     %% update input
     aa = nevis_inputs(t,aa,pp,gg,oo);
-    % runoff function at each node is precribed in nevis_inputs.m
-    % r = (1-pp.E_amp*cos(2*pi*t/pp.td)).*max(pp.meltE(t)-pp.E_lapse*aa.s,0); 
-    % r(gg.nout) = 0;
 
     %% time series of average quantities
     tt(ti).ti = ti;
@@ -133,13 +130,16 @@ while t<t_stop+oo.dt_min
     tt(ti).m = sum(aa.m(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));  % basal melt, scaled with ps.m*ps.x^2
     % supraglacial input, scaled with ps.m*ps.x^2
     tt(ti).E = sum(aa.E(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));
+    tt(ti).Qb = sum(aa.Qb(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));
+    
+    tt(ti).pwb = max(vv.phi(pp.ni_l));                        % hydrulic potential at the lake
     tt(ti).Q_in = vv2.Q_in;                                   % inflow, scaled with ps.Q
     tt(ti).Q_out = vv2.Q_out;                                 % outflow, scaled with ps.Q
     tt(ti).Q_outQ = vv2.Q_outQ;                               % channel outflow, scaled with ps.Q
     tt(ti).Q_outq = vv2.Q_outq;                               % sheet outflow, scaled with ps.Q
     tt(ti).phi = mean(vv.phi(gg.ns));                         % mean potential, scaled with ps.phi
     % mean effective pressure, scaled with ps.phi
-    tt(ti).N = mean(aa.phi_0(gg.ns)-vv.phi(gg.ns));        
+    tt(ti).N = mean(aa.phi_0(gg.ns)-vv.phi(gg.ns));  
     % total cavity sheet volume, scaled with ps.h*ps.x^2
     tt(ti).hs = sum(vv.hs(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns)); 
     % total channel volume, scaled with ps.S*ps.x
@@ -153,6 +153,8 @@ while t<t_stop+oo.dt_min
          tt(ti).pts_phi = vv.phi(oo.pts_ni);
          tt(ti).pts_hs = vv.hs(oo.pts_ni);
          tt(ti).pts_he = vv2.he(oo.pts_ni);
+         tt(ti).Vb = vv.Vb(oo.pts_ni);
+         tt(ti).Rb = vv.Rb(oo.pts_ni);
          if oo.include_ice
             tt(ti).pts_us = vv.us(oo.pts_ni);
          end
@@ -202,7 +204,7 @@ while t<t_stop+oo.dt_min
         [vv1,vv2,info] = nevis_timestep(dt,vv,aa,pp,gg,oo);
 
         %% check success and adjust size of timestep [ taken from hydro_timestep_diag ]
-        if ~info.failed, 
+        if ~info.failed
             accept = 1; 
             t = t + dt;
             vv = vv1;
@@ -227,10 +229,14 @@ while t<t_stop+oo.dt_min
         end
 
     end
+
+    %% update blister radius and volume
+    % current timestep is dt, current solution is vv, precribed field aa
+    [aa,vv] = nevis_blister_draft(aa,vv,pp,gg,oo);
     
     %% time averaging of pressure
-    if oo.save_phi_av,
-        phi_av = ( phi_av*(t-t_span(ti_save-1)-dt)+vv.phi*dt )/(t-t_span(ti_save-1));
+    if oo.save_phi_av
+        phi_av = (phi_av*(t-t_span(ti_save-1)-dt)+vv.phi*dt )/(t-t_span(ti_save-1));
         phi_min = min(phi_min,vv.phi);
         phi_max = max(phi_max,vv.phi);
     end
@@ -242,11 +248,11 @@ while t<t_stop+oo.dt_min
     if ~isfield(gg,'n1m'), gg.n1m = gg.n1; end % boundary nodes adjacent to margin
     ni2 = gg.n1m(vv.phi(gg.n1m)-aa.phi_b(gg.n1m)>pp.p_a_reg); % boundary nodes with too high pressure
     if ~isempty(ni1) || ~isempty(ni2)
-        if ~isempty(ni1), 
+        if ~isempty(ni1)
             if oo.verb, disp('nevis_timesteps: Removing Dirichlet indices ...');
             disp(ni1); end
         end
-        if ~isempty(ni2),
+        if ~isempty(ni2)
             if oo.verb, disp('nevis_timesteps: Adding Dirichlet indices ...');
             disp(ni2); end
         end

@@ -15,8 +15,9 @@ if ~isfield(oo,'input_function'), oo.input_function = 0; end
 % use pp.runoff function(t) for runoff
 if ~isfield(oo,'runoff_function'), oo.runoff_function = 0; end
 % use distributed input for runoff even in presence of moulins
-if ~isfield(oo,'distributed_input'), oo.distributed_input = 0; end  
+if ~isfield(oo,'distributed_input'), oo.distributed_input = 0; end
 
+%% runoff function at the surface & input directly to the subglacial hydrological system
 % set up the runoff function at each node
 if oo.runoff_function
     r = pp.runoff_function(t); 
@@ -32,8 +33,8 @@ if isfield(pp,'ni_m') && ~isempty(pp.ni_m) && ~oo.distributed_input
     % net input to each moulin
     aa.E(pp.ni_m) = (pp.sum_m*(r.*gg.Dx.*gg.Dy))./...
         gg.Dx(pp.ni_m)./gg.Dy(pp.ni_m);
-else
-    aa.E = r; 
+else 
+    aa.E = r; % the surface runoff is distributed across the domain
 end
 
 % Alternatively, prescribe moulin input with a function
@@ -43,6 +44,7 @@ else
 
 end
 
+%% boundary input
 % boundary input
 if isfield(pp,'Q_in')
     aa.Qx = 0*ones(length(gg.ebdy),1);

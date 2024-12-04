@@ -21,7 +21,7 @@ if ~isfield(ps,'z'), ps.z = 1*10^3; end                 % z scale (m) [L]
 if ~isfield(ps,'phi'), ps.phi = pd.rho_i*pd.g*ps.z; end % potential scale (Pa) [M L^-1 T^-2]
 % changed 17 April 2016 from pd.l_c so that it can be zero
 if ~isfield(ps,'l_c'), ps.l_c = pd.l_r; end             % channel roughness scale (m) [L]
-if ~isfield(ps,'m'), ps.m = 10*10^(-3)/pd.td; end       % basal source scale (m/yr) [L T^-1]
+if ~isfield(ps,'m'), ps.m = 10*10^(-3)/pd.td; end       % basal source scale (m/s) [L T^-1]
 if ~isfield(ps,'h'), ps.h = 0.1; end                    % sheet thickness scale (m) [L]
 if ~isfield(ps,'sigma'), ps.sigma = 1e-5; end           % englacial void (m) [L]
 
@@ -31,13 +31,22 @@ if ~isfield(ps,'hv'), ps.hv = ps.h; end                 % storage sheet thicknes
 if ~isfield(ps,'he'), ps.he = ps.h; end                 % elastic sheet thickness  (m) [L]
 if ~isfield(ps,'qs'), ps.qs = ps.m*ps.x; end            % sheet flux scale (m^2/s) [L^2 T^-1]
 if ~isfield(ps,'qe'), ps.qe = ps.qs; end                % elastic flux scale (m^2/s) [L^2 T^-1]
-if ~isfield(ps,'Q'), ps.Q = ps.qs*100; end              % channel flux scale (m^2/s) [L^3 T^-1]
+if ~isfield(ps,'Q'), ps.Q = ps.qs*100; end              % channel flux scale (m^3/s) [L^3 T^-1]
 if ~isfield(ps,'S')                                     % channel c.sectional area (m^2) [L^2]
     ps.S = (ps.Q/pd.k_c/ps.Psi^pd.beta_c).^(1/pd.alpha_c); 
 end 
-if ~isfield(ps,'t'), ps.t = ps.h*ps.x/ps.qs; end        % time scale (yr) [T]
+if ~isfield(ps,'t'), ps.t = ps.h*ps.x/ps.qs; end        % time scale (s) [T]
 if ~isfield(ps,'Xi'), ps.Xi = ps.Q*ps.Psi; end          % energy dissipation scale [M L T^-3]
-
+% blister
+% derived variables
+if ~isfield(ps,'K_0'), ps.K_0 = 4*pd.alpha_b*(1-pd.nu^2)*pd.K_1c*sqrt(pi)/pd.E_e; end                 
+% if ~isfield(ps,'R_0'), ps.R_0 = (0.5*(-0.5*sqrt(pi)*pd.K_1c+...
+%                        sqrt(0.25*pi*pd.K_1c^2 + pd.Q_0*ps.phi*pd.mu/pd.k_bed))/ps.phi)^2; end     
+if ~isfield(ps,'R_0'), ps.R_0 = 1.0e3; end             % steady-state radius of the blister (m)
+if ~isfield(ps,'t_0'), ps.t_0 = 2.5*ps.K_0*ps.R_0^(5/2)/pd.Q_0; end % timescale of blister growth (s)
+if ~isfield(ps,'R'), ps.R = ps.R_0; end                 % blister radius scale (m) [L]
+if ~isfield(ps,'V'), ps.V = 2.5*ps.K_0*(ps.R_0)^(5/2); end  % blister volume scale (m^3) [L^3]
+% if ~isfield(ps,'V'), ps.V = 2.5e8; end  % blister volume scale (m^3) [L^3]
 %% Dimensionless parameters [ many of these can be chosen to be 1 by suitable choice of scales ]
 pp.c1 = ps.hs/ps.h;
 pp.c2 = ps.he/ps.h;
@@ -80,6 +89,15 @@ pp.c38 = pd.N_reg3/ps.phi;
 pp.c39 = pd.sigma_log/ps.he;
 pp.c40 = pd.N_sigma/ps.phi;
 pp.c41 = pd.rho_w*pd.gamma_cc*pd.c;
+
+% blister dimensionless parameters
+pp.c42 = pd.Q_0*ps.t/ps.V; % influx
+% pp.c43 = 4*pd.k_bed/pd.mu*ps.t/ps.V*(0.5*sqrt(pi*ps.R_0)*pd.K_1c); % Darcy flux 
+pp.c43 = 0.5*pd.k_bed*pd.E_e*ps.t/(pd.mu*pd.alpha_b*(1-pd.nu^2)*ps.R^2); % Darcy flux 
+pp.c44 = 4*pd.k_bed/pd.mu*ps.t*ps.R_0/ps.V*ps.phi; % effective pressure N
+pp.c45 = 2.5*ps.K_0*(ps.R_0)^(5/2)/ps.V; % pp.c45 = 1
+pp.c46 = ps.V/ps.h/ps.x^2;
+pp.R_i = pd.R_i/ps.R_0;     % initial blister radius
 
 pp.n_Glen = pd.n_Glen;
 pp.alpha_s = pd.alpha_s;

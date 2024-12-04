@@ -47,6 +47,9 @@ function [aa,vv] = nevis_initialize(b,s,gg,pp,oo)
     %% input to the moulin [supposed to be the outflow from blister instead]
     E = 0*ones(gg.nIJ,1); 
     E(gg.nout) = 0;
+
+    %% input to and out from the blister
+    Qb = 0*ones(gg.nIJ,1);
     
     %% variables
     phi = phi_a+0*(phi_0-phi_a); % potential
@@ -55,6 +58,9 @@ function [aa,vv] = nevis_initialize(b,s,gg,pp,oo)
     Sy = 0*ones(gg.fIJ,1);       % cross sectional area of y channels
     Ss = 0*ones(gg.cIJ,1);       % cross sectional area of diagonal s channels
     Sr = 0*ones(gg.cIJ,1);       % cross sectional area of diagonal r channels
+
+    Rb = pp.R_i*ones(gg.nIJ,1);  % blister radius
+    Vb = pp.c45.*Rb.^(5/2);      % blister volume
     
     %% boundary conditions
     aa.phi = max(phi_a(gg.nbdy),pp.phi_s); % boundary values
@@ -75,6 +81,7 @@ function [aa,vv] = nevis_initialize(b,s,gg,pp,oo)
     aa.m = m; 
     aa.Ub = Ub; 
     aa.E = E;
+    aa.Qb = Qb;
     
     % solution fields
     vv.phi = phi; 
@@ -83,5 +90,7 @@ function [aa,vv] = nevis_initialize(b,s,gg,pp,oo)
     vv.Sy = Sy; 
     vv.Ss = Ss; 
     vv.Sr = Sr;
+    vv.Rb = Rb;
+    vv.Vb = Vb;
 
 end

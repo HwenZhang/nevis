@@ -16,7 +16,7 @@ function [gg] = nevis_grid(nI,nJ,K,xl,xr,yb,yt,oo)
 %       with yb and yt.  yb is y coordinate of node with lowest y-index. 'top' edge
 %       refers to the edge connecting to the node with a lower y-index (i.e. above in a matrix format) which
 %       is actually closer to the yb boundary.
-    
+%   28/11/2024: edit the notation, now "top" refers to the top of the physical domain
 
 %% alternative to use existing grid if fewer inputs provided [ unfinished? ]
 if nargin<=3,
@@ -71,7 +71,7 @@ zz = (0:K-1)/(K-1);    % z = s-(s-b)*zz
 % fconnect -- y-edge connection
 % cconnect -- corner connection
 
-% nconnect : [left edge, right edge, top edge, bottom edge]
+% nconnect : [left edge, right edge, bottom edge, top edge]
 nconnect = zeros(nIJ,4);
 for i = 1:nI
     for j = 1:nJ
@@ -79,7 +79,7 @@ for i = 1:nI
     end
 end
 
-% econnect : [left node, right node, top corner, bottom corner]
+% econnect : [left edge, right edge, bottom edge, top edge]
 econnect = zeros(eIJ,4);
 for i = 1:eI
     for j = 1:eJ
@@ -98,7 +98,7 @@ end
 end
 
 
-% fconnect : [top node, bottom node, left corner, right corner]
+% fconnect : [bottom node, top node, left corner, right corner]
 fconnect = zeros(fIJ,4);
 for i = 1:fI
     for j = 1:fJ
@@ -116,7 +116,7 @@ for i = 1:fI
 end
 end
 
-% cconnect : [left edge, right edge, top edge, bottom edge]
+% cconnect : [left edge, right edge, bottom edge, top edge]
 cconnect = zeros(cIJ,4);
 for i = 1:cI
     for j = 1:cJ

@@ -38,6 +38,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,oo)
     if ~isfield(oo,'evaluate_residual'), oo.evaluate_residual = 1; end 
      % evaluate Jacobian [ otherwise returns emtpy J ]
     if ~isfield(oo,'evaluate_jacobian'), oo.evaluate_jacobian = 1; end     
+    % include lake input
+    if ~isfield(oo,'lake_input'), oo.lake_input = 0; end 
 
     %% fill in missing boundary fluxes
     if ~isfield(aa,'phi'), aa.phi = aa.phi_a(gg.nbdy); end
@@ -79,10 +81,14 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,oo)
     Sy = vv.Sy;
     Ss = vv.Ss;
     Sr = vv.Sr;
+    % blister  model
+    Vb = vv.Vb;
+    Rb = vv.Rb;
     
     %% prescribed fields
     if isfield(vv,'m'), m = vv.m; else m = aa.m; end
     if isfield(vv,'E'), E = vv.E; else E = aa.E; end
+    if isfield(vv,'Qb'), Qb = vv.Qb; else Qb = aa.Qb; end
     if isfield(vv,'Ub'), Ub = vv.Ub; else Ub = aa.Ub; end
     sigma = aa.sigma;
 
@@ -110,6 +116,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,oo)
     % nmeany2 = nmeanyin; 
     % if strcmp(opts.method,'r_stress_l_vel_tb_ref'),...
     % nmeany2(nmeany2==1) = 0; end 
+
+    % ||Psi|| magnitude of Psi
     Psi = ( (gg.nmeanxin(:,gg.ein)*Psi_x(gg.ein)).^2+...
             (gg.nmeanyin(:,gg.fin)*Psi_y(gg.fin)).^2 ).^(1/2);
 
@@ -303,6 +311,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,oo)
         vv2.Xicy = Xicy;
         vv2.Xics = Xics;
         vv2.Xicr = Xicr;
+        % influx from boundaries
         vv2.Q_in = sum(Qx(gg.ebdy))+sum(Qy(gg.fbdy))+sum(Qs(gg.cbdy))+sum(Qr(gg.cbdy)) ...
                 + pp.c4/pp.c9*(sum(qsx(gg.ebdy).*(gg.emean(gg.ebdy,:)*gg.Dy))+...
                                sum(qsy(gg.fbdy).*(gg.fmean(gg.fbdy,:)*gg.Dx))) ...
@@ -332,10 +341,11 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,oo)
         vv2.Q_outq = -1/pp.c9*sum((pp.c4*(gg.nddx(gg.nbdy,:)*qsx + gg.nddy(gg.nbdy,:)*qsy) +...
                                    pp.c5*( gg.nddx(gg.nbdy,:)*qex + gg.nddy(gg.nbdy,:)*qey)).*...
                                   gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy));  % outflow in sheet
-    
-        F1 = R1(gg.ns);
-        F2 = R2(gg.nin);
-        F3 = R3(gg.ein);
+        
+        % 
+        F1 = R1(gg.ns);  % cavity sheet
+        F2 = R2(gg.nin); % total mass conservation
+        F3 = R3(gg.ein); % channel
         F4 = R4(gg.fin);
         F5 = R5(gg.cin);
         F6 = R6(gg.cin);
@@ -363,23 +373,28 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,oo)
     %% nested functions
     function [R1,R2,R3,R4,R5,R6] = residuals()    
         %% time derivatives [ for use in residuals below ]
+
         hs_t = pp.c26*m ...
                 + pp.c16*Ub.*max(1-pp.c17*hs,0) ...
                 - pp.c18*hs.*abs(aa.phi_0-phi).^(pp.n_Glen-1).*(aa.phi_0-phi);  
             % pp.c15*hs_t
-    
-        h_t = - pp.c4*( gg.nddx(:,:)*qsx + gg.nddy(:,:)*qsy ) ...
-                        - pp.c5*( gg.nddx(:,:)*qex + gg.nddy(:,:)*qey ) ...
-                        + pp.c6*( m ) + pp.c7*( E ) ...
-                        - pp.c9*( (gg.nddx(:,:)*Qx).*gg.Dy.^(-1) + (gg.nddy(:,:)*Qy).*gg.Dx.^(-1) ) ...
-                        + pp.c11*( (gg.nmeanxin(:,gg.ein)*(Xicx(gg.ein)+Xix(gg.ein))).*gg.Dy.^(-1) + (gg.nmeanyin(:,gg.fin)*(Xicy(gg.fin)+Xiy(gg.fin))).*gg.Dx.^(-1) ) ...
-                        - pp.c9*( (gg.ndds(:,:)*Qs) + (gg.nddr(:,:)*Qr) ) ...
-                        + pp.c11*( (gg.nmeansin(:,gg.cin)*(Xics(gg.cin)+Xis(gg.cin))).*gg.Ds.*gg.Dx.^(-1).*gg.Dy.^(-1) + (gg.nmeanrin(:,gg.cin)*(Xicr(gg.cin)+Xir(gg.cin))).*gg.Dr.*gg.Dx.^(-1).*gg.Dy.^(-1) );
+        
+        h_t = - pp.c4*(gg.nddx(:,:)*qsx + gg.nddy(:,:)*qsy) ... % cavity sheet flux divergence
+              - pp.c5*(gg.nddx(:,:)*qex + gg.nddy(:,:)*qey) ... % poroelastic sheet flux divergence
+              + pp.c6*m ...                                     % basal melting rate
+              + pp.c7*E ...                                     % moulin and lake influx
+              + pp.c46*Qb ...                                   % blister influx ==================== !!!
+              - pp.c9*((gg.nddx(:,:)*Qx).*gg.Dy.^(-1) + (gg.nddy(:,:)*Qy).*gg.Dx.^(-1)) ... % x,y channel divergence
+              - pp.c9*((gg.ndds(:,:)*Qs) + (gg.nddr(:,:)*Qr)) ...                           % s,r channel divergence
+              + pp.c11*((gg.nmeanxin(:,gg.ein)*(Xicx(gg.ein)+Xix(gg.ein))).*gg.Dy.^(-1) +...% x,y dissipation
+                        (gg.nmeanyin(:,gg.fin)*(Xicy(gg.fin)+Xiy(gg.fin))).*gg.Dx.^(-1)) ...
+              + pp.c11*((gg.nmeansin(:,gg.cin)*(Xics(gg.cin)+Xis(gg.cin))).*gg.Ds.*gg.Dx.^(-1).*gg.Dy.^(-1) +... % s,r dissipation
+                        (gg.nmeanrin(:,gg.cin)*(Xicr(gg.cin)+Xir(gg.cin))).*gg.Dr.*gg.Dx.^(-1).*gg.Dy.^(-1));    
             % pp.c1*hs_t + pp.c2*hd_t + pp.c3*hv_t + pp.c3*hm_t + pp.c8*channels
     
-        Sx_t = - pp.c14*Sx.*abs(gg.emean(:,:)*(aa.phi_0-phi)).^(pp.n_Glen-1).*(gg.emean(:,:)*(aa.phi_0-phi)) ...
-                + pp.c13*(Xicx+Xix) ...
-                + pp.c35*aa.lcx.*(gg.emean(:,:)*Ub).*max(1-pp.c36*Sx,0);
+        Sx_t = - pp.c14*Sx.*abs(gg.emean(:,:)*(aa.phi_0-phi)).^(pp.n_Glen-1).*(gg.emean(:,:)*(aa.phi_0-phi)) ... % ice creep closure
+               + pp.c13*(Xicx+Xix) ...  % wall melting opening
+               + pp.c35*aa.lcx.*(gg.emean(:,:)*Ub).*max(1-pp.c36*Sx,0); % 
             % pp.c12*Sx_t
     
         Sy_t = - pp.c14*Sy.*abs(gg.fmean(:,:)*(aa.phi_0-phi)).^(pp.n_Glen-1).*(gg.fmean(:,:)*(aa.phi_0-phi)) ...
@@ -409,7 +424,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,oo)
         Sr_old = vv0.Sr;
         
         %% objective residuals    
-        R1 = - pp.c15*(hs-hs_old).*dt^(-1) + hs_t;
+        R1 = - pp.c15*(hs-hs_old).*dt^(-1) + hs_t; % equation (3), cavity sheet variation
+        % equation (10), total conservation of mass
         R2 =  - pp.c1*(hs-hs_old).*dt^(-1) ...
              - pp.c2*(he-he_old).*dt.^(-1) ...
              - pp.c3*(hv-hv_old).*dt.^(-1) ...
@@ -419,144 +435,152 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,oo)
                - pp.c8*gg.nmeansin(:,gg.cin)*(Ss(gg.cin)-Ss_old(gg.cin)).*dt^(-1).*gg.Ds.*gg.Dx.^(-1).*gg.Dy.^(-1) ...
                - pp.c8*gg.nmeanrin(:,gg.cin)*(Sr(gg.cin)-Sr_old(gg.cin)).*dt^(-1).*gg.Dr.*gg.Dx.^(-1).*gg.Dy.^(-1) ...
              + h_t;
-        R3 = - pp.c12*(Sx-Sx_old).*dt^(-1) + Sx_t;
+        R3 = - pp.c12*(Sx-Sx_old).*dt^(-1) + Sx_t; % equation (7), channel croess sectional area
         R4 = - pp.c12*(Sy-Sy_old).*dt^(-1) + Sy_t;
         R5 = - pp.c12*(Ss-Ss_old).*dt^(-1) + Ss_t;
         R6 = - pp.c12*(Sr-Sr_old).*dt^(-1) + Sr_t;
     
     end
     function J = jacob()
-% [ taken from hydro_timestep_diag 13 August 2014, initial definitions changed to make compatible : should probably update in future ]
-    %% options
-    opts = oo;
-    opts.include_diag = 1;
-
-    %% prescribed fields
-    lcx = aa.lcx;
-    lcy = aa.lcy;
-    lcs = aa.lcs;
-    lcr = aa.lcr;
-    phi_0 = aa.phi_0;
-    phi_a = aa.phi_a;
-
-    %% extract grid and operators
-    nIJ = gg.nIJ;
-    eIJ = gg.eIJ;
-    fIJ = gg.fIJ;
-    nin = gg.nin;
-    ein = gg.ein;
-    fin = gg.fin;
-    nbdy = gg.nbdy;
-    ebdy = gg.ebdy;
-    fbdy = gg.fbdy;
-    ns = gg.ns;
-    econnect = gg.econnect;
-    fconnect = gg.fconnect;
-    cconnect = gg.cconnect;
-    nddx = gg.nddx;
-    nddy = gg.nddy;
-    eddx = gg.eddx;
-    fddy = gg.fddy;
-    emean = gg.emean;
-    fmean = gg.fmean;
-    Dx = gg.Dx;
-    Dy = gg.Dy;
-    Ds = gg.Ds;
-    Dr = gg.Dr;
-    cIJ = gg.cIJ;
-    cin = gg.cin;
-    cbdy = gg.cbdy;
-    cdds = gg.cdds;
-    cddr = gg.cddr;
-    ndds = gg.ndds;
-    nddr = gg.nddr;
-    cmean = gg.cmean;
-    nmeanx = gg.nmeanxin;
-    nmeany = gg.nmeanyin;
-    nmeans = gg.nmeansin;
-    nmeanr = gg.nmeanrin;
-    nmeany2 = nmeany;
-
-    %% extract parameters
-    c1 = pp.c1;
-    c2 = pp.c2;
-    c3 = pp.c3;
-    c4 = pp.c4;
-    c5 = pp.c5;
-    c6 = pp.c6;
-    c7 = pp.c7;
-    c8 = pp.c8;
-    c9 = pp.c9;
-   % c10 = pp.c10;
-    c11 = pp.c11;
-    c12 = pp.c12;
-    c13 = pp.c13;
-    c14 = pp.c14;
-    c15 = pp.c15;
-    c16 = pp.c16;
-    c17 = pp.c17;
-    c18 = pp.c18;
-    c19 = pp.c19;
-    c20 = pp.c20;
-    c21 = pp.c21;
-    c22 = pp.c22;
-    c23 = pp.c23;
-   % c24 = pp.c24;
-    c25 = pp.c25; 
-    c26 = pp.c26;
-    c35 = pp.c35;
-    c36 = pp.c36;
-    c41 = pp.c41;
-    n_Glen = pp.n_Glen;
-    alpha_c = pp.alpha_c;
-    beta_c = pp.beta_c;
-    alpha_s = pp.alpha_s;
-    beta_s = pp.beta_s;
-    alpha_e = pp.alpha_e;
-    beta_e = pp.beta_e;
-    Psi_reg = pp.Psi_reg;
+        % [ taken from hydro_timestep_diag 13 August 2014, 
+        % initial definitions changed to make compatible : should probably update in future ]
+        %% options
+        opts = oo;
+        opts.include_diag = 1;
     
-    %% adjust size of perms
-    permsx = permsx(ein);
-    permex = permex(ein);
-    permsy = permsy(fin);
-    permey = permey(fin);
+        %% prescribed fields
+        lcx = aa.lcx;
+        lcy = aa.lcy;
+        lcs = aa.lcs;
+        lcr = aa.lcr;
+        phi_0 = aa.phi_0;
+        phi_a = aa.phi_a;
+    
+        %% extract grid and operators
+        nIJ = gg.nIJ;
+        eIJ = gg.eIJ;
+        fIJ = gg.fIJ;
+        nin = gg.nin;
+        ein = gg.ein;
+        fin = gg.fin;
+        nbdy = gg.nbdy;
+        ebdy = gg.ebdy;
+        fbdy = gg.fbdy;
+        ns = gg.ns;
+        econnect = gg.econnect;
+        fconnect = gg.fconnect;
+        cconnect = gg.cconnect;
+        nddx = gg.nddx;
+        nddy = gg.nddy;
+        eddx = gg.eddx;
+        fddy = gg.fddy;
+        emean = gg.emean;
+        fmean = gg.fmean;
+        Dx = gg.Dx;
+        Dy = gg.Dy;
+        Ds = gg.Ds;
+        Dr = gg.Dr;
+        cIJ = gg.cIJ;
+        cin = gg.cin;
+        cbdy = gg.cbdy;
+        cdds = gg.cdds;
+        cddr = gg.cddr;
+        ndds = gg.ndds;
+        nddr = gg.nddr;
+        cmean = gg.cmean;
+        nmeanx = gg.nmeanxin;
+        nmeany = gg.nmeanyin;
+        nmeans = gg.nmeansin;
+        nmeanr = gg.nmeanrin;
+        nmeany2 = nmeany;
+    
+        %% extract parameters
+        c1 = pp.c1;
+        c2 = pp.c2;
+        c3 = pp.c3;
+        c4 = pp.c4;
+        c5 = pp.c5;
+        c6 = pp.c6;
+        c7 = pp.c7;
+        c8 = pp.c8;
+        c9 = pp.c9;
+        % c10 = pp.c10;
+        c11 = pp.c11;
+        c12 = pp.c12;
+        c13 = pp.c13;
+        c14 = pp.c14;
+        c15 = pp.c15;
+        c16 = pp.c16;
+        c17 = pp.c17;
+        c18 = pp.c18;
+        c19 = pp.c19;
+        c20 = pp.c20;
+        c21 = pp.c21;
+        c22 = pp.c22;
+        c23 = pp.c23;
+        % c24 = pp.c24;
+        c25 = pp.c25; 
+        c26 = pp.c26;
+        c35 = pp.c35;
+        c36 = pp.c36;
+        c41 = pp.c41;
 
-    %derivative of elastic sheet
-    Dhe_phi = sparse(nin,nin, -Dhe_fun(phi_0(nin)-phi(nin), phi_0(nin)-phi_a(nin), pp,opts),...
-                     nIJ, nIJ, length(nin));
+        n_Glen = pp.n_Glen;
+        alpha_c = pp.alpha_c;
+        beta_c = pp.beta_c;
+        alpha_s = pp.alpha_s;
+        beta_s = pp.beta_s;
+        alpha_e = pp.alpha_e;
+        beta_e = pp.beta_e;
+        Psi_reg = pp.Psi_reg;
+    
+        %% adjust size of perms
+        permsx = permsx(ein);
+        permex = permex(ein);
+        permsy = permsy(fin);
+        permey = permey(fin);
 
-    %derivative of storage sheet
-    Dhv_phi = sparse(nin,nin, Dhv_fun(phi(nin)-phi_a(nin),phi_0(nin)-phi_a(nin),...
-                     c25*sigma(nin),pp,opts), nIJ, nIJ, length(nin));
+        %derivative of elastic sheet
+        Dhe_phi = sparse(nin,nin, -Dhe_fun(phi_0(nin)-phi(nin), phi_0(nin)-phi_a(nin), pp,opts),...
+                         nIJ, nIJ, length(nin));
 
-    %derivative of moulin sheet
-    Dhm_phi = sparse(nin,nin, Dhm_fun(phi(nin)-phi_a(nin),phi_0(nin)-phi_a(nin),...
-                     c25*sigma_m(nin),pp,opts), nIJ, nIJ, length(nin));
+        %derivative of storage sheet
+        Dhv_phi = sparse(nin,nin, Dhv_fun(phi(nin)-phi_a(nin),phi_0(nin)-phi_a(nin),...
+                         c25*sigma(nin),pp,opts), nIJ, nIJ, length(nin));
+    
+        %derivative of moulin sheet
+        Dhm_phi = sparse(nin,nin, Dhm_fun(phi(nin)-phi_a(nin),phi_0(nin)-phi_a(nin),...
+                         c25*sigma_m(nin),pp,opts), nIJ, nIJ, length(nin));
 
-    %derivative of Psi 
-    DPsi_phi = sparse(1:nIJ,1:nIJ,(nmeanx(:,ein)*Psi_x(ein)).*(Psi.^2+Psi_reg^2).^(-1/2),nIJ,nIJ)...
-               *(nmeanx(:,ein)*eddx(ein,:)) + ...
-              sparse(1:nIJ,1:nIJ,(nmeany2(:,fin)*Psi_y(fin)).*(Psi.^2+Psi_reg^2).^(-1/2),nIJ,nIJ)...
-              *(nmeany2(:,fin)*fddy(fin,:));
+        %derivative of Psi 
+        DPsi_phi = sparse(1:nIJ,1:nIJ,(nmeanx(:,ein)*Psi_x(ein)).*(Psi.^2+Psi_reg^2).^(-1/2),nIJ,nIJ)...
+                   *(nmeanx(:,ein)*eddx(ein,:)) + ...
+                  sparse(1:nIJ,1:nIJ,(nmeany2(:,fin)*Psi_y(fin)).*(Psi.^2+Psi_reg^2).^(-1/2),nIJ,nIJ)...
+                  *(nmeany2(:,fin)*fddy(fin,:));
 
-    %derivatives of Q
-    %[ mistake ? - changed 29 April 2012 : may need to correct same mistake in qe and qs if beta neq 1 ]
-%         DQx_phi = sparse(1:length(ein),1:length(ein),-c23*max(Sx(ein),0).^(alpha_c).*(Psi_x(ein).^2+Psi_reg^2).^((beta_c-1)/2)*beta_c ,length(ein),length(ein))*eddx(ein,:);
-%         DQy_phi = sparse(1:length(fin),1:length(fin),-c23*max(Sy(fin),0).^(alpha_c).*(Psi_y(fin).^2+Psi_reg^2).^((beta_c-1)/2)*beta_c ,length(fin),length(fin))*fddy(fin,:);        
-    DQx_phi = sparse(1:length(ein),1:length(ein),-c23*max(Sx(ein),0).^(alpha_c).*(Psi_x(ein).^2+Psi_reg^2).^((beta_c-1)/2).*( beta_c-(beta_c-1)*Psi_reg^2*(Psi_x(ein).^2+Psi_reg^2).^(-1) ) ,length(ein),length(ein))*eddx(ein,:);
-    DQy_phi = sparse(1:length(fin),1:length(fin),-c23*max(Sy(fin),0).^(alpha_c).*(Psi_y(fin).^2+Psi_reg^2).^((beta_c-1)/2).*( beta_c-(beta_c-1)*Psi_reg^2*(Psi_y(fin).^2+Psi_reg^2).^(-1) ) ,length(fin),length(fin))*fddy(fin,:);
-
-    DQx_Sx = sparse(1:length(ein),ein,-c23*max(Sx(ein),0).^(alpha_c-1).*(Psi_x(ein).^2+Psi_reg^2).^((beta_c-1)/2).*Psi_x(ein)*alpha_c ,length(ein),eIJ); 
-    DQy_Sy = sparse(1:length(fin),fin,-c23*max(Sy(fin),0).^(alpha_c-1).*(Psi_y(fin).^2+Psi_reg^2).^((beta_c-1)/2).*Psi_y(fin)*alpha_c ,length(fin),fIJ); 
+        %derivatives of Q
+        %[ mistake ? - changed 29 April 2012 : may need to correct same mistake in qe and qs if beta neq 1 ]
+    %         DQx_phi = sparse(1:length(ein),1:length(ein),-c23*max(Sx(ein),0).^(alpha_c).*(Psi_x(ein).^2+Psi_reg^2).^((beta_c-1)/2)*beta_c ,length(ein),length(ein))*eddx(ein,:);
+    %         DQy_phi = sparse(1:length(fin),1:length(fin),-c23*max(Sy(fin),0).^(alpha_c).*(Psi_y(fin).^2+Psi_reg^2).^((beta_c-1)/2)*beta_c ,length(fin),length(fin))*fddy(fin,:);        
+        DQx_phi = sparse(1:length(ein),1:length(ein),...
+                  -c23*max(Sx(ein),0).^(alpha_c).*(Psi_x(ein).^2+Psi_reg^2).^((beta_c-1)/2).*( beta_c-(beta_c-1)*Psi_reg^2*(Psi_x(ein).^2+Psi_reg^2).^(-1) ),...
+                  length(ein),length(ein)) * eddx(ein,:);
+        DQy_phi = sparse(1:length(fin),1:length(fin),...
+                  -c23*max(Sy(fin),0).^(alpha_c).*(Psi_y(fin).^2+Psi_reg^2).^((beta_c-1)/2).*( beta_c-(beta_c-1)*Psi_reg^2*(Psi_y(fin).^2+Psi_reg^2).^(-1) ),...
+                  length(fin),length(fin))*fddy(fin,:);
+    
+        DQx_Sx = sparse(1:length(ein),ein,-c23*max(Sx(ein),0).^(alpha_c-1).*(Psi_x(ein).^2+Psi_reg^2).^((beta_c-1)/2).*Psi_x(ein)*alpha_c ,length(ein),eIJ); 
+        DQy_Sy = sparse(1:length(fin),fin,-c23*max(Sy(fin),0).^(alpha_c-1).*(Psi_y(fin).^2+Psi_reg^2).^((beta_c-1)/2).*Psi_y(fin)*alpha_c ,length(fin),fIJ); 
 
     %derivatives of Xic
 %         DXicx_phi = sparse(1:length(ein),1:length(ein), c19*c23*max(Sx(ein),0).^(alpha_c).*(Psi_x(ein).^2+Psi_reg^2).^((beta_c-1)/2).*Psi_x(ein)*(beta_c+1) ,length(ein),length(ein))*eddx(ein,:);
 %         DXicy_phi = sparse(1:length(fin),1:length(fin), c19*c23*max(Sy(fin),0).^(alpha_c).*(Psi_y(fin).^2+Psi_reg^2).^((beta_c-1)/2).*Psi_y(fin)*(beta_c+1) ,length(fin),length(fin))*fddy(fin,:);
 %         DXicx_Sx = sparse(1:length(ein),ein, c19*c23*max(Sx(ein),0).^(alpha_c-1).*(Psi_x(ein).^2+Psi_reg^2).^((beta_c-1)/2).*Psi_x(ein).^2*alpha_c ,length(ein),eIJ);
 %         DXicy_Sy = sparse(1:length(fin),fin, c19*c23*max(Sy(fin),0).^(alpha_c-1).*(Psi_y(fin).^2+Psi_reg^2).^((beta_c-1)/2).*Psi_y(fin).^2*alpha_c ,length(fin),fIJ);         
-    DXicx_phi = - c19*( sparse(1:length(ein),1:length(ein),(1-c41)*Qx(ein),length(ein),length(ein))*eddx(ein,:) + sparse(1:length(ein),1:length(ein),Psi_x(ein)*(1-c41)+c41*Psi_a_x(ein),length(ein),length(ein))*(DQx_phi) );
-    DXicy_phi = - c19*( sparse(1:length(fin),1:length(fin),(1-c41)*Qy(fin),length(fin),length(fin))*fddy(fin,:) + sparse(1:length(fin),1:length(fin),Psi_y(fin)*(1-c41)+c41*Psi_a_y(fin),length(fin),length(fin))*(DQy_phi) );
+    DXicx_phi = - c19*(sparse(1:length(ein),1:length(ein),(1-c41)*Qx(ein),length(ein),length(ein))*eddx(ein,:) + ...
+                       sparse(1:length(ein),1:length(ein),Psi_x(ein)*(1-c41)+c41*Psi_a_x(ein),length(ein),length(ein))*(DQx_phi));
+    DXicy_phi = - c19*(sparse(1:length(fin),1:length(fin),(1-c41)*Qy(fin),length(fin),length(fin))*fddy(fin,:) + ...
+                       sparse(1:length(fin),1:length(fin),Psi_y(fin)*(1-c41)+c41*Psi_a_y(fin),length(fin),length(fin))*(DQy_phi));
     DXicx_Sx = - c19*( sparse(1:length(ein),1:length(ein),(Psi_x(ein)*(1-c41)+Psi_a_x(ein)*c41),length(ein),length(ein))*(DQx_Sx) );
     DXicy_Sy = - c19*( sparse(1:length(fin),1:length(fin),(Psi_y(fin)*(1-c41)+Psi_a_y(fin)*c41),length(fin),length(fin))*(DQy_Sy) );
 
