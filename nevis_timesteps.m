@@ -232,7 +232,7 @@ while t<t_stop+oo.dt_min
 
     %% update blister radius and volume
     % current timestep is dt, current solution is vv, precribed field aa
-    [aa,vv] = nevis_blister_draft(aa,vv,pp,gg,oo);
+    [aa,vv] = nevis_blister_distributed(aa,vv,pp,gg,oo);
     
     %% time averaging of pressure
     if oo.save_phi_av

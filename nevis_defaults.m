@@ -81,8 +81,9 @@ if ~isfield(pd,'k_bed'), pd.k_bed = 1.0e-12; end                    % ice bed pe
 if ~isfield(pd,'alpha_b'), pd.alpha_b = 1/3; end                    % shape parameter of the blister
 if ~isfield(pd,'nu'), pd.nu = 0.33; end                             % Poisson's ratio of ice
 if ~isfield(pd,'E_e'), pd.E_e = 8.8e9; end                          % Young's modulus of ice
-if ~isfield(pd,'Q_0'), pd.Q_0 = 1.0e3; end                           % scale for influx from the lake to the blister (m^3/s)
-if ~isfield(pd,'R_i'), pd.R_i = 0.0; end                             % initial radius of a blister (m)
+if ~isfield(pd,'Q_0'), pd.Q_0 = 1.0e3; end                          % scale for influx from the lake to the blister (m^3/s)
+if ~isfield(pd,'R_i'), pd.R_i = 0.0; end                            % initial radius of a blister (m)
+if ~isfield(pd,'p_Y'), pd.p_Y = 1.0e6; end                          % yield stress of ice (Pa)
 
 %% Default options
 %method options

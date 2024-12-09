@@ -1,6 +1,23 @@
 % Script to animate the 1-dimensiona results from nevis
 % By Hanwen Zhang on 25/11/2024
 
+phi = (ps.phi/10^6)*[tt.phi];  % dimensional hydrulic potential (MPa)
+N = (ps.phi/10^6)*[tt.N];      % dimensional effective stress (MPa)
+hs = ps.x^2*ps.h*[tt.hs];      % integrated hs (m^3)
+he = ps.x^2*ps.h*[tt.he];      % integrated he (m^3)
+
+S = ps.x*ps.S*[tt.S];
+A = ps.x^2*sum(gg.Dx.*gg.Dy);
+
+if isfield(tt,'pts_phi') && ~isempty([tt.pts_phi])    
+    pts_phi = (ps.phi/10^6)*[tt.pts_phi];
+    pts_hs = ps.hs*[tt.pts_hs];
+    pts_N = (ps.phi/10^6)*(aa.phi_0(oo.pts_ni)*[tt.t].^0 - [tt.pts_phi]);
+    pts_pw = (ps.phi/10^6)*([tt.pts_phi]-aa.phi_a(oo.pts_ni)*[tt.t].^0);
+    pts_prat = ([tt.pts_phi]-aa.phi_a(oo.pts_ni)*[tt.t].^0)./...
+               (aa.phi_0(oo.pts_ni)*[tt.t].^0-aa.phi_a(oo.pts_ni)*[tt.t].^0);
+end
+
 figure(2);
 fs = 12;
 path = '/Users/eart0487/nevis/nevis_1d_example/';
@@ -69,7 +86,7 @@ subplot(513);
     p_w = ps.phi/1e6*[tt.pwb];     % dimensional hydraulic potential at the lake (MPa)
     S = ps.x*ps.S*[tt.S];          % % dimensional cross sectional area (m^2)
     % dimensional pressure p_b+\rho_i g h (MPa)
-    p_b = 0.125*pd.E_e/1e6/pd.alpha_b/(1-pd.nu^2).*V_b./(R_b).^3;% + ps.phi/1e6*aa.phi_0(pp.ni_l);
+    p_b = 0.125*pd.E_e/1e6/pd.alpha_b/(1-pd.nu^2).*V_b./(R_b).^3 + ps.phi/1e6*aa.phi_0(pp.ni_l);
     
     grid on
     yyaxis left
@@ -122,8 +139,13 @@ subplot(515);
     p9 = plot(t,p_b,'-'); 
     set(p9,'LineWidth',1.5,'Color',[0 0 0]);
     hold on
-    p10 = plot(t,p_w,'-'); 
+    p10 = plot(t,p_w,'--'); 
     set(p10,'LineWidth',1.5,'Color',[1 0 0]);
+    
+    if isfield(tt,'pts_phi') && ~isempty([tt.pts_phi])  
+    plot(t,pts_N,'-.',LineWidth=1.5);
+    end
+    % plot(t,N,'-.','color',0.6*[1 1 1],LineWidth=1.5);
 
     xlim([0 max(t)])
     ylim([0 5])

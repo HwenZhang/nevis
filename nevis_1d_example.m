@@ -1,4 +1,4 @@
-% 5 November 2024: sample nevis run in one dimension
+ % 5 November 2024: sample nevis run in one dimension
 
 clear
 oo.root = '';           % filename root
@@ -40,23 +40,23 @@ vv.hs = (0.1/ps.hs)*ones(gg.nIJ,1);         % 10cm thick water sheet
 % [pp.ni_m,pp.sum_m] = nevis_moulins(1000/ps.x,0,gg,oo);  % one moulin at x=1km,y=0         
 
 %% lakes
-[pp.ni_l,pp.sum_l] = nevis_lakes(5000/ps.x,0,gg,oo);  % one lake at x=1km,y=0
+[pp.ni_l,pp.sum_l] = nevis_lakes(0.5*L/ps.x,0,gg,oo);  % one lake at x=1km,y=0
 
 %% surface input
 % runoff function; ramp up input over timescale 30 days (dimensionless)
 pp.meltE = @(t) (10/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t))); 
 
 % lake input function
-t_input_1 = 10.0;
+t_input_1 = 20.0;
 t_0 = pd.td/ps.t;
-sigma = 0.14;
+sigma = 0.1;
 % pp.lake_input_function = @(t) (t>=t_input && t<=t_input+0.1).*(pd.Q_0)/pd.Q_0; % Heaviside
 pp.lake_input_function = @(t) (pd.Q_0*t_0)/(sqrt(2*pi)*sigma*pd.Q_0)*...
                         exp(-0.5/sigma^2*(t-t_input_1)^2).*(t>=t_input_1-5*sigma && t<=t_input_1+5*sigma);
 
 % dimensionless permeability k as a function of dimensionless sheet thickness h
-% pp.k_blister = @(h)     200*pd.mu*pd.k_s*(ps.hs*h).^3/pd.k_bed; % dimensional value/scale 
-pp.k_blister = @(h)     5.0; % dimensional value/scale 
+% pp.k_blister = @(h)     11*pd.mu*pd.k_s*(ps.hs*h).^3/pd.k_bed; % dimensional value/scale 
+pp.k_blister = @(h)     2.0; % dimensional value/scale 
 % % dimensionless fracture toughness K_c as a function of dimensional sheet thickness h
 % pp.K_c = @(h)           pd.K_1c/pd.K_1c;
 
@@ -72,7 +72,7 @@ oo.pts_ni = pp.ni_l;
 save([oo.root,oo.fn],'pp','pd','ps','gg','aa','vv','oo');
 
 %% timestep 
-t_span = (0:500)*(0.4*pd.td/ps.t);
+t_span = (0:750)*(0.4*pd.td/ps.t);
 [tt,vv] = nevis_timesteps(t_span,vv,aa,pp,gg,oo);     % save at hourly timesteps
 
 %% plot summary
