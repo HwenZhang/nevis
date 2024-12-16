@@ -13,12 +13,14 @@ function [vv1,vv2,info] = nevis_timestep(dt,vv,aa,pp,gg,oo)
 %   info    information about computation
 %
 % IJH 13 August 2014 : largely taken from hydro_timestep_diag
-
+num = 6;
 % ITERATION OPTIONS
 if ~isfield(oo,'Tol_F'), oo.Tol_F = 1e-8; end                       % tolerance on Newton iteration
 if ~isfield(oo,'check_Fs'), oo.check_Fs = 0; end                    % check tolerances seprately for residuals 1-6
-if ~isfield(oo,'Tol_Fs'), oo.Tol_Fs = oo.Tol_F*ones(1,6); end       % tolerances on Newoton iteration [ for when using check_Fs ]
-if length(oo.Tol_Fs)<6, oo.Tol_Fs = [oo.Tol_Fs oo.Tol_Fs(end)*ones(1,6-length(oo.Tol_Fs))]; end 
+if ~isfield(oo,'Tol_Fs'), oo.Tol_Fs = oo.Tol_F*ones(1,num); end       % tolerances on Newoton iteration [ for when using check_Fs ]
+if length(oo.Tol_Fs)<num
+    oo.Tol_Fs = [oo.Tol_Fs oo.Tol_Fs(end)*ones(1,num-length(oo.Tol_Fs))];
+end 
 if ~isfield(oo,'max_iter_new'), oo.max_iter_new = 30; end           % maximum number of Newton iterations
 if ~isfield(oo,'step_new'), oo.step_new = 1; end                    % step size for Newton iteration
 if ~isfield(oo,'max2_iter_new'), oo.max2_iter_new = 10; end         % maximum number of Newton iterations before step2 is used
@@ -39,6 +41,7 @@ info.failed = 0;            % failure indicator
 info.residual_time = 0;     % time spent building residual
 info.jacob_time = 0;        % time spent building Jacobian
 info.start_time = tic;      % time starter
+
 %% iteration options
 Tol_F = oo.Tol_F;                    
 check_Fs = oo.check_Fs;              
@@ -46,7 +49,7 @@ Tols_F = oo.Tol_Fs;
 max_iter_new = oo.max_iter_new;     
 norm_Fs = NaN*ones(max_iter_new+1,1);
 norms_Fs = NaN*ones(max_iter_new+1,6);
-for iter_new = 1:max_iter_new+1,
+for iter_new = 1:max_iter_new+1
 
     %% evaluate residual
     tstart = tic;

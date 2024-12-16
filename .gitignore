@@ -34,6 +34,8 @@ octave-workspace
 *.mat
 *.jpg
 *.jpeg
+*.png
+*.avi
 
 # result files
 ./nevis_1d_example

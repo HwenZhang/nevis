@@ -100,7 +100,7 @@ pp.c45 = ps.K_0*(ps.R_0)^(5/2)/ps.V; % pp.c45 = 1
 pp.c46 = ps.V/ps.h/ps.x^2;
 pp.c47 = ps.x/ps.R;        % ratio of [x] to R0
 pp.c48 = 4*pd.k_bed/pd.mu*ps.t*ps.R_0/ps.V*pd.p_Y;  % yield stress
-pp.Ri = 5000.0/ps.R;        % initial blister radius
+pp.Ri = 0.25*pi*(pd.K_1c/pd.p_Y)^2/ps.R;        % initial blister radius
 
 pp.n_Glen = pd.n_Glen;
 pp.alpha_s = pd.alpha_s;
@@ -123,6 +123,8 @@ pp.N_reg = pd.N_reg/ps.phi;
 pp.p_w_reg = pd.p_w_reg/ps.phi;
 pp.p_a_reg = pd.p_a_reg/ps.phi;
 pp.V_m_reg = pd.V_m_reg/ps.x^2/ps.sigma*pd.rho_w*pd.g/ps.phi;
+pp.V_t_reg = pd.V_t_reg/(ps.V/ps.t);
+pp.R_b_reg = pd.R_b_reg/ps.R;
 
 pp.E_lapse = pd.E_lapse/ps.m*ps.z;
 pp.E_amp = pd.E_amp; 

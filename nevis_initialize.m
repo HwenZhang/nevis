@@ -49,7 +49,7 @@ function [aa,vv] = nevis_initialize(b,s,gg,pp,oo)
     E(gg.nout) = 0;
 
     %% input to and out from the blister
-    Qb = 0*ones(gg.nIJ,1);
+    Qb_in = 0*ones(gg.nIJ,1);
     
     %% variables
     phi = phi_a+0*(phi_0-phi_a); % potential
@@ -59,7 +59,7 @@ function [aa,vv] = nevis_initialize(b,s,gg,pp,oo)
     Ss = 0*ones(gg.cIJ,1);       % cross sectional area of diagonal s channels
     Sr = 0*ones(gg.cIJ,1);       % cross sectional area of diagonal r channels
 
-    Rb = 0*ones(gg.nIJ,1);       % blister radius
+    Rb = 1e-3*ones(gg.nIJ,1);       % blister radius
     Vb = pp.c45.*Rb.^(5/2);      % blister volume
     
     %% boundary conditions
@@ -81,7 +81,7 @@ function [aa,vv] = nevis_initialize(b,s,gg,pp,oo)
     aa.m = m; 
     aa.Ub = Ub; 
     aa.E = E;
-    aa.Qb = Qb;
+    aa.Qb_in = Qb_in;
     
     % solution fields
     vv.phi = phi; 

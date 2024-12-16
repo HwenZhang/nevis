@@ -15,7 +15,8 @@ if ~isfield(oo,'input_function'), oo.input_function = 0; end
 % use pp.runoff function(t) for runoff
 if ~isfield(oo,'runoff_function'), oo.runoff_function = 0; end
 % use distributed input for runoff even in presence of moulins
-if ~isfield(oo,'distributed_input'), oo.distributed_input = 0; end
+if ~isfield(oo,'include_blister'), oo.include_blister = 1; end    % 
+if ~isfield(oo,'blister_distributed'), oo.blister_distributed = 1; end     % whether to distribued the blister 
 
 %% runoff function at the surface & input directly to the subglacial hydrological system
 % set up the runoff function at each node
@@ -43,6 +44,26 @@ if oo.input_function
 else
 
 end
+
+%% Prescribe blister input
+% aa.Q_lake is the input to the blister model
+Q_lake = 0*ones(gg.nIJ,1);                               % set the lake input to 0 everywhere
+if oo.include_blister && isfield(pp,'ni_l') && ~isempty(pp.ni_l)
+    Q_lake(pp.ni_l) = pp.lake_input_function(t);      % add input from lake at point pp.ni_l
+end
+
+%% distribute Q_{out} to surrounding grid points
+% if oo.blister_distributed  
+%     for i_l=pp.ni_l
+%         r_b = pp.c47*((gg.nx-gg.nx(i_l)).^2+(gg.ny-gg.ny(i_l)).^2).^(0.5);        % distance from grid points to the lake
+%         r_in = r_b <= vv.Rb(i_l);                                                     % if the grid point is in the blister
+%         n_r = sum(r_in(:));
+%         r_in(i_l) = r_in(i_l) - n_r;
+%         Q_lake = Q_lake + 1/n_r*r_in*Q_lake(i_l);
+%         disp(['There are ' num2str(n_r) ' grid points within the blister area.']);
+%     end
+% end
+aa.Qb_in = Q_lake./gg.Dx./gg.Dy;                          % dimensionally, aa.Q_b ~ L T^(-1) ~ [E]
 
 %% boundary input
 % boundary input

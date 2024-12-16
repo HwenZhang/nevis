@@ -110,4 +110,4 @@ set(f1,'Position',[680 235 660 743])
 % saveas(f1,'time_series.jpeg','jpeg')
 
 img = getframe(gcf);
-imwrite(img.cdata, ['time_series_concentrated', '.png']);
+imwrite(img.cdata, ['./figures/' oo.casename, '.png']);

@@ -124,6 +124,10 @@ while t<t_stop+oo.dt_min
     %% update input
     aa = nevis_inputs(t,aa,pp,gg,oo);
 
+    %% update blister input and output
+    % current timestep is dt, current solution is vv, precribed field aa
+    [aa,vv] = nevis_blister_distributed(aa,vv,pp,gg,oo);
+
     %% time series of average quantities
     tt(ti).ti = ti;
     tt(ti).t = t;
@@ -201,7 +205,7 @@ while t<t_stop+oo.dt_min
         % adjust timestep if this would take too close to t_save
         if t + dt > t_save-oo.dt_min, dt = t_save-t; end 
         disp(['nevis_timesteps: dt = ',num2str(dt),' ...']);
-        [vv1,vv2,info] = nevis_timestep(dt,vv,aa,pp,gg,oo);
+        [vv1,vv2,info] = nevis_timestep(dt,vv,aa,pp,gg,oo);  % time iteration
 
         %% check success and adjust size of timestep [ taken from hydro_timestep_diag ]
         if ~info.failed
@@ -214,14 +218,17 @@ while t<t_stop+oo.dt_min
             disp(['nevis_timesteps: Done [ ',num2str(comp_time),' s, ',num2str(info.iter_new-1),' iterations ]']);
         end
         if oo.change_timestep && info.iter_new-1 <= oo.small_iter && ~info.failed && dt1 < oo.dt_max && ~decreased
+            % too few iterations
             dt1 = min(oo.dt_factor*dt1,oo.dt_max); increased = 1;
             if oo.verb, disp(['nevis_timesteps: Increase suggested timestep to ',num2str(dt1)]); end
             continue;
         elseif oo.change_timestep && ( info.iter_new-1 >= oo.large_iter || info.failed ) && dt1 > oo.dt_min && ~increased
+            % too many iterations
             dt1 = max(dt1/oo.dt_factor,oo.dt_min); decreased = 1;
             if oo.verb, disp(['nevis_timesteps: Decrease suggested timestep to ',num2str(dt1)]); end
             continue;
         end
+        % If no convergence
         if ~accept
             comp_time = toc;
             disp(['nevis_timesteps: Failed [ ',num2str(comp_time),' s, ',num2str(info.iter_new-1),' iterations, dt = ',num2str(dt),' ]']);
@@ -229,10 +236,6 @@ while t<t_stop+oo.dt_min
         end
 
     end
-
-    %% update blister radius and volume
-    % current timestep is dt, current solution is vv, precribed field aa
-    [aa,vv] = nevis_blister_distributed(aa,vv,pp,gg,oo);
     
     %% time averaging of pressure
     if oo.save_phi_av
@@ -243,28 +246,26 @@ while t<t_stop+oo.dt_min
     
     %% check and adjust boundary nodes
     if oo.adjust_boundaries && ti>=ti_boundaries
-    ti_boundaries = ti+oo.dti_boundaries;
-    ni1 = gg.nbdy(vv2.R_bdy<0); % Dirichlet nodes with inflow
-    if ~isfield(gg,'n1m'), gg.n1m = gg.n1; end % boundary nodes adjacent to margin
-    ni2 = gg.n1m(vv.phi(gg.n1m)-aa.phi_b(gg.n1m)>pp.p_a_reg); % boundary nodes with too high pressure
-    if ~isempty(ni1) || ~isempty(ni2)
-        if ~isempty(ni1)
-            if oo.verb, disp('nevis_timesteps: Removing Dirichlet indices ...');
-            disp(ni1); end
+        ti_boundaries = ti+oo.dti_boundaries;
+        ni1 = gg.nbdy(vv2.R_bdy<0); % Dirichlet nodes with inflow
+        if ~isfield(gg,'n1m'), gg.n1m = gg.n1; end % boundary nodes adjacent to margin
+        ni2 = gg.n1m(vv.phi(gg.n1m)-aa.phi_b(gg.n1m)>pp.p_a_reg); % boundary nodes with too high pressure
+        if ~isempty(ni1) || ~isempty(ni2)
+            if ~isempty(ni1)
+                if oo.verb, disp('nevis_timesteps: Removing Dirichlet indices ...'); disp(ni1); end
+            end
+            if ~isempty(ni2)
+                if oo.verb, disp('nevis_timesteps: Adding Dirichlet indices ...'); disp(ni2); end
+            end
+            vv.nbdy = union(setdiff(gg.nbdy,ni1),ni2);
+            gg = nevis_label(gg,vv.nbdy,oo);               % redefine boundary labels
+            aa.phi = aa.phi_b(gg.nbdy);                    % boundary conditions
+    %        nevis_plot_grid(gg,gg.nbdy);  % for maintenance
         end
-        if ~isempty(ni2)
-            if oo.verb, disp('nevis_timesteps: Adding Dirichlet indices ...');
-            disp(ni2); end
-        end
-        vv.nbdy = union(setdiff(gg.nbdy,ni1),ni2);
-        gg = nevis_label(gg,vv.nbdy,oo);               % redefine boundary labels
-        aa.phi = aa.phi_b(gg.nbdy);                    % boundary conditions
-%        nevis_plot_grid(gg,gg.nbdy);  % for maintenance
-    end
     end 
     
     disp(['nevis_timesteps: t = ',num2str(t),' [ / ',num2str(t_stop),' ]']);
     ti = ti + 1; 
-    
 end
+
 end
