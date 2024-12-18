@@ -459,7 +459,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         R5 = - pp.c12*(Ss-Ss_old).*dt^(-1) + Ss_t;
         R6 = - pp.c12*(Sr-Sr_old).*dt^(-1) + Sr_t;
         R7 =          (Vb-Vb_old).*dt^(-1) + Vb_t;
-        R8 =(Rb.^2.5-Rb_old.^2.5).*dt^(-1) + Rb_t;
+        R8 = pp.c43*Rb.^2.5 - Vb;
 
     end
     function J = jacob()
@@ -822,10 +822,16 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     DF7_phi = temp(nin,:); 
 
     %DF8
-    DF8_Rb = sparse(1:length(nin), 1:length(nin), -2.5*dt.^(-1)*Rb(nin).^(1.5), length(nin),length(nin));
-    DF8_Vb = sparse(1:length(nin), 1:length(nin),...
-                    1/c45*( dt.^(-1)./(1+exp(-(Vb(nin) - Vb_old(nin))/(pp.V_t_reg*dt))) + 1/dt/(pp.V_t_reg*dt)*(Vb(nin) - Vb_old(nin))...
-                    .*exp(-(Vb(nin) - Vb_old(nin))/(pp.V_t_reg*dt))./(1+exp(-(Vb(nin) - Vb_old(nin))/(pp.V_t_reg*dt))).^2 ), length(nin),length(nin));
+    % DF8_Rb = sparse(1:length(nin), 1:length(nin), -2.5*dt.^(-1)*Rb(nin).^(1.5), length(nin),length(nin));
+    % DF8_Vb = sparse(1:length(nin), 1:length(nin),...
+    %                 1/c45*( dt.^(-1)./(1+exp(-(Vb(nin) - Vb_old(nin))/(pp.V_t_reg*dt))) + 1/dt/(pp.V_t_reg*dt)*(Vb(nin) - Vb_old(nin))...
+    %                 .*exp(-(Vb(nin) - Vb_old(nin))/(pp.V_t_reg*dt))./(1+exp(-(Vb(nin) - Vb_old(nin))/(pp.V_t_reg*dt))).^2 ), length(nin),length(nin));
+
+    % DF8_Rb = sparse(1:length(nin), 1:length(nin), ones(length(nin),1), length(nin),length(nin));
+    % DF8_Vb = sparse(1:length(nin), 1:length(nin), 0.4/c45^0.4*(Vb(nin)+eps).^(-0.6), length(nin),length(nin));
+
+    DF8_Rb = sparse(1:length(nin), 1:length(nin), 2.5*c45*(Rb(nin)).^(1.5), length(nin),length(nin));
+    DF8_Vb = sparse(1:length(nin), 1:length(nin), -ones(length(nin),1), length(nin),length(nin));
 
     %% construct Jacobian matrix
         % % [ original way of calculating ]

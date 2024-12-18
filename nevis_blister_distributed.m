@@ -58,6 +58,7 @@ function [aa,vv] = nevis_blister_distributed(aa,vv,pp,gg,oo)
     %% distribute Q_{out} to surrounding grid points
     if oo.blister_distributed
         r_b = pp.c47*((gg.nx-gg.nx(pp.ni_l)).^2+(gg.ny-gg.ny(pp.ni_l)).^2).^(0.5);        % distance from grid points to the lake
+        r_b = reshape(r_b,[nIJ 1]);
         r_in = r_b <= vv.Rb(pp.ni_l);                                                     % if the grid point is in the blister
         n_r = sum(r_in(:));
         % n_r = 1;

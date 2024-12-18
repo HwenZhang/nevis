@@ -13,7 +13,7 @@ function [vv1,vv2,info] = nevis_timestep(dt,vv,aa,pp,gg,oo)
 %   info    information about computation
 %
 % IJH 13 August 2014 : largely taken from hydro_timestep_diag
-num = 6;
+num = 8;
 % ITERATION OPTIONS
 if ~isfield(oo,'Tol_F'), oo.Tol_F = 1e-8; end                       % tolerance on Newton iteration
 if ~isfield(oo,'check_Fs'), oo.check_Fs = 0; end                    % check tolerances seprately for residuals 1-6
@@ -48,7 +48,7 @@ check_Fs = oo.check_Fs;
 Tols_F = oo.Tol_Fs;                   
 max_iter_new = oo.max_iter_new;     
 norm_Fs = NaN*ones(max_iter_new+1,1);
-norms_Fs = NaN*ones(max_iter_new+1,6);
+norms_Fs = NaN*ones(max_iter_new+1,num);
 for iter_new = 1:max_iter_new+1
 
     %% evaluate residual
@@ -56,7 +56,7 @@ for iter_new = 1:max_iter_new+1
     oo.evaluate_variables = 0; 
     oo.evaluate_residual = 1; 
     oo.evaluate_jacobian = 0; 
-    [vv2,F,F1,F2,F3,F4,F5,F6,~] = nevis_backbone(dt,vv,vv0,aa,pp,gg,oo);
+    [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,~] = nevis_backbone(dt,vv,vv0,aa,pp,gg,oo);
     info.residual_time = info.residual_time + toc(tstart);
 
     %% update Xi if not including Xi in iterations
@@ -70,8 +70,10 @@ for iter_new = 1:max_iter_new+1
     norm_F3 = norm(F3,inf); 
     norm_F4 = norm(F4,inf);
     norm_F5 = norm(F5,inf);
-    norm_F6 = norm(F5,inf);
-    norms_F = [norm_F1 norm_F2 norm_F3 norm_F4 norm_F5 norm_F6];
+    norm_F6 = norm(F6,inf);
+    norm_F7 = norm(F7,inf);
+    norm_F8 = norm(F8,inf);
+    norms_F = [norm_F1 norm_F2 norm_F3 norm_F4 norm_F5 norm_F6 norm_F7 norm_F8];
     norms_Fs(iter_new,:) = norms_F;
     if oo.plot_residual
         figure(1); clf;
@@ -81,16 +83,26 @@ for iter_new = 1:max_iter_new+1
         plot(F4,'g.');
         plot(F5,'m.');
         plot(F6,'m.');
+        plot(F7,'m.');
+        plot(F8,'m.');
         shg;
     end
-    if oo.display_residual, [m1,i1] = max(abs(F1)); [m2,i2] = max(abs(F2)); [m3,i3] = max(abs(F3)); [m4,i4] = max(abs(F4)); [m5,i5] = max(abs(F5)); [m6,i6] = max(abs(F6));
-        disp([ iter_new m1 m2 m3 m4 m5 m6]);
-        disp([ 0 i1 i2 i3 i4 i5 i6]); 
+    if oo.display_residual
+        [m1,i1] = max(abs(F1)); 
+        [m2,i2] = max(abs(F2)); 
+        [m3,i3] = max(abs(F3)); 
+        [m4,i4] = max(abs(F4)); 
+        [m5,i5] = max(abs(F5)); 
+        [m6,i6] = max(abs(F6));
+        [m7,i7] = max(abs(F7));
+        [m8,i8] = max(abs(F8));
+        disp([ iter_new m1 m2 m3 m4 m5 m6 m7 m8]);
+        disp([ 0 i1 i2 i3 i4 i5 i6 i7 i8]); 
     end
     if oo.no_channels && oo.no_sheet, iFs = 2; 
     elseif oo.no_channels, iFs = [1 2]; 
     elseif oo.no_sheet, iFs = [2 3 4 5 6];  
-    else iFs = [1 2 3 4 5 6]; 
+    else iFs = [1 2 3 4 5 6 7 8];     % elseif ~oo.include_blister, iFs = [1 2 3 4 5 6];
     end
     if check_Fs && all(norms_F(iFs)<=Tols_F(iFs)), 
         if oo.verb, disp(['  norms_F less than tolerance after ',num2str(iter_new-1),' Newton iterations']); end; 
@@ -109,7 +121,7 @@ for iter_new = 1:max_iter_new+1
     %% calculate Jacobian         
     tstart = tic;
     oo.evaluate_variables = 0; oo.evaluate_residual = 0; oo.evaluate_jacobian = 1; 
-    [~,~,~,~,~,~,~,~,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,oo);
+    [~,~,~,~,~,~,~,~,~,~,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,oo);
     info.jacob_time = info.jacob_time + toc(tstart);
 
     %% Newton step [ add line search here ? ]
@@ -120,7 +132,7 @@ for iter_new = 1:max_iter_new+1
     elseif oo.no_sheet
         X = [vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin)];
     else
-        X = [vv.hs(gg.ns); vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin)];
+        X = [vv.hs(gg.ns); vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin); vv.Vb(gg.nin); vv.Rb(gg.nin)];
     end
 
     % if condest(J) >=1e20, disp(' Aborting Newton step : J is nearly singular'); info.failed = 1; break; end
@@ -131,13 +143,18 @@ for iter_new = 1:max_iter_new+1
     if iter_new>oo.max2_iter_new, step = oo.step2_new; end % reduce size of step if more than max2_iter_new iterations
     X = X + step*dX;
     
-
     vv.phi(gg.nbdy) = aa.phi; % boundary conditions
     temp1 = 0;
     if ~oo.no_sheet
-        temp2 = length(gg.ns); vv.hs(gg.ns) = X(temp1+(1:temp2)); temp1=temp1+temp2;
+        temp2 = length(gg.ns); 
+        vv.hs(gg.ns) = X(temp1+(1:temp2)); 
+        temp1=temp1+temp2;
     end
-    temp2 = length(gg.nin); vv.phi(gg.nin) = X(temp1+(1:temp2)); temp1=temp1+temp2;
+    
+    temp2 = length(gg.nin); 
+    vv.phi(gg.nin) = X(temp1+(1:temp2)); 
+    temp1=temp1+temp2;
+
     if ~oo.no_channels
         temp2 = length(gg.ein); vv.Sx(gg.ein) = X(temp1+(1:temp2)); temp1=temp1+temp2;
         temp2 = length(gg.fin); vv.Sy(gg.fin) = X(temp1+(1:temp2)); temp1=temp1+temp2;

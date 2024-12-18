@@ -86,7 +86,7 @@ if ~isfield(pd,'R_i'), pd.R_i = 0.0; end                            % initial ra
 if ~isfield(pd,'p_Y'), pd.p_Y = 3.0e6; end                          % yield stress of ice (Pa)
 
 if ~isfield(pd,'V_t_reg'), pd.V_t_reg = 1.0e-2; end                 % volume rate for dR/dt regularisation in the Heaviside function (m^3/s)
-if ~isfield(pd,'pd.R_b_reg'), pd.R_b_reg = 1.0; end              % radius for Q_out regularisation conservation of mass for the blister (m)
+if ~isfield(pd,'pd.R_b_reg'), pd.R_b_reg = 100; end                 % radius for Q_out regularisation conservation of mass for the blister (m)
 
 %% Default options
 %method options

@@ -96,7 +96,7 @@ if oo.save_phi_av
     phi_max = vv.phi;
 end
 % initial expanded variables vv2
-[vv2,~,~,~,~,~,~,~,~] = nevis_backbone(inf,vv,vv,aa,pp,gg,oo); 
+[vv2,~,~,~,~,~,~,~,~,~,~] = nevis_backbone(inf,vv,vv,aa,pp,gg,oo); 
 
 % time loop
 while t<t_stop+oo.dt_min
