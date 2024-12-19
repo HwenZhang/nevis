@@ -159,7 +159,12 @@ for iter_new = 1:max_iter_new+1
         temp2 = length(gg.ein); vv.Sx(gg.ein) = X(temp1+(1:temp2)); temp1=temp1+temp2;
         temp2 = length(gg.fin); vv.Sy(gg.fin) = X(temp1+(1:temp2)); temp1=temp1+temp2;
         temp2 = length(gg.cin); vv.Ss(gg.cin) = X(temp1+(1:temp2)); temp1=temp1+temp2;
-        temp2 = length(gg.cin); vv.Sr(gg.cin) = X(temp1+(1:temp2));
+        temp2 = length(gg.cin); vv.Sr(gg.cin) = X(temp1+(1:temp2)); temp1=temp1+temp2;
+    end
+    % update the blister volume and radius
+    if oo.include_blister
+        temp2 = length(gg.nin); vv.Vb(gg.nin) = X(temp1+(1:temp2)); temp1=temp1+temp2;
+        temp2 = length(gg.nin); vv.Rb(gg.nin) = X(temp1+(1:temp2)); % temp1=temp1+temp2;
     end
 
 end

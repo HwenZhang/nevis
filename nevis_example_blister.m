@@ -29,7 +29,7 @@ gg.n1m = gg.n1;                 % margin boundary nodes
 gg = nevis_label(gg,gg.n1m);    % label pressure boundary nodes
 
 % %% plot grid
-nevis_plot_grid(gg);
+% nevis_plot_grid(gg);
 
 %% initialize
 [aa,vv] = nevis_initialize(b,s,gg,pp,oo);
@@ -48,7 +48,7 @@ vv.hs = (0.1/ps.hs)*ones(gg.nIJ,1);         % 10cm thick sheet
 pp.meltE = @(t) (100/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t)));                          
 
 % lake input function
-t_input_1 = 20.0;
+t_input_1 = 10.0;
 t_0 = pd.td/ps.t;
 sigma = 0.1;
 % pp.lake_input_function = @(t) (t>=t_input && t<=t_input+0.1).*(pd.Q_0)/pd.Q_0; % Heaviside
@@ -71,7 +71,7 @@ oo.pts_ni = pp.ni_l;
 save([oo.root,oo.fn],'pp','pd','ps','gg','aa','vv','oo');
 
 %% timestep 
-t_span = (0:750)*(0.4*pd.td/ps.t);
+t_span = (0:500)*(0.4*pd.td/ps.t);
 [tt,vv] = nevis_timesteps(t_span,vv,aa,pp,gg,oo);     % save at daily timesteps
 
 %% plot discharge

@@ -23,6 +23,7 @@ function [aa,vv] = nevis_blister_distributed(aa,vv,pp,gg,oo)
     %% update volume according to mass conservation
     % inflow rate from lake
     Q_in = pp.c42*aa.Q_lake; 
+
     % outflow rate by Darcy's law
     Q_out = pp.c43*pp.k_blister(vv.hs).*vv.Vb./(vv.Rb).^2 + ...
             pp.c44*pp.k_blister(vv.hs).*vv.Rb.*(aa.phi_0-vv.phi);
@@ -67,6 +68,6 @@ function [aa,vv] = nevis_blister_distributed(aa,vv,pp,gg,oo)
     end
     
     %% set inflow from the blister to the drainage network
-    aa.Qb = Q_out./gg.Dx./gg.Dy;                          % dimensionally, aa.Q_b ~ L T^(-1) ~ [E]
+    aa.Qb = Q_in./gg.Dx./gg.Dy;                          % dimensionally, aa.Q_b ~ L T^(-1) ~ [E]
 
 end

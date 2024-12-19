@@ -233,7 +233,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     qey = -pp.c22*permey.*((gg.fmean(:,:)*Psi).^2+pp.Psi_reg^2).^((pp.beta_e-1)/2).*Psi_y;
     
     % blister inflow term [V]/[h]/[x]^2 * \hat Qb \delta(\hat x)
-    Qb_out = pp.c43*Vb./(Rb+pp.R_b_reg).^2 + pp.c44*N.*Rb; % defined on the nodes [ns]
+    Qb_out = (pp.c43*Vb./(Rb+pp.R_b_reg).^2 + pp.c44*N.*Rb)./gg.Dx./gg.Dy; % defined on the nodes [ns]
 
     % boundary edge fluxes
     if ~isempty(gg.ebdy)
@@ -395,7 +395,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
               - pp.c5*(gg.nddx(:,:)*qex + gg.nddy(:,:)*qey) ... % poroelastic sheet flux divergence
               + pp.c6*m ...                                     % basal melting rate
               + pp.c7*E ...                                     % moulin and lake influx
-              + pp.c46*Qb_out ...                                   % blister influx ============!!!
+              + pp.c46*Qb_out ...                               % blister influx ============!!!
               - pp.c9*((gg.nddx(:,:)*Qx).*gg.Dy.^(-1) + (gg.nddy(:,:)*Qy).*gg.Dx.^(-1)) ... % x,y channel divergence
               - pp.c9*((gg.ndds(:,:)*Qs) + (gg.nddr(:,:)*Qr)) ...                           % s,r channel divergence
               + pp.c11*((gg.nmeanxin(:,gg.ein)*(Xicx(gg.ein)+Xix(gg.ein))).*gg.Dy.^(-1) +...% x,y dissipation
@@ -425,7 +425,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
             % pp.c12*Sr_t
 
         % blister volume
-        Vb_t = pp.c42*aa.Qb_in - pp.c43*Vb./(Rb+pp.R_b_reg).^2 - pp.c44*(aa.phi_0-phi).*Rb;
+        Vb_t = pp.c42*Qb_in - pp.c43*Vb./(Rb+pp.R_b_reg).^2 - pp.c44*(aa.phi_0-phi).*Rb;
+        % disp([pp.c42*aa.Qb_in(pp.ni_l); -pp.c43*Vb(pp.ni_l)./(Rb(pp.ni_l)+pp.R_b_reg).^2; -pp.c44*(aa.phi_0(pp.ni_l)-phi(pp.ni_l)).*Rb(pp.ni_l)]);
+        disp([Vb(pp.ni_l) Rb(pp.ni_l)]);
         % blister radius
         Rb_t = 1/pp.c45*ones(gg.nIJ,1)./(ones(gg.nIJ,1)+exp(-1/pp.V_t_reg*Vb_t)).*Vb_t;
         
@@ -458,8 +460,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         R4 = - pp.c12*(Sy-Sy_old).*dt^(-1) + Sy_t;
         R5 = - pp.c12*(Ss-Ss_old).*dt^(-1) + Ss_t;
         R6 = - pp.c12*(Sr-Sr_old).*dt^(-1) + Sr_t;
-        R7 =          (Vb-Vb_old).*dt^(-1) + Vb_t;
-        R8 = pp.c43*Rb.^2.5 - Vb;
+        R7 =        - (Vb-Vb_old).*dt^(-1) + Vb_t;
+        % R8 = - (Rb.^2.5-Rb_old.^2.5).*dt^(-1) + Rb_t;
+        R8 = pp.c45*Rb.^2.5 - Vb;
 
     end
     function J = jacob()
@@ -755,11 +758,12 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
               - c9*nddr(nin,cin)*DQr_phi(:,nin) ...
               + sparse(1:length(nin),1:length(nin),Ds(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin))*( + c11*nmeans(nin,cin)*(DXics_phi(:,nin)+DXis_phi(:,nin)) ) ...
               + sparse(1:length(nin),1:length(nin),Dr(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin))*( + c11*nmeanr(nin,cin)*(DXicr_phi(:,nin)+DXir_phi(:,nin)) ) ...
-              + sparse(1:length(nin),1:length(nin),-c44*Rb(nin),length(nin),length(nin)); % derivative to phi
+              + sparse(1:length(nin),1:length(nin),-c44*Rb(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin)); % derivative to phi
 
-    DF2_Rb = sparse(1:length(nin),1:length(nin), -2*pp.c43*Vb(nin)./(Rb(nin)+pp.R_b_reg).^3 + pp.c44*(phi_0(nin)-phi(nin)), length(nin),length(nin));
+    DF2_Rb = sparse(1:length(nin),1:length(nin), (-2*pp.c43*Vb(nin)./(Rb(nin)+pp.R_b_reg).^3 + pp.c44*(phi_0(nin)-phi(nin)))...
+                                                 .*Dx(nin).^(-1).*Dy(nin).^(-1), length(nin),length(nin));
 
-    DF2_Vb = sparse(1:length(nin),1:length(nin), pp.c43./(Rb(nin)+pp.R_b_reg).^2, length(nin),length(nin));
+    DF2_Vb = sparse(1:length(nin),1:length(nin), (pp.c43./(Rb(nin)+pp.R_b_reg).^2).*Dx(nin).^(-1).*Dy(nin).^(-1), length(nin),length(nin));
 
     DF2_Sx = sparse(1:length(nin),1:length(nin),Dy(nin).^(-1),length(nin),length(nin))*( -c8*dt^(-1).*nmeanx(nin,ein) ...
                 - c9*nddx(nin,ein)*DQx_Sx(:,ein) + c11*nmeanx(nin,ein)*DXicx_Sx(:,ein) );  
@@ -827,11 +831,11 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     %                 1/c45*( dt.^(-1)./(1+exp(-(Vb(nin) - Vb_old(nin))/(pp.V_t_reg*dt))) + 1/dt/(pp.V_t_reg*dt)*(Vb(nin) - Vb_old(nin))...
     %                 .*exp(-(Vb(nin) - Vb_old(nin))/(pp.V_t_reg*dt))./(1+exp(-(Vb(nin) - Vb_old(nin))/(pp.V_t_reg*dt))).^2 ), length(nin),length(nin));
 
-    % DF8_Rb = sparse(1:length(nin), 1:length(nin), ones(length(nin),1), length(nin),length(nin));
-    % DF8_Vb = sparse(1:length(nin), 1:length(nin), 0.4/c45^0.4*(Vb(nin)+eps).^(-0.6), length(nin),length(nin));
-
     DF8_Rb = sparse(1:length(nin), 1:length(nin), 2.5*c45*(Rb(nin)).^(1.5), length(nin),length(nin));
     DF8_Vb = sparse(1:length(nin), 1:length(nin), -ones(length(nin),1), length(nin),length(nin));
+
+    % DF8_Rb = sparse(1:length(nin), 1:length(nin), ones(length(nin),1), length(nin),length(nin));
+    % DF8_Vb = sparse(1:length(nin), 1:length(nin), zeros(length(nin),1), length(nin),length(nin));
 
     %% construct Jacobian matrix
         % % [ original way of calculating ]
@@ -879,7 +883,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     
     %[ alternative that looks nicer : not sure if it will be quicker or slower ]
     J = [   DF1_hs DF1_phi sparse(length(ns),length(ein)) sparse(length(ns),length(fin)) sparse(length(ns),length(cin)) sparse(length(ns),length(cin)) sparse(length(ns),length(nin)) sparse(length(ns),length(nin)); ...
-            DF2_hs DF2_phi DF2_Sx DF2_Sy DF2_Ss DF2_Sr sparse(length(nin),length(nin)) sparse(length(nin),length(nin)); ...
+            DF2_hs DF2_phi DF2_Sx DF2_Sy DF2_Ss DF2_Sr DF2_Vb DF2_Rb; ...
             DF3_hs DF3_phi DF3_Sx sparse(length(ein),length(fin)) sparse(length(ein),length(cin)) sparse(length(ein),length(cin)) sparse(length(ein),length(nin)) sparse(length(ein),length(nin)); ...
             DF4_hs DF4_phi sparse(length(fin),length(ein)) DF4_Sy sparse(length(fin),length(cin)) sparse(length(fin),length(cin)) sparse(length(fin),length(nin)) sparse(length(fin),length(nin)); ...
             DF5_hs DF5_phi sparse(length(cin),length(ein)) sparse(length(cin),length(fin)) DF5_Ss sparse(length(cin),length(cin)) sparse(length(cin),length(nin)) sparse(length(cin),length(nin)); ...

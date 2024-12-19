@@ -77,7 +77,7 @@ if ~isfield(pd,'E_amp'), pd.E_amp = 0; end                         % diurnal inp
 % blister
 if ~isfield(pd,'mu'), pd.mu = 1.0e-3; end                           % water viscosity (Pa s)
 if ~isfield(pd,'K_1c'), pd.K_1c = 5.0e8; end                        % ice bed toughness (Pa m^{1/2})
-if ~isfield(pd,'k_bed'), pd.k_bed = 1.0e-12; end                    % ice bed permeability (m^2)
+if ~isfield(pd,'k_bed'), pd.k_bed = 4.0e-12; end                    % ice bed permeability (m^2)
 if ~isfield(pd,'alpha_b'), pd.alpha_b = 1/3; end                    % shape parameter of the blister
 if ~isfield(pd,'nu'), pd.nu = 0.33; end                             % Poisson's ratio of ice
 if ~isfield(pd,'E_e'), pd.E_e = 8.8e9; end                          % Young's modulus of ice
@@ -86,7 +86,7 @@ if ~isfield(pd,'R_i'), pd.R_i = 0.0; end                            % initial ra
 if ~isfield(pd,'p_Y'), pd.p_Y = 3.0e6; end                          % yield stress of ice (Pa)
 
 if ~isfield(pd,'V_t_reg'), pd.V_t_reg = 1.0e-2; end                 % volume rate for dR/dt regularisation in the Heaviside function (m^3/s)
-if ~isfield(pd,'pd.R_b_reg'), pd.R_b_reg = 100; end                 % radius for Q_out regularisation conservation of mass for the blister (m)
+if ~isfield(pd,'pd.R_b_reg'), pd.R_b_reg = 1; end                   % radius for Q_out regularisation conservation of mass for the blister (m)
 
 %% Default options
 %method options
@@ -113,7 +113,8 @@ if ~isfield(oo,'fn'), oo.fn = 'var'; end
 if ~isfield(oo,'reversey'), oo.reversey = 0; end
 if ~isfield(oo,'halfcmap'), oo.halfcmap = 1; end
 %timestepping options
-if ~isfield(oo,'include_ice'), oo.include_ice = 0; end      % couple to ice flow
+if ~isfield(oo,'include_ice'), oo.include_ice = 0; end              % couple to ice flow
+if ~isfield(oo,'include_blister'), oo.include_blister = 1; end      % couple to blister
 if ~isfield(oo,'change_timestep'), oo.change_timestep = 1; end
 if ~isfield(oo,'adjust_boundaries'), oo.adjust_boundaries = 0; end
 if ~isfield(oo,'Tol_F'), oo.Tol_F = 1e-3; end

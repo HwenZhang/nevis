@@ -63,8 +63,10 @@ end
 %         disp(['There are ' num2str(n_r) ' grid points within the blister area.']);
 %     end
 % end
-aa.Qb_in = Q_lake./gg.Dx./gg.Dy;                          % dimensionally, aa.Q_b ~ L T^(-1) ~ [E]
-
+aa.Qb_in = Q_lake;                          % dimensionally, aa.Q_b ~ L T^(-1) ~ [E]
+if aa.Qb_in(pp.ni_l)>0
+    disp("Inflow.");
+end
 %% boundary input
 % boundary input
 if isfield(pp,'Q_in')

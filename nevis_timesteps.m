@@ -126,7 +126,7 @@ while t<t_stop+oo.dt_min
 
     %% update blister input and output
     % current timestep is dt, current solution is vv, precribed field aa
-    [aa,vv] = nevis_blister_distributed(aa,vv,pp,gg,oo);
+    % [aa,vv] = nevis_blister_distributed(aa,vv,pp,gg,oo);
 
     %% time series of average quantities
     tt(ti).ti = ti;
@@ -134,7 +134,7 @@ while t<t_stop+oo.dt_min
     tt(ti).m = sum(aa.m(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));  % basal melt, scaled with ps.m*ps.x^2
     % supraglacial input, scaled with ps.m*ps.x^2
     tt(ti).E = sum(aa.E(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));
-    tt(ti).Qb = sum(aa.Qb(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));
+    tt(ti).Qb = sum(aa.Qb_in(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));
     
     tt(ti).pwb = max(vv.phi(pp.ni_l));                        % hydrulic potential at the lake
     tt(ti).Q_in = vv2.Q_in;                                   % inflow, scaled with ps.Q
