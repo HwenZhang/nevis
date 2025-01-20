@@ -42,7 +42,7 @@ if ~isfield(ps,'Xi'), ps.Xi = ps.Q*ps.Psi; end          % energy dissipation sca
 if ~isfield(ps,'K_0'), ps.K_0 = 4*pd.alpha_b*(1-pd.nu^2)*pd.K_1c*sqrt(pi)/pd.E_e; end                 
 % if ~isfield(ps,'R_0'), ps.R_0 = (0.5*(-0.5*sqrt(pi)*pd.K_1c+...
 %                        sqrt(0.25*pi*pd.K_1c^2 + pd.Q_0*ps.phi*pd.mu/pd.k_bed))/ps.phi)^2; end     
-if ~isfield(ps,'R_0'), ps.R_0 = 1.0e3; end              % steady-state radius of the blister (m)
+if ~isfield(ps,'R_0'), ps.R_0 = 2.5e3; end              % steady-state radius of the blister (m)
 if ~isfield(ps,'R'), ps.R = ps.R_0; end                 % blister radius scale (m) [L]
 if ~isfield(ps,'V'), ps.V = ps.K_0*(ps.R_0)^(5/2); end  % blister volume scale (m^3) [L^3]
 if ~isfield(ps,'t_0'), ps.t_0 = ps.V/pd.Q_0; end        % timescale of blister growth (s)
@@ -125,6 +125,8 @@ pp.p_a_reg = pd.p_a_reg/ps.phi;
 pp.V_m_reg = pd.V_m_reg/ps.x^2/ps.sigma*pd.rho_w*pd.g/ps.phi;
 pp.V_t_reg = pd.V_t_reg/(ps.V/ps.t);
 pp.R_b_reg = pd.R_b_reg/ps.R;
+pp.V_b_reg = 1e-2; % pd.V_b_reg/ps.V
+pp.V_b_sigma = 1e5; % pd.V_b_reg/ps.V
 
 pp.E_lapse = pd.E_lapse/ps.m*ps.z;
 pp.E_amp = pd.E_amp; 

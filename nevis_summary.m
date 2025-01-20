@@ -34,7 +34,7 @@ end
 p_b = 0.125*pd.E_e/1e6/pd.alpha_b/(1-pd.nu^2).*V_b./(R_b).^3 + ps.phi/1e6*aa.phi_0(pp.ni_l);
 
 %% make plot
-tmin=80; tmax=140; % time range for the plot
+tmin=150; tmax=300; % time range for the plot
 f1 = figure(1); clf;
 ax(1) = subplot(5,1,1);
     plot(t,Q_in,'k-',t,Q_out,'r-',t,m,'b-',t,Q_outQ,'k--',LineWidth=1.5);

@@ -4,7 +4,7 @@ clear
 oo.root = '';           % filename root
 oo.fn = mfilename;      % filename
 oo.code = '../nevis';   % code directory
-oo.casename = 'time_series_blister_ck_concentrated';
+oo.casename = 'time_series_blister_ck_concentrated_reg_2';
 addpath(oo.code);       % add path to code
 
 %% parameters
@@ -57,7 +57,7 @@ pp.lake_input_function = @(t) (pd.Q_0*t_0)/(sqrt(2*pi)*sigma*pd.Q_0)*...
 
 % dimensionless permeability k as a function of dimensionless sheet thickness h
 % pp.k_blister = @(h)     14*pd.mu*pd.k_s*(ps.hs*h).^3/pd.k_bed; % dimensional value/scale 
-pp.k_blister = @(h)     2.0; % dimensional value/scale 
+pp.k_blister = @(h)     1.0; % dimensional value/scale 
 % % dimensionless fracture toughness K_c as a function of dimensional sheet thickness h
 % pp.K_c = @(h)           pd.K_1c/pd.K_1c;
 
