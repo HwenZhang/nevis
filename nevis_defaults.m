@@ -77,7 +77,7 @@ if ~isfield(pd,'E_amp'), pd.E_amp = 0; end                         % diurnal inp
 % blister
 if ~isfield(pd,'mu'), pd.mu = 1.0e-3; end                           % water viscosity (Pa s)
 if ~isfield(pd,'K_1c'), pd.K_1c = 5.0e8; end                        % ice bed toughness (Pa m^{1/2})
-if ~isfield(pd,'k_bed'), pd.k_bed = 2.0e-12; end                    % ice bed permeability (m^2)
+if ~isfield(pd,'k_bed'), pd.k_bed = 5.0e-13; end                    % ice bed permeability (m^2)
 if ~isfield(pd,'alpha_b'), pd.alpha_b = 1/3; end                    % shape parameter of the blister
 if ~isfield(pd,'nu'), pd.nu = 0.33; end                             % Poisson's ratio of ice
 if ~isfield(pd,'E_e'), pd.E_e = 8.8e9; end                          % Young's modulus of ice

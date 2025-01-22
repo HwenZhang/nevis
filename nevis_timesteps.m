@@ -134,8 +134,11 @@ while t<t_stop+oo.dt_min
     tt(ti).m = sum(aa.m(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));  % basal melt, scaled with ps.m*ps.x^2
     % supraglacial input, scaled with ps.m*ps.x^2
     tt(ti).E = sum(aa.E(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));
-    tt(ti).Qb = sum(aa.Qb_in(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));
-    
+    tt(ti).Qb_in = sum(aa.Qb_in(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns)); % inflow to the blister
+    % outflow from the blister scaled by V0/t0
+    tt(ti).Qb_out = sum(pp.c43*vv.Vb(gg.ns)./(vv.Rb(gg.ns)+pp.R_b_reg).^2 ...
+                  + pp.c44./(exp(pp.V_b_sigma.*(-vv.Vb(gg.ns)+pp.V_b_reg))+1).*(aa.phi_0(gg.ns)-vv.phi(gg.ns)).*vv.Rb(gg.ns));
+                  
     tt(ti).pwb = max(vv.phi(pp.ni_l));                        % hydrulic potential at the lake
     tt(ti).Q_in = vv2.Q_in;                                   % inflow, scaled with ps.Q
     tt(ti).Q_out = vv2.Q_out;                                 % outflow, scaled with ps.Q

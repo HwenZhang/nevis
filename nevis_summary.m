@@ -4,6 +4,8 @@
 % 21 August 2014
 
 t = (ps.t/(24*60*60))*[tt.t];  % dimensional time series (days)
+Q_b_in = pd.Q_0*[tt.Qb_in];       % dimensional influx (m^3/s)
+Q_b_out = ps.V/ps.t*[tt.Qb_out];   % dimensional influx (m^3/s)
 Q_in = ps.Q*[tt.Q_in];         % dimensional influx (m^3/s)
 Q_out = ps.Q*[tt.Q_out];       % dimensional outflux (m^3/s)
 m = (ps.m*ps.x^2)*[tt.m];      % dimensional melting rate (m^3/s)
@@ -34,17 +36,18 @@ end
 p_b = 0.125*pd.E_e/1e6/pd.alpha_b/(1-pd.nu^2).*V_b./(R_b).^3 + ps.phi/1e6*aa.phi_0(pp.ni_l);
 
 %% make plot
-tmin=150; tmax=300; % time range for the plot
+tmin=180; tmax=240; % time range for the plot
 f1 = figure(1); clf;
 ax(1) = subplot(5,1,1);
-    plot(t,Q_in,'k-',t,Q_out,'r-',t,m,'b-',t,Q_outQ,'k--',LineWidth=1.5);
+    plot(t,Q_b_in,'b-',t,Q_b_out,'r-',t,m,'k-',t,Q_out,'k-',LineWidth=1.5);
     hold on; 
     % plot(t,Q_outQ,'k--', LineWidth=1.5);
     % plot(t,Q_outQ+Q_outq,'k:',LineWidth=1.5)
     xlabel('t [ d ]');
     ylabel('Q [ m^3/s ]');
-    legend('Q_{in}','Q_{out}','m','Q_{outQ}','NumColumns',2);
-    ylim([0 max(Q_out)]);
+    legend('Q_{b,in}','Q_{b,out}','m','Q_{out}','NumColumns',2);
+    text(0.025,0.8,'(a) flux','Units','normalized')
+    % ylim([0 max(Q_out)]);
     xlim([tmin tmax])
     % ylim([0 2000])
     grid on
@@ -57,6 +60,7 @@ ax(2) = subplot(5,1,2);
     xlabel('t [ d ]');
     ylabel('N [ MPa ]');
     h=legend('N at the blister','Average N');
+    text(0.025,0.8,'(b) effective pressure','Units','normalized')
     h.Location='southeast';
     xlim([tmin tmax])
     grid on    
@@ -67,8 +71,8 @@ ax(3) = subplot(5,1,3);
     ylabel('Average h [ m ]');
     h=legend('h_{cav}','h_{el}','NumColumns',2);
     h.Location='northeast';
-    ylim([0.02 0.03])
-
+    % ylim([0.02 0.03])
+    text(0.025,0.8,'(c)h and S','Units','normalized')
     yyaxis right
     plot(t,1e3*S./A,'r-',LineWidth=1.5);
     ylabel('Average S [ m ]');
@@ -81,6 +85,7 @@ ax(4) = subplot(5,1,4);
     xlabel('t [ d ]');
     ylabel('V [ m^3 ]');
     % legend('h_{cav}','h_{el}','S')
+    text(0.025,0.8,'(d) blister','Units','normalized')
     grid on
 
     yyaxis right
@@ -98,12 +103,13 @@ ax(5) = subplot(5,1,5);
     p3 = plot(t,p_w,'r-.',LineWidth=1.5); 
     
     xlim([tmin tmax])
-    ylim([0 5])
-
+    % ylim([0 5])
+    text(0.025,0.8,'(e) pressure','Units','normalized')
     xlabel('t [ d ]');
     ylabel('N [ MPa ]');
     legend('p_b+\rho_i g h','N','p_w')
     grid on
+
 
 set(f1,'Position',[680 235 660 743])
 % exportgraphics(gcf,'time_series.jpg','Resolution',600)

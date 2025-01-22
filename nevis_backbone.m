@@ -429,7 +429,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         Vb_t = pp.c42*Qb_in - pp.c43*Vb./(Rb+pp.R_b_reg).^2 ...
              - pp.c44./(exp(pp.V_b_sigma.*(-Vb+pp.V_b_reg))+1).*(aa.phi_0-phi).*Rb;
         % disp([pp.c42*aa.Qb_in(pp.ni_l); -pp.c43*Vb(pp.ni_l)./(Rb(pp.ni_l)+pp.R_b_reg).^2; -pp.c44*(aa.phi_0(pp.ni_l)-phi(pp.ni_l)).*Rb(pp.ni_l)]);
-        disp([Vb(pp.ni_l) Rb(pp.ni_l)]);
+        % disp([Vb(pp.ni_l) Rb(pp.ni_l)]);
         % blister radius
         % Rb_t = 1/pp.c45*ones(gg.nIJ,1)./(ones(gg.nIJ,1)+exp(-1/pp.V_t_reg*Vb_t)).*Vb_t;
         
