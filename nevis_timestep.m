@@ -102,7 +102,15 @@ for iter_new = 1:max_iter_new+1
     if oo.no_channels && oo.no_sheet, iFs = 2; 
     elseif oo.no_channels, iFs = [1 2]; 
     elseif oo.no_sheet, iFs = [2 3 4 5 6];  
-    else iFs = [1 2 3 4 5 6 7 8];     % elseif ~oo.include_blister, iFs = [1 2 3 4 5 6];
+    else
+        iFs = [1 2 3 4 5 6];
+        if oo.include_blister
+            if oo.include_radius
+                iFs = [1 2 3 4 5 6 7 8];  
+            else
+                iFs = [1 2 3 4 5 6 7];  
+            end
+        end        
     end
     if check_Fs && all(norms_F(iFs)<=Tols_F(iFs)), 
         if oo.verb, disp(['  norms_F less than tolerance after ',num2str(iter_new-1),' Newton iterations']); end; 
@@ -131,8 +139,18 @@ for iter_new = 1:max_iter_new+1
         X = [vv.hs(gg.ns); vv.phi(gg.nin)];
     elseif oo.no_sheet
         X = [vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin)];
-    else
-        X = [vv.hs(gg.ns); vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin); vv.Vb(gg.nin); vv.Rb(gg.nin)];
+    else 
+        % include both channel and sheet
+        % check if include volume and radius
+        if oo.include_blister
+            if oo.include_radius
+                X = [vv.hs(gg.ns); vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin); vv.Vb(gg.nin); vv.Rb(gg.nin)];
+            else
+                X = [vv.hs(gg.ns); vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin); vv.Vb(gg.nin)];
+            end
+        else
+            X = [vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin)];
+        end
     end
 
     % if condest(J) >=1e20, disp(' Aborting Newton step : J is nearly singular'); info.failed = 1; break; end
@@ -164,9 +182,10 @@ for iter_new = 1:max_iter_new+1
     % update the blister volume and radius
     if oo.include_blister
         temp2 = length(gg.nin); vv.Vb(gg.nin) = X(temp1+(1:temp2)); temp1=temp1+temp2;
-        temp2 = length(gg.nin); vv.Rb(gg.nin) = X(temp1+(1:temp2)); % temp1=temp1+temp2;
+        if oo.include_radius
+            temp2 = length(gg.nin); vv.Rb(gg.nin) = X(temp1+(1:temp2)); % temp1=temp1+temp2;
+        end
     end
-
 end
 
 %% outputs

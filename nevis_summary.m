@@ -103,7 +103,7 @@ ax(5) = subplot(5,1,5);
     p3 = plot(t,p_w,'r-.',LineWidth=1.5); 
     
     xlim([tmin tmax])
-    % ylim([0 5])
+    ylim([0 50])
     text(0.025,0.8,'(e) pressure','Units','normalized')
     xlabel('t [ d ]');
     ylabel('N [ MPa ]');

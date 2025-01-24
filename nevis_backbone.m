@@ -40,6 +40,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     if ~isfield(oo,'evaluate_jacobian'), oo.evaluate_jacobian = 1; end     
     % include_blister
     if ~isfield(oo,'include_blister'), oo.include_blister = 1; end 
+    % include_radius, if True, radius is included in the Jacobian, if not,
+    % radius is calculated outstide the solver
+    if ~isfield(oo,'include_radius'), oo.include_radius = 1; end 
 
     %% fill in missing boundary fluxes
     if ~isfield(aa,'phi'), aa.phi = aa.phi_a(gg.nbdy); end
@@ -367,10 +370,16 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
             F = [ F1; F2 ];
         elseif oo.no_sheet
             F = [ F2; F3; F4; F5; F6 ];
-        elseif ~oo.include_blister
-            F = [ F1; F2; F3; F4; F5; F6];
-        else 
-            F = [ F1; F2; F3; F4; F5; F6; F7; F8];
+        else
+            if oo.include_blister
+                if oo.include_radius  
+                    F = [ F1; F2; F3; F4; F5; F6; F7; F8];
+                else
+                    F = [ F1; F2; F3; F4; F5; F6; F7];
+                end
+            else
+                F = [ F1; F2; F3; F4; F5; F6];
+            end
         end
     else
         F = []; F1 = []; F2 = []; F3 = []; F4 = []; F5 = []; F6 = []; F7 = []; F8 = [];
@@ -432,6 +441,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         % disp([Vb(pp.ni_l) Rb(pp.ni_l)]);
         % blister radius
         % Rb_t = 1/pp.c45*ones(gg.nIJ,1)./(ones(gg.nIJ,1)+exp(-1/pp.V_t_reg*Vb_t)).*Vb_t;
+        Rb_t = 0;
         
         %% old variables
         hs_old = vv0.hs;
@@ -463,9 +473,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         R5 = - pp.c12*(Ss-Ss_old).*dt^(-1) + Ss_t;
         R6 = - pp.c12*(Sr-Sr_old).*dt^(-1) + Sr_t;
         R7 =        - (Vb-Vb_old).*dt^(-1) + Vb_t;
-        % R8 = - (Rb.^2.5-Rb_old.^2.5).*dt^(-1) + Rb_t;
-        R8 = - (Rb-Rb_old).*dt^(-1);
-
+        R8 = - (Rb-Rb_old).*dt^(-1) + Rb_t;
+        % R8 = - pp.c45*Rb.^2.5 + Vb;
     end
     function J = jacob()
         % [ taken from hydro_timestep_diag 13 August 2014, 
@@ -845,8 +854,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     %                 .*exp(-(Vb(nin) - Vb_old(nin))/(pp.V_t_reg*dt))./(1+exp(-(Vb(nin) - Vb_old(nin))/(pp.V_t_reg*dt))).^2 ), length(nin),length(nin));
     
     % pure fracturing criterion
-    % DF8_Rb = sparse(1:length(nin), 1:length(nin), 2.5*c45*(Rb(nin)).^(1.5), length(nin),length(nin));
-    % DF8_Vb = sparse(1:length(nin), 1:length(nin), -ones(length(nin),1), length(nin),length(nin));
+    % DF8_Rb = sparse(1:length(nin), 1:length(nin), -2.5*c45*(Rb(nin)).^(1.5), length(nin),length(nin));
+    % DF8_Vb = sparse(1:length(nin), 1:length(nin), ones(length(nin),1), length(nin),length(nin));
     
     % fixed blister radius
     DF8_Rb = sparse(1:length(nin), 1:length(nin), -ones(length(nin),1)*dt^(-1), length(nin),length(nin));
@@ -912,7 +921,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     if ~opts.no_channels, ii = [ ii length(ns)+length(nin)+(1:length(ein)) length(ns)+length(nin)+length(ein)+(1:length(fin)) ]; end % include horizontal and vertical channels
     if opts.include_diag, ii = [ ii length(ns)+length(nin)+length(ein)+length(fin)+(1:length(cin)) length(ns)+length(nin)+length(ein)+length(fin)+length(cin)+(1:length(cin)) ]; end % include diagnonal channels
     % include blister equations for Vb and Rb
-    if opts.include_blister, ii = [ii length(ns)+length(nin)+length(ein)+length(fin)+length(cin)+length(cin)+(1:length(nin)) length(ns)+length(nin)+length(ein)+length(fin)+length(cin)+length(cin)+length(nin)+(1:length(nin))];end
+    if opts.include_blister, ii = [ii length(ns)+length(nin)+length(ein)+length(fin)+length(cin)+length(cin)+(1:length(nin))]; end
+    if opts.include_radius, ii = [ii length(ns)+length(nin)+length(ein)+length(fin)+length(cin)+length(cin)+length(nin)+(1:length(nin))]; end
+
     J = J(ii,ii);
     end
 end

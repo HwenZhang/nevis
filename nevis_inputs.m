@@ -1,4 +1,4 @@
-function aa = nevis_inputs(t,aa,pp,gg,oo)
+function aa = nevis_inputs(t,aa,vv,pp,gg,oo)
 % aa = nevis_inputs(t,aa,pp,gg,oo)
 % update inputs in aa for time t
 %
@@ -14,9 +14,10 @@ if nargin<5, oo = struct; end
 if ~isfield(oo,'input_function'), oo.input_function = 0; end 
 % use pp.runoff function(t) for runoff
 if ~isfield(oo,'runoff_function'), oo.runoff_function = 0; end
-% use distributed input for runoff even in presence of moulins
-if ~isfield(oo,'include_blister'), oo.include_blister = 1; end    % 
+% if include blister and radius
+if ~isfield(oo,'include_blister'), oo.include_blister = 1; end             % 
 if ~isfield(oo,'blister_distributed'), oo.blister_distributed = 1; end     % whether to distribued the blister 
+if ~isfield(oo,'include_radius'), oo.include_radius = 1; end               % 
 
 %% runoff function at the surface & input directly to the subglacial hydrological system
 % set up the runoff function at each node
@@ -32,8 +33,7 @@ end
 if isfield(pp,'ni_m') && ~isempty(pp.ni_m) && ~oo.distributed_input
     aa.E = 0*ones(gg.nIJ,1);
     % net input to each moulin
-    aa.E(pp.ni_m) = (pp.sum_m*(r.*gg.Dx.*gg.Dy))./...
-        gg.Dx(pp.ni_m)./gg.Dy(pp.ni_m);
+    aa.E(pp.ni_m) = (pp.sum_m*(r.*gg.Dx.*gg.Dy))./gg.Dx(pp.ni_m)./gg.Dy(pp.ni_m);
 else 
     aa.E = r; % the surface runoff is distributed across the domain
 end
@@ -50,6 +50,13 @@ end
 Q_lake = 0*ones(gg.nIJ,1);                               % set the lake input to 0 everywhere
 if oo.include_blister && isfield(pp,'ni_l') && ~isempty(pp.ni_l)
     Q_lake(pp.ni_l) = pp.lake_input_function(t);      % add input from lake at point pp.ni_l
+end
+
+%% Update blister radius if not calculated in the solver
+if ~oo.include_radius
+    vv.Rb = max(vv.Rb, (1/pp.c45*vv.Vb).^0.4); % radius should never decrease unless the volume drops to 0
+    disp(['The blister radius is ' num2str(max(vv.Rb)), ' R0.']);
+    disp(['The blister volume is ' num2str(max(vv.Vb)), ' V0.']);
 end
 
 %% distribute Q_{out} to surrounding grid points

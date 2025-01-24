@@ -10,7 +10,7 @@ function [aa,vv] = nevis_blister(aa,vv,pp,gg,oo)
     %        aa,vv
     
     % include the input from the lake
-    if ~isfield(oo,'lake_input'), oo.lake_input = 1; end     % This is not in function yet!
+    if ~isfield(oo,'include_radius'), oo.include_radius = 1; end     % This is not in function yet!
     
     %% input from the lake to the blister
     % a.Q_lake is the input to the blister model

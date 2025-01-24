@@ -122,7 +122,7 @@ while t<t_stop+oo.dt_min
     %     end
 
     %% update input
-    aa = nevis_inputs(t,aa,pp,gg,oo);
+    aa = nevis_inputs(t,aa,vv,pp,gg,oo);
 
     %% update blister input and output
     % current timestep is dt, current solution is vv, precribed field aa
