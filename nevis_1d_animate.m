@@ -5,7 +5,6 @@ phi = (ps.phi/10^6)*[tt.phi];  % dimensional hydrulic potential (MPa)
 N = (ps.phi/10^6)*[tt.N];      % dimensional effective stress (MPa)
 hs = ps.x^2*ps.h*[tt.hs];      % integrated hs (m^3)
 he = ps.x^2*ps.h*[tt.he];      % integrated he (m^3)
-
 S = ps.x*ps.S*[tt.S];
 A = ps.x^2*sum(gg.Dx.*gg.Dy);
 
@@ -46,11 +45,11 @@ ani_hs = ps.h*vva.hs(gg.ns);
 
     xlabel('x (km)');
     ylabel('\phi (MPa)');
-    xlim([0 10]) 
-    ylim([0 10]) 
+    % xlim([0 100]) 
+    ylim([0 25]) 
 
     % legend
-    h=legend([p1,p2],'$\phi$','$\phi_0$');
+    h=legend([p1,p2],'$\phi$','$\phi_0$','NumColumns',2);
     h.Interpreter='latex';
     h.FontSize=fs+2;
     h.Location='northeast';
@@ -69,7 +68,7 @@ subplot(512);
 
     xlabel('x (km)');
     ylabel('h (m)');
-    % ylim([0 20]) 
+    ylim([0 0.3]) 
 
     % legend
     % h=legend(p3,'$h_s$');
@@ -82,7 +81,7 @@ subplot(513);
     t = (ps.t/(24*60*60))*[tt.t];  % dimensional time series (days)
     V_b = ps.V*[tt.Vb];            % dimensional volume (m^3)
     R_b = ps.R*[tt.Rb];            % dimensional radius (m)
-    Q_b = ps.V/ps.t*[tt.Qb];       % dimensional flux (m^3/s)
+    Q_b = ps.V/ps.t*[tt.Qb_in];       % dimensional flux (m^3/s)
     p_w = ps.phi/1e6*[tt.pwb];     % dimensional hydraulic potential at the lake (MPa)
     S = ps.x*ps.S*[tt.S];          % % dimensional cross sectional area (m^2)
     % dimensional pressure p_b+\rho_i g h (MPa)
@@ -95,7 +94,7 @@ subplot(513);
     'Color',[0 0 1]); hold on
     xlabel('t [ d ]');
     ylabel('Blister volume [ m^3 ]');
-    ylim([0 5e8])
+    ylim([0 2e8])
     % pointer
     tm = t(1);
     V_m = V_b(1);
@@ -128,7 +127,8 @@ subplot(514);
     xlabel('t [ d ]');
     ylabel('Average h [ m ]');
     xlim([0 max(t)])
-    h=legend('h_{cav}','h_{el}','S','NumColumns',3);
+    ylim([0 2])
+    h=legend('h_{cav}','h_{el}','S','t','NumColumns',3);
     h.Location='northwest';
     grid on
 
@@ -139,20 +139,23 @@ subplot(515);
     p9 = plot(t,p_b,'-'); 
     set(p9,'LineWidth',1.5,'Color',[0 0 0]);
     hold on
-    p10 = plot(t,p_w,'--'); 
+    p10 = plot(t,p_w,'-'); 
     set(p10,'LineWidth',1.5,'Color',[1 0 0]);
     
     if isfield(tt,'pts_phi') && ~isempty([tt.pts_phi])  
-    plot(t,pts_N,'-.',LineWidth=1.5);
+        p11=plot(t,pts_N,'-','Color',[0 0 1],LineWidth=1.5);
     end
     % plot(t,N,'-.','color',0.6*[1 1 1],LineWidth=1.5);
 
     xlim([0 max(t)])
-    ylim([0 5])
+    % ylim([-5 5])
     xlabel('t [ d ]');
     ylabel('pressure (MPa)');
     grid on
-    
+
+    h=legend('p_b+\rho_i g h','p_w','N_b','t','NumColumns',3);
+    h.Location='northwest';
+
     pp4 = plot([tm tm],[0 1e1],'k--',LineWidth=1.5);
     pp4.XDataSource = 'tm';
 
@@ -161,7 +164,7 @@ set(gcf,'Position',[100 100 500 600])
 F(:,1) = getframe; 
 
 %% animate
-for i=1:vv.ti_save
+for i=300:vv.ti_save
     % each xxxx.mat file contains a solution field vv
     vva = load([path num2str(i,formatSpec)], 'vv');
     vva = vva.vv;
