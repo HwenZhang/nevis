@@ -126,7 +126,7 @@ pp.V_m_reg = pd.V_m_reg/ps.x^2/ps.sigma*pd.rho_w*pd.g/ps.phi;
 pp.V_t_reg = pd.V_t_reg/(ps.V/ps.t);
 pp.R_b_reg = pd.R_b_reg/ps.R;
 pp.V_b_reg = 0;  % pd.V_b_reg/ps.V
-pp.V_b_sigma = 1e5;   % pd.V_b_reg/ps.V
+pp.V_b_sigma = 1e2;   % pd.V_b_reg/ps.V
 
 pp.E_lapse = pd.E_lapse/ps.m*ps.z;
 pp.E_amp = pd.E_amp; 
