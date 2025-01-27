@@ -237,7 +237,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     
     % blister inflow term [V]/[h]/[x]^2 * \hat Qb \delta(\hat x)
     Qb_out = (pp.c43*Vb./(Rb+pp.R_b_reg).^2 ...
-            + pp.c44./(exp(pp.V_b_sigma.*(-Vb+pp.V_b_reg))+1).*N.*Rb)./gg.Dx./gg.Dy; % defined on the nodes [ns]
+            + pp.c44*Vb_reg(Vb,pp,oo).*N.*Rb)./gg.Dx./gg.Dy; % defined on the nodes [ns]
 
     % boundary edge fluxes
     if ~isempty(gg.ebdy)
@@ -298,7 +298,6 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         vv2.hm = hm;
         vv2.Rb = Rb;
         vv2.Vb = Vb;
-        vv2.Qb_out = Qb_out;
 
         % fluxes and potential gradient
         vv2.qsx = qsx;
@@ -338,6 +337,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         [R1,R2,R3,R4,R5,R6,R7,R8] = residuals();
         
         vv2.R_bdy = R2(gg.nbdy);
+        vv2.Qb_out = Qb_out;
         vv2.Q_out = 1/pp.c9*sum( R2(gg.nbdy).*gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy) ); 
         vv2.Xi = Xi;
         vv2.he = he;
@@ -435,10 +435,12 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
             % pp.c12*Sr_t
 
         % blister volume
-        Vb_t = pp.c42*Qb_in - pp.c43*Vb./(Rb+pp.R_b_reg).^2 ...
-             - pp.c44./(exp(pp.V_b_sigma.*(-Vb+pp.V_b_reg))+1).*(aa.phi_0-phi).*Rb;
+        Vb_t = pp.c42*Qb_in - pp.c43*Vb./(Rb+pp.R_b_reg).^2 - pp.c44*Vb_reg(Vb,pp,oo).*(aa.phi_0-phi).*Rb;
+
+        % display Vb and Rb in the calculation
         % disp([pp.c42*aa.Qb_in(pp.ni_l); -pp.c43*Vb(pp.ni_l)./(Rb(pp.ni_l)+pp.R_b_reg).^2; -pp.c44*(aa.phi_0(pp.ni_l)-phi(pp.ni_l)).*Rb(pp.ni_l)]);
         % disp([Vb(pp.ni_l) Rb(pp.ni_l)]);
+
         % blister radius
         % Rb_t = 1/pp.c45*ones(gg.nIJ,1)./(ones(gg.nIJ,1)+exp(-1/pp.V_t_reg*Vb_t)).*Vb_t;
         Rb_t = 0;
@@ -769,13 +771,13 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
               - c9*nddr(nin,cin)*DQr_phi(:,nin) ...
               + sparse(1:length(nin),1:length(nin),Ds(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin))*( + c11*nmeans(nin,cin)*(DXics_phi(:,nin)+DXis_phi(:,nin)) ) ...
               + sparse(1:length(nin),1:length(nin),Dr(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin))*( + c11*nmeanr(nin,cin)*(DXicr_phi(:,nin)+DXir_phi(:,nin)) ) ...
-              + sparse(1:length(nin),1:length(nin),-c44./(exp(pp.V_b_sigma.*(-Vb(nin)+pp.V_b_reg))+1).*Rb(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin)); % derivative to phi
+              + sparse(1:length(nin),1:length(nin),-c44*Vb_reg(Vb(nin),pp,oo).*Rb(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin)); % derivative to phi
 
-    DF2_Rb = sparse(1:length(nin),1:length(nin), (-2*pp.c43*Vb(nin)./(Rb(nin)+pp.R_b_reg).^3 + pp.c44./(exp(pp.V_b_sigma.*(-Vb(nin)+pp.V_b_reg))+1).*(phi_0(nin)-phi(nin)))...
+    DF2_Rb = sparse(1:length(nin),1:length(nin), (-2*pp.c43*Vb(nin)./(Rb(nin)+pp.R_b_reg).^3 + pp.c44*Vb_reg(Vb(nin),pp,oo).*(phi_0(nin)-phi(nin)))...
                                                  .*Dx(nin).^(-1).*Dy(nin).^(-1), length(nin),length(nin));
 
     DF2_Vb = sparse(1:length(nin),1:length(nin), (c43*(Rb(nin)+pp.R_b_reg).^(-2) ...
-           + c44*pp.V_b_sigma./(exp(pp.V_b_sigma.*(Vb(nin)-pp.V_b_reg))+1)./(exp(pp.V_b_sigma.*(-Vb(nin)+pp.V_b_reg))+1).*(phi_0(nin)-phi(nin)).*Rb(nin)).*Dx(nin).^(-1).*Dy(nin).^(-1), length(nin),length(nin));
+                                                + c44*DVb_reg(Vb(nin),pp,oo).*(phi_0(nin)-phi(nin)).*Rb(nin)).*Dx(nin).^(-1).*Dy(nin).^(-1), length(nin),length(nin));
 
     DF2_Sx = sparse(1:length(nin),1:length(nin),Dy(nin).^(-1),length(nin),length(nin))*( -c8*dt^(-1).*nmeanx(nin,ein) ...
                 - c9*nddx(nin,ein)*DQx_Sx(:,ein) + c11*nmeanx(nin,ein)*DXicx_Sx(:,ein) );  
@@ -839,13 +841,13 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     
     % modified model (regularisation for negative Vb)
     DF7_Vb = sparse(1:length(nin), 1:length(nin), -dt.^(-1)*ones(length(nin),1) - c43*(Rb(nin)+pp.R_b_reg).^(-2)...
-                    - c44*pp.V_b_sigma./(exp(pp.V_b_sigma.*(Vb(nin)-pp.V_b_reg))+1)./(exp(pp.V_b_sigma.*(-Vb(nin)+pp.V_b_reg))+1).*(phi_0(nin)-phi(nin)).*Rb(nin), length(nin),length(nin));
+                    - c44*DVb_reg(Vb(nin),pp,oo).*(phi_0(nin)-phi(nin)).*Rb(nin), length(nin),length(nin));
     DF7_Rb = sparse(1:length(nin), 1:length(nin), 2*c43*Vb(nin).*(Rb(nin)+pp.R_b_reg).^(-3)...
-                    - c44./(exp(pp.V_b_sigma.*(-Vb(nin)+pp.V_b_reg))+1).*(phi_0(nin)-phi(nin)), length(nin),length(nin));
-    temp = sparse(nin,1:length(nin), c44./(exp(pp.V_b_sigma.*(-Vb(nin)+pp.V_b_reg))+1).*Rb(nin), nIJ, length(nin)); % num of eqn > num of variables     
+                    - c44*Vb_reg(Vb(nin),pp,oo).*(phi_0(nin)-phi(nin)), length(nin),length(nin));
+    temp = sparse(nin,1:length(nin), c44*Vb_reg(Vb(nin),pp,oo).*Rb(nin), nIJ, length(nin)); % num of eqn > num of variables 
+    % temp = sparse(nin,1:length(nin), c44./(exp(pp.V_b_sigma.*(-Vb(nin)+pp.V_b_reg))+1).*Rb(nin), nIJ, length(nin)); % num of eqn > num of variables     
     DF7_phi = temp(nin,:); 
     
-
     % DF8
     % full model
     % DF8_Rb = sparse(1:length(nin), 1:length(nin), -2.5*dt.^(-1)*Rb(nin).^(1.5), length(nin),length(nin));
@@ -1026,7 +1028,57 @@ function out = Dhe_fun(N,p_i,pp,opts)
     out = Dhe_power + Dhe_log + Dhe_reg + Dhe_reg2 + Dhe_reg3;
 end
 
-function out = Vb_fun(p_b,R,pp,opts)
+% blister physics
 
+% regularisation of V
+function out = Vb_reg(Vb,pp,opts)
+    
+    % if opts.hyperbolic_reg, out = tanh(pp.V_b_sigma*Vb); end
+    % out = 1./(exp(pp.V_b_sigma.*(-Vb+pp.V_b_reg))+1);
+    out = tanh(pp.V_b_sigma*(Vb-pp.V_b_reg));
+end
 
+% detivative of regularisation of V
+function out = DVb_reg(Vb,pp,opts)
+    % detivative of the regularisation of V
+    % if opts.hyperbolic_reg, out = 1-tanh(pp.V_b_sigma*Vb).^2; end
+    out = pp.V_b_sigma*(1-tanh(pp.V_b_sigma*(Vb-pp.V_b_reg)).^2);
+end
+
+% k_b: permeability of the blister 
+function out = k_b(vv,pp,opts)
+    % if constant k, k=k0
+    % else k = C h_s^3
+    out = opts.constant_k*pp.k_bed + (1-opts.constant_k)*pp.C0*vv.hs.^3;
+end
+
+% D k_b/ D h
+function out = Dk_b(vv,pp,opts)
+    % if constant k, k=k0
+    % else k = C h_s^3
+    out = 3*(1-opts.constant_k)*pp.C0*vv.hs.^2;
+end
+
+% Vb_out: outflow function from the blister to the subglacial drainage system
+function outflow = Vb_out(aa,vv,pp,opts)
+    outflow = pp.c43*vv.Vb./(vv.Rb+pp.R_b_reg).^2 ...
+            + pp.c44*Vb_reg(vv.Vb,pp,oo).*(aa.phi_0-vv.phi).*vv.Rb;
+end
+
+% D Vb_out/ D Vb
+function outflow = DVb_out_Vb(aa,vv,pp,opts)
+    outflow = pp.c43*vv.Vb./(vv.Rb+pp.R_b_reg).^2 ...
+            + pp.c44*Vb_reg(vv.Vb,pp,oo).*(aa.phi_0-vv.phi).*vv.Rb;
+end
+
+% D Vb_out/ D Rb
+function outflow = DVb_out_Rb(aa,vv,pp,opts)
+    outflow = pp.c43*vv.Vb./(vv.Rb+pp.R_b_reg).^2 ...
+            + pp.c44*Vb_reg(vv.Vb,pp,oo).*(aa.phi_0-vv.phi).*vv.Rb;
+end
+
+% D Vb_out/ D phi
+function outflow = Vb_out_phi(aa,vv,pp,opts)
+    outflow = pp.c43*vv.Vb./(vv.Rb+pp.R_b_reg).^2 ...
+            + pp.c44*Vb_reg(vv.Vb,pp,oo).*(aa.phi_0-vv.phi).*vv.Rb;
 end

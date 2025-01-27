@@ -81,7 +81,7 @@ t_span = (0:750)*(0.4*pd.td/ps.t);
 nevis_summary;
 
 %% expand/update variables
-aa = nevis_inputs(vv.t,aa,pp,gg,oo);
+aa = nevis_inputs(vv.t,aa,vv,pp,gg,oo);
 oo.evaluate_variables = 1; 
 [vv2] = nevis_backbone(inf,vv,vv,aa,pp,gg,oo); % expand solution variables
 vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo); % calculate node discharge
