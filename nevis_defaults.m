@@ -120,7 +120,7 @@ if ~isfield(oo,'change_timestep'), oo.change_timestep = 1; end
 if ~isfield(oo,'adjust_boundaries'), oo.adjust_boundaries = 0; end
 if ~isfield(oo,'Tol_F'), oo.Tol_F = 1e-3; end
 if ~isfield(oo,'dt_max'), oo.dt_max = 1e6; end
-if ~isfield(oo,'dt_min'), oo.dt_min = 1e-8; end
+if ~isfield(oo,'dt_min'), oo.dt_min = 1e-6; end
 if ~isfield(oo,'check_Fs'), oo.check_Fs = 1; end
 if ~isfield(oo,'Tol_Fs'), oo.Tol_Fs = oo.Tol_F*[1 1 .1 .1 .1 .1]; end
 

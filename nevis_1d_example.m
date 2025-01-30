@@ -4,9 +4,12 @@ clear
 oo.root = '';           % filename root
 oo.fn = mfilename;      % filename
 oo.code = '../nevis';   % code directory
-oo.casename = 'time_series_blister_ck_concentrated_reg_1';
-oo.include_radius = 1;  % dont calculate radius Rb 
+oo.casename = 'time_series_blister_vk_concentrated_reg_test';
 addpath(oo.code);       % add path to code
+
+% Physical set-up
+oo.constant_k = 1;      % constant permeability
+oo.include_radius = 1;  % include Rb in the Jacobian 
 
 %% parameters
 [pd,oo] = nevis_defaults([],oo);
@@ -54,13 +57,8 @@ t_0 = pd.td/ps.t;
 sigma = 0.025;
 % pp.lake_input_function = @(t) (t>=t_input && t<=t_input+0.1).*(pd.Q_0)/pd.Q_0; % Heaviside
 pp.lake_input_function = @(t) (pd.Q_0*t_0)/(sqrt(2*pi)*sigma*pd.Q_0)*...
-                       exp(-0.5/sigma^2*(t-t_input_1)^2).*(t>=t_input_1-5*sigma && t<=t_input_1+5*sigma);
-
-% dimensionless permeability k as a function of dimensionless sheet thickness h
-% pp.k_blister = @(h)     14*pd.mu*pd.k_s*(ps.hs*h).^3/pd.k_bed; % dimensional value/scale 
-pp.k_blister = @(h)     1.0; % dimensional value/scale 
-% % dimensionless fracture toughness K_c as a function of dimensional sheet thickness h
-% pp.K_c = @(h)           pd.K_1c/pd.K_1c;
+                       exp(-0.5/sigma^2*(t-t_input_1)^2)...
+                       .*(t>=t_input_1-5*sigma && t<=t_input_1+5*sigma);
 
 %% parameters for timesteping
 % hourly timesteps, save timesteps, save moulin pressures
@@ -75,6 +73,7 @@ save([oo.root,oo.fn],'pp','pd','ps','gg','aa','vv','oo');
 
 %% timestep 
 t_span = (0:750)*(0.4*pd.td/ps.t);
+t_span = (0:1500)*(0.2*pd.td/ps.t);
 [tt,vv] = nevis_timesteps(t_span,vv,aa,pp,gg,oo);     % save at hourly timesteps
 
 %% plot summary

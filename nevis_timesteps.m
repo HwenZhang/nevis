@@ -134,10 +134,11 @@ while t<t_stop+oo.dt_min
     tt(ti).m = sum(aa.m(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));  % basal melt, scaled with ps.m*ps.x^2
     % supraglacial input, scaled with ps.m*ps.x^2
     tt(ti).E = sum(aa.E(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));
+   
     tt(ti).Qb_in = sum(aa.Qb_in(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns)); % inflow to the blister
     % outflow from the blister scaled by V0/t0
-    tt(ti).Qb_out = sum(pp.c43*vv.Vb(gg.ns)./(vv.Rb(gg.ns)+pp.R_b_reg).^2 ...
-                  + pp.c44*vv2.Qb_out(gg.ns).*(aa.phi_0(gg.ns)-vv.phi(gg.ns)).*vv.Rb(gg.ns));
+    tt(ti).Qb_out = sum(k_b(vv.hs(gg.ns),pp,oo).*Vb_reg(vv.Vb(gg.ns),pp,oo).*(pp.c43*vv.Vb(gg.ns)./(vv.Rb(gg.ns)+pp.R_b_reg).^2 ...
+                  + pp.c44*vv2.Qb_out(gg.ns).*(aa.phi_0(gg.ns)-vv.phi(gg.ns)).*vv.Rb(gg.ns)));
                   
     tt(ti).pwb = max(vv.phi(pp.ni_l));                        % hydrulic potential at the lake
     tt(ti).Q_in = vv2.Q_in;                                   % inflow, scaled with ps.Q
@@ -149,6 +150,8 @@ while t<t_stop+oo.dt_min
     tt(ti).N = mean(aa.phi_0(gg.ns)-vv.phi(gg.ns));  
     % total cavity sheet volume, scaled with ps.h*ps.x^2
     tt(ti).hs = sum(vv.hs(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns)); 
+    tt(ti).hs_b = max(vv.hs(pp.ni_l));
+    tt(ti).k_b = max(k_b(vv.hs(gg.ns),pp,oo));
     % total channel volume, scaled with ps.S*ps.x
     tt(ti).S = sum(vv.Sx(gg.ein).*(gg.emean(gg.ein,:)*gg.Dx))+...
                sum(vv.Sy(gg.fin).*(gg.fmean(gg.fin,:)*gg.Dy))+...
@@ -237,7 +240,6 @@ while t<t_stop+oo.dt_min
             disp(['nevis_timesteps: Failed [ ',num2str(comp_time),' s, ',num2str(info.iter_new-1),' iterations, dt = ',num2str(dt),' ]']);
             return;
         end
-
     end
     
     %% time averaging of pressure
