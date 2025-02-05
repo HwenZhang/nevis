@@ -302,6 +302,10 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         vv2.hm = hm;
         vv2.Rb = Rb;
         vv2.Vb = Vb;
+        vv2.Sx_n = gg.nmeanx*Sx;
+        vv2.Sy_n = gg.nmeany*Sy;
+        vv2.Ss_n = gg.nmeans*Ss;
+        vv2.Sr_n = gg.nmeanr*Sr;
 
         % fluxes and potential gradient
         vv2.qsx = qsx;
@@ -341,7 +345,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         [R1,R2,R3,R4,R5,R6,R7,R8] = residuals();
         
         vv2.R_bdy = R2(gg.nbdy);
-        vv2.Qb_out = Qb_out;
+        vv2.Qb_out = Qb_out.*gg.Dx.*gg.Dy;
         vv2.Q_out = 1/pp.c9*sum( R2(gg.nbdy).*gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy) ); 
         vv2.Xi = Xi;
         vv2.he = he;

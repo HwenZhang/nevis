@@ -29,7 +29,7 @@ else
     r(gg.nout) = 0;
 end
 
-% sum surface input into moulins
+% sum surface input into moulins and lakes
 if isfield(pp,'ni_m') && ~isempty(pp.ni_m) && ~oo.distributed_input
     aa.E = 0*ones(gg.nIJ,1);
     % net input to each moulin
@@ -47,8 +47,13 @@ end
 
 %% Prescribe blister input
 % aa.Q_lake is the input to the blister model
-Q_lake = 0*ones(gg.nIJ,1);                               % set the lake input to 0 everywhere
+Q_lake = 0*ones(gg.nIJ,1);                            % set the lake input to 0 everywhere
 if oo.include_blister && isfield(pp,'ni_l') && ~isempty(pp.ni_l)
+    % use the following function to precribe the input from each lake to the local blister
+    pp.lake_input_function = @(t) (pp.V_l)./(sqrt(2*pi)*pp.t_duration)...
+                    .*exp(-0.5./pp.t_duration.^2.*(t-pp.t_drainage).^2)...
+                    .*(t>=pp.t_drainage-5*pp.t_duration).*(t<=pp.t_drainage+5*pp.t_duration);
+
     Q_lake(pp.ni_l) = pp.lake_input_function(t);      % add input from lake at point pp.ni_l
 end
 
@@ -70,9 +75,9 @@ end
 %         disp(['There are ' num2str(n_r) ' grid points within the blister area.']);
 %     end
 % end
-aa.Qb_in = Q_lake;                          % dimensionally, aa.Q_b ~ L^3 T^(-1) ~ [E]
+aa.Qb_in = Q_lake;
 if aa.Qb_in(pp.ni_l)>0
-    disp("Inflow.");
+    disp("Inflow to the blister.");
 end
 %% boundary input
 % boundary input

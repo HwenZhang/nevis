@@ -31,6 +31,8 @@ subplot(511);
 ani_phi = (ps.phi/10^6)*vva.phi(gg.ns);
 ani_phi0 = (ps.phi/10^6)*aa.phi_0(gg.ns);
 ani_hs = ps.h*vva.hs(gg.ns);
+temp = gg.nmeanx*vva.Sx;
+ani_S = ps.S*temp(gg.ns);
 
 % hydraulic potential 
     p1 = plot(ps.x/1e3*gg.nx(gg.ns),ani_phi,'-'); 
@@ -61,14 +63,21 @@ ani_hs = ps.h*vva.hs(gg.ns);
 
 % sheet thickness
 subplot(512);
+    yyaxis left
     p3 = plot(ps.x/1e3*gg.nx(gg.ns),ani_hs,'-'); 
     set(p3,'LineWidth',1.5,...
-    'Color',[0 0 0]); hold on
+    'Color',[0 0 1]); hold on
     p3.YDataSource = 'ani_hs';
 
+    yyaxis right
+    pS = plot(ps.x/1e3*gg.nx(gg.ns),ani_S,'-'); 
+    set(pS,'LineWidth',1.5,...
+    'Color',[1 0 0]);
+    pS.YDataSource = 'ani_S';
+    h=legend([p3,pS],'$h_s$','$S_x$','NumColumns',2);
+    h.Interpreter='latex';
     xlabel('x (km)');
     ylabel('h (m)');
-    ylim([0 0.3]) 
 
     % legend
     % h=legend(p3,'$h_s$');
@@ -164,7 +173,7 @@ set(gcf,'Position',[100 100 500 600])
 F(:,1) = getframe; 
 
 %% animate
-for i=300:vv.ti_save
+for i=900:vv.ti_save
     % each xxxx.mat file contains a solution field vv
     vva = load([path num2str(i,formatSpec)], 'vv');
     vva = vva.vv;
@@ -172,6 +181,9 @@ for i=300:vv.ti_save
     ani_phi = (ps.phi/10^6)*vva.phi(gg.ns);
     ani_phi0 = (ps.phi/10^6)*aa.phi_0(gg.ns);
     ani_hs = ps.h*vva.hs(gg.ns);
+    temp = gg.nmeanx*vva.Sx;
+    ani_S = ps.S*temp(gg.ns);
+
     
     % pointer
     [~,it]=min(abs(vva.t*ps.t/(24*60*60)-t));

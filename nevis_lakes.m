@@ -84,8 +84,8 @@ y = reshape(gg.ny,gg.nIJ,1);
 
 % an extension to the computational domain
 big = 0.5*(max(x)-min(x) + max(y)-min(y));
-big = 0.2*(max(x)-min(x) + max(y)-min(y)); % change 7 Nov
-big = 0.05*max(max(x)-min(x),max(y)-min(y)); % change 6 Feb 2016
+% big = 0.2*(max(x)-min(x) + max(y)-min(y)); % change 7 Nov
+% big = 0.05*max(max(x)-min(x),max(y)-min(y)); % change 6 Feb 2016
 
 % corners of the voronoi grid
 x_far = [max(x)+big; max(x)+big; min(x)-big; min(x)-big];
