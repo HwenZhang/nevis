@@ -59,13 +59,14 @@ ax(1) = subplot(6,1,1);
     grid minor
 
 ax(2) = subplot(6,1,2); 
-
-    plot(t,N,'-','color',0.6*[1 1 1],LineWidth=1.5);
-    hold on;
-    
+    if isfield(tt,'pts_phi') && ~isempty([tt.pts_phi])  
+    plot(t,pts_N,'-',LineWidth=1.5);
+    end
+    hold on
+    plot(t,N,'-',LineWidth=1.5);
     xlabel('t [ d ]');
     ylabel('N [ MPa ]');
-    h=legend('Average N');
+    h = legend('N at the blister','averaged N');
     text(0.025,0.8,'(b) effective pressure','Units','normalized')
     h.Location='southeast';
     xlim([tmin tmax])
@@ -95,13 +96,13 @@ ax(4) = subplot(6,1,4);
     plot(t,hs_b,'b-',LineWidth=1.5);    
     % plot(t,hs./A,'b-',t,he./A,'b--',LineWidth=1.5);
     xlabel('t [ d ]');
-    ylabel('Average h [ m ]');
+    ylabel('h at blister [ m ]');
     % ylim([0.02 0.03])
     text(0.025,0.8,'(d)h and S at the blister','Units','normalized')
 
     yyaxis right
     plot(t,Sx_b,'r-',LineWidth=1.5);
-    ylabel('Average S [ m ]');
+    ylabel('S at blister [ m^2 ]');
     xlim([tmin tmax])
     h=legend('h_{cav}','S','NumColumns',2);
     h.Location='northeast';

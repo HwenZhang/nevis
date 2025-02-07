@@ -5,27 +5,31 @@ oo.root = '';           % filename root
 oo.fn = mfilename;      % filename
 oo.code = '../nevis';   % code directory
 oo.casename = 'time_series_blister_vk_concentrated_reg_test';
-oo.casename = 'test';
+oo.casename = 'test_kh0S';
 addpath(oo.code);       % add path to code
 oo.evaluate_variables = 1;
 
 % Physical set-up
-oo.constant_k = 0;      % constant permeability
+oo.constant_k = 0.33;      % constant permeability
+oo.sheet_k = 0.33;         % permeability related to cavity sheet
+oo.channel_k = 1-oo.constant_k-oo.sheet_k; % permeability related to channels
 oo.include_radius = 1;  % include Rb in the Jacobian 
+
 %% parameters
 [pd,oo] = nevis_defaults([],oo);
 % [ put non-default parameters and options here ]
 [ps,pp] = nevis_nondimension(pd);
 
 %% grid and geometry
-L = 1e5;                % length of the domain [m]
+% The geometry is taken from Hewitt 2013
+L = 5e4;                               % length of the domain [m]
 x = linspace(0,(L/ps.x),101); 
-y = linspace(0,(L/ps.x),1); % 1-d grid of length 100km 
-oo.yperiodic = 1; % oo.yperiodic = 1 necessary for a 1-d grid
+y = linspace(0,(L/ps.x),1);            % 1-d grid of length 50km 
+oo.yperiodic = 1;                      % oo.yperiodic = 1 necessary for a 1-d grid
 oo.xperiodic = 0;
 gg = nevis_grid(x,y,oo); 
-b = (0/ps.z)*gg.nx; % flat bed
-s = (300/ps.z)*((L/ps.x)-gg.nx); % linear surface topography
+b = (0/ps.z)*gg.nx;                    % flat bed
+s = (1060/ps.z)*(1-ps.x*gg.nx/L).^0.5; % ice surface topography 
 
 %% mask grid
 gg = nevis_mask(gg,find(s-b<=0)); 

@@ -71,7 +71,7 @@ if ~isfield(pd,'sigma_log'), pd.sigma_log = 0; end                 % regularizin
 if ~isfield(pd,'N_sigma'), pd.N_sigma = pd.N_reg; end              % effective pressure below which regularizing storage hits in [Pa] [ obsolete ]
 
 if ~isfield(pd,'p_a_reg'), pd.p_a_reg = 1*pd.rho_w*pd.g; end       % pressure range for regularization of ? 
-if ~isfield(pd,'E_lapse'), pd.E_lapse = 0*60/1000/pd.td/10^3; end  % surface melt lapse rate [m/s/m]
+if ~isfield(pd,'E_lapse'), pd.E_lapse = 60/1000/pd.td/10^3; end    % surface melt lapse rate [m/s/m]
 if ~isfield(pd,'E_amp'), pd.E_amp = 0; end                         % diurnal input amplitude 
 
 % blister

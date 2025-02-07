@@ -101,8 +101,10 @@ pp.c45 = ps.K_0*(ps.R)^(5/2)/ps.V;                % pp.c45 = 1
 pp.c46 = ps.V/ps.h/ps.x^2;
 pp.c47 = ps.x/ps.R;                                 % ratio of [x] to R0
 pp.c48 = 4*pd.k_bed/pd.mu*ps.t*ps.R/ps.V*pd.p_Y;    % yield stress
-pp.c49 = 1.2e5*pd.mu*pd.k_s*(ps.hs)^3/(ps.R*pd.k_bed);    % constant for blister permeability
-% pp.c50 = 2*ps.x*pd.k_s*ps.Psi*pd.mu*pd.alpha_b*(1-pd.nu^2)*ps.R^2*(ps.hs)^3/(pd.E_e*ps.V*pd.k_bed);
+pp.c49 = pd.mu*pd.k_s*(ps.hs)^2/(pd.k_bed);
+% pp.c49_quadratic = 1.2e4*pd.mu*pd.k_s*(ps.hs)^2/(ps.R*pd.k_bed);    % constant for blister permeability
+% pp.c49_cubic = 1.2e5*pd.mu*pd.k_s*(ps.hs)^3/(ps.R*pd.k_bed);    % constant for blister permeability
+pp.c50 = 5e-5*pd.mu*pd.k_c*ps.S^pd.alpha_c*ps.Psi^(-1/2)/(ps.x*pd.k_bed);
 
 pp.n_Glen = pd.n_Glen;
 pp.alpha_s = pd.alpha_s;
