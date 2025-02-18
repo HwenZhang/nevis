@@ -1,4 +1,4 @@
-%function nevis_plot(vv,aa,pp,ps,gg,oo) % [uncomment to make a function ]
+function nevis_plot(vv,aa,pp,ps,gg,oo) % [uncomment to make a function ]
 % nevis_plot(vv,aa,pp,ps,gg,oo)
 % comment first line to use as script taking inputs from current workspace
 % plots discharge by default
@@ -57,7 +57,7 @@ axx = (ps.x/10^3)*[gg.xl gg.xr gg.yb gg.yt];
 %% extract variables
 if ~isfield(vv,'t'), vv.t = 0; end
 if isfield(vv,'nbdy'), gg = nevis_label(gg,vv.nbdy); aa.phi = aa.phi_a(gg.nbdy); end % re-mask
-aa = nevis_inputs(vv.t,aa,pp,gg,oo);
+aa = nevis_inputs(vv.t,aa,vv,pp,gg,oo);
 oo.evaluate_variables = 1; [vv2] = nevis_backbone(inf,vv,vv,aa,pp,gg,oo); % expand solution variables
 vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo); % calculate node discharge
 nevis_unpack(aa,gg,vv2);

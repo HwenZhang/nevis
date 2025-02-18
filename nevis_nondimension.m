@@ -42,7 +42,7 @@ if ~isfield(ps,'Xi'), ps.Xi = ps.Q*ps.Psi; end          % energy dissipation sca
 if ~isfield(ps,'K_0'), ps.K_0 = 4*pd.alpha_b*(1-pd.nu^2)*pd.K_1c*sqrt(pi)/pd.E_e; end                 
 % if ~isfield(ps,'R_0'), ps.R_0 = (0.5*(-0.5*sqrt(pi)*pd.K_1c+...
 %                        sqrt(0.25*pi*pd.K_1c^2 + pd.Q_0*ps.phi*pd.mu/pd.k_bed))/ps.phi)^2; end     
-if ~isfield(ps,'R_0'), ps.R_0 = 2.0e3; end              % steady-state radius of the blister (m)
+if ~isfield(ps,'R_0'), ps.R_0 = pd.R_0; end             % steady-state radius of the blister (m)
 if ~isfield(ps,'Qb_0'), ps.Qb_0 = pd.Q_0; end           % blister inflow scale (m^2/s) [L^3 T^-1]
 if ~isfield(ps,'R'), ps.R = ps.R_0; end                 % blister radius scale (m) [L]
 if ~isfield(ps,'V'), ps.V = ps.K_0*(ps.R_0)^(5/2); end  % blister volume scale (m^3) [L^3]
@@ -137,6 +137,11 @@ pp.E_amp = pd.E_amp;
 pp.melt = pd.melt/ps.m;
 pp.u_b = pd.u_b/ps.u_b;
 pp.l_c = pd.l_c/ps.l_c;
+pp.t_spr = pd.t_spr/ps.t; 
+pp.t_aut = pd.t_aut/ps.t;    
+pp.delta_t = pd.delta_t/ps.t; 
+pp.s_m = pd.s_m/ps.z;
+pp.r_m = pd.r_m/ps.m;
 
 %% Scalings for plots 
 sc.x = ps.x/1000;   % km

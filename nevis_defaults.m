@@ -73,13 +73,19 @@ if ~isfield(pd,'N_sigma'), pd.N_sigma = pd.N_reg; end              % effective p
 if ~isfield(pd,'p_a_reg'), pd.p_a_reg = 1*pd.rho_w*pd.g; end       % pressure range for regularization of ? 
 if ~isfield(pd,'E_lapse'), pd.E_lapse = 60/1000/pd.td/10^3; end    % surface melt lapse rate [m/s/m]
 if ~isfield(pd,'E_amp'), pd.E_amp = 0; end                         % diurnal input amplitude 
+if ~isfield(pd,'t_spr'), pd.t_spr = 135*pd.td; end                 % seasonal runoff function spring time [s]
+if ~isfield(pd,'t_aut'), pd.t_aut = 244*pd.td; end                 % seasonal runoff function autumn time [s]
+if ~isfield(pd,'delta_t'), pd.delta_t = 21*pd.td; end              % timescale [s]
+if ~isfield(pd,'s_m'), pd.s_m = 500; end                           % peak runoff location [m]
+if ~isfield(pd,'r_m'), pd.r_m = 25/1000/pd.td; end                 % base precipitation [m/s]
 
 % blister
 if ~isfield(pd,'mu'), pd.mu = 1.0e-3; end                           % water viscosity (Pa s)
 if ~isfield(pd,'K_1c'), pd.K_1c = 5.0e8; end                        % ice bed toughness (Pa m^{1/2})
-if ~isfield(pd,'k_bed'), pd.k_bed = 1.0e-12; end                    % ice bed permeability (m^2)
+if ~isfield(pd,'k_bed'), pd.k_bed = 1.0e-13; end                    % ice bed permeability (m^2)
 if ~isfield(pd,'alpha_b'), pd.alpha_b = 1/3; end                    % shape parameter of the blister
 if ~isfield(pd,'nu'), pd.nu = 0.33; end                             % Poisson's ratio of ice
+if ~isfield(pd,'R_0'), pd.R_0 = 2.0e3; end                          % steady-state radius of the blister (m)
 if ~isfield(pd,'E_e'), pd.E_e = 8.8e9; end                          % Young's modulus of ice
 if ~isfield(pd,'Q_0'), pd.Q_0 = 1.5e3; end                          % scale for influx from the lake to the blister (m^3/s)
 if ~isfield(pd,'R_i'), pd.R_i = 0.0; end                            % initial radius of a blister (m)

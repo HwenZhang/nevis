@@ -43,18 +43,23 @@ end
 p_b = 0.125*pd.E_e/1e6/pd.alpha_b/(1-pd.nu^2).*V_b./(R_b).^3 + ps.phi/1e6*aa.phi_0(pp.ni_l);
 
 %% make plot
-tmin=180; tmax=240; % time range for the plot
+tmin=200; tmax=400; % time range for the plot
 f1 = figure(1); clf;
 ax(1) = subplot(6,1,1);
-    plot(t,Q_b_in,'b-',t,Q_b_out,'r-',t,Q_out,'k-',LineWidth=1.5);
-    hold on; 
+    plot(t,Q_b_in,'b-',t,Q_b_out,'r-',LineWidth=1.5);
+    hold on;
+    plot(t,Q_out,color=[0,0.5,0],LineStyle='-',LineWidth=1.5);
+    plot(t,E,color=[0,0,0],LineStyle='--',LineWidth=1.5);
     xlabel('t [ d ]');
     ylabel('Q [ m^3/s ]');
-    legend('Q_{b,in}','Q_{b,out}','Q_{out}','NumColumns',2);
+    h=legend('Q_{b,in}','Q_{b,out}','Q_{out}','Q_{in}','NumColumns',2);
+    h.Location='southeast';
     text(0.025,0.8,'(a) flux','Units','normalized')
 
     xlim([tmin tmax])
-    ylim([0 2000])
+    set(gca, 'YScale', 'log')
+    ylim([1e0 1e3])
+    yticks([1e0,1e1,1e2,1e3])
     grid on
     grid minor
 
@@ -70,6 +75,7 @@ ax(2) = subplot(6,1,2);
     text(0.025,0.8,'(b) effective pressure','Units','normalized')
     h.Location='southeast';
     xlim([tmin tmax])
+    % ylim([0 2])
     grid on    
     grid minor
 
@@ -78,12 +84,12 @@ ax(3) = subplot(6,1,3);
     plot(t,hs./A,'b-',t,he./A,'k-',LineWidth=1.5);
     xlabel('t [ d ]');
     ylabel('Average h [ m ]');
-    % ylim([0.02 0.03])
-    text(0.025,0.8,'(c)h and S','Units','normalized')
+    ylim([0 0.3])
+    text(0.025,0.8,'(c)averaged h and S','Units','normalized')
 
     yyaxis right
-    plot(t,1e3*S./A,'r-',LineWidth=1.5);
-    ylabel('Average S [ m ]');
+    plot(t,S/A,'r-',LineWidth=1.5);
+    ylabel('Channel h [ m ]');
     h=legend('h_{cav}','h_{e}','S','NumColumns',2);
     h.Location='northeast';
     xlim([tmin tmax])
@@ -101,7 +107,7 @@ ax(4) = subplot(6,1,4);
     text(0.025,0.8,'(d)h and S at the blister','Units','normalized')
 
     yyaxis right
-    plot(t,Sx_b,'r-',LineWidth=1.5);
+    plot(t,0.25*(Sx_b+Sy_b+Ss_b+Sr_b),'r-',LineWidth=1.5);
     ylabel('S at blister [ m^2 ]');
     xlim([tmin tmax])
     h=legend('h_{cav}','S','NumColumns',2);
@@ -115,7 +121,7 @@ ax(5) = subplot(6,1,5);
     plot(t,V_b,'b-',LineWidth=1.5);
     xlabel('t [ d ]');
     ylabel('V [ m^3 ]');
-    text(0.025,0.8,'(d) blister','Units','normalized')
+    text(0.025,0.8,'(d) blister volume and radius','Units','normalized')
 
     yyaxis right
     plot(t,R_b,'r-',LineWidth=1.5);
@@ -135,7 +141,7 @@ ax(6) = subplot(6,1,6);
     p3 = plot(t,p_w,'r-.',LineWidth=1.5); 
     
     xlim([tmin tmax])
-    ylim([0 50])
+    ylim([0 30])
     text(0.025,0.8,'(e) pressure','Units','normalized')
     xlabel('t [ d ]');
     ylabel('N [ MPa ]');

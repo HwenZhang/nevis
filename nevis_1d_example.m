@@ -5,13 +5,13 @@ oo.root = '';           % filename root
 oo.fn = mfilename;      % filename
 oo.code = '../nevis';   % code directory
 oo.casename = 'time_series_blister_vk_concentrated_reg_test';
-oo.casename = 'test_kh0S';
+oo.casename = 'test_1d';
 addpath(oo.code);       % add path to code
 oo.evaluate_variables = 1;
 
 % Physical set-up
-oo.constant_k = 0.33;      % constant permeability
-oo.sheet_k = 0.33;         % permeability related to cavity sheet
+oo.constant_k = 1.0;      % constant permeability
+oo.sheet_k = 0;         % permeability related to cavity sheet
 oo.channel_k = 1-oo.constant_k-oo.sheet_k; % permeability related to channels
 oo.include_radius = 1;  % include Rb in the Jacobian 
 
@@ -44,13 +44,16 @@ gg = nevis_label(gg,gg.n1m);     % label pressure boundary nodes
 [aa,vv] = nevis_initialize(b,s,gg,pp,oo);
 % overburden = phi_0 - phi_a;
 vv.phi = aa.phi_a+0.9*(aa.phi_0-aa.phi_a);  % 90% overburden into hydraulic potential, 10% to eff p 
-vv.hs = (0.2/ps.hs)*ones(gg.nIJ,1);         % 10cm thick water sheet
+vv.hs = (0.1/ps.hs)*ones(gg.nIJ,1);         % 10cm thick water sheet
 
 %% Surface hydrology
 
 % surface runoff
-% runoff function; ramp up input over timescale 30 days (dimensionless)
-pp.meltE = @(t) 0.2*(10/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t))); 
+% runoff function: ramp up input over timescale 30 days (dimensionless)
+pp.meltE = @(t) (35/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t))); 
+
+% seasonal runoff function over a year (dimensionless)
+% pp.meltE = @(t) (pp.r_m+pp.E_lapse*pp.s_m)/ps.m*(0.5*tanh((t-pp.t_spr)/pp.delta_t)-0.5*tanh((t-pp.t_aut)/pp.delta_t)); 
 
 % moulins
 % [pp.ni_m,pp.sum_m] = nevis_moulins(1000/ps.x,0,gg,oo);  % one moulin at x=1km,y=0  
@@ -63,14 +66,15 @@ pp.meltE = @(t) 0.2*(10/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t)));
 % pp.t_drainage = load([oo.lake_dict "/lake_data.mat"],"t_l"); % time of lake drainages (assumed to be the middle time of the Gaussian)
 % pp.t_duration = load([oo.lake_dict "/lake_data.mat"],"delta_t_l"); % duration of lake drainages, 6hr
 
-pp.x_l = [0.5*L/ps.x];                              % x-coord of lakes
+pp.x_l = [0.75*L/ps.x];                             % x-coord of lakes
 pp.y_l = [0];                                       % y-coord of lakes
 pp.V_l = [1e8/(ps.Qb_0*ps.t)];                      % volume of lakes         
-pp.t_drainage = [20.0];                             % time of lake drainages (assumed to be the middle time of the Gaussian)
+pp.t_drainage = [30.0];                             % time of lake drainages (assumed to be the middle time of the Gaussian)
 pp.t_duration = [0.025];                            % duration of lake drainages, 6hr
 
 [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo); % calculate lake catchments  
-vv.Rb(pp.ni_l) = ((ps.Qb_0*ps.t)*pp.V_l/ps.K_0).^0.4/ps.R; % initial blister radius;  
+vv.Rb(pp.ni_l) = ((ps.Qb_0*ps.t)*pp.V_l/ps.K_0).^0.4/ps.R; % initial blister radius; 
+% vv.Rb(pp.ni_l) = 0.001; % initial blister radius;  
 
 %% parameters for timesteping
 % hourly timesteps, save timesteps, save moulin pressures
@@ -84,8 +88,8 @@ oo.pts_ni = pp.ni_l;
 save([oo.root,oo.fn],'pp','pd','ps','gg','aa','vv','oo');
 
 %% timestep 
-t_span = (0:750)*(0.4*pd.td/ps.t);
-t_span = (0:1500)*(0.2*pd.td/ps.t);
+t_span = (0:1000)*(0.4*pd.td/ps.t);
+% t_span = (0:1500)*(0.2*pd.td/ps.t);
 [tt,vv] = nevis_timesteps(t_span,vv,aa,pp,gg,oo);     % save at hourly timesteps
 
 %% plot summary

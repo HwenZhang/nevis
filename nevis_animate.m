@@ -93,7 +93,7 @@ load([fn,'/',int2four(tis(i_t))]);
 
 %% extract new variables
 if isfield(vv,'nbdy'), gg = nevis_label(gg,vv.nbdy); aa.phi = aa.phi_a(gg.nbdy); end % remask
-aa = nevis_inputs(vv.t,aa,pp,gg,oo);
+aa = nevis_inputs(vv.t,aa,vv,pp,gg,oo);
 oo.evaluate_variables = 1; oo.evaluate_residual = 0; oo.evaluate_jacobian = 0; [vv2] = nevis_backbone(inf,vv,vv,aa,pp,gg,oo); % expand solution variables
 vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo); % calculate node discharge
 nevis_unpack(aa,vv2);
@@ -269,7 +269,7 @@ disp('Saving ...');
 pause(0.05); mov = addframe(mov,gcf); pause(0.05);
 elseif make_movie == 2
 disp('Saving ...');
-pause(0.05); set(gcf,'units','pixels'); rect = get(gcf,'Position'); frame = getframe(gcf,[0 0 rect(3) rect(4)]); writeVideo(obj,frame); pause(0.05);
+pause(0.05); set(gcf,'units','pixels'); rect = get(gcf,'Position'); frame = getframe(gcf); writeVideo(obj,frame); pause(0.05);
 elseif make_movie == 3,
 %% save figure
 disp('Saving ...');
