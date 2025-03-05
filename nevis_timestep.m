@@ -105,7 +105,7 @@ for iter_new = 1:max_iter_new+1
     else
         iFs = [1 2 3 4 5 6];
         if oo.include_blister
-            if oo.include_radius
+            if oo.include_pressure
                 iFs = [1 2 3 4 5 6 7 8];  
             else
                 iFs = [1 2 3 4 5 6 7];  
@@ -143,7 +143,7 @@ for iter_new = 1:max_iter_new+1
         % include both channel and sheet
         % check if include volume and radius
         if oo.include_blister
-            if oo.include_radius
+            if oo.include_pressure
                 X = [vv.hs(gg.ns); vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin); vv.Vb(gg.nin); vv.Rb(gg.nin)];
             else
                 X = [vv.hs(gg.ns); vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin); vv.Vb(gg.nin)];
@@ -182,7 +182,7 @@ for iter_new = 1:max_iter_new+1
     % update the blister volume and radius
     if oo.include_blister
         temp2 = length(gg.nin); vv.Vb(gg.nin) = X(temp1+(1:temp2)); temp1=temp1+temp2;
-        if oo.include_radius
+        if oo.include_pressure
             temp2 = length(gg.nin); vv.Rb(gg.nin) = X(temp1+(1:temp2)); % temp1=temp1+temp2;
         end
     end

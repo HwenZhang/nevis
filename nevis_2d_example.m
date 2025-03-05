@@ -4,23 +4,16 @@
  oo.root = '';           % filename root
  oo.fn = mfilename;      % filename
  oo.code = '../nevis';   % code directory
- oo.casename = 'time_series_blister_vk_concentrated_reg_test';
- oo.casename = 'test_2d_distributed_k0_kbed1e_13_rm60';
+ oo.casename = 'test_2d';
 %  oo.casename = 'test_2d_no_blister';
 %  oo.casename = 'test_2d_concentrated_k0_kbed1e_12_rm60';
  addpath(oo.code);       % add path to code
- oo.evaluate_variables = 1;
- 
- % Physical set-up
- oo.constant_k = 1.0;      % constant permeability
- oo.sheet_k = 0.0;         % permeability related to cavity sheet
- oo.channel_k = 1-oo.constant_k-oo.sheet_k; % permeability related to channels
- oo.include_radius = 1;  % include Rb in the Jacobian 
- oo.distributed_lake = 1;
+
 
  %% parameters
  [pd,oo] = nevis_defaults([],oo);
  % [ put non-default parameters and options here ]
+ oo.evaluate_variables = 1;
  [ps,pp] = nevis_nondimension(pd);
  
  %% grid and geometry
@@ -65,25 +58,15 @@
  % pp.V_l = load([oo.lake_dict "/lake_data.mat"],"V_l");        % volume of lakes         
  % pp.t_drainage = load([oo.lake_dict "/lake_data.mat"],"t_l"); % time of lake drainages (assumed to be the middle time of the Gaussian)
  % pp.t_duration = load([oo.lake_dict "/lake_data.mat"],"delta_t_l"); % duration of lake drainages, 6hr
-if ~oo.distributed_lake
-    % a single-point lake
-    pp.x_l = [0.75*L/ps.x];                             % x-coord of lakes
-    pp.y_l = [0.5*W/ps.x];                              % y-coord of lakes
-    pp.V_l = [1e8/(ps.Qb_0*ps.t)];                      % volume of lakes         
-    pp.t_drainage = [30.0];                             % time of lake drainages (assumed to be the middle time of the Gaussian)
-    pp.t_duration = [0.025];                            % duration of lake drainages, 6hr
-else
-    % distribute the lakes into multiple grid points
-    vx = gg.nx(:); vy = gg.ny(:);
-    index_lake = ((vx-0.75*L/ps.x).^2 + (vy-0.5*W/ps.x).^2).^0.5 < 3.7e3/ps.x;
-    pp.x_l = vx(index_lake);                            % x-coord of lakes
-    pp.y_l = vy(index_lake);                            % y-coord of lakes
-    pp.V_l = 1e8/sum(index_lake)/(ps.Qb_0*ps.t)*ones(sum(index_lake),1);                      % volume of lakes         
-    pp.t_drainage = 30.0*ones(sum(index_lake),1);                             % time of lake drainages (assumed to be the middle time of the Gaussian)
-    pp.t_duration = 0.025*ones(sum(index_lake),1);                            % duration of lake drainages, 6hr
-end
-[pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo); % calculate lake catchments  
-vv.Rb(pp.ni_l) = ((ps.Qb_0*ps.t)*pp.V_l/ps.K_0).^0.4/ps.R; % initial blister radius;  
+
+  % a single-point lake
+ pp.x_l = [0.75*L/ps.x];                             % x-coord of lakes
+ pp.y_l = [0.5*W/ps.x];                              % y-coord of lakes
+ pp.V_l = [1e8/(ps.Qb_0*ps.t)];                      % volume of lakes         
+ pp.t_drainage = [30.0];                             % time of lake drainages (assumed to be the middle time of the Gaussian)
+ pp.t_duration = [0.025];                            % duration of lake drainages, 6hr
+
+ [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo); % calculate lake catchments 
 
 %% moulins
  oo.random_moulins = 0;

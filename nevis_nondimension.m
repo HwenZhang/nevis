@@ -37,17 +37,13 @@ if ~isfield(ps,'S')                                     % channel c.sectional ar
 end 
 if ~isfield(ps,'t'), ps.t = ps.h*ps.x/ps.qs; end        % time scale (s) [T]
 if ~isfield(ps,'Xi'), ps.Xi = ps.Q*ps.Psi; end          % energy dissipation scale [M L T^-3]
+
 % blister
 % derived variables
-if ~isfield(ps,'K_0'), ps.K_0 = 4*pd.alpha_b*(1-pd.nu^2)*pd.K_1c*sqrt(pi)/pd.E_e; end                 
-% if ~isfield(ps,'R_0'), ps.R_0 = (0.5*(-0.5*sqrt(pi)*pd.K_1c+...
-%                        sqrt(0.25*pi*pd.K_1c^2 + pd.Q_0*ps.phi*pd.mu/pd.k_bed))/ps.phi)^2; end     
-if ~isfield(ps,'R_0'), ps.R_0 = pd.R_0; end             % steady-state radius of the blister (m)
-if ~isfield(ps,'Qb_0'), ps.Qb_0 = pd.Q_0; end           % blister inflow scale (m^2/s) [L^3 T^-1]
-if ~isfield(ps,'R'), ps.R = ps.R_0; end                 % blister radius scale (m) [L]
-if ~isfield(ps,'V'), ps.V = ps.K_0*(ps.R_0)^(5/2); end  % blister volume scale (m^3) [L^3]
-if ~isfield(ps,'t_0'), ps.t_0 = ps.V/ps.Qb_0; end        % timescale of blister growth (s)
-if ~isfield(ps,'hb'), ps.hb = 1.5/pi*(ps.V)/ps.R^2; end     % blister thickness scale (m) [L]
+if ~isfield(ps,'hb'), ps.hb = ps.h; end                 % steady-state radius of the blister (m)
+if ~isfield(ps,'Q0'), ps.Q0 = pd.Q_0; end               % blister inflow scale (m^2/s) [L^3 T^-1]   
+if ~isfield(ps,'qb'), ps.qb = ps.qs; end                % blister flow scale (m^2/s) [L^3 T^-1]   
+if ~isfield(ps,'alpha_b'), ps.alpha_b = pd.alpha_b; end % relaxation rate (s^-1)
     
 %% Dimensionless parameters [ many of these can be chosen to be 1 by suitable choice of scales ]
 pp.c1 = ps.hs/ps.h;
@@ -93,18 +89,14 @@ pp.c40 = pd.N_sigma/ps.phi;
 pp.c41 = pd.rho_w*pd.gamma_cc*pd.c;
 
 % blister dimensionless parameters
-pp.c42 = ps.Qb_0*ps.t/ps.V; % influx
-% pp.c43 = 4*pd.k_bed/pd.mu*ps.t/ps.V*(0.5*sqrt(pi*ps.R_0)*pd.K_1c); % Darcy flux 
-pp.c43 = 0.5*pd.k_bed*pd.E_e*ps.t/(pd.mu*pd.alpha_b*(1-pd.nu^2)*ps.R^2); % Darcy flux 
-pp.c44 = 4*pd.k_bed/pd.mu*ps.t*ps.R/ps.V*ps.phi;  % effective pressure N
-pp.c45 = ps.K_0*(ps.R)^(5/2)/ps.V;                % pp.c45 = 1
-pp.c46 = ps.V/ps.h/ps.x^2;
-pp.c47 = ps.x/ps.R;                                 % ratio of [x] to R0
-pp.c48 = 4*pd.k_bed/pd.mu*ps.t*ps.R/ps.V*pd.p_Y;    % yield stress
-pp.c49 = pd.mu*pd.k_s*(ps.hs)^2/(pd.k_bed);
-% pp.c49_quadratic = 1.2e4*pd.mu*pd.k_s*(ps.hs)^2/(ps.R*pd.k_bed);    % constant for blister permeability
-% pp.c49_cubic = 1.2e5*pd.mu*pd.k_s*(ps.hs)^3/(ps.R*pd.k_bed);    % constant for blister permeability
-pp.c50 = 5e-5*pd.mu*pd.k_c*ps.S^pd.alpha_c*ps.Psi^(-1/2)/(ps.x*pd.k_bed);
+pp.c42 = ps.h^3*ps.phi/(12*pd.mu*ps.x*ps.qb);
+pp.c43 = ps.Q0*ps.t/ps.x^2/ps.h;
+pp.c44 = ps.alpha_b*ps.h*ps.t/ps.h;
+pp.c45 = ps.qb*ps.t/ps.x/ps.h;
+pp.c46 = ps.Q0*ps.t/ps.x/ps.h;
+pp.c47 = ps.alpha_b*ps.h*ps.t/ps.h; 
+pp.c48 = 1;
+pp.c49 = pd.B*ps.h/ps.x^3;
 
 pp.n_Glen = pd.n_Glen;
 pp.alpha_s = pd.alpha_s;

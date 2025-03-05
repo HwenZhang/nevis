@@ -172,8 +172,8 @@ while t<t_stop+oo.dt_min
          tt(ti).pts_phi = vv.phi(oo.pts_ni);
          tt(ti).pts_hs = vv.hs(oo.pts_ni);
          tt(ti).pts_he = vv2.he(oo.pts_ni);
-         tt(ti).Vb = vv.Vb(oo.pts_ni);
-         tt(ti).Rb = vv.Rb(oo.pts_ni);
+         tt(ti).pts_hb = vv.Vb(oo.pts_ni);
+         tt(ti).pts_pb = vv.pb(oo.pts_ni);
          if oo.include_ice
             tt(ti).pts_us = vv.us(oo.pts_ni);
          end

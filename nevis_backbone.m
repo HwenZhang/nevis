@@ -42,7 +42,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     if ~isfield(oo,'include_blister'), oo.include_blister = 1; end 
     % include_radius, if True, radius is included in the Jacobian, if not,
     % radius is calculated outstide the solver
-    if ~isfield(oo,'include_radius'), oo.include_radius = 1; end 
+    if ~isfield(oo,'include_pressure'), oo.include_pressure = 1; end 
     % formulation of the permeability
     if ~isfield(oo,'constant_k'), oo.constant_k = 1; end 
     if ~isfield(oo,'sheet_k'), oo.sheet_k = 0; end 
@@ -61,6 +61,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     
     if ~isfield(aa,'Qs'), aa.Qs = 0*ones(length(gg.cbdy),1); end
     if ~isfield(aa,'Qr'), aa.Qr = 0*ones(length(gg.cbdy),1); end
+
+    if ~isfield(aa,'qbx'), aa.qbx = 0*ones(length(gg.ebdy),1); end   % flow within blister
+    if ~isfield(aa,'qby'), aa.qby = 0*ones(length(gg.fbdy),1); end   % flow within blister
     
     %% restrict mean operators 
     % [ to take means over active points must take care to only 
@@ -88,8 +91,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     Sy = vv.Sy;
     Ss = vv.Ss;
     Sr = vv.Sr;
-    Vb = vv.Vb;  % blister volume
-    Rb = vv.Rb;  % blister radius
+    hb = vv.hb;  % blister thickness
+    pb = vv.pb;  % blister pressure
     
     % channel cross sectional area interpolated at nodes
     Smean = gg.nmeanx*Sx; % + gg.nmeany*Sy + gg.nmeans*Ss + gg.nmeanr*Sr
@@ -105,6 +108,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     % boundary potential
     if ~isempty(gg.nbdy)
         phi(gg.nbdy) = aa.phi;
+        pb(gg.nbdy) = 0;          % boundary pb = 0
     end
     
     % potential gradients
@@ -112,6 +116,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     Psi_y = gg.fddy*phi;
     Psi_s = gg.cdds*phi;
     Psi_r = gg.cddr*phi;
+
+    Psib_x = gg.eddx*pb;
+    Psib_y = gg.fddy*pb;
 
     % bed potential gradients
     Psi_a_x = gg.eddx*aa.phi_a;
@@ -241,23 +248,45 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     qsy = -pp.c21*permsy.*((gg.fmean(:,:)*Psi).^2+pp.Psi_reg^2).^((pp.beta_s-1)/2).*Psi_y;
     qex = -pp.c22*permex.*((gg.emean(:,:)*Psi).^2+pp.Psi_reg^2).^((pp.beta_e-1)/2).*Psi_x;
     qey = -pp.c22*permey.*((gg.fmean(:,:)*Psi).^2+pp.Psi_reg^2).^((pp.beta_e-1)/2).*Psi_y;
+
+    % blister fluxes
+    alf = 3.0; bet = 1.0;
+    if oo.mean_perms
+        permbx = (gg.Dx(gg.econnect(:,1)).*max(hb(gg.econnect(:,1)),0).^alf +...
+            gg.Dx(gg.econnect(:,2)).*max(hb(gg.econnect(:,2)),0).^alf).*...
+            (gg.Dx(gg.econnect(:,1))+gg.Dx(gg.econnect(:,2))).^(-1);
+        permby = ( gg.Dy(gg.fconnect(:,1)).*max(hb(gg.fconnect(:,1)),0).^(alf) + ...
+            gg.Dy(gg.fconnect(:,2)).*max(hb(gg.fconnect(:,2)),0).^(alf) ).*...
+            (gg.Dy(gg.fconnect(:,1))+gg.Dy(gg.fconnect(:,2))).^(-1);
+    else
+        permbx = (gg.Dx(gg.econnect(:,1))+gg.Dx(gg.econnect(:,2))).^(bet).*...
+                max(hb(gg.econnect(:,1)),0).^(alf).*max(hb(gg.econnect(:,2)),0).^(alf).*...
+                ( gg.Dx(gg.econnect(:,1)).*max(hb(gg.econnect(:,2)),0).^(alf/bet) + ...
+                gg.Dx(gg.econnect(:,2)).*max(hb(gg.econnect(:,1)),0).^(alf/bet) + perm_reg).^(-bet); 
+        permby = (gg.Dy(gg.fconnect(:,1))+gg.Dy(gg.fconnect(:,2))).^(bet).*...
+            max(hb(gg.fconnect(:,1)),0).^(alf).*max(hb(gg.fconnect(:,2)),0).^(alf).*...
+            ( gg.Dy(gg.fconnect(:,1)).*max(hb(gg.fconnect(:,2)),0).^(alf/bet) + ...
+            gg.Dy(gg.fconnect(:,2)).*max(hb(gg.fconnect(:,1)),0).^(alf/bet) + perm_reg).^(-bet); 
+
+    end
+    qbx = -pp.c42*permbx.*Psib_x;
+    qby = -pp.c42*permby.*Psib_y;
     
-    % blister inflow term [V]/[h]/[x]^2 * \hat Qb \delta(\hat x)
-    Qb_out = Vb_reg(Vb,pp,oo).*k_b(hs,Smean,pp,oo).*(pp.c43*Vb./(Rb+pp.R_b_reg).^2 ...
-            + pp.c44.*N.*Rb)./gg.Dx./gg.Dy; % defined on the nodes [ns]
-    % disp(max(Qb_out));
-    % disp(max(k_b(hs,pp,oo).*hs.^3));
+    % blister to subglacial drainage system term defined on the nodes [ns]
+    Qb_out = ps.alpha_b*hb; % 
 
     % boundary edge fluxes
     if ~isempty(gg.ebdy)
         qsx(gg.ebdy) = aa.qsx;
         qex(gg.ebdy) = aa.qex;
+        qbx(gg.ebdy) = aa.qbx;
         Qx(gg.ebdy) = aa.Qx;
     end
 
     if ~isempty(gg.fbdy)
         qsy(gg.fbdy) = aa.qsy;
         qey(gg.fbdy) = aa.qey;
+        qby(gg.fbdy) = aa.qby;
         Qy(gg.fbdy) = aa.Qy;
     end
 
@@ -267,8 +296,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     end
     
     % outside edge fluxes
-    qsx(gg.eout) = 0; qex(gg.eout) = 0; Qx(gg.eout) = 0; % x-edge
-    qsy(gg.fout) = 0; qey(gg.fout) = 0; Qy(gg.fout) = 0; % y-edge  
+    qsx(gg.eout) = 0; qex(gg.eout) = 0; qbx(gg.eout) = 0; Qx(gg.eout) = 0; % x-edge
+    qsy(gg.fout) = 0; qey(gg.fout) = 0; qby(gg.fout) = 0; Qy(gg.fout) = 0; % y-edge  
     Qs(gg.cout) = 0; Qr(gg.cout) = 0; % corners
     
     % Xi = rho_w * L * M
@@ -305,8 +334,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         vv2.he = he;
         vv2.hv = hv;
         vv2.hm = hm;
-        vv2.Rb = Rb;
-        vv2.Vb = Vb;
+        vv2.hb = hb;
+        vv2.pb = pb;
         vv2.Sx_n = gg.nmeanx*Sx;
         vv2.Sy_n = gg.nmeany*Sy;
         vv2.Ss_n = gg.nmeans*Ss;
@@ -317,6 +346,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         vv2.qsy = qsy;
         vv2.qex = qex;
         vv2.qey = qey;
+        vv2.qbx = qbx;
+        vv2.qby = qby;
         vv2.Qx = Qx;
         vv2.Qy = Qy;
         vv2.Qs = Qs;
@@ -350,7 +381,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         [R1,R2,R3,R4,R5,R6,R7,R8] = residuals();
         
         vv2.R_bdy = R2(gg.nbdy);
-        vv2.Qb_out = Qb_out.*gg.Dx.*gg.Dy;
+        vv2.Qb_out = sum(Qb_out.*gg.Dx.*gg.Dy);
         vv2.Q_out = 1/pp.c9*sum( R2(gg.nbdy).*gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy) ); 
         vv2.Xi = Xi;
         vv2.he = he;
@@ -448,15 +479,15 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
             % pp.c12*Sr_t
 
         % blister volume
-        Vb_t = pp.c42*Qb_in - k_b(hs,Smean,pp,oo).*Vb_reg(Vb,pp,oo).*(pp.c43*Vb./(Rb+pp.R_b_reg).^2 + pp.c44*(aa.phi_0-phi).*Rb);
+        hb_t = -pp.c45*(gg.nddx(:,:)*qsx + gg.nddy(:,:)*qsy) + pp.c42*Qb_in.*gg.Dx.*gg.Dy -pp.c47*hb;
 
         % display Vb and Rb in the calculation
         % disp([pp.c42*aa.Qb_in(pp.ni_l); -pp.c43*Vb(pp.ni_l)./(Rb(pp.ni_l)+pp.R_b_reg).^2; -pp.c44*(aa.phi_0(pp.ni_l)-phi(pp.ni_l)).*Rb(pp.ni_l)]);
         % disp([Vb(pp.ni_l) Rb(pp.ni_l)]);
 
         % blister radius
-        % Rb_t = 1/pp.c45*ones(gg.nIJ,1)./(ones(gg.nIJ,1)+exp(-1/pp.V_t_reg*Vb_t)).*Vb_t;
-        Rb_t = 0;
+        pb_t = -pb + (aa.phi_0-aa.phi_a) + pp.c49 * (gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*hb;
+        % Rb_t = 0;
         
         %% old variables
         hs_old = vv0.hs;
