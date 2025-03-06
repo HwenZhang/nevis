@@ -90,7 +90,7 @@ if ~isfield(oo,'no_channels'), oo.no_channels = 0; end
 if ~isfield(oo,'no_sheet'), oo.no_sheet = 0; end
 if ~isfield(oo,'noXi'), oo.noXi = 1; end
 if ~isfield(oo,'combine_sheet'), oo.combine_sheet = 1; end
-if ~isfield(oo,'mean_perms'), oo.mean_perms = 0; end
+if ~isfield(oo,'mean_perms'), oo.mean_perms = 1; end
 if ~isfield(oo,'blister'), oo.blister = 1; end
 
 % if ~isfield(oo,'method'), oo.method = 'lrtb_vel'; end % [ obsolete ]
