@@ -62,7 +62,7 @@
   % a single-point lake
  pp.x_l = [0.75*L/ps.x];                             % x-coord of lakes
  pp.y_l = [0.5*W/ps.x];                              % y-coord of lakes
- pp.V_l = [1e8/(ps.Qb_0*ps.t)];                      % volume of lakes         
+ pp.V_l = [1e8/(ps.Q0*ps.t)];                      % volume of lakes         
  pp.t_drainage = [30.0];                             % time of lake drainages (assumed to be the middle time of the Gaussian)
  pp.t_duration = [0.025];                            % duration of lake drainages, 6hr
 

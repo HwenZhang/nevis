@@ -80,6 +80,7 @@ if ~isfield(pd,'s_m'), pd.s_m = 500; end                           % peak runoff
 if ~isfield(pd,'r_m'), pd.r_m = 25/1000/pd.td; end                 % base precipitation [m/s]
 
 % blister
+if ~isfield(pd,'Q0'), pd.Q_0 = 1e3; end
 if ~isfield(pd,'mu'), pd.mu = 1.0e-3; end                           % water viscosity (Pa s)
 if ~isfield(pd,'B'), pd.B = 1.0e16; end                             % ice bending stiffness (m^3)
 if ~isfield(pd,'alpha_b'), pd.alpha_b = 1/3; end                    % relaxation rate of the blister (s^-1)

@@ -93,8 +93,6 @@ pp.c42 = ps.h^3*ps.phi/(12*pd.mu*ps.x*ps.qb);
 pp.c43 = ps.Q0*ps.t/ps.x^2/ps.h;
 pp.c44 = ps.alpha_b*ps.h*ps.t/ps.h;
 pp.c45 = ps.qb*ps.t/ps.x/ps.h;
-pp.c46 = ps.Q0*ps.t/ps.x/ps.h;
-pp.c47 = ps.alpha_b*ps.h*ps.t/ps.h; 
 pp.c48 = 1;
 pp.c49 = pd.B*ps.h/ps.x^3;
 
@@ -118,11 +116,6 @@ pp.N_reg = pd.N_reg/ps.phi;
 %pp.N_reg1 = pd.N_reg1/ps.phi;
 pp.p_w_reg = pd.p_w_reg/ps.phi;
 pp.p_a_reg = pd.p_a_reg/ps.phi;
-pp.V_m_reg = pd.V_m_reg/ps.x^2/ps.sigma*pd.rho_w*pd.g/ps.phi;
-pp.V_t_reg = pd.V_t_reg/(ps.V/ps.t);
-pp.R_b_reg = pd.R_b_reg/ps.R;
-pp.V_b_reg = 0;  % pd.V_b_reg/ps.V
-pp.V_b_sigma = 1e2;   % pd.V_b_reg/ps.V
 
 pp.E_lapse = pd.E_lapse/ps.m*ps.z;
 pp.E_amp = pd.E_amp; 
