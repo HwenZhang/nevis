@@ -144,9 +144,9 @@ for iter_new = 1:max_iter_new+1
         % check if include volume and radius
         if oo.include_blister
             if oo.include_pressure
-                X = [vv.hs(gg.ns); vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin); vv.Vb(gg.nin); vv.Rb(gg.nin)];
+                X = [vv.hs(gg.ns); vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin); vv.hb(gg.nin); vv.pb(gg.nin)];
             else
-                X = [vv.hs(gg.ns); vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin); vv.Vb(gg.nin)];
+                X = [vv.hs(gg.ns); vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin); vv.hb(gg.nin)];
             end
         else
             X = [vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin)];
@@ -181,9 +181,9 @@ for iter_new = 1:max_iter_new+1
     end
     % update the blister volume and radius
     if oo.include_blister
-        temp2 = length(gg.nin); vv.Vb(gg.nin) = X(temp1+(1:temp2)); temp1=temp1+temp2;
+        temp2 = length(gg.nin); vv.hb(gg.nin) = X(temp1+(1:temp2)); temp1=temp1+temp2;
         if oo.include_pressure
-            temp2 = length(gg.nin); vv.Rb(gg.nin) = X(temp1+(1:temp2)); % temp1=temp1+temp2;
+            temp2 = length(gg.nin); vv.pb(gg.nin) = X(temp1+(1:temp2)); % temp1=temp1+temp2;
         end
     end
 end

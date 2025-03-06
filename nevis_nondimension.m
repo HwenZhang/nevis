@@ -29,6 +29,7 @@ if ~isfield(ps,'Psi'), ps.Psi = ps.phi/ps.x; end        % phi gradient scale (Pa
 if ~isfield(ps,'hs'), ps.hs = ps.h; end                 % cavity sheet thickness (m) [L]
 if ~isfield(ps,'hv'), ps.hv = ps.h; end                 % storage sheet thickness (m) [L]
 if ~isfield(ps,'he'), ps.he = ps.h; end                 % elastic sheet thickness  (m) [L]
+if ~isfield(ps,'hb'), ps.hb = 10*ps.h; end              % blister sheet thickness (m) [L]
 if ~isfield(ps,'qs'), ps.qs = ps.m*ps.x; end            % sheet flux scale (m^2/s) [L^2 T^-1]
 if ~isfield(ps,'qe'), ps.qe = ps.qs; end                % elastic flux scale (m^2/s) [L^2 T^-1]
 if ~isfield(ps,'Q'), ps.Q = ps.qs*100; end              % channel flux scale (m^3/s) [L^3 T^-1]
@@ -40,7 +41,7 @@ if ~isfield(ps,'Xi'), ps.Xi = ps.Q*ps.Psi; end          % energy dissipation sca
 
 % blister
 % derived variables
-if ~isfield(ps,'hb'), ps.hb = ps.h; end                 % steady-state radius of the blister (m)
+% if ~isfield(ps,'hb'), ps.hb = ps.h; end                 % steady-state radius of the blister (m)
 if ~isfield(ps,'Q0'), ps.Q0 = pd.Q_0; end               % blister inflow scale (m^2/s) [L^3 T^-1]   
 if ~isfield(ps,'qb'), ps.qb = ps.qs; end                % blister flow scale (m^2/s) [L^3 T^-1]   
 if ~isfield(ps,'alpha_b'), ps.alpha_b = pd.alpha_b; end % relaxation rate (s^-1)
@@ -89,12 +90,13 @@ pp.c40 = pd.N_sigma/ps.phi;
 pp.c41 = pd.rho_w*pd.gamma_cc*pd.c;
 
 % blister dimensionless parameters
-pp.c42 = ps.h^3*ps.phi/(12*pd.mu*ps.x*ps.qb);
-pp.c43 = ps.Q0*ps.t/ps.x^2/ps.h;
-pp.c44 = ps.alpha_b*ps.h*ps.t/ps.h;
-pp.c45 = ps.qb*ps.t/ps.x/ps.h;
+pp.c42 = ps.hb^3*ps.Psi/(12*pd.mu*ps.qb);
+pp.c43 = ps.Q0*ps.t/ps.x^2/ps.hb;
+pp.c44 = pd.alpha_b*ps.hb*ps.t/ps.hb;
+pp.c45 = ps.qb*ps.t/ps.x/ps.hb;
 pp.c48 = 1;
-pp.c49 = pd.B*ps.h/ps.x^3;
+pp.c49 = pd.B*ps.hb/ps.x^4/ps.phi;
+pp.c50 = pd.alpha_b*ps.hb*ps.t/ps.h;
 
 pp.n_Glen = pd.n_Glen;
 pp.alpha_s = pd.alpha_s;

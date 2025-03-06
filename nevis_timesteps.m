@@ -139,7 +139,6 @@ while t<t_stop+oo.dt_min
     tt(ti).Qb_out = vv2.Qb_out(pp.ni_l);                      % outflow from the blister scaled by V0/t0           
     tt(ti).pwb = vv.phi(pp.ni_l);                             % hydrulic potential at the lake
     tt(ti).hs_b = vv.hs(pp.ni_l);                             % sheet thickness at the lake
-    tt(ti).k_b = k_b(vv.hs(pp.ni_l),pp,oo);                   % blister permeability
 
     % channel cross sectional area at the nodes
     temp = gg.nmeanx*vv.Sx;
@@ -172,7 +171,7 @@ while t<t_stop+oo.dt_min
          tt(ti).pts_phi = vv.phi(oo.pts_ni);
          tt(ti).pts_hs = vv.hs(oo.pts_ni);
          tt(ti).pts_he = vv2.he(oo.pts_ni);
-         tt(ti).pts_hb = vv.Vb(oo.pts_ni);
+         tt(ti).pts_hb = vv.hb(oo.pts_ni);
          tt(ti).pts_pb = vv.pb(oo.pts_ni);
          if oo.include_ice
             tt(ti).pts_us = vv.us(oo.pts_ni);

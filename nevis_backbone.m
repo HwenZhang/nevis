@@ -273,7 +273,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     qby = -pp.c42*permby.*Psib_y; % vector of (gg.fIJ,1)
     
     % blister to subglacial drainage system term defined on the nodes [ns]
-    Qb_out = pp.c44*hb; % 
+    Qb_out = pp.c50*hb; % 
 
     % boundary edge fluxes
     if ~isempty(gg.ebdy)
@@ -381,7 +381,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         [R1,R2,R3,R4,R5,R6,R7,R8] = residuals();
         
         vv2.R_bdy = R2(gg.nbdy);
-        vv2.Qb_out = sum(Qb_out.*gg.Dx.*gg.Dy);
+        vv2.Qb_out = Qb_out.*gg.Dx.*gg.Dy;
         vv2.Q_out = 1/pp.c9*sum( R2(gg.nbdy).*gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy) ); 
         vv2.Xi = Xi;
         vv2.he = he;
@@ -449,7 +449,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
               - pp.c5*(gg.nddx(:,:)*qex + gg.nddy(:,:)*qey) ... % poroelastic sheet flux divergence
               + pp.c6*m ...                                     % basal melting rate
               + pp.c7*E ...                                     % moulin and lake influx
-              + pp.c44*hb ...                                   % blister influx
+              + pp.c50*hb ...                                   % blister influx
               - pp.c9*((gg.nddx(:,:)*Qx).*gg.Dy.^(-1) + (gg.nddy(:,:)*Qy).*gg.Dx.^(-1)) ... % x,y channel divergence
               - pp.c9*((gg.ndds(:,:)*Qs) + (gg.nddr(:,:)*Qr)) ...                           % s,r channel divergence
               + pp.c11*((gg.nmeanxin(:,gg.ein)*(Xicx(gg.ein)+Xix(gg.ein))).*gg.Dy.^(-1) +...% x,y dissipation
@@ -479,7 +479,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
             % pp.c12*Sr_t
 
         % blister volume
-        hb_t = -pp.c45*(gg.nddx(:,:)*qbx + gg.nddy(:,:)*qby) + pp.c43*Qb_in.*gg.Dx.*gg.Dy -pp.c44*hb;
+        hb_t = -pp.c45*(gg.nddx(:,:)*qbx + gg.nddy(:,:)*qby) + pp.c43*Qb_in./gg.Dx./gg.Dy -pp.c44*hb;
 
         % display Vb and Rb in the calculation
         % disp([pp.c42*aa.Qb_in(pp.ni_l); -pp.c43*Vb(pp.ni_l)./(Rb(pp.ni_l)+pp.R_b_reg).^2; -pp.c44*(aa.phi_0(pp.ni_l)-phi(pp.ni_l)).*Rb(pp.ni_l)]);
@@ -616,6 +616,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         c45 = pp.c45;
         c48 = pp.c48;
         c49 = pp.c49;
+        c50 = pp.c50;
 
         n_Glen = pp.n_Glen;
         alpha_c = pp.alpha_c;
@@ -845,7 +846,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
                 % + sparse(1:length(nin),1:length(nin),-c44*k_b(hs(nin),Smean(nin),pp,oo).*Vb_reg(Vb(nin),pp,oo).*Rb(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin)); % derivative to phi
 
         DF2_pb = sparse(1:length(nin),1:length(nin), zeros(length(nin),1), length(nin),length(nin));
-        temp   = sparse(1:length(nin), nin, c44*ones(length(nin),1), length(nin), nIJ); % num of eqn < num of variables
+        temp   = sparse(1:length(nin), nin, c50*ones(length(nin),1), length(nin), nIJ); % num of eqn < num of variables
         DF2_hb = temp(:,nin);
 
         DF2_Sx = sparse(1:length(nin),1:length(nin), Dy(nin).^(-1),length(nin),length(nin))*( -c8*dt^(-1).*nmeanx(nin,ein) ...

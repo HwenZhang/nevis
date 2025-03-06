@@ -5,15 +5,15 @@
 
 t = (ps.t/(24*60*60))*[tt.t];  % dimensional time series (days)
 Q_b_in = pd.Q_0*[tt.Qb_in];        % dimensional influx (m^3/s)
-Q_b_out = ps.V/ps.t*[tt.Qb_out];   % dimensional influx (m^3/s)
+% Q_b_out = ps.V/ps.t*[tt.Qb_out];   % dimensional influx (m^3/s)
 Q_in = ps.Q*[tt.Q_in];         % dimensional influx (m^3/s)
 Q_out = ps.Q*[tt.Q_out];       % dimensional outflux (m^3/s)
 m = (ps.m*ps.x^2)*[tt.m];      % dimensional melting rate (m^3/s)
 E = (ps.m*ps.x^2)*[tt.E];      % dimensional source terms  (m^3/s)
 Q_outQ = ps.Q*[tt.Q_outQ];     % dimensional channel outflux (m^3/s)
 Q_outq = ps.Q*[tt.Q_outq];     % dimensional sheet outflux (m^3/s)
-V_b = ps.V*[tt.Vb];            %
-R_b = ps.R*[tt.Rb];            %
+h_b = ps.hb*[tt.pts_hb];            %
+p_b = ps.phi*[tt.pts_pb];            %
 
 phi = (ps.phi/10^6)*[tt.phi];  % dimensional hydrulic potential (MPa)
 N = (ps.phi/10^6)*[tt.N];      % dimensional effective stress (MPa)
@@ -39,20 +39,18 @@ if isfield(tt,'pts_phi') && ~isempty([tt.pts_phi])
     pts_prat = ([tt.pts_phi]-aa.phi_a(oo.pts_ni)*[tt.t].^0)./...
                (aa.phi_0(oo.pts_ni)*[tt.t].^0-aa.phi_a(oo.pts_ni)*[tt.t].^0);
 end
-% dimensional pressure p_b+\rho_i g h (MPa)
-p_b = 0.125*pd.E_e/1e6/pd.alpha_b/(1-pd.nu^2).*V_b./(R_b).^3 + ps.phi/1e6*aa.phi_0(pp.ni_l);
 
 %% make plot
 tmin=200; tmax=400; % time range for the plot
 f1 = figure(1); clf;
 ax(1) = subplot(6,1,1);
-    plot(t,Q_b_in,'b-',t,Q_b_out,'r-',LineWidth=1.5);
+    plot(t,Q_b_in,'b-',LineWidth=1.5);
     hold on;
     plot(t,Q_out,color=[0,0.5,0],LineStyle='-',LineWidth=1.5);
     plot(t,E,color=[0,0,0],LineStyle='--',LineWidth=1.5);
     xlabel('t [ d ]');
     ylabel('Q [ m^3/s ]');
-    h=legend('Q_{b,in}','Q_{b,out}','Q_{out}','Q_{in}','NumColumns',2);
+    h=legend('Q_{b,in}','Q_{out}','Q_{in}','NumColumns',2);
     h.Location='southeast';
     text(0.025,0.8,'(a) flux','Units','normalized')
 
@@ -118,19 +116,18 @@ ax(4) = subplot(6,1,4);
 
 ax(5) = subplot(6,1,5); 
     yyaxis left
-    plot(t,V_b,'b-',LineWidth=1.5);
+    plot(t,h_b,'b-',LineWidth=1.5);
     xlabel('t [ d ]');
-    ylabel('V [ m^3 ]');
-    text(0.025,0.8,'(d) blister volume and radius','Units','normalized')
+    ylabel('h [ m ]');
+    text(0.025,0.8,'(d) blister thickness and pressure','Units','normalized')
 
     yyaxis right
-    plot(t,R_b,'r-',LineWidth=1.5);
+    plot(t,p_b/1e6,'r-',LineWidth=1.5);
     hold on
 
     xlabel('t [ d ]');
-    ylabel('R [ m ]');
+    ylabel('p_b [ MPa ]');
     xlim([tmin tmax])
-    % ylim([-200 1000])
     grid on
     grid minor
 

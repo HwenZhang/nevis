@@ -3,8 +3,8 @@
  clear
  oo.root = '';           % filename root
  oo.fn = mfilename;      % filename
- oo.code = '../nevis';   % code directory
- oo.casename = 'test_2d';
+ oo.code = '../nevis';   % code directory  
+ oo.casename = 'test_2d_alphab_0_2';
 %  oo.casename = 'test_2d_no_blister';
 %  oo.casename = 'test_2d_concentrated_k0_kbed1e_12_rm60';
  addpath(oo.code);       % add path to code
@@ -14,6 +14,8 @@
  [pd,oo] = nevis_defaults([],oo);
  % [ put non-default parameters and options here ]
  oo.evaluate_variables = 1;
+ pd.alpha_b = 1.0/(5*pd.td);
+
  [ps,pp] = nevis_nondimension(pd);
  
  %% grid and geometry
@@ -62,7 +64,7 @@
   % a single-point lake
  pp.x_l = [0.75*L/ps.x];                             % x-coord of lakes
  pp.y_l = [0.5*W/ps.x];                              % y-coord of lakes
- pp.V_l = [1e8/(ps.Q0*ps.t)];                      % volume of lakes         
+ pp.V_l = [1e7/(ps.Q0*ps.t)];                        % volume of lakes         
  pp.t_drainage = [30.0];                             % time of lake drainages (assumed to be the middle time of the Gaussian)
  pp.t_duration = [0.025];                            % duration of lake drainages, 6hr
 
@@ -92,11 +94,7 @@
  [tt,vv] = nevis_timesteps(t_span,vv,aa,pp,gg,oo);     % save at hourly timesteps
  
  %% plot summary
- if oo.distributed_lake == 1 
-    nevis_summary_distributed; 
- else 
-    nevis_summary;
- end
+%  nevis_summary;
  
  %% expand/update variables
  aa = nevis_inputs(vv.t,aa,vv,pp,gg,oo);
@@ -105,7 +103,7 @@
  vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo); % calculate node discharge
  
  %% plot
- nevis_2d_plot
+%  nevis_2d_plot
  
  %% Simple animate
  nevis_2d_animate
