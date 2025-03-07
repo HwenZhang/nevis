@@ -6,9 +6,10 @@ figure();
 
 fs = 12;
 set(gcf,'position',[0 0 800 800]);
-casename = 'nevis_2d_example';
-path = [casename,'/'];
-% load([casename '/' casename '.mat'],'tt','ps','pp','pd','gg','oo','aa')
+casename = oo.casename;
+oo.fn = ['/',oo.casename];                      % filename (same as casename)
+oo.rn = [oo.root,oo.results,oo.fn];             % path to the case results
+path = [oo.rn,'/'];
 
 t_init = 740;
 t_end = 800;
@@ -166,7 +167,7 @@ axis equal
 axis tight
 
 %% make video
-v = VideoWriter(['videos/' oo.casename],'MPEG-4');
+v = VideoWriter(['results/videos/' oo.casename],'MPEG-4');
 v.FrameRate = 1;
 open(v)
 for i_t = t_init:t_end

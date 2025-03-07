@@ -1,18 +1,23 @@
  % 5 November 2024: sample nevis run in one dimension
 
  clear
- oo.root = '';           % filename root
- oo.fn = mfilename;      % filename
- oo.code = '../nevis';   % code directory  
- oo.casename = 'test_2d_alphab0_2_V1e8_mu1e3';
- addpath(oo.code);       % add path to code
+ oo.root = './';                                % filename root
+ oo.code = '../nevis';                          % code directory  
+ oo.results = 'results';                        % path to the results folders
+ oo.casename = 'test_2d_alphab0_2_V1e8_mu1e3';  % casename
+ oo.fn = ['/',oo.casename];                     % filename (same as casename)
+ oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
+ addpath(oo.code);                              % add path to code
+ mkdir(oo.rn)
 
  %% parameters
  [pd,oo] = nevis_defaults([],oo);
  % [ put non-default parameters and options here ]
  oo.evaluate_variables = 1;
- pd.alpha_b = 1.0/(5*pd.td); % relaxation rate
- pd.mu = 1.0e+3;             % water viscosity
+ pd.alpha_b = 1.0/(5*pd.td);                    % relaxation rate (s^-1)
+ pd.mu = 1.0e+3;                                % water viscosity (Pa s)
+
+ % nondimensionalisation
  [ps,pp] = nevis_nondimension(pd);
  
  %% grid and geometry
@@ -29,8 +34,8 @@
  
  %% mask grid
  gg = nevis_mask(gg,find(s-b<=0)); 
- gg.n1m = gg.n1;                  % margin boundary nodes
- gg = nevis_label(gg,gg.n1m);     % label pressure boundary nodes
+ gg.n1m = gg.n1;                          % margin boundary nodes
+ gg = nevis_label(gg,gg.n1m);             % label pressure boundary nodes
  
  %% plot grid
  % nevis_plot_grid(gg);
@@ -58,7 +63,7 @@
  % pp.t_drainage = load([oo.lake_dict "/lake_data.mat"],"t_l"); % time of lake drainages (assumed to be the middle time of the Gaussian)
  % pp.t_duration = load([oo.lake_dict "/lake_data.mat"],"delta_t_l"); % duration of lake drainages, 6hr
 
-  % a single-point lake
+ % a single-point lake
  pp.x_l = [0.75*L/ps.x];                             % x-coord of lakes
  pp.y_l = [0.5*W/ps.x];                              % y-coord of lakes
  pp.V_l = [1e8/(ps.Q0*ps.t)];                        % volume of lakes         
@@ -71,7 +76,7 @@
  oo.random_moulins = 0;
  pp.x_l = load("moulins.mat","x_m");        % x-coord of moulins
  pp.y_l = load("moulins.mat","y_m");        % y-coord of moulins
-%  [pp.ni_m,pp.sum_m] = nevis_moulins([],[],gg,oo);         
+% [pp.ni_m,pp.sum_m] = nevis_moulins([],[],gg,oo);         
 [pp.ni_m,pp.sum_m] = nevis_moulins(pp.x_l.x_m,pp.y_l.y_m,gg,oo);  % one moulin at the lake location
 
  %% parameters for timesteping
@@ -79,15 +84,13 @@
  oo.dt = 0.01/24*pd.td/ps.t; % hourly timesteps
  oo.save_timesteps = 1; % save timesteps
  oo.save_pts_all = 1; 
- % oo.pts_ni = [pp.ni_m;pp.ni_l];  
  oo.pts_ni = pp.ni_l;   
  
  %% save initial parameters
- save([oo.root,oo.fn],'pp','pd','ps','gg','aa','vv','oo');
+ save([oo.rn,oo.fn],'pp','pd','ps','gg','aa','vv','oo');
  
  %% timestep 
  t_span = (0:1000)*(0.4*pd.td/ps.t);
- % t_span = (0:1500)*(0.2*pd.td/ps.t);
  [tt,vv] = nevis_timesteps(t_span,vv,aa,pp,gg,oo);     % save at hourly timesteps
  
  %% plot summary
@@ -99,8 +102,11 @@
  [vv2] = nevis_backbone(inf,vv,vv,aa,pp,gg,oo); % expand solution variables
  vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo); % calculate node discharge
  
+ save([oo.rn,oo.fn],'pp','pd','ps','gg','aa','oo','tt');
+
  %% plot
 %  nevis_2d_plot
+ nevis_summary
  
  %% Simple animate
  nevis_2d_animate

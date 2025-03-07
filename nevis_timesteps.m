@@ -190,13 +190,13 @@ while t<t_stop+oo.dt_min
         end
         vv.ti = ti;
         vv.ti_save = ti_save;
-        fn = [oo.root,oo.fn];
-        disp(['nevis_timesteps: Saving ',fn,' ...']);
-        save(fn,'vv','tt','-append');
+
+        % disp(['nevis_timesteps: Saving ',fn,' ...']);
+        % save(fn,'vv','tt','-append');
         disp('nevis_timesteps: Done');
         % save full solution
         if oo.save_timesteps
-            fnt = [oo.root,oo.fn,'/',int2four(ti_save)];
+            fnt = [oo.rn,'/',int2four(ti_save)];
             disp(['nevis_timesteps: Saving ',fnt,' ...']);
             save(fnt,'vv'); 
             disp('nevis_timesteps: Done');

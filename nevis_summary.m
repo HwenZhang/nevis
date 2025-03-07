@@ -2,9 +2,16 @@
 % plot summary of time series in struct tt
 %
 % 21 August 2014
+%% read in the results
+casename = oo.casename;
+oo.fn = ['/',oo.casename];                      % filename (same as casename)
+oo.rn = [oo.root,oo.results,oo.fn];             % path to the case results
+path = [oo.rn,'/'];
+load([path casename '.mat'], 'pp','pd','ps','gg','aa','oo','tt');
 
-t = (ps.t/(24*60*60))*[tt.t];  % dimensional time series (days)
-Q_b_in = pd.Q_0*[tt.Qb_in];        % dimensional influx (m^3/s)
+%% process the variables
+t = (ps.t/(24*60*60))*[tt.t];             % dimensional time series (days)
+Q_b_in = pd.Q_0*[tt.Qb_in];               % dimensional influx (m^3/s)
 Q_b_out = ps.h*ps.x^2/ps.t*[tt.Qb_out];   % dimensional influx (m^3/s)
 Q_in = ps.Q*[tt.Q_in];         % dimensional influx (m^3/s)
 Q_out = ps.Q*[tt.Q_out];       % dimensional outflux (m^3/s)
