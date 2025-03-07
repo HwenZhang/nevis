@@ -1,31 +1,17 @@
-% t = (ps.t/(24*60*60))*[tt.t];  % dimensional time series (days)
-% Q_b_in = pd.Q_0*[tt.Qb_in];        % dimensional influx (m^3/s)
-% Q_b_out = ps.V/ps.t*[tt.Qb_out];   % dimensional influx (m^3/s)
-% Q_b_out_test = ps.V/ps.t*[tt.Qb_out_test];   % dimensional influx (m^3/s)
-% Q_in = ps.Q*[tt.Q_in];         % dimensional influx (m^3/s)
-% Q_out = ps.Q*[tt.Q_out];       % dimensional outflux (m^3/s)
-% m = (ps.m*ps.x^2)*[tt.m];      % dimensional melting rate (m^3/s)
-% E = (ps.m*ps.x^2)*[tt.E];      % dimensional source terms  (m^3/s)
-% Q_outQ = ps.Q*[tt.Q_outQ];     % dimensional channel outflux (m^3/s)
-% Q_outq = ps.Q*[tt.Q_outq];     % dimensional sheet outflux (m^3/s)
-% V_b = ps.V*[tt.Vb];            %
-% R_b = ps.R*[tt.Rb];            %
+% 创建一个 6 行 2 列的布局
+t = tiledlayout(6,2,'TileSpacing','compact','Padding','compact');
 
-% phi = (ps.phi/10^6)*[tt.phi];  % dimensional hydrulic potential (MPa)
-% N = (ps.phi/10^6)*[tt.N];      % dimensional effective stress (MPa)
-% hs = ps.x^2*ps.h*[tt.hs];      % integrated hs (m^3)
-% he = ps.x^2*ps.h*[tt.he];      % integrated he (m^3)
-% p_w = ps.phi/1e6*[tt.pwb];     % dimensional hydraulic potential at the lake (MPa)
+% 左侧一整列 (合并6行1列为一个大图)
+ax_left = nexttile([6 1]);  % 左侧图合并6个panel（6行1列）
+plot(ax_left, rand(10,1), 'LineWidth',2);
+title(ax_left, '左侧大图');
 
-% S = ps.x*ps.S*[tt.S];
-% A = ps.x^2*sum(gg.Dx.*gg.Dy);
+% 右侧6个小图
+for i = 1:6
+    ax_right = nexttile(); % 默认占据1行1列
+    plot(ax_right, rand(10,1));
+    title(ax_right, ['右侧子图 ',num2str(i)]);
+end
 
-% t_s = t*pd.td;
-% dVdt = diff(V_b)./diff(t_s); % dimensional volume rate
-
-pp.meltE = @(t) 0.2*(10/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t))); 
-
-figure()
-vt = linspace(0,300,101)*pd.td/ps.t;
-plot(vt,pp.meltE(vt),'b-',LineWidth=1.5);
-hold on 
+% 可选：添加总标题
+title(t, '示例：左侧合并为大图，右侧6个子图');

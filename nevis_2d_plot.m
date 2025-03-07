@@ -105,16 +105,12 @@ p3 = pcolor(xx,yy,zN); set(p3,'linestyle','none');
 % shading interp
 
 ylabel('y (km)')
-xlabel('x (km)')
+% xlabel('x (km)')
 cx = colorbar();
 cx.Label.String = 'N [ MPa ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
 clim([-3 3]); 
-
-time = ['t=' num2str(vva.t/pd.td,'%.1f') ' d'];
-ttext = text(0.1,8,time,"Position",[0.1 1]);
-ttext.FontSize=12;
 
 % add lakes
 mscale = 100;  % amount to scale moulin input by to make size of moulin dot
@@ -154,12 +150,12 @@ cx.Label.Units = 'normalized';
 cx.Label.Position = [2.2 0.5]; 
 clim([-max(pb) max(pb)]); 
 
-time = ['t=' num2str(vva.t/pd.td,'%.1f') ' d'];
-ttext = text(0.1,8,time,"Position",[0.1 1]);
-ttext.FontSize=12;
+time = ['t=' num2str(vva.t*ps.t/pd.td,'%.1f') ' d'];
+ttext = text(0.1,8,time,"Position",[2 2]);
+ttext.FontSize=16;
 
 axis equal
 axis tight
 
 img = getframe(gcf);
-imwrite(img.cdata, ['results/figures/' oo.casename, '_2dplot.png']);
+imwrite(img.cdata, ['./results/figures/' oo.casename, '_2dplot.png']);

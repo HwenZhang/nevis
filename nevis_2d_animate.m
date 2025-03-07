@@ -110,16 +110,15 @@ p3 = pcolor(xx,yy,zN); set(p3,'linestyle','none');
 % shading interp
 
 ylabel('y (km)')
-xlabel('x (km)')
 cx = colorbar();
 cx.Label.String = 'N [ MPa ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
 clim([-3 3]); 
 
-time = ['t=' num2str(vva.t/pd.td,'%.1f') ' d'];
-ttext = text(0.1,8,time,"Position",[0.1 1]);
-ttext.FontSize=12;
+% time = ['t=' num2str(vva.t/pd.td,'%.1f') ' d'];
+% ttext1 = text(0.1,8,time,"Position",[0.1 1]);
+% ttext1.FontSize=16;
 
 % add lakes
 mscale = 100;  % amount to scale moulin input by to make size of moulin dot
@@ -160,14 +159,14 @@ cx.Label.Position = [2.2 0.5];
 clim([-3 3]); 
 
 time = ['t=' num2str(vva.t/pd.td,'%.1f') ' d'];
-ttext = text(0.1,8,time,"Position",[0.1 1]);
-ttext.FontSize=12;
+ttext2 = text(0.1,8,time,"Position",[2 2]);
+ttext2.FontSize=16;
 
 axis equal
 axis tight
 
 %% make video
-v = VideoWriter(['results/videos/' oo.casename],'MPEG-4');
+v = VideoWriter(['./results/videos/' oo.casename],'MPEG-4');
 v.FrameRate = 1;
 open(v)
 for i_t = t_init:t_end
@@ -196,7 +195,8 @@ for i_t = t_init:t_end
     p4_contour.ZData = (ps.phi)*reshape(vva.phi,gg.nI,gg.nJ);
     p6.CData = reshape(vva.pb,gg.nI,gg.nJ);
     
-    set(ttext,{'string'},{['t=' num2str(vva.t*ps.t/(24*60*60),'%.1f'), ' d']})  %notice the column vector of new values
+    % set(ttext1,{'string'},{['t=' num2str(vva.t*ps.t/(24*60*60),'%.1f'), ' d']})  %notice the column vector of new values
+    set(ttext2,{'string'},{['t=' num2str(vva.t*ps.t/(24*60*60),'%.1f'), ' d']})  %notice the column vector of new values
     % sca.SizeData = 1e-3+ps.V*vva.Vb(pp.ni_l)./vbscale;
     refreshdata
     drawnow
