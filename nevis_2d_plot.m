@@ -2,7 +2,7 @@
 figure();
 
 fs = 12;
-set(gcf,'position',[680 234 895 744]);
+set(gcf,'position',[0 0 800 800]);
 casename = 'nevis_2d_example';
 path = [casename,'/'];
 % load([casename '/' casename '.mat'],'tt','ps','pp','pd','gg','oo','aa')
@@ -159,3 +159,6 @@ ttext.FontSize=12;
 
 axis equal
 axis tight
+
+img = getframe(gcf);
+imwrite(img.cdata, ['./figures/' oo.casename, '_2dplot.png']);

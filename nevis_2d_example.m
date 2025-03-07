@@ -4,18 +4,15 @@
  oo.root = '';           % filename root
  oo.fn = mfilename;      % filename
  oo.code = '../nevis';   % code directory  
- oo.casename = 'test_2d_alphab_0_2';
-%  oo.casename = 'test_2d_no_blister';
-%  oo.casename = 'test_2d_concentrated_k0_kbed1e_12_rm60';
+ oo.casename = 'test_2d_alphab0_2_V1e8_mu1e3';
  addpath(oo.code);       % add path to code
-
 
  %% parameters
  [pd,oo] = nevis_defaults([],oo);
  % [ put non-default parameters and options here ]
  oo.evaluate_variables = 1;
- pd.alpha_b = 1.0/(5*pd.td);
-
+ pd.alpha_b = 1.0/(5*pd.td); % relaxation rate
+ pd.mu = 1.0e+3;             % water viscosity
  [ps,pp] = nevis_nondimension(pd);
  
  %% grid and geometry
@@ -64,7 +61,7 @@
   % a single-point lake
  pp.x_l = [0.75*L/ps.x];                             % x-coord of lakes
  pp.y_l = [0.5*W/ps.x];                              % y-coord of lakes
- pp.V_l = [1e7/(ps.Q0*ps.t)];                        % volume of lakes         
+ pp.V_l = [1e8/(ps.Q0*ps.t)];                        % volume of lakes         
  pp.t_drainage = [30.0];                             % time of lake drainages (assumed to be the middle time of the Gaussian)
  pp.t_duration = [0.025];                            % duration of lake drainages, 6hr
 

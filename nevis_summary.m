@@ -5,7 +5,7 @@
 
 t = (ps.t/(24*60*60))*[tt.t];  % dimensional time series (days)
 Q_b_in = pd.Q_0*[tt.Qb_in];        % dimensional influx (m^3/s)
-% Q_b_out = ps.V/ps.t*[tt.Qb_out];   % dimensional influx (m^3/s)
+Q_b_out = ps.h*ps.x^2/ps.t*[tt.Qb_out];   % dimensional influx (m^3/s)
 Q_in = ps.Q*[tt.Q_in];         % dimensional influx (m^3/s)
 Q_out = ps.Q*[tt.Q_out];       % dimensional outflux (m^3/s)
 m = (ps.m*ps.x^2)*[tt.m];      % dimensional melting rate (m^3/s)
@@ -44,13 +44,13 @@ end
 tmin=200; tmax=400; % time range for the plot
 f1 = figure(1); clf;
 ax(1) = subplot(6,1,1);
-    plot(t,Q_b_in,'b-',LineWidth=1.5);
+    plot(t,Q_b_in,'b-',t,Q_b_out,'r-',LineWidth=1.5);
     hold on;
     plot(t,Q_out,color=[0,0.5,0],LineStyle='-',LineWidth=1.5);
     plot(t,E,color=[0,0,0],LineStyle='--',LineWidth=1.5);
     xlabel('t [ d ]');
     ylabel('Q [ m^3/s ]');
-    h=legend('Q_{b,in}','Q_{out}','Q_{in}','NumColumns',2);
+    h=legend('Q_{b,in}','Q_{b,out}','Q_{out}','Q_{in}','NumColumns',2);
     h.Location='southeast';
     text(0.025,0.8,'(a) flux','Units','normalized')
 
