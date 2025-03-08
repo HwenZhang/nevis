@@ -98,7 +98,7 @@ else
 end
 
 %% define active and interior labels
-ns = setdiff(ns,nout);   
+ns = setdiff(ns,nout);  %  
 es = setdiff(es,eout);   
 fs = setdiff(fs,fout);   
 cs = setdiff(cs,cout);  

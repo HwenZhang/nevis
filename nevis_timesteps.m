@@ -136,7 +136,7 @@ while t<t_stop+oo.dt_min
     tt(ti).E = sum(aa.E(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));
     
     tt(ti).Qb_in = aa.Qb_in(pp.ni_l);                         % inflow to the blister 
-    tt(ti).Qb_out = vv2.Qb_out(pp.ni_l);                      % outflow from the blister scaled by V0/t0           
+    tt(ti).Qb_out = vv2.Qb_out;                               % outflow from the blister scaled by V0/t0           
     tt(ti).pwb = vv.phi(pp.ni_l);                             % hydrulic potential at the lake
     tt(ti).hs_b = vv.hs(pp.ni_l);                             % sheet thickness at the lake
 
