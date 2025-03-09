@@ -42,9 +42,9 @@ if ~isfield(ps,'Xi'), ps.Xi = ps.Q*ps.Psi; end          % energy dissipation sca
 % blister
 % derived variables
 % if ~isfield(ps,'hb'), ps.hb = ps.h; end                 % steady-state radius of the blister (m)
-if ~isfield(ps,'Q0'), ps.Q0 = pd.Q_0; end               % blister inflow scale (m^2/s) [L^3 T^-1]   
-if ~isfield(ps,'qb'), ps.qb = ps.qs; end                % blister flow scale (m^2/s) [L^3 T^-1]   
-if ~isfield(ps,'alpha_b'), ps.alpha_b = pd.alpha_b; end % relaxation rate (s^-1)
+if ~isfield(ps,'Q0'), ps.Q0 = pd.Q_0; end                 % blister inflow scale (m^2/s) [L^3 T^-1]   
+if ~isfield(ps,'qb'), ps.qb = ps.qs; end                  % blister flow scale (m^2/s) [L^3 T^-1]   
+if ~isfield(ps,'alpha_b'), ps.alpha_b = pd.alpha_b; end   % relaxation rate (s^-1)
     
 %% Dimensionless parameters [ many of these can be chosen to be 1 by suitable choice of scales ]
 pp.c1 = ps.hs/ps.h;

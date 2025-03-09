@@ -385,7 +385,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         vv2.Qb_in = Qb_in;
         vv2.Qb_dec = sum(Qb.*gg.Dx.*gg.Dy);
         vv2.Q_out = 1/pp.c9*sum( R2(gg.nbdy).*gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy) ); 
-        vv2.Qb_out = 1/pp.c9*sum( R8(gg.nbdy).*gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy) ); 
+        vv2.Qb_out = 1/pp.c43*sum( R8(gg.nbdy).*gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy) ); 
         vv2.Xi = Xi;
         vv2.he = he;
         vv2.Q_in = sum(Qx(gg.ebdy))+sum(Qy(gg.fbdy))+sum(Qs(gg.cbdy))+sum(Qr(gg.cbdy)) ...
@@ -403,7 +403,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
                                    pp.c5*( gg.nddx(gg.nbdy,:)*qex + gg.nddy(gg.nbdy,:)*qey)).*...
                                 gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy));  % outflow in sheet
 
-        vv2.Q_outb = -1/pp.c9*sum((pp.c45*(gg.nddx(gg.nbdy,:)*qbx + gg.nddy(gg.nbdy,:)*qby)).*...
+        vv2.Q_outb = -1/pp.c43*sum((pp.c45*(gg.nddx(gg.nbdy,:)*qbx + gg.nddy(gg.nbdy,:)*qby)).*...
                                 gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy));   % outflow in blister
         
         F1 = R1(gg.ns);  % cavity sheet
