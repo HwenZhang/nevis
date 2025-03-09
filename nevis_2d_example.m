@@ -1,10 +1,10 @@
  % 5 November 2024: sample nevis run in one dimension
 
- clear
+ clc,clear
  oo.root = './';                                % filename root
  oo.code = '../nevis';                          % code directory  
  oo.results = 'results';                        % path to the results folders
- oo.casename = 'test_2d_alphab0_2_V1e8_mu1e3';  % casename
+ oo.casename = 'test_2d';  % casename
  oo.fn = ['/',oo.casename];                     % filename (same as casename)
  oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
  addpath(oo.code);                              % add path to code
@@ -14,6 +14,7 @@
  [pd,oo] = nevis_defaults([],oo);
  % [ put non-default parameters and options here ]
  oo.evaluate_variables = 1;
+ % oo.plot_residual = 1;
  pd.alpha_b = 1.0/(5*pd.td);                    % relaxation rate (s^-1)
  pd.mu = 1.0e+3;                                % water viscosity (Pa s)
 

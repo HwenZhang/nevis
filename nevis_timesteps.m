@@ -135,8 +135,9 @@ while t<t_stop+oo.dt_min
     % supraglacial input, scaled with ps.m*ps.x^2
     tt(ti).E = sum(aa.E(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));
     
-    tt(ti).Qb_in = aa.Qb_in(pp.ni_l);                         % inflow to the blister 
-    tt(ti).Qb_out = vv2.Qb_out;                               % outflow from the blister scaled by V0/t0           
+    tt(ti).Qb_in = aa.Qb_in(pp.ni_l);                         % inflow to the blister
+    tt(ti).Qb_dec = vv2.Qb_dec;                               % relaxation term of the blister
+               
     tt(ti).pwb = vv.phi(pp.ni_l);                             % hydrulic potential at the lake
     tt(ti).hs_b = vv.hs(pp.ni_l);                             % sheet thickness at the lake
 
@@ -152,8 +153,12 @@ while t<t_stop+oo.dt_min
 
     tt(ti).Q_in = vv2.Q_in;                                   % inflow, scaled with ps.Q
     tt(ti).Q_out = vv2.Q_out;                                 % outflow, scaled with ps.Q
+    tt(ti).Qb_out = vv2.Qb_out;                               % outflow from the blister scaled with ps.Q
+
     tt(ti).Q_outQ = vv2.Q_outQ;                               % channel outflow, scaled with ps.Q
     tt(ti).Q_outq = vv2.Q_outq;                               % sheet outflow, scaled with ps.Q
+    tt(ti).Q_outb = vv2.Q_outb;                               % blister outflow, scaled with ps.Q
+
     tt(ti).phi = mean(vv.phi(gg.ns));                         % mean potential, scaled with ps.phi
     % mean effective pressure, scaled with ps.phi
     tt(ti).N = mean(aa.phi_0(gg.ns)-vv.phi(gg.ns));  

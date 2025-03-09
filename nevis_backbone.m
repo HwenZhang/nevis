@@ -108,7 +108,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     % boundary potential
     if ~isempty(gg.nbdy)
         phi(gg.nbdy) = aa.phi;
-        pb(gg.nbdy) = 0;          % boundary pb = 0
+        pb(gg.nbdy) = aa.phi_0(gg.nbdy)-aa.phi_a(gg.nbdy);          % boundary pb = ice overburden
     end
     
     % potential gradients
@@ -382,31 +382,30 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         [R1,R2,R3,R4,R5,R6,R7,R8] = residuals();
         
         vv2.R_bdy = R2(gg.nbdy);
-        vv2.Qb = sum(Qb.*gg.Dx.*gg.Dy);
+        vv2.Qb_in = Qb_in;
+        vv2.Qb_dec = sum(Qb.*gg.Dx.*gg.Dy);
         vv2.Q_out = 1/pp.c9*sum( R2(gg.nbdy).*gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy) ); 
-        vv2.Qb_out = 1/pp.c9*sum( R7(gg.nbdy).*gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy) ); 
+        vv2.Qb_out = 1/pp.c9*sum( R8(gg.nbdy).*gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy) ); 
         vv2.Xi = Xi;
         vv2.he = he;
         vv2.Q_in = sum(Qx(gg.ebdy))+sum(Qy(gg.fbdy))+sum(Qs(gg.cbdy))+sum(Qr(gg.cbdy)) ...
                  + pp.c4/pp.c9*(sum(qsx(gg.ebdy).*(gg.emean(gg.ebdy,:)*gg.Dy))+...
-                               sum(qsy(gg.fbdy).*(gg.fmean(gg.fbdy,:)*gg.Dx))) ...
+                                sum(qsy(gg.fbdy).*(gg.fmean(gg.fbdy,:)*gg.Dx))) ...
                  + pp.c5/pp.c9*(sum(qex(gg.ebdy).*(gg.emean(gg.ebdy,:)*gg.Dy))+...
-                               sum(qey(gg.fbdy).*(gg.fmean(gg.fbdy,:)*gg.Dx)));% inflow
+                                sum(qey(gg.fbdy).*(gg.fmean(gg.fbdy,:)*gg.Dx)));% inflow
 
         vv2.Q_outQ = -1/pp.c9*sum(pp.c9*((gg.nddx(gg.nbdy,:)*Qx).*gg.Dy(gg.nbdy).^(-1) + ...
                                  (gg.nddy(gg.nbdy,:)*Qy).*gg.Dx(gg.nbdy).^(-1) + ...
                                  (gg.ndds(gg.nbdy,:)*Qs) + (gg.nddr(gg.nbdy,:)*Qr)).*...
-                                 gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy));  % outflow in channels
+                                gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy));  % outflow in channels
 
         vv2.Q_outq = -1/pp.c9*sum((pp.c4*(gg.nddx(gg.nbdy,:)*qsx + gg.nddy(gg.nbdy,:)*qsy) +...
                                    pp.c5*( gg.nddx(gg.nbdy,:)*qex + gg.nddy(gg.nbdy,:)*qey)).*...
-                                 gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy));  % outflow in sheet
-        % changing the nondimensional parameters here
-        vv2.Q_outb = 1*sum((pp.c4*(gg.nddx(gg.nbdy,:)*qbx + gg.nddy(gg.nbdy,:)*qby) +...
-                            pp.c5*( gg.nddx(gg.nbdy,:)*qbx + gg.nddy(gg.nbdy,:)*qby)).*...
-                           gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy));  % outflow in sheet
+                                gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy));  % outflow in sheet
+
+        vv2.Q_outb = -1/pp.c9*sum((pp.c45*(gg.nddx(gg.nbdy,:)*qbx + gg.nddy(gg.nbdy,:)*qby)).*...
+                                gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy));   % outflow in blister
         
-        % 
         F1 = R1(gg.ns);  % cavity sheet
         F2 = R2(gg.nin); % total mass conservation
         F3 = R3(gg.ein); % channel
@@ -457,7 +456,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
               - pp.c5*(gg.nddx(:,:)*qex + gg.nddy(:,:)*qey) ... % poroelastic sheet flux divergence
               + pp.c6*m ...                                     % basal melting rate
               + pp.c7*E ...                                     % moulin and lake influx
-              + Qb_out ...                                   % blister influx
+              + Qb      ...                                     % blister influx
               - pp.c9*((gg.nddx(:,:)*Qx).*gg.Dy.^(-1) + (gg.nddy(:,:)*Qy).*gg.Dx.^(-1)) ... % x,y channel divergence
               - pp.c9*((gg.ndds(:,:)*Qs) + (gg.nddr(:,:)*Qr)) ...                           % s,r channel divergence
               + pp.c11*((gg.nmeanxin(:,gg.ein)*(Xicx(gg.ein)+Xix(gg.ein))).*gg.Dy.^(-1) +...% x,y dissipation
@@ -822,7 +821,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         Dqby_pb = -c42*permby.*DPsiby_pb;                                                                       % fin * nIJ
         Dqbx_hb = sparse(1:length(ein),1:length(ein),-c42*Psib_x(ein),length(ein),length(ein))*Dpermbx_hb(:,:); % ein * nIJ
         Dqby_hb = sparse(1:length(fin),1:length(fin),-c42*Psib_y(fin),length(fin),length(fin))*Dpermby_hb(:,:); % fin * nIJ
-
+        
         %% Derivatives of objective function
         %DF1 
         DF1_hs = sparse(1:length(ns),1:length(ns), -c15*ones(length(ns),1).*dt.^(-1) ...
@@ -919,6 +918,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         temp = sparse(nin, 1:length(nin), -ones(length(nin),1), nIJ, length(nin)); % ns eqns, nin variables 
         DF7_pb = temp(ns,:);
 
+        % sparse(nin, 1:length(nin), -ones(length(nin),1), nIJ, length(nin)); % ns eqns, nin variables 
         % DF8
         DF8_pb = - c45*(gg.nddx(nin,ein)*Dqbx_pb(:,nin) + gg.nddy(nin,fin)*Dqby_pb(:,nin));
 
@@ -984,8 +984,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         if ~opts.no_channels, ii = [ ii length(ns)+length(nin)+(1:length(ein)) length(ns)+length(nin)+length(ein)+(1:length(fin)) ]; end % include horizontal and vertical channels
         if opts.include_diag, ii = [ ii length(ns)+length(nin)+length(ein)+length(fin)+(1:length(cin)) length(ns)+length(nin)+length(ein)+length(fin)+length(cin)+(1:length(cin)) ]; end % include diagnonal channels
         % include blister equations for Vb and Rb
-        if opts.include_blister, ii = [ii length(ns)+length(nin)+length(ein)+length(fin)+length(cin)+length(cin)+(1:length(nin))]; end
-        if opts.include_pressure, ii = [ii length(ns)+length(nin)+length(ein)+length(fin)+length(cin)+length(cin)+length(nin)+(1:length(nin))]; end
+        if opts.include_blister, ii = [ii length(ns)+length(nin)+length(ein)+length(fin)+length(cin)+length(cin)+(1:length(ns))]; end
+        if opts.include_pressure, ii = [ii length(ns)+length(nin)+length(ein)+length(fin)+length(cin)+length(cin)+length(ns)+(1:length(nin))]; end
 
         J = J(ii,ii);
     end
