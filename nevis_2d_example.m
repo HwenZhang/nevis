@@ -4,7 +4,7 @@
  oo.root = './';                                % filename root
  oo.code = '../nevis';                          % code directory  
  oo.results = 'results';                        % path to the results folders
- oo.casename = 'test_2d';  % casename
+ oo.casename = 'test_2d_alpha0_2_mu1e3_E8_8e9_Vl1e7'; % casename
  oo.fn = ['/',oo.casename];                     % filename (same as casename)
  oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
  addpath(oo.code);                              % add path to code
@@ -17,7 +17,8 @@
  % oo.plot_residual = 1;
  pd.alpha_b = 1.0/(5*pd.td);                    % relaxation rate (s^-1)
  pd.mu = 1.0e+3;                                % water viscosity (Pa s)
-
+ pd.Ye = 8.8e9;                                 % Young's modulus (Pa)
+ pd.B = pd.Ye*(5e2)^3/(12*(1-0.33)^2);
  % nondimensionalisation
  [ps,pp] = nevis_nondimension(pd);
  
@@ -26,7 +27,7 @@
  L = 5e4;                                 % length of the domain [m]
  W = 0.2*L;                               % width of the domain [m]
  x = linspace(0,(L/ps.x),101); 
- y = linspace(0,(W/ps.x),21);        
+ y = linspace(0,(W/ps.x),20);        
  oo.yperiodic = 1;                        % oo.yperiodic = 1 necessary for a 1-d grid
  oo.xperiodic = 0;
  gg = nevis_grid(x,y,oo); 
@@ -67,7 +68,7 @@
  % a single-point lake
  pp.x_l = [0.75*L/ps.x];                             % x-coord of lakes
  pp.y_l = [0.5*W/ps.x];                              % y-coord of lakes
- pp.V_l = [1e8/(ps.Q0*ps.t)];                        % volume of lakes         
+ pp.V_l = [1e7/(ps.Q0*ps.t)];                        % volume of lakes         
  pp.t_drainage = [30.0];                             % time of lake drainages (assumed to be the middle time of the Gaussian)
  pp.t_duration = [0.025];                            % duration of lake drainages, 6hr
 
@@ -107,7 +108,7 @@
 
  %% plot
 %  nevis_2d_plot
- nevis_summary
+%  nevis_summary
  
  %% Simple animate
- nevis_2d_animate
+ nevis_demonstration_animation
