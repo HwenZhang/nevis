@@ -97,6 +97,8 @@ pp.c45 = ps.qb*ps.t/ps.x/ps.hb;
 pp.c48 = 1;
 pp.c49 = pd.B*ps.hb/ps.x^4/ps.phi;
 pp.c50 = pd.alpha_b*ps.hb*ps.t/ps.h;
+pp.c51 = pd.kappa_b*ps.hb*ps.t*ps.phi/ps.hb/pd.mu;
+pp.c52 = pd.kappa_b*ps.hb*ps.t*ps.phi/ps.h/pd.mu;
 
 pp.n_Glen = pd.n_Glen;
 pp.alpha_s = pd.alpha_s;

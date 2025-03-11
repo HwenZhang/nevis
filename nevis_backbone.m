@@ -273,7 +273,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     qby = -pp.c42*permby.*Psib_y; % vector of (gg.fIJ,1)
     
     % blister to subglacial drainage system term defined on the nodes [ns]
-    Qb = pp.c50*hb; % 
+    Qb = pp.c52*hb; % 
 
     % boundary edge fluxes
     if ~isempty(gg.ebdy)
@@ -486,7 +486,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
             % pp.c12*Sr_t
 
         % blister volume
-        hb_t = -pp.c45*(gg.nddx(:,:)*qbx + gg.nddy(:,:)*qby) + pp.c43*Qb_in./gg.Dx./gg.Dy -pp.c44*hb;
+        % h_t + div(q) = Q_in - (p_b-p_w)/mu*h
+        hb_t = -pp.c45*(gg.nddx(:,:)*qbx + gg.nddy(:,:)*qby) + pp.c43*Qb_in./gg.Dx./gg.Dy - pp.c51*(pb-phi+aa.phi_a).*hb;
 
         % display Vb and Rb in the calculation
         % disp([pp.c42*aa.Qb_in(pp.ni_l); -pp.c43*Vb(pp.ni_l)./(Rb(pp.ni_l)+pp.R_b_reg).^2; -pp.c44*(aa.phi_0(pp.ni_l)-phi(pp.ni_l)).*Rb(pp.ni_l)]);
@@ -624,6 +625,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         c48 = pp.c48;
         c49 = pp.c49;
         c50 = pp.c50;
+        c51 = pp.c51;
+        c52 = pp.c52;
 
         n_Glen = pp.n_Glen;
         alpha_c = pp.alpha_c;
@@ -850,11 +853,11 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
                 - c9*ndds(nin,cin)*DQs_phi(:,nin) ...
                 - c9*nddr(nin,cin)*DQr_phi(:,nin) ...
                 + sparse(1:length(nin),1:length(nin),Ds(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin))*( + c11*nmeans(nin,cin)*(DXics_phi(:,nin)+DXis_phi(:,nin)) ) ...
-                + sparse(1:length(nin),1:length(nin),Dr(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin))*( + c11*nmeanr(nin,cin)*(DXicr_phi(:,nin)+DXir_phi(:,nin)) );
-                % + sparse(1:length(nin),1:length(nin),-c44*k_b(hs(nin),Smean(nin),pp,oo).*Vb_reg(Vb(nin),pp,oo).*Rb(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin)); % derivative to phi
+                + sparse(1:length(nin),1:length(nin),Dr(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin))*( + c11*nmeanr(nin,cin)*(DXicr_phi(:,nin)+DXir_phi(:,nin)) ) ...
+                + sparse(1:length(nin), 1:length(nin), -c52.*hb(nin), length(nin), length(nin));
 
-        DF2_pb = sparse(1:length(nin), 1:length(nin), zeros(length(nin),1), length(nin), length(nin));
-        temp   = sparse(1:length(nin), nin, c50*ones(length(nin),1), length(nin), nIJ);
+        DF2_pb = sparse(1:length(nin), 1:length(nin), c52.*hb(nin), length(nin), length(nin));
+        temp   = sparse(1:length(nin), nin, c52.*(pb(nin)-phi(nin)+phi_a(nin)).*ones(length(nin),1), length(nin), nIJ);
         DF2_hb = temp(:,ns);
 
         DF2_Sx = sparse(1:length(nin),1:length(nin), Dy(nin).^(-1),length(nin),length(nin))*( -c8*dt^(-1).*nmeanx(nin,ein) ...
@@ -912,17 +915,17 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
 
         DF6_hs = c13*DXir_hs(:,ns);
 
-        % DF7
+        % DF7  ns eqns
         biharmonic = (gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(gg.nddx*gg.eddx + gg.nddy*gg.fddy);
         DF7_hb = c49 * biharmonic(ns,ns);
-        temp = sparse(nin, 1:length(nin), -ones(length(nin),1), nIJ, length(nin)); % ns eqns, nin variables 
+        temp = sparse(nin, 1:length(nin), -ones(length(nin),1), nIJ, length(nin));
         DF7_pb = temp(ns,:);
 
-        % sparse(nin, 1:length(nin), -ones(length(nin),1), nIJ, length(nin)); % ns eqns, nin variables 
-        % DF8
-        DF8_pb = - c45*(gg.nddx(nin,ein)*Dqbx_pb(:,nin) + gg.nddy(nin,fin)*Dqby_pb(:,nin));
-
-        temp = sparse(1:length(nin), nin, - ones(length(nin),1).*dt.^(-1) - c44*ones(length(nin),1), length(nin), nIJ);
+        % DF8 nin eqns
+        DF8_pb = - c45*(gg.nddx(nin,ein)*Dqbx_pb(:,nin) + gg.nddy(nin,fin)*Dqby_pb(:,nin))...
+                 + sparse(1:length(nin), 1:length(nin), - c51*hb(nin), length(nin), length(nin));
+        DF8_phi = sparse(1:length(nin), 1:length(nin), + c51*hb(nin), length(nin), length(nin));
+        temp = sparse(1:length(nin), nin, - ones(length(nin),1).*dt.^(-1) - c51*(pb(nin)-phi(nin)+phi_a(nin)), length(nin), nIJ);
         DF8_hb = temp(:,ns) - c45*(gg.nddx(nin,ein)*Dqbx_hb(:,ns) + gg.nddy(nin,fin)*Dqby_hb(:,ns));
 
         %% construct Jacobian matrix
@@ -977,7 +980,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
                 DF5_hs DF5_phi sparse(length(cin),length(ein)) sparse(length(cin),length(fin)) DF5_Ss sparse(length(cin),length(cin)) sparse(length(cin),length(ns)) sparse(length(cin),length(nin)); ...
                 DF6_hs DF6_phi sparse(length(cin),length(ein)) sparse(length(cin),length(fin)) sparse(length(cin),length(cin)) DF6_Sr sparse(length(cin),length(ns)) sparse(length(cin),length(nin)); ...
                 sparse(length(ns),length(ns)) sparse(length(ns),length(nin)) sparse(length(ns),length(ein)) sparse(length(ns),length(fin)) sparse(length(ns),length(cin)) sparse(length(ns),length(cin)) DF7_hb DF7_pb; ...
-                sparse(length(nin),length(ns)) sparse(length(nin),length(nin)) sparse(length(nin),length(ein)) sparse(length(nin),length(fin)) sparse(length(nin),length(cin)) sparse(length(nin),length(cin)) DF8_hb DF8_pb ];
+                sparse(length(nin),length(ns)) DF8_phi sparse(length(nin),length(ein)) sparse(length(nin),length(fin)) sparse(length(nin),length(cin)) sparse(length(nin),length(cin)) DF8_hb DF8_pb ];
         ii = [];
         if ~opts.no_sheet, ii = [ ii 1:length(ns) ]; end % include sheet equation
         ii = [ ii length(ns)+(1:length(nin)) ]; % include the mass conservation equation
