@@ -78,9 +78,9 @@
  [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo); % calculate lake catchments 
 
 %% moulins
- oo.random_moulins = 0;
- pp.x_l = load("moulins.mat","x_m");        % x-coord of moulins
- pp.y_l = load("moulins.mat","y_m");        % y-coord of moulins
+ oo.random_moulins = 10;
+%  pp.x_l = load("moulins.mat","x_m");        % x-coord of moulins
+%  pp.y_l = load("moulins.mat","y_m");        % y-coord of moulins
 % [pp.ni_m,pp.sum_m] = nevis_moulins([],[],gg,oo);         
 [pp.ni_m,pp.sum_m] = nevis_moulins(pp.x_l.x_m,pp.y_l.y_m,gg,oo);  % one moulin at the lake location
 
