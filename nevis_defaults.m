@@ -95,6 +95,7 @@ if ~isfield(oo,'noXi'), oo.noXi = 1; end
 if ~isfield(oo,'combine_sheet'), oo.combine_sheet = 1; end
 if ~isfield(oo,'mean_perms'), oo.mean_perms = 1; end
 if ~isfield(oo,'blister'), oo.blister = 1; end
+if ~isfield(oo,'use_modified_N'), oo.use_modified_N = 0; end
 
 % if ~isfield(oo,'method'), oo.method = 'lrtb_vel'; end % [ obsolete ]
 % if ~isfield(oo,'include_moulins'), oo.include_moulins = 1; end  % [ obsolete ]

@@ -1,6 +1,6 @@
 %% set up a figure
-% casename = oo.casename;
-casename = 'test_2d_alpha0_2_mu1e3_E8_8e9';
+casename = oo.casename;
+casename = 'test_2d';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                      % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];             % path to the case results
@@ -36,7 +36,7 @@ p11.YDataSource = 'hb_centre';
 ylabel('h_b (m)')
 xlabel('x (km)')
 xlim([30 50])
-ylim([0 4])
+ylim([0 20])
 
 time = ['t=' num2str(vva.t*ps.t/pd.td,'%.1f') ' d'];
 ttext = text(32,3.5,time);
@@ -48,9 +48,7 @@ p22.YDataSource = 'hb_xxxx_centre';
 ylabel('h_{b,xxxx} (m^-3)')
 xlabel('x (km)')
 xlim([30 50])
-ylim([-1e-11 1e-11])
-
-
+ylim([-1e-10 1e-10])
 
 %% make video
 v = VideoWriter(['./results/videos/' 'test'],'MPEG-4');
