@@ -50,10 +50,14 @@ end
 Q_lake = 0*ones(gg.nIJ,1);                            % set the lake input to 0 everywhere
 if oo.include_blister && isfield(pp,'ni_l') && ~isempty(pp.ni_l)
     % use the following function to precribe the input from each lake to the local blister
-    pp.lake_input_function = @(t) (pp.V_l)./(sqrt(2*pi)*pp.t_duration)...
-                    .*exp(-0.5./pp.t_duration.^2.*(t-pp.t_drainage).^2)...
-                    .*(t>=pp.t_drainage-5*pp.t_duration).*(t<=pp.t_drainage+5*pp.t_duration);
-
+    if oo.input_gaussian
+        pp.lake_input_function = @(t) (pp.V_l)./(sqrt(2*pi)*pp.t_duration)...
+                        .*exp(-0.5./pp.t_duration.^2.*(t-pp.t_drainage).^2)...
+                        .*(t>=pp.t_drainage-5*pp.t_duration).*(t<=pp.t_drainage+5*pp.t_duration);
+    else
+        pp.lake_input_function = @(t) (pp.V_l)./pp.t_duration...
+                        .*(t>=pp.t_drainage-0.5*pp.t_duration).*(t<=pp.t_drainage+0.5*pp.t_duration);
+    end
     Q_lake(pp.ni_l) = pp.lake_input_function(t);      % add input from lake at point pp.ni_l
 end
 

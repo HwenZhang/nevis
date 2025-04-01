@@ -36,9 +36,16 @@ octave-workspace
 *.jpeg
 *.png
 *.avi
+*.mp4
+*.pdf
 
 # result files
 ./nevis_1d_example
 ./nevis_example
 ./nevis_example2
 ./nevis_run
+*.pptx
+*.webp
+*.mat
+
+*.json

@@ -35,7 +35,7 @@ if ~isfield(oo,'dt_factor'), oo.dt_factor = 2; end
 % increase timestep for this number of iterations or less
 if ~isfield(oo,'small_iter'), oo.small_iter = 2; end            
 % decrease timestep for this number of iterations or more 
-if ~isfield(oo,'large_iter'), oo.large_iter = 20; end           
+if ~isfield(oo,'large_iter'), oo.large_iter = 10; end           
 
 % verbose screen output
 if ~isfield(oo,'verb'), oo.verb = 0; end                        
@@ -162,8 +162,24 @@ while t<t_stop+oo.dt_min
     tt(ti).phi = mean(vv.phi(gg.ns));                         % mean potential, scaled with ps.phi
     % mean effective pressure, scaled with ps.phi
     tt(ti).N = mean(aa.phi_0(gg.ns)-vv.phi(gg.ns));  
+
     % total cavity sheet volume, scaled with ps.h*ps.x^2
     tt(ti).hs = sum(vv.hs(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns)); 
+
+    % total blister volume, scaled with ps.hb*ps.x^2
+    tt(ti).Vb = sum(vv.hb(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns)); 
+
+    % blister radius (only works for a single blister)
+    nonzeroIdx = find(vv.hb > 1e-3*vv.hb(pp.ni_l));
+    [~, localIdx] = min(vv.hb(nonzeroIdx));
+    minidx = nonzeroIdx(localIdx);
+    if isempty(minidx)
+        tt(ti).Rb = 0;
+    else
+        tt(ti).Rb = ((gg.nx(pp.ni_l)-gg.nx(minidx)).^2 + (gg.ny(pp.ni_l)-gg.ny(minidx)).^2).^(1/2);
+    end
+    disp(['Radius of the blister is ' num2str(tt(ti).Rb) '.']);
+    disp(['Volume of the blister is ' num2str(tt(ti).Vb) '.']);
    
     % total channel volume, scaled with ps.S*ps.x
     tt(ti).S = sum(vv.Sx(gg.ein).*(gg.emean(gg.ein,:)*gg.Dx))+...
