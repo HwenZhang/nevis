@@ -131,6 +131,7 @@ pp.t_aut = pd.t_aut/ps.t;
 pp.delta_t = pd.delta_t/ps.t; 
 pp.s_m = pd.s_m/ps.z;
 pp.r_m = pd.r_m/ps.m;
+pp.m_l = 0.0;
 
 %% Scalings for plots 
 sc.x = ps.x/1000;   % km

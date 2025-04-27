@@ -1,13 +1,14 @@
 %% set up a figure
 % casename = oo.casename;
-casename = 'blister_2d_alpha0_2_kappa0_mu1e0_E8_8e9_V1e7_H1_0e3';
+casename = 'nevis_2009_140km';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];             % path to the case results
 path = [oo.rn,'/'];
 
-tmin=200; tmax=400; % time range for the plot
-t_init = 1400; t_end = 1700; %time range for animation
+tmin = 0*ps.t/pd.td; 
+tmax = 40*ps.t/pd.td;                      % time range for the plot
+t_init = 1500; t_end = 1800;                    % time range for animation
 
 %% colormap
 n = 256; % number of colors
@@ -126,7 +127,7 @@ cx = colorbar();
 cx.Label.String = 'h_b [ m ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-clim([0 3]);
+clim([0 0.2]);
 
 hold on
 
@@ -297,7 +298,7 @@ hb_analytical = 3*V_b./(pi*R_b.^2);
 yyaxis left
     plot(ax,t,h_b,'b-',LineWidth=1.5);
     hold on
-    plot(ax,t,hb_analytical,'b--',LineWidth=1.5);
+    % plot(ax,t,hb_analytical,'b--',LineWidth=1.5);
     xlabel('t [ d ]');
     ylabel('h [ m ]');
     text(0.025,0.8,'(d) h_b and p_b at the lake','Units','normalized','FontSize',14)
@@ -330,7 +331,7 @@ yyaxis left
     grid minor  
 yyaxis right
 % Rb_analytical = (3/pi*V_b./h_b).^(1/2);
-    plot(ax,t,R_b,'r-',LineWidth=1.5);
+    % plot(ax,t,R_b,'r-',LineWidth=1.5);
     hold on
     % plot(ax,t,Rb_analytical,'r--',LineWidth=1.5);
     ylim([0 max(R_b)])
@@ -379,6 +380,7 @@ for i_t = t_init:t_end
     x5.Value = vva.t*ps.t/pd.td;
     x6.Value = vva.t*ps.t/pd.td;
     
+    disp(min(vva.hb));
     refreshdata
     drawnow
     % pause(0.2)

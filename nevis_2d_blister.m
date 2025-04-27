@@ -4,32 +4,32 @@
  oo.root = './';                                % filename root
  oo.code = '../nevis';                          % code directory  
  oo.results = 'results';                        % path to the results folders
- oo.casename = 'blister_2d_alpha0_2_kappa0_mu1e0_E8_8e9_V1e7_H1_0e3';
-%  oo.casename = 'blister_2d_alpha0_2_kappa1e_6_mu1e6_E8_8e9_V1e8';
+ oo.casename = 'blister_2d_alpha0_2_kappa0_mu1e9_E8_8e9_V1e6_H1_0e3';
+
                                                 % casename
  oo.fn = ['/',oo.casename];                     % filename (same as casename)
  oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
  addpath(oo.code);                              % add path to code
- mkdir(oo.rn)
 
  %% parameters
  [pd,oo] = nevis_defaults([],oo);               % the default parameters
- % [ put non-default parameters and options here ]
+
  oo.evaluate_variables = 1;
  oo.use_modified_N = 0;
  oo.input_gaussian = 1;
 
  pd.alpha_b = 1.0/(5*pd.td);                    % relaxation rate (s^-1)
- pd.mu = 1.0e0;                                 % water viscosity (Pa s)
+ pd.mu = 1.0e9;                                 % water viscosity (Pa s)
  pd.Ye = 8.8e9;                                 % Young's modulus (Pa)
- pd.B = pd.Ye*(5e2)^3/(12*(1-0.33)^2);
- pd.kappa_b = 0e-12;                            % 
+ pd.B = pd.Ye*(1e3)^3/(12*(1-0.33^2));
+ pd.kappa_b = 0;                                % 
+
  % nondimensionalisation
  [ps,pp] = nevis_nondimension(pd);
  
  %% grid and geometry
 % x and y coordinates
-L = 2e4;                                 % domain size (m)
+L = 4e4;                                 % domain size (m)
 x = linspace(0,(L/ps.x),201); 
 y = linspace(0,(L/ps.x),201);
 oo.yperiodic = 0;                        % oo.yperiodic = 1 necessary for a 1-d grid
@@ -68,7 +68,7 @@ s = (1000/ps.z)*ones(size(gg.nx));
  % a single-point lake
  pp.x_l = [0.5*L/ps.x];                              % x-coord of lakes
  pp.y_l = [0.5*L/ps.x];                              % y-coord of lakes
- pp.V_l = [1e7/(ps.Q0*ps.t)];                        % volume of lakes         
+ pp.V_l = [1e6/(ps.Q0*ps.t)];                        % volume of lakes         
  pp.t_drainage = [30.0];                             % time of lake drainages (assumed to be the middle time of the Gaussian)
  pp.t_duration = [0.025];                             % duration of lake drainages, 6hr
 

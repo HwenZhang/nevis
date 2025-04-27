@@ -21,9 +21,9 @@ if ~isfield(oo,'Tol_Fs'), oo.Tol_Fs = oo.Tol_F*ones(1,num); end       % toleranc
 if length(oo.Tol_Fs)<num
     oo.Tol_Fs = [oo.Tol_Fs oo.Tol_Fs(end)*ones(1,num-length(oo.Tol_Fs))];
 end 
-if ~isfield(oo,'max_iter_new'), oo.max_iter_new = 30; end           % maximum number of Newton iterations
+if ~isfield(oo,'max_iter_new'), oo.max_iter_new = 20; end            % maximum number of Newton iterations
 if ~isfield(oo,'step_new'), oo.step_new = 1; end                    % step size for Newton iteration
-if ~isfield(oo,'max2_iter_new'), oo.max2_iter_new = 10; end         % maximum number of Newton iterations before step2 is used
+if ~isfield(oo,'max2_iter_new'), oo.max2_iter_new = 20; end         % maximum number of Newton iterations before step2 is used
 if ~isfield(oo,'step2_new'), oo.step2_new = 0.5*oo.step_new; end    % step2 size for Newton iteration
 if ~isfield(oo,'fac2_new'), oo.fac2_new = 1; end                    % factor for norm reduction above which step2 is used
 

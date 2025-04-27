@@ -1,6 +1,6 @@
 %% set up a figure
-casename = oo.casename;
-casename = 'blister_2d_alpha0_2_kappa1e_9_mu1e3_E8_8e9_V1e7';
+% casename = oo.casename;
+casename = 'blister_2d_alpha0_2_kappa0_mu1e_3_E8_8e9_V1e7_H1_0e3';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                      % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];             % path to the case results

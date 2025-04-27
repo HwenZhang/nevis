@@ -1,12 +1,14 @@
 %% set up a figure
 % casename = oo.casename;
-casename = 'test_2d';
+casename = 'nevis_2009_140km';
 load(['./results/' casename '/' casename])
-oo.fn = ['/',casename];                      % filename (same as casename)
+oo.fn = ['/',casename];                         % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];             % path to the case results
 path = [oo.rn,'/'];
 
-tmin=250; tmax=350; % time range for the plot
+tmin = 0*ps.t/pd.td; 
+tmax = 40*ps.t/pd.td;                      % time range for the plot
+t_init = 1; t_end = 2000;                    % time range for animation
 
 %% colormap
 n = 256; % number of colors
@@ -15,8 +17,9 @@ cmap = [linspace(0,1,n)', linspace(0,1,n)', ones(n,1);
 
 %% read in the screenshot at the intial timestep
 formatSpec = '%04d';
-tframe = 30.0;
+tframe = 1.0;
 nframe = floor(tframe/0.04)+1;
+nframe = 1600;
 vva = load([path num2str(nframe,formatSpec)], 'vv');
 vva = vva.vv;
 aa = nevis_inputs(vva.t,aa,vva,pp,gg,oo);
@@ -46,13 +49,15 @@ m = (ps.m*ps.x^2)*[tt.m];      % dimensional melting rate (m^3/s)
 E = (ps.m*ps.x^2)*[tt.E];      % dimensional source terms  (m^3/s)
 h_b = ps.hb*[tt.pts_hb];       %
 p_b = ps.phi*[tt.pts_pb];      %
+V_b = ps.x^2*ps.hb*[tt.Vb];
+R_b = ps.x*[tt.Rb];
 
 % phi = (ps.phi)*[tt.phi];     % dimensional hydrulic potential (MPa)
 N = (ps.phi)*[tt.N];           % dimensional effective stress (MPa)
 hs = ps.x^2*ps.h*[tt.hs];      % integrated hs (m^3)
-hs_b = ps.h*[tt.hs_b];         % integrated hs (m^3)
+hs_b = ps.hb*[tt.hs_b];         % integrated hs (m^3)
 he = ps.x^2*ps.h*[tt.he];      % integrated he (m^3)
-p_w = ps.phi*([tt.pwb]);         % dimensional hydraulic potential at the lake (MPa)
+p_w = ps.phi*[tt.pwb];     % dimensional hydraulic potential at the lake (MPa)
 
 Sx_b = ps.S*[tt.Sx_b];
 Sy_b = ps.S*[tt.Sy_b];
@@ -90,9 +95,9 @@ cx.Label.Units = 'normalized';
 cx.Label.Position = [2.2 0.5]; 
 
 hold on
-[C4,pphi_contour] = contour(ax,xx,yy,zphi,'linecolor','k','linewidth',0.5);
+[C4,pqnet_contour] = contour(ax,xx,yy,zphi,'linecolor','k','linewidth',0.5);
 
-title('net flux');
+title('net flux','FontSize',14);
 ylabel('y (km)')
 axis equal
 
@@ -108,29 +113,29 @@ cx.Label.Position = [2.3 0.5];
 clim([0 0.1]);
 
 hold on
-[Cphi,phi_contour] = contour(ax,xx,yy,zphi,'linecolor','k','linewidth',0.5);
+[Cphi,phs_contour] = contour(ax,xx,yy,zphi,'linecolor','k','linewidth',0.5);
 
-title('cavity sheet and \phi contour');
+title('cavity sheet and \phi contour','FontSize',14);
 ylabel('y (km)')
 axis equal
 
-%% elastic sheet thickness
+%% blister sheet thickness
 ax = nexttile(6);
 zhe = (ps.hb)*reshape(vva.hb,gg.nI,gg.nJ); 
-pe = pcolor(ax,xx,yy,zhe); 
-set(pe,'linestyle','none'); % shading interp
+pblister = pcolor(ax,xx,yy,zhe); 
+set(pblister,'linestyle','none'); % shading interp
 cx = colorbar();
 cx.Label.String = 'h_b [ m ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-clim([0 ps.hb*max(vva.hb)]);
+clim([0 0.2]);
 
 hold on
 
 zpb = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ); 
-[Cb,pb_contour] = contour(ax,xx,yy,zpb,'linecolor','k','linewidth',0.5);
+[Cb,pblister_contour] = contour(ax,xx,yy,zpb,'linecolor','k','linewidth',0.5);
 
-title('blister sheet and pb contour');
+title('blister sheet and pb contour','FontSize',14);
 ylabel('y (km)')
 axis equal
 
@@ -144,9 +149,9 @@ cx = colorbar();
 cx.Label.String = 'S [ m^2 ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-clim([0 10]); 
+clim([0 1]); 
 
-title('channel cross section');
+title('channel cross section','FontSize',14);
 ylabel('y (km)')
 xlim([0 50])
 ylim([0 10])
@@ -155,8 +160,9 @@ axis tight
 
 %% effective pressure
 ax = nexttile(10);
-zN = (ps.phi/10^6)*reshape(aa.phi_0-vva.phi,gg.nI,gg.nJ); 
-p3 = pcolor(ax,xx,yy,zN); set(p3,'linestyle','none'); % shading interp
+zN = (ps.phi/10^6)*reshape((aa.phi_0-vva.phi),gg.nI,gg.nJ); 
+peff = pcolor(ax,xx,yy,zN); 
+set(peff,'linestyle','none'); % shading interp
 hold on
 
 % xlabel('x (km)')
@@ -180,32 +186,30 @@ for i_m = 1:length(pp.ni_m)
     end
 end
 
-title('effective pressure');
+title('effective pressure','FontSize',14);
 ylabel('y (km)')
 axis equal
 axis tight
 
 %% effective pressure
-ind = 0;
 ax = nexttile(12);
-zpb = (ps.phi/10^6)*reshape(vva.pb-(vva.phi-aa.phi_a),gg.nI,gg.nJ); 
-pb = pcolor(xx,yy,zpb); 
-set(pb,'linestyle','none');
+zpb = (ps.phi/10^6)*reshape((vva.pb-(aa.phi_0-aa.phi_a)),gg.nI,gg.nJ); 
+ppb = pcolor(xx,yy,zpb); 
+set(ppb,'linestyle','none');
 % shading interp
 cx = colorbar();
 colormap(ax,cmap)
 cx.Label.String = 'p_b [ MPa ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-pbmax = max(abs(vva.pb-ind*(aa.phi_0-aa.phi_a)));
-clim([-3 3]); 
-% clim([-pbmax pbmax]); 
+pbmax = max(abs(vva.pb-(aa.phi_0-aa.phi_a)));
+clim([-1 1]); 
 
 time = ['t=' num2str(vva.t*ps.t/pd.td,'%.1f') ' d'];
 ttext = text(0.1,8,time,"Position",[2 2]);
 ttext.FontSize=12;
 
-title('blister pressure');
+title('blister pressure','FontSize',14);
 ylabel('y (km)')
 xlabel('x (km)')
 axis equal
@@ -215,12 +219,10 @@ axis tight
 ax = nexttile(1);
 plot(ax,t,Q_b_in,'b-',t,Q_b_dec,'r-',LineWidth=1.5);
 hold on;
-% plot(ax,t,Q_out_b,'m-',LineWidth=1.5);
-
 plot(ax,t,Q_out+Q_out_b,color=[0,0.5,0],LineStyle='-',LineWidth=1.5);
 plot(ax,t,E,color=[0,0,0],LineStyle='-',LineWidth=1.5);
 
-xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
+x1 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
 
 xlabel('t [ d ]');
 ylabel('Q [ m^3/s ]');
@@ -241,7 +243,7 @@ if isfield(tt,'pts_phi') && ~isempty([tt.pts_phi])
 end
 hold on
 plot(ax,t,N/1e6,'-',LineWidth=1.5);
-xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
+x2 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
 xlabel('t [ d ]');
 ylabel('N [ MPa ]');
 h = legend('N at the blister','averaged N');
@@ -262,7 +264,7 @@ yyaxis left
 yyaxis right
     plot(ax,t,S/A,'r-',LineWidth=1.5);
     hold on
-    xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
+    x3 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
     ylabel('Channel h [ m ]');
     h=legend('h_{cav}','h_{e}','S','NumColumns',2);
     h.Location='northeast';
@@ -278,12 +280,12 @@ yyaxis left
     xlabel('t [ d ]');
     ylabel('h at blister [ m ]');
     % ylim([0.02 0.03])
-    text(0.025,0.8,'(d)h and S at the blister','Units','normalized','FontSize',14)
+    text(0.025,0.8,'(d) h and S at the lake','Units','normalized','FontSize',14)
 
 yyaxis right
     plot(ax,t,0.25*(Sx_b+Sy_b+Ss_b+Sr_b),'r-',LineWidth=1.5);
     hold on
-    xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
+    x4 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
     ylabel('S at blister [ m^2 ]');
     xlim([tmin tmax])
     h=legend('h_{cav}','S','NumColumns',2);
@@ -293,16 +295,19 @@ yyaxis right
     grid minor
 
 ax = nexttile(9);
+hb_analytical = 3*V_b./(pi*R_b.^2);
 yyaxis left
     plot(ax,t,h_b,'b-',LineWidth=1.5);
+    hold on
+    % plot(ax,t,hb_analytical,'b--',LineWidth=1.5);
     xlabel('t [ d ]');
     ylabel('h [ m ]');
-    text(0.025,0.8,'(d) blister h_b and p_b','Units','normalized','FontSize',14)
+    text(0.025,0.8,'(d) h_b and p_b at the lake','Units','normalized','FontSize',14)
 
 yyaxis right
     plot(ax,t,p_b/1e6,'r-',LineWidth=1.5);
     hold on
-    xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
+    x5 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
     xlabel('t [ d ]');
     ylabel('p_b [ MPa ]');
     xlim([tmin tmax])
@@ -310,19 +315,32 @@ yyaxis right
     grid minor
 
 ax = nexttile(11);
-plot(ax,t,(p_b-p_w)/1e6,'k-',LineWidth=1.5); % blister pressure + \rho_i g h
-hold on
-plot(ax,t,p_w/1e6,'r-.',LineWidth=1.5); 
-xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
 
-xlim([tmin tmax])
-ylim([0 15])
-text(0.025,0.8,'(e) pressure','Units','normalized','FontSize',14)
-xlabel('t [ d ]');
-ylabel('N [ MPa ]');
-legend('p_b+\rho_i g h','p_w')
-grid on
-grid minor
+yyaxis left
+    plot(ax,t,p_b/1e6,'b-',LineWidth=1.5); % blister pressure + \rho_i g h
+    hold on
+    % plot(ax,t,pb_analytical/1e6,'b--',LineWidth=1.5); % blister pressure + \rho_i g h
+    plot(ax,t,p_w/1e6,'b-.',LineWidth=1.5); 
+
+    xlim([tmin tmax])
+    ylim([0 15])
+    text(0.025,0.8,'(e) pressure','Units','normalized','FontSize',14)
+    xlabel('t [ d ]');
+    ylabel('N [ MPa ]');
+    
+    grid on
+    grid minor  
+yyaxis right
+% Rb_analytical = (3/pi*V_b./h_b).^(1/2);
+    plot(ax,t,R_b,'r-',LineWidth=1.5);
+    hold on
+    % plot(ax,t,Rb_analytical,'r--',LineWidth=1.5);
+    ylim([0 max(R_b)])
+    ylabel('R_b [ m ]');
+    legend('p_b','p_w','R_b','NumColumns',2,location='southeast')
+
+    x6 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
+% end
 
 % img = getframe(gcf);
 % imwrite(img.cdata, ['./results/figures/' oo.casename, '_2dplot.png']);

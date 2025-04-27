@@ -83,7 +83,7 @@ if ~isfield(pd,'r_m'), pd.r_m = 25/1000/pd.td; end                 % base precip
 if ~isfield(pd,'Q0'), pd.Q_0 = 1e3; end
 if ~isfield(pd,'mu'), pd.mu = 1.0e+3; end                          % water viscosity (Pa s)
 if ~isfield(pd,'Ye'), pd.Ye = 8.8e+9; end                          % Young's modulus (Pa)
-if ~isfield(pd,'B'), pd.B = pd.Ye*(5e2)^3/(12*(1-0.33)^2); end     % ice bending stiffness (m^3)
+if ~isfield(pd,'B'), pd.B = pd.Ye*(1e3)^3/(12*(1-0.33)^2); end     % ice bending stiffness (m^3)
 if ~isfield(pd,'alpha_b'), pd.alpha_b = 0.3; end                   % relaxation rate of the blister (s^-1)
 if ~isfield(pd,'kappa_b'), pd.kappa_b = 1e-9; end                  % relaxation coeff ()
 

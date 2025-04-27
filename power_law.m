@@ -1,6 +1,7 @@
 %% set up a figure
 % casename = oo.casename;
-casename = 'blister_2d_alpha0_2_kappa0_mu1e0_E8_8e9_V1e7_H1_0e3';
+casename = 'blister_2d_alpha0_2_kappa0_mu1e9_E8_8e9_V1e7_H1_0e3';
+% casename = 'blister_2d_alpha0_2_kappa1e_12_mu1e3_E8_8e9_V1e7_H1_0e3';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];             % path to the case results
@@ -74,9 +75,32 @@ if isfield(tt,'pts_phi') && ~isempty([tt.pts_phi])
     pts_prat = ([tt.pts_phi]-aa.phi_a(oo.pts_ni)*[tt.t].^0)./...
                (aa.phi_0(oo.pts_ni)*[tt.t].^0-aa.phi_a(oo.pts_ni)*[tt.t].^0);
 end
+%% volume
+H = 1000;        % height (m)
+k = 1.15*13*pd.B*H/(144*pd.mu)*(24/pi)^3;
+dt = diff(t0)*pd.td;
+tc = 0.5*(t0(1:end-1)+t0(2:end));
+Vbc = 0.5*(V_b(1:end-1)+V_b(2:end));
 
-%%
-t0 = t0-300.2;
+Rb_a = zeros(size(R_b));
+for i=2:length(R_b)
+   Rb_a(i)=(Rb_a(i-1)^13+dt(i-1)*k*Vbc(i-1)^3)^(1/13);
+end
+figure("Position",[100,100,600,300]);
+plot(t0-300+1.2,Rb_a/1e3,'k--','LineWidth',1.5)
+hold on
+plot(t0-300+1.2,R_b/1e3,"Marker","o")
+xlabel('t(d)');
+ylabel('R_b(km)');
+xlim([0 100])
+grid on
+
+legend('analytical','numerical','Location','southeast','FontSize',14)
+img = getframe(gcf);
+imwrite(img.cdata, ['./results/figures/radius', '.png']);
+
+%% log-log plot
+t0 = t0-(300);
 t_data = t0(t0>1);
 R_b_data = R_b(t0>1);
 t = t0(t0>0);
@@ -95,14 +119,19 @@ a = exp(intercept);         % Recover a
 % Display results
 fprintf('The power law is: y = %.4f * x^(%.4f)\n', a, exponent);
 
-figure();
-loglog(t, R_b, 'k-'); % Original data in loglog scale
+figure("Position",[100,100,600,300]);
+loglog(t, R_b, 'k-','LineWidth',1.5); % Original data in loglog scale
 hold on;
 % Plot the fitted line
 y_fit = a * t.^exponent;
 loglog(t, y_fit, 'r--', 'LineWidth', 2);
-xlabel('t');
-ylabel('R_b');
+loglog(t, (46.28*pd.B*H*(1e7)^3/pd.mu)^(1/13)*(t*pd.td).^(1/13),'b--', 'LineWidth', 2);
+
+xlabel('t(d)');
+ylabel('R_b(m)');
 title('Loglog Plot with Power Law Fit');
-legend('Data', 'Fit');
+legend('Data','Fit','Analytical t^{1/13}' ,'Location','northwest','FontSize',14);
 grid on;
+
+img = getframe(gcf);
+imwrite(img.cdata, ['./results/figures/loglog_radius', '.png']);
