@@ -170,13 +170,14 @@ while t<t_stop+oo.dt_min
     tt(ti).Vb = sum(vv.hb(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns)); 
 
     % blister radius (only works for a single blister)
-    nonzeroIdx = find(vv.hb > 1e-3*vv.hb(pp.ni_l));
+    [~, maxIdx] = max(vv.hb);
+    nonzeroIdx = find(vv.hb > 1e-4*vv.hb(maxIdx));
     [~, localIdx] = min(vv.hb(nonzeroIdx));
     minidx = nonzeroIdx(localIdx);
     if isempty(minidx)
         tt(ti).Rb = 0;
     else
-        tt(ti).Rb = ((gg.nx(pp.ni_l)-gg.nx(minidx)).^2 + (gg.ny(pp.ni_l)-gg.ny(minidx)).^2).^(1/2);
+        tt(ti).Rb = ((gg.nx(maxIdx)-gg.nx(minidx)).^2 + (gg.ny(maxIdx)-gg.ny(minidx)).^2).^(1/2);
     end
     disp(['Radius of the blister is ' num2str(tt(ti).Rb) '.']);
     disp(['Volume of the blister is ' num2str(tt(ti).Vb) '.']);

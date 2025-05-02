@@ -69,6 +69,7 @@ if ~isfield(pd,'V_m_reg'), pd.V_m_reg = 0; end                     % regularizin
 if ~isfield(pd,'p_w_reg'), pd.p_w_reg = 1*pd.rho_w*pd.g; end       % pressure range for regularization on top of moulins [Pa] [ obsolete ]
 if ~isfield(pd,'sigma_log'), pd.sigma_log = 0; end                 % regularizing storage [ obsolete ]
 if ~isfield(pd,'N_sigma'), pd.N_sigma = pd.N_reg; end              % effective pressure below which regularizing storage hits in [Pa] [ obsolete ]
+if ~isfield(pd,'hb_reg'), pd.hb_reg = 0e-3; end                    % regularizing thickness of blister [m] [ obsolete ]
 
 if ~isfield(pd,'p_a_reg'), pd.p_a_reg = 1*pd.rho_w*pd.g; end       % pressure range for regularization of ? 
 if ~isfield(pd,'E_lapse'), pd.E_lapse = 60/1000/pd.td/10^3; end    % surface melt lapse rate [m/s/m]
@@ -84,7 +85,7 @@ if ~isfield(pd,'Q0'), pd.Q_0 = 1e3; end
 if ~isfield(pd,'mu'), pd.mu = 1.0e+3; end                          % water viscosity (Pa s)
 if ~isfield(pd,'Ye'), pd.Ye = 8.8e+9; end                          % Young's modulus (Pa)
 if ~isfield(pd,'B'), pd.B = pd.Ye*(1e3)^3/(12*(1-0.33)^2); end     % ice bending stiffness (m^3)
-if ~isfield(pd,'alpha_b'), pd.alpha_b = 0.3; end                   % relaxation rate of the blister (s^-1)
+if ~isfield(pd,'alpha_b'), pd.alpha_b = 1.0/(24*3600); end         % relaxation rate of the blister (s^-1)
 if ~isfield(pd,'kappa_b'), pd.kappa_b = 1e-9; end                  % relaxation coeff ()
 
 %% Default options
@@ -97,6 +98,7 @@ if ~isfield(oo,'mean_perms'), oo.mean_perms = 1; end
 if ~isfield(oo,'blister'), oo.blister = 1; end
 if ~isfield(oo,'use_modified_N'), oo.use_modified_N = 0; end
 if ~isfield(oo,'input_gaussian'), oo.input_gaussian = 0; end
+if ~isfield(oo,'relaxation_term'), oo.relaxation_term = 0; end % 0 is alpha hb, 1 is alpha deltap hb
 % if ~isfield(oo,'method'), oo.method = 'lrtb_vel'; end % [ obsolete ]
 % if ~isfield(oo,'include_moulins'), oo.include_moulins = 1; end  % [ obsolete ]
 % if ~isfield(oo,'include_diag'), oo.include_diag = 1; end  % [ obsolete ]

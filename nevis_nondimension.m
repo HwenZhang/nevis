@@ -97,8 +97,15 @@ pp.c45 = ps.qb*ps.t/ps.x/ps.hb;
 pp.c48 = 1;
 pp.c49 = pd.B*ps.hb/ps.x^4/ps.phi;
 pp.c50 = pd.alpha_b*ps.hb*ps.t/ps.h;
-pp.c51 = pd.kappa_b*ps.hb*ps.t*ps.phi/ps.hb/pd.mu;
-pp.c52 = pd.kappa_b*ps.hb*ps.t*ps.phi/ps.h/pd.mu;
+if oo.relaxation_term == 1
+    pp.c51 = pd.kappa_b*ps.hb*ps.t*ps.phi/ps.hb/pd.mu;
+    pp.c52 = pd.kappa_b*ps.hb*ps.t*ps.phi/ps.h/pd.mu;
+    pp.m_l = 1.0;
+elseif oo.relaxation_term == 0
+    pp.c51 = pd.alpha_b*ps.hb*ps.t/ps.hb;
+    pp.c52 = pd.alpha_b*ps.hb*ps.t/ps.h;
+    pp.m_l = 0.0;
+end
 
 pp.n_Glen = pd.n_Glen;
 pp.alpha_s = pd.alpha_s;
@@ -120,6 +127,7 @@ pp.N_reg = pd.N_reg/ps.phi;
 %pp.N_reg1 = pd.N_reg1/ps.phi;
 pp.p_w_reg = pd.p_w_reg/ps.phi;
 pp.p_a_reg = pd.p_a_reg/ps.phi;
+pp.hb_reg = pd.hb_reg/ps.hb;
 
 pp.E_lapse = pd.E_lapse/ps.m*ps.z;
 pp.E_amp = pd.E_amp; 
@@ -131,7 +139,6 @@ pp.t_aut = pd.t_aut/ps.t;
 pp.delta_t = pd.delta_t/ps.t; 
 pp.s_m = pd.s_m/ps.z;
 pp.r_m = pd.r_m/ps.m;
-pp.m_l = 0.0;
 
 %% Scalings for plots 
 sc.x = ps.x/1000;   % km

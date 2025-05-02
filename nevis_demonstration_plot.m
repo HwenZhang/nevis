@@ -1,6 +1,6 @@
 %% set up a figure
 % casename = oo.casename;
-casename = 'nevis_2009_140km';
+casename = 'nevis_2009_140km_alpha0_2';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];             % path to the case results
@@ -332,14 +332,26 @@ yyaxis left
     grid minor  
 yyaxis right
 % Rb_analytical = (3/pi*V_b./h_b).^(1/2);
-    plot(ax,t,R_b,'r-',LineWidth=1.5);
+    plot(ax,t,V_b,'r-',LineWidth=1.5);
     hold on
     % plot(ax,t,Rb_analytical,'r--',LineWidth=1.5);
-    ylim([0 max(R_b)])
-    ylabel('R_b [ m ]');
-    legend('p_b','p_w','R_b','NumColumns',2,location='southeast')
+    ylim([0 1.2*max(V_b)])
+    ylabel('V_b [ m^3 ]');
+    legend('p_b','p_w','V_b','NumColumns',2,location='southeast')
 
     x6 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
+
+% yyaxis right
+% % Rb_analytical = (3/pi*V_b./h_b).^(1/2);
+%     plot(ax,t,R_b,'r-',LineWidth=1.5);
+%     hold on
+%     % plot(ax,t,Rb_analytical,'r--',LineWidth=1.5);
+%     ylim([0 max(R_b)])
+%     ylabel('R_b [ m ]');
+%     legend('p_b','p_w','R_b','NumColumns',2,location='southeast')
+
+%     x6 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
+
 % end
 
 % img = getframe(gcf);

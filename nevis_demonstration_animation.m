@@ -1,13 +1,13 @@
 %% set up a figure
 % casename = oo.casename;
-casename = 'nevis_2009_140km';
+casename = 'nevis_2009_140km_alpha0_2';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];             % path to the case results
 path = [oo.rn,'/'];
 
 tmin = 0*ps.t/pd.td; 
-tmax = 40*ps.t/pd.td;                      % time range for the plot
+tmax = 40*ps.t/pd.td;                           % time range for the plot
 t_init = 1500; t_end = 1800;                    % time range for animation
 
 %% colormap
@@ -331,7 +331,7 @@ yyaxis left
     grid minor  
 yyaxis right
 % Rb_analytical = (3/pi*V_b./h_b).^(1/2);
-    % plot(ax,t,R_b,'r-',LineWidth=1.5);
+    plot(ax,t,R_b,'r-',LineWidth=1.5);
     hold on
     % plot(ax,t,Rb_analytical,'r--',LineWidth=1.5);
     ylim([0 max(R_b)])
