@@ -55,9 +55,9 @@ if ~isfield(oo,'distributed_input'), oo.distributed_input = 0; end
 % save solution at timesteps in t_span to directory
 if ~isfield(oo,'save_timesteps'), oo.save_timesteps = 1; end  
 % make directory if it doesn't already exist
-if oo.save_timesteps && ~exist([oo.root,oo.fn],'dir')
-    mkdir([oo.root,oo.fn]); 
-end 
+% if oo.save_timesteps && ~exist([oo.root,oo.fn],'dir')
+%     mkdir([oo.root,oo.fn]); 
+% end 
 % save output at particular nodes pts_ni
 if ~isfield(oo,'save_pts_all'), oo.save_pts_all = 0; end  
 % nodes at which to save output
