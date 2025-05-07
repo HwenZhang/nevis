@@ -385,7 +385,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         
         vv2.R_bdy = R2(gg.nbdy);
         vv2.Qb_in = Qb_in;
-        vv2.Qb_dec = sum(Qb.*gg.Dx.*gg.Dy);
+        vv2.Qb_dec = sum(Qb.*gg.Dx.*gg.Dy,"omitnan");
         vv2.Q_out = 1/pp.c9*sum( R2(gg.nbdy).*gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy) ); 
         vv2.Qb_out = 1/pp.c43*sum( R8(gg.nbdy).*gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy) ); 
         vv2.Xi = Xi;

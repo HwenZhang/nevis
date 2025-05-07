@@ -7,7 +7,7 @@ oo.root = './';                                % filename root
 oo.code = '../nevis';                          % code directory  
 oo.results = 'results';                        % path to the results folders
 % oo.casename = 'nevis_2009_140km_alpha0_2';         % casename
-oo.casename = 'test_2009_140km_mu1e3_kappa1e_8';     % casename
+oo.casename = 'nevis_region_test';     % casename
 
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
@@ -26,7 +26,7 @@ oo.input_function = 0;                         % If set to 1 turns on RACMO moul
 oo.relaxation_term = 1;                        % 0 is alpha hb, 1 is alpha deltap hb
 
 pd.alpha_b = 1.0/(5*pd.td);                    % relaxation rate (s^-1)
-pd.mu = 1.0e+3;                                 % water viscosity (Pa s)
+pd.mu = 1.0e-3;                                % water viscosity (Pa s)
 pd.Ye = 8.8e9;                                 % Young's modulus (Pa)
 pd.B = pd.Ye*(1e3)^3/(12*(1-0.33^2));          % bending stiffness (Pa m^3)
 if oo.relaxation_term == 0
@@ -34,7 +34,7 @@ if oo.relaxation_term == 0
     pd.kappa_b = 0;                            % relaxation coeff 
 elseif oo.relaxation_term == 1
     pd.alpha_b = 0;                            % relaxation rate (s^-1)
-    pd.kappa_b = 1e-8;                         % relaxation coeff 
+    pd.kappa_b = 0;                         % relaxation coeff 
 end
 
 % alter default parmaeters 
@@ -91,11 +91,11 @@ vv.hs = ((((pd.u_b*pd.h_r/pd.l_r)./((pd.u_b/pd.l_r)+(pd.K_c.*((ps.phi*N).^3)))))
 aa.phi_b = max(aa.phi_0,aa.phi_a); % prescribed boundary pressure at overburden or atmospheric (LAS 18 Nov. 2015)
 
 %% moulins 
-oo.random_moulins = 0;
+% oo.random_moulins = 0;
 % create new moulin locations:
 % [pp.ni_m,pp.sum_m] = nevis_moulins_density_joughin([],[],gg,oo,aa,ps);
 % load consistent location moulins for all runs:
-% load('nevis/nevis_170207a.mat','pp');
+load('nevis/nevis_170207a.mat','pp');
 %% lakes
  % a single-point lake
  pp.x_l = [0.5*(x(1)+x(end))];                                   % x-coord of lakes
@@ -119,25 +119,26 @@ oo.random_moulins = 0;
 % % grid (ie runoff(t,gg) should return a vector of size gg.nIJ-by-1), then
 % % include as:
 % pp.runoff_function = @(t) runoff(ps.t*t,gg)/ps.m; oo.runoff_function = 1;
-% load('nevis/runoff_2009_nevis140.mat');       % load data for year of interest (previously collated)
+load('nevis/runoff_2009_nevis140.mat');       % load data for year of interest (previously collated)
 % RACMO distributed input
-oo.distributed_input = 1;                     % If set to 1 turns on RACMO distributed input
-pp.meltE = @(t) (60/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t))); 
-% pp.runoff_function = @(t) runoff(((t*ps.t)/pd.td),runoff_2009_nevis140)./ps.m;  % distributed input (m/sec)
+oo.distributed_input = 0;                     % If set to 1 turns on RACMO distributed input
+% pp.meltE = @(t) (60/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t))); 
+pp.runoff_function = @(t) runoff(((t*ps.t)/pd.td),runoff_2009_nevis140)./ps.m;  % distributed input (m/sec)
 
 % RACMO moulin input
-% pp.input_function = @(t) runoff_moulins(((t*ps.t)/pd.td),runoff_2009_nevis140,pp.sum_m,gg.Dx(1))./ps.m; % RACMO moulin input (m3/sec)
+oo.input_function = 1;                        % If set to 1 turns on RACMO moulin input (m3/sec)
+pp.input_function = @(t) runoff_moulins(((t*ps.t)/pd.td),runoff_2009_nevis140,pp.sum_m,gg.Dx(1))./ps.m; % RACMO moulin input (m3/sec)
 
 % %% Timesteps and saving model output
-% oo.dt = 1/24*pd.td/ps.t; oo.save_timesteps = 1; oo.save_pts_all = 1; oo.pts_ni = pp.ni_m;
+oo.dt = 1/24*pd.td/ps.t; oo.save_timesteps = 1; oo.save_pts_all = 1; oo.pts_ni = pp.ni_m;
 
 %% save initial parameters
-save([oo.rn],'pp','pd','ps','gg','aa','vv','oo');
+save([oo.rn, oo.fn],'pp','pd','ps','gg','aa','vv','oo');
 
 %% timestep 
-% load('nevis/nevis_22221/0365.mat','vv','tt')
-% tspan = (1:1:365)*pd.td/ps.t; % 1 year of timesteps
-t_span = (0:2000)*(0.2*pd.td/ps.t);
+load('nevis/nevis_22221/0365.mat','vv','tt')
+t_span = (1:1:365)*pd.td/ps.t; % 1 year of timesteps
+% t_span = (0:2000)*(0.2*pd.td/ps.t);
 [tt,vv,info] = nevis_timesteps(t_span,vv,aa,pp,gg,oo);
 
 %% expand/update variables
@@ -146,7 +147,7 @@ oo.evaluate_variables = 1;
 [vv2] = nevis_backbone(inf,vv,vv,aa,pp,gg,oo); % expand solution variables
 vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo); % calculate node discharge
 
-save([oo.rn],'pp','pd','ps','gg','aa','oo','tt');
+save([oo.rn, oo.fn],'pp','pd','ps','gg','aa','oo','tt');
 
 %% Simple animate
 % nevis_demonstration_animation
