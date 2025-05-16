@@ -1,5 +1,5 @@
 %% Import necessary libraries
-casename = 'test_2009_140km_mu1e1_kappa1e_11';
+casename = oo.casename;
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];             % path to the case results

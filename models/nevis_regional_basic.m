@@ -149,4 +149,4 @@ vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo); % calculate node discharge
 save([oo.rn, oo.fn],'pp','pd','ps','gg','aa','oo','tt');
 
 %% Simple animate
-% nevis_demonstration_animation
+% nevis_regional_animation

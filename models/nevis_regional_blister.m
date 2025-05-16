@@ -4,29 +4,28 @@
 format compact
 clc,clear
 oo.root = './';                                % filename root
-oo.code = '../nevis/src';                      % code directory  
+oo.code = '../nevis';                          % code directory  
 oo.results = 'results';                        % path to the results folders
-oo.dataset = 'nevis_regional';                 % dataset name
-% oo.casename = 'nevis_regional_test_2009_140km_mu1e1_kappa1e_11_Vl1e8_td160';  
-oo.casename = 'nevis_regional_test_2009_140km_mu1e1_alpha0_2_Vl0e8_td160';                
+% oo.casename = 'nevis_2009_140km_alpha0_2';         % casename
+oo.casename = 'nevis_region_test';     % casename
+
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
-oo.dn = [oo.root, 'data/', oo.dataset, '/'];   % path to the data
 addpath(oo.code);                              % add path to code
 mkdir(oo.rn);                                  % create directory for results    
 
 %% parameters
-% default parameters 
+% default parameters
 [pd,oo] = nevis_defaults([],oo);  
 
 oo.evaluate_variables = 1;
 oo.use_modified_N = 0;
 oo.input_gaussian = 1;
-oo.relaxation_term = 0;                        % 0 is alpha hb, 1 is alpha deltap hb
+oo.relaxation_term = 1;                        % 0 is alpha hb, 1 is alpha deltap hb
 
 pd.alpha_b = 1.0/(5*pd.td);                    % relaxation rate (s^-1)
-pd.mu = 1.0e1;                                 % water viscosity (Pa s)
+pd.mu = 1.0e-3;                                % water viscosity (Pa s)
 pd.Ye = 8.8e9;                                 % Young's modulus (Pa)
 pd.B = pd.Ye*(1e3)^3/(12*(1-0.33^2));          % bending stiffness (Pa m^3)
 if oo.relaxation_term == 0
@@ -34,11 +33,11 @@ if oo.relaxation_term == 0
     pd.kappa_b = 0;                            % relaxation coeff 
 elseif oo.relaxation_term == 1
     pd.alpha_b = 0;                            % relaxation rate (s^-1)
-    pd.kappa_b = 1e-11;                        % relaxation coeff 
+    pd.kappa_b = 0;                         % relaxation coeff 
 end
 
 % alter default parmaeters 
-pd.c_e_reg2 = 0.01/1e3/9.81;        % elastic sheet thickness [m/Pa]
+pd.c_e_reg2 = 0.00/1e3/9.81;        % elastic sheet thickness [m/Pa]
 pd.N_reg2 = 1e4; % 1e3              % regularisation pressure for elastic sheet thickness 
 pd.u_b = 100/pd.ty;                 % sliding speed [m/s]
 pd.sigma = 1e-3;                    % englacial void fraction
@@ -56,7 +55,7 @@ ps = struct;
 [ps,pp] = nevis_nondimension(pd,ps,oo);   
 
 %% grid and geometry
-load([oo.dn, 'morlighem_for_nevis_140km']); % load Morlighem bedmap (previously collated)
+load('data/morlighem_for_nevis_140km'); % load Morlighem bedmap (previously collated)
 dd = morlighem_for_nevis_140km; dd.skip = 6;
 gg = nevis_grid(dd.X_km(1:dd.skip:end,1)/ps.x,dd.Y_km(1,1:dd.skip:end)/ps.x,oo); 
 b = reshape(dd.B_km(1:dd.skip:end,1:dd.skip:end)/ps.z,gg.nIJ,1);
@@ -96,24 +95,14 @@ oo.keep_all_moulins = 0;
 % create new moulin locations:
 % [pp.ni_m,pp.sum_m] = nevis_moulins_density_joughin([],[],gg,oo,aa,ps);
 % load consistent location moulins for all runs:
-temp = load([oo.dn, 'nevis_170207a.mat'], 'pp');
-pp_temp = temp.pp;
-pp.ni_m = pp_temp.ni_m; % consistent locations
-pp.sum_m = pp_temp.sum_m; % consistent locations
-
+load('nevis/nevis_170207a.mat','pp');
 %% lakes
  % a single-point lake
- pp.x_l = [1e4/ps.x];                                            % x-coord of lakes
- pp.y_l = [-1e4/ps.x];                                           % y-coord of lakes
+ pp.x_l = [0.5*(x(1)+x(end))];                                   % x-coord of lakes
+ pp.y_l = [0.5*(y(1)+y(end))];                                   % y-coord of lakes
  pp.V_l = [0e8/(ps.Q0*ps.t)];                                    % volume of lakes         
- pp.t_drainage = [160*pd.td/ps.t];                               % time of lake drainages (assumed to be the middle time of the Gaussian)
+ pp.t_drainage = [300*pd.td/ps.t];                               % time of lake drainages (assumed to be the middle time of the Gaussian)
  pp.t_duration = [0.25*pd.td/ps.t];                              % duration of lake drainages, 6hr
-
-%  pp.x_l = [];                                      % x-coord of lakes
-%  pp.y_l = [];                                      % y-coord of lakes
-%  pp.V_l = [];                                      % volume of lakes         
-%  pp.t_drainage = [];                               % time of lake drainages (assumed to be the middle time of the Gaussian)
-%  pp.t_duration = [];                               % duration of lake drainages, 6hr
 
  [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo); % calculate lake catchments 
 
@@ -130,30 +119,24 @@ pp.sum_m = pp_temp.sum_m; % consistent locations
 % % grid (ie runoff(t,gg) should return a vector of size gg.nIJ-by-1), then
 % % include as:
 % pp.runoff_function = @(t) runoff(ps.t*t,gg)/ps.m; oo.runoff_function = 1;
-load([oo.dn, 'runoff_2009_nevis140.mat']);       % load data for year of interest (previously collated)
-
+load('./runoff_2009_nevis140.mat');       % load data for year of interest (previously collated)
 % RACMO distributed input
-pp.meltE = @(t) (0/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t))); 
-oo.runoff_function = 1;                          % If set to 1, use RACMO input
-                                                 % If set to 0, use prescribed input
-pp.runoff_function = @(t) runoff(((t*ps.t)/pd.td),runoff_2009_nevis140)./ps.m;  % RACMO distributed input (m/sec)
-
-oo.distributed_input = 0;                        % If set to 1 turns on distributed input
-                                                 % If set to 0 , input is collected into moulins  
+oo.distributed_input = 0;                     % If set to 1 turns on RACMO distributed input
+% pp.meltE = @(t) (60/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t))); 
+pp.runoff_function = @(t) runoff(((t*ps.t)/pd.td),runoff_2009_nevis140)./ps.m;  % distributed input (m/sec)
 
 % RACMO moulin input
-oo.input_function = 0;                           % If set to 1 turns on RACMO moulin input (m3/sec)
-                                                 % If set to 0, moulin input is collected from surface runoff
+oo.input_function = 1;                        % If set to 1 turns on RACMO moulin input (m3/sec)
 pp.input_function = @(t) runoff_moulins(((t*ps.t)/pd.td),runoff_2009_nevis140,pp.sum_m,gg.Dx(1))./ps.m; % RACMO moulin input (m3/sec)
 
 % %% Timesteps and saving model output
-oo.dt = 1/24*pd.td/ps.t; oo.save_timesteps = 1; oo.save_pts_all = 1; oo.pts_ni = pp.ni_l; % save lake pressures
+oo.dt = 1/24*pd.td/ps.t; oo.save_timesteps = 1; oo.save_pts_all = 1; oo.pts_ni = pp.ni_m;
 
 %% save initial parameters
 save([oo.rn, oo.fn],'pp','pd','ps','gg','aa','vv','oo');
 
 %% timestep 
-load(['0365.mat'],'vv','tt')
+load('./nevis_22221/0365.mat','vv','tt')
 t_span = (1:1:365)*pd.td/ps.t; % 1 year of timesteps
 % t_span = (0:2000)*(0.2*pd.td/ps.t);
 [tt,vv,info] = nevis_timesteps(t_span,vv,aa,pp,gg,oo);

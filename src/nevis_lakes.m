@@ -117,22 +117,4 @@ temp = sum(sum_l,1); % number of polygons each node is connected to (0-3)
 temp(temp==0) = inf;
 sum_l = sum_l*sparse(1:length(temp),1:length(temp),temp.^(-1)); %
 
-%% plot voronoi cells and nodes
-% figure;
-%     voronoi([x_m; x_far],[y_m; y_far]); % voronoi cell
-%     hold on
-%     plot(x_m,y_m,'ko',x_far,y_far,'ko','MarkerSize',16);
-%     % distniguish between different types of nodes
-%     sz = 12;
-%     plot(x(temp==inf),y(temp==inf),'g.','markersize',sz); % external
-%     % nodes feeding 1 lake
-%     plot(x(temp==1),y(temp==1),'r.','markersize',sz); 
-%     % nodes feeding 2 lakes
-%     plot(x(temp==2),y(temp==2),'b.','markersize',sz);
-%     % nodes feeding 3 lakes
-%     plot(x(temp==3),y(temp==3),'k.','markersize',sz); 
-%     % axis range
-%     % axis([min(x) max(x) min(y) max(y)]); 
-% shg; 
-
 end
