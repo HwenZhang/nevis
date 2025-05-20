@@ -8,7 +8,8 @@ oo.code = '../nevis/src';                      % code directory
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name
 % oo.casename = 'nevis_regional_test_2009_140km_mu1e1_kappa1e_11_Vl1e8_td160';  
-oo.casename = 'nevis_regional_test_2009_140km_mu1e1_alpha0_2_Vl0e8_td160';                
+% oo.casename = 'nevis_regional_test_2009_140km_mu1e1_alpha0_2_Vl0e8_td160';       
+oo.casename = 'nevis_regional_test_moulin2blister_kls1e0_mu1e1';           
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
@@ -26,19 +27,28 @@ oo.input_gaussian = 1;
 oo.relaxation_term = 0;                        % 0 is alpha hb, 1 is alpha deltap hb
 
 pd.alpha_b = 1.0/(5*pd.td);                    % relaxation rate (s^-1)
-pd.mu = 1.0e1;                                 % water viscosity (Pa s)
+pd.mu = 1.0e+1;                                % water viscosity (Pa s)
 pd.Ye = 8.8e9;                                 % Young's modulus (Pa)
 pd.B = pd.Ye*(1e3)^3/(12*(1-0.33^2));          % bending stiffness (Pa m^3)
-if oo.relaxation_term == 0
-    pd.alpha_b = 1.0/(5*pd.td);                % relaxation rate (s^-1)
-    pd.kappa_b = 0;                            % relaxation coeff 
+
+% leakage term
+% 0: exponential decay: -\alpha_0(1+h/hc+S/Sc) h_b                             
+% 1: proportional to pressure diff and thickness: -\kappa/\mu(p_b-p_w)h_b
+% 2: channel control, enhanced at channels: -\alpha_0 (\tanh(S/S_c))
+
+if oo.relaxation_term == 0    
+    pd.alpha_b = 1.0/(20*pd.td);                % relaxation rate (s^-1)
+    pd.kappa_b = 0;                             % relaxation coeff 
 elseif oo.relaxation_term == 1
-    pd.alpha_b = 0;                            % relaxation rate (s^-1)
-    pd.kappa_b = 1e-11;                        % relaxation coeff 
+    pd.alpha_b = 0;                             % relaxation rate (s^-1)
+    pd.kappa_b = 1e-11;                         % relaxation coeff 
+elseif oo.relaxation_term == 2
+    pd.alpha_b = 1.0/(10*pd.td);                % relaxation rate (s^-1)
+    pd.S_crit = 0.1;                            % critical cross section (m^2), below which there is no leakage to the drainage system
 end
 
 % alter default parmaeters 
-pd.c_e_reg2 = 0.01/1e3/9.81;        % elastic sheet thickness [m/Pa]
+pd.c_e_reg2 = 0.00/1e3/9.81;        % elastic sheet thickness [m/Pa]
 pd.N_reg2 = 1e4; % 1e3              % regularisation pressure for elastic sheet thickness 
 pd.u_b = 100/pd.ty;                 % sliding speed [m/s]
 pd.sigma = 1e-3;                    % englacial void fraction

@@ -1,5 +1,5 @@
 %% Import necessary libraries
-casename = 'nevis_regional_test_2009_140km_mu1e1_alpha0_2_Vl0e8_td160';
+casename = 'nevis_regional_test_moulin2blister';
 % casename = 'test_2009_140km_mu2e1_kappa0';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -16,7 +16,7 @@ tmin_d = tmin*ps.t/pd.td;
 tmax_d = tmax*ps.t/pd.td;                        % time range for the plot
 t_init = 1450; t_end = 1600;                       % time range for animation
 
-t_init = 150; t_end = 200;                        % time range for animation
+t_init = 150; t_end = 300;                        % time range for animation
 tmin = 0*pd.td/ps.t;
 tmax = 365*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
@@ -289,7 +289,7 @@ cx = colorbar();
 cx.Label.String = 'h_b [ m ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-clim([0 1.0]);
+clim([0 0.5]);
 hold on
 
 zpb = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ); 
@@ -309,7 +309,7 @@ cx = colorbar();
 cx.Label.String = 'S [ m^2 ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-clim([0 1]); 
+clim([0 10]); 
 
 title('channel cross section','FontSize',14);
 ylabel('y (km)')
