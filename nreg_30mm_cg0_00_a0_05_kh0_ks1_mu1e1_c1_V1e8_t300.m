@@ -7,7 +7,7 @@ oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'nreg_1mm_cg0_00_a0_05_kh0_ks1_mu1e1_c1_V1e8_t300';           
+oo.casename = 'nreg_30mm_cg0_00_a0_05_kh0_ks1_mu1e1_c1_V1e8_t300';           
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
@@ -147,7 +147,7 @@ pp.sum_m = pp_temp.sum_m; % consistent locations
 load([oo.dn, 'runoff_2009_nevis140.mat']);       % load data for year of interest (previously collated)
 
 % RACMO distributed input
-pp.meltE = @(t) (1/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t))); 
+pp.meltE = @(t) (30/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t))); 
 oo.runoff_function = 0;                          % If set to 1, use RACMO input
                                                  % If set to 0, use prescribed input
 pp.runoff_function = @(t) runoff(((t*ps.t)/pd.td),runoff_2009_nevis140)./ps.m;  % RACMO distributed input (m/sec)

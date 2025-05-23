@@ -275,8 +275,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     qby = -pp.c42*permby.*Psib_y; % vector of (gg.fIJ,1)
     
     % blister to subglacial drainage system term defined on the nodes
-    Qb_h = pp.c52*(pp.c0+pp.kl_s*Smean).*(pb-phi+aa.phi_a+eps).^(pp.m_l).*(hb+pp.hb_reg); % pp.kl_h*hs/ps.hs
-    Qb_s = pp.c51*(pp.c0+pp.kl_s*Smean).*(pb-phi+aa.phi_a+eps).^(pp.m_l).*(hb+pp.hb_reg); % pp.kl_h*hs/ps.hs
+    Qb_h = pp.c52*(pp.c0+pp.kl_h*hs+pp.kl_s*Smean).*(pb-phi+aa.phi_a+eps).^(pp.m_l).*(hb+pp.hb_reg); % pp.kl_h*hs/ps.hs
+    Qb_s = pp.c51*(pp.c0+pp.kl_h*hs+pp.kl_s*Smean).*(pb-phi+aa.phi_a+eps).^(pp.m_l).*(hb+pp.hb_reg); % pp.kl_h*hs/ps.hs
 
     % Qb_h = Qbh_fun(hb,gg.nmeanx*Sx)
     % boundary edge fluxes
@@ -459,7 +459,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         h_t = - pp.c4*(gg.nddx(:,:)*qsx + gg.nddy(:,:)*qsy) ... % cavity sheet flux divergence
               - pp.c5*(gg.nddx(:,:)*qex + gg.nddy(:,:)*qey) ... % poroelastic sheet flux divergence
               + pp.c6*m ...                                     % basal melting rate
-              + Qb_h      ...                                   % blister influx
+              + pp.c52*(pp.c0+pp.kl_h*hs+pp.kl_s*Smean).*(pb-phi+aa.phi_a+eps).^(pp.m_l).*(hb+pp.hb_reg) ...                                   % blister influx
               - pp.c9*((gg.nddx(:,:)*Qx).*gg.Dy.^(-1) + (gg.nddy(:,:)*Qy).*gg.Dx.^(-1)) ... % x,y channel divergence
               - pp.c9*((gg.ndds(:,:)*Qs) + (gg.nddr(:,:)*Qr)) ...                           % s,r channel divergence
               + pp.c11*((gg.nmeanxin(:,gg.ein)*(Xicx(gg.ein)+Xix(gg.ein))).*gg.Dy.^(-1) +...% x,y dissipation
@@ -492,7 +492,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         % h_t + div(q) = Q_in - (p_b-p_w)/mu*h
         hb_t = - pp.c45*(gg.nddx(:,:)*qbx + gg.nddy(:,:)*qby)...
                + pp.c43*Qb_in./gg.Dx./gg.Dy...
-               - Qb_s...
+               - pp.c51*(pp.c0+pp.kl_h*hs+pp.kl_s*Smean).*(pb-phi+aa.phi_a+eps).^(pp.m_l).*(hb+pp.hb_reg)...
                + pp.c7*E; % moulin and lake influx;
 
         % display Vb and Rb in the calculation
@@ -866,10 +866,10 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
                 - c9*nddr(nin,cin)*DQr_phi(:,nin) ...
                 + sparse(1:length(nin),1:length(nin),Ds(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin))*( + c11*nmeans(nin,cin)*(DXics_phi(:,nin)+DXis_phi(:,nin)) ) ...
                 + sparse(1:length(nin),1:length(nin),Dr(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin))*( + c11*nmeanr(nin,cin)*(DXicr_phi(:,nin)+DXir_phi(:,nin)) ) ...
-                + sparse(1:length(nin), 1:length(nin), -pp.m_l*c52*(pp.c0+pp.kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)+eps).^(pp.m_l-1).*(hb(nin)+pp.hb_reg), length(nin), length(nin));
+                + sparse(1:length(nin), 1:length(nin), -pp.m_l*c52*(pp.c0+pp.kl_h*hs(nin)+pp.kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)+eps).^(pp.m_l-1).*(hb(nin)+pp.hb_reg), length(nin), length(nin));
 
-        DF2_pb = sparse(1:length(nin), 1:length(nin), pp.m_l*c52*(pp.c0+pp.kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)+eps).^(pp.m_l-1).*(hb(nin)+pp.hb_reg), length(nin), length(nin));
-        temp   = sparse(1:length(nin), nin, c52*(pp.c0+pp.kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)+eps).^(pp.m_l).*ones(length(nin),1), length(nin), nIJ);
+        DF2_pb = sparse(1:length(nin), 1:length(nin), pp.m_l*c52*(pp.c0+pp.kl_h*hs(nin)+pp.kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)+eps).^(pp.m_l-1).*(hb(nin)+pp.hb_reg), length(nin), length(nin));
+        temp   = sparse(1:length(nin), nin, c52*(pp.c0+pp.kl_h*hs(nin)+pp.kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)+eps).^(pp.m_l).*ones(length(nin),1), length(nin), nIJ);
         DF2_hb = temp(:,ns);
 
         DF2_Sx = sparse(1:length(nin),1:length(nin), Dy(nin).^(-1),length(nin),length(nin))*( -c8*dt^(-1).*nmeanx(nin,ein) ...
@@ -945,10 +945,14 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
 
         % DF8 nin eqns
         DF8_pb = - c45*(gg.nddx(nin,ein)*Dqbx_pb(:,nin) + gg.nddy(nin,fin)*Dqby_pb(:,nin))...
-                 + sparse(1:length(nin), 1:length(nin), - pp.m_l*c51*(pp.c0+pp.kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)+eps).^(pp.m_l-1).*(hb(nin)+pp.hb_reg), length(nin), length(nin));
-        DF8_phi = sparse(1:length(nin), 1:length(nin), + pp.m_l*c51*(pp.c0+pp.kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)+eps).^(pp.m_l-1).*(hb(nin)+pp.hb_reg), length(nin), length(nin));
-        temp = sparse(1:length(nin), nin, - ones(length(nin),1).*dt.^(-1) - c51*(pp.c0+pp.kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)+eps).^(pp.m_l), length(nin), nIJ);
+                 + sparse(1:length(nin), 1:length(nin), - pp.m_l*c51*(pp.c0+pp.kl_h*hs(nin)+pp.kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)+eps).^(pp.m_l-1).*(hb(nin)+pp.hb_reg), length(nin), length(nin));
+        DF8_phi = sparse(1:length(nin), 1:length(nin), + pp.m_l*c51*(pp.c0+pp.kl_h*hs(nin)+pp.kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)+eps).^(pp.m_l-1).*(hb(nin)+pp.hb_reg), length(nin), length(nin));
+        temp = sparse(1:length(nin), nin, - ones(length(nin),1).*dt.^(-1)... 
+                                          - c51*(pp.c0+pp.kl_h*hs(nin)+pp.kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)+eps).^pp.m_l, length(nin), nIJ);
         DF8_hb = temp(:,ns) - c45*(gg.nddx(nin,ein)*Dqbx_hb(:,ns) + gg.nddy(nin,fin)*Dqby_hb(:,ns));
+        temp = sparse(1:length(nin), nin, - c51*pp.kl_h*(pb(nin)-phi(nin)+phi_a(nin)+eps).^pp.m_l.*(hb(nin)+pp.hb_reg), length(nin), nIJ);
+        DF8_hs = temp(:,ns);
+
         DF8_Sx = sparse(1:length(nin), 1:length(nin), -0.25*c51*pp.kl_s*(pb(nin)-phi(nin)+phi_a(nin)+eps).^pp.m_l.*(hb(nin)+pp.hb_reg), length(nin), length(nin))*nmeanx(nin,ein);
         DF8_Sy = sparse(1:length(nin), 1:length(nin), -0.25*c51*pp.kl_s*(pb(nin)-phi(nin)+phi_a(nin)+eps).^pp.m_l.*(hb(nin)+pp.hb_reg), length(nin), length(nin))*nmeany(nin,fin);
         DF8_Ss = sparse(1:length(nin), 1:length(nin), -0.25*c51*pp.kl_s*(pb(nin)-phi(nin)+phi_a(nin)+eps).^pp.m_l.*(hb(nin)+pp.hb_reg), length(nin), length(nin))*nmeans(nin,cin);
@@ -1006,7 +1010,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
                 DF5_hs DF5_phi sparse(length(cin),length(ein)) sparse(length(cin),length(fin)) DF5_Ss sparse(length(cin),length(cin)) sparse(length(cin),length(ns)) DF5_pb; ...
                 DF6_hs DF6_phi sparse(length(cin),length(ein)) sparse(length(cin),length(fin)) sparse(length(cin),length(cin)) DF6_Sr sparse(length(cin),length(ns)) DF6_pb; ...
                 sparse(length(ns),length(ns)) sparse(length(ns),length(nin)) sparse(length(ns),length(ein)) sparse(length(ns),length(fin)) sparse(length(ns),length(cin)) sparse(length(ns),length(cin)) DF7_hb DF7_pb; ...
-                sparse(length(nin),length(ns)) DF8_phi DF8_Sx DF8_Sy DF8_Ss DF8_Sr DF8_hb DF8_pb ];
+                DF8_hs DF8_phi DF8_Sx DF8_Sy DF8_Ss DF8_Sr DF8_hb DF8_pb ];
         ii = [];
         if ~opts.no_sheet, ii = [ ii 1:length(ns) ]; end % include sheet equation
         ii = [ ii length(ns)+(1:length(nin)) ]; % include the mass conservation equation
@@ -1119,15 +1123,18 @@ function out = Dhe_fun(N,p_i,pp,~)
 end
 
 function out = Qbh_fun(hb,Smean,pb,phi,pp,aa)
-    out = pp.c52*(pp.c0+pp.kl_s*Smean).*(pb-phi+aa.phi_a+eps).^(pp.m_l).*(hb+pp.hb_reg); % pp.kl_h*hs/ps.hs
+    out = pp.c52*(pp.c0+pp.kl_h*hs+pp.kl_s*Smean).*(pb-phi+aa.phi_a+eps).^(pp.m_l).*(hb+pp.hb_reg); % pp.kl_h*hs/ps.hs
+    % out = pp.c52*(1+tanh(Smean/pp.S_crit)).*(hb+pp.hb_reg);
 end
 
 function out = Qbb_fun(hb,Smean,pb,phi,pp,aa)
-    out = pp.c51*(pp.c0+pp.kl_s*Smean).*(pb-phi+aa.phi_a+eps).^(pp.m_l).*(hb+pp.hb_reg); % pp.kl_h*hs/ps.hs
+    out = pp.c51*(pp.c0+pp.kl_h*hs+pp.kl_s*Smean).*(pb-phi+aa.phi_a+eps).^(pp.m_l).*(hb+pp.hb_reg); % pp.kl_h*hs/ps.hs
+    % out = pp.c51*(1+tanh(Smean/pp.S_crit)).*(hb+pp.hb_reg);
 end
 
 function out = DQb_Dhb(hb,Smean,pb,phi,pp,aa)
     out = pp.c52*(pp.c0+pp.kl_s*Smean).*(pb-phi+aa.phi_a+eps).^(pp.m_l); % pp.kl_h*hs/ps.hs
+    % out = pp.c51*(1+tanh(Smean/pp.S_crit));
 end
 
 function out = DQb_DS(hb,Smean,pb,phi,pp,aa)
