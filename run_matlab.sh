@@ -5,11 +5,12 @@
 #          "nevis_regional_RACMO_alpha0_05_kls1e0_mu1e1_c01e_1" \
 #          "nevis_regional_RACMO_alpha0_05_kls1e0_mu1e1_c01e_2")
 
-scripts=("nreg_RACMO_cg0_00_a0_2_k1_mu1e1_c1_V1e8_t300" \
-         "nreg_RACMO_cg0_02_a0_2_k0_mu1e1_c1_V1e8_t300" \
-         "nreg_RACMO_cg0_02_a0_2_k1_mu1e1_c1_V1e8_t300" \
-         "nreg_RACMO_cg0_00_a0_05_k0_mu1e1_c1_V1e8_t300" \
-         "nreg_RACMO_cg0_00_a0_05_k1_mu1e1_c1_V1e8_t300")
+scripts=("nreg_0mm_cg0_00_a0_01_kh0_ks1_mu5e0_c1_V1e8_t300" \
+         "nreg_0mm_cg0_00_a0_01_kh0_ks10_mu5e0_c1_V1e8_t300" \
+         "nreg_0mm_cg0_00_a0_01_kh1_ks1_mu5e0_c1_V1e8_t300" \
+         "nreg_60mm_cg0_00_a0_01_kh0_ks1_mu5e0_c1_V1e8_t300" \
+         "nreg_60mm_cg0_00_a0_01_kh0_ks10_mu5e0_c1_V1e8_t300" \
+         "nreg_60mm_cg0_00_a0_01_kh1_ks1_mu5e0_c1_V1e8_t300")
 
 # 循环并并行运行每个 MATLAB 脚本
 for script in "${scripts[@]}"

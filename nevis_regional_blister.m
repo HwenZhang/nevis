@@ -7,7 +7,7 @@ oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'nreg_1mm_cg0_00_a0_05_kh0_ks1_mu1e1_c1_V1e8_t300';           
+oo.casename = 'nreg_60mm_cg0_00_a0_01_kh1_ks1_mu5e0_c1_V1e8_t300';           
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
@@ -23,9 +23,7 @@ oo.evaluate_variables = 1;
 oo.use_modified_N = 0;
 oo.input_gaussian = 1;
 oo.relaxation_term = 0;                        % 0 is alpha hb, 1 is alpha deltap hb
-
-pd.alpha_b = 1.0/(20*pd.td);                    % relaxation rate (s^-1)
-pd.mu = 1.0e+1;                                % water viscosity (Pa s)
+pd.mu = 5.0e0;                                % water viscosity (Pa s)
 pd.Ye = 8.8e9;                                 % Young's modulus (Pa)
 pd.B = pd.Ye*(1e3)^3/(12*(1-0.33^2));          % bending stiffness (Pa m^3)
 
@@ -35,7 +33,7 @@ pd.B = pd.Ye*(1e3)^3/(12*(1-0.33^2));          % bending stiffness (Pa m^3)
 % 2: channel control, enhanced at channels: -\alpha_0 (\tanh(S/S_c))
 
 if oo.relaxation_term == 0    
-    pd.alpha_b = 1.0/(20*pd.td);                 % relaxation rate (s^-1)
+    pd.alpha_b = 1.0/(100*pd.td);                 % relaxation rate (s^-1)
     pd.kappa_b = 0;                             % relaxation coeff 
     pd.m_l=0;
 elseif oo.relaxation_term == 1
@@ -47,9 +45,6 @@ elseif oo.relaxation_term == 2
     pd.S_crit = 0.1;                            % critical cross section (m^2), below which there is no leakage to the drainage system
     pd.m_l=0;
 end
-pd.kl_s = 1.0;                               % leakage dependence on S
-pd.kl_h = 0.0;                               % leakage dependence on h
-pd.c0 = 1.0;                                 % leakage dependence on h
 
 % alter default parmaeters 
 pd.c_e_reg2 = 0.00/1e3/9.81;        % elastic sheet thickness [m/Pa]
@@ -64,6 +59,10 @@ pd.tau_b = 60e3; %60 kPa            % driving stress [Pa]
 pd.melt = pd.G/pd.rho_w/pd.L;       % geothermal heat derived basal melt [m/s]
 pd.melt = (pd.G+(pd.u_b*pd.tau_b))/pd.rho_w/pd.L;  % geothermal heat + frictional heating derived basal melt [m/s]
 pd.meltinterior = ((pd.G+((100/pd.ty)*pd.tau_b))/pd.rho_w/pd.L)*1e3; % flux of basal melt up to the ~icedivide (200 km) [m2/s]
+pd.E_lapse = 40/1000/pd.td/10^3;
+pd.kl_s = 1.0;                               % leakage dependence on S
+pd.kl_h = 1.0;                               % leakage dependence on h
+pd.c0 = 1.0;                                 % 
 
 % non-dimensionalise
 ps = struct;
@@ -147,7 +146,7 @@ pp.sum_m = pp_temp.sum_m; % consistent locations
 load([oo.dn, 'runoff_2009_nevis140.mat']);       % load data for year of interest (previously collated)
 
 % RACMO distributed input
-pp.meltE = @(t) (1/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t))); 
+pp.meltE = @(t) (60/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t))); 
 oo.runoff_function = 0;                          % If set to 1, use RACMO input
                                                  % If set to 0, use prescribed input
 pp.runoff_function = @(t) runoff(((t*ps.t)/pd.td),runoff_2009_nevis140)./ps.m;  % RACMO distributed input (m/sec)

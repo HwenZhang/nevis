@@ -1,7 +1,7 @@
 %% Import necessary libraries
 % casename = 'nevis_regional_RACMO_kappa1e_11_kls1e0_mu1e1_c01e0';
 casename = oo.casename;
-casename = 'nreg_RACMO_cg0_02_a0_2_k0_mu1e1_c1_V1e8_t300';
+% casename = 'nreg_1mm_cg0_00_a0_01_kh0_ks1_mu1e1_c1_V1e8_t300';
 % casename = 'test_2009_140km_mu2e1_kappa0';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -18,9 +18,9 @@ tmin_d = tmin*ps.t/pd.td;
 tmax_d = tmax*ps.t/pd.td;                        % time range for the plot
 t_init = 1450; t_end = 1600;                     % time range for animation
 
-t_init = 150; t_end = 360;                       % time range for animation
+t_init = 275; t_end = 400;                       % time range for animation
 tmin = 0*pd.td/ps.t;
-tmax = 365*pd.td/ps.t;
+tmax = 400*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                        % time range for the plot
 pp.c0=1.0;
@@ -238,7 +238,7 @@ yyaxis right
     plot(ax,t,V_b,'r-',LineWidth=1.5);
     hold on
     % plot(ax,t,Rb_analytical,'r--',LineWidth=1.5);
-    ylim([0 1.5e9])
+    ylim([0 1.1e8])
     ylabel('V_b [ m ]');
     legend('p_b','p_w','V_b','NumColumns',2,location='southwest')
 
