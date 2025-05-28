@@ -157,7 +157,7 @@ pp.meltE = @(t) (0/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t)));
 pp.input_function = @(t) runoff_moulins(((t*ps.t)/pd.td),runoff_2009_nevis140,pp.sum_m,gg.Dx(1))./ps.m; % RACMO moulin input (m3/sec)
 
 %% Timestep 
-if oo.initial_condition == 0
+if oo.initial_condition
     % load initial condition from 2008 DOY 365 (default)
     load(['./initial_condition/', 'nevis_init_default0365.mat'],'vv')
 else
@@ -168,11 +168,11 @@ oo.dt = 1/24*pd.td/ps.t;
 oo.save_timesteps = 1; 
 oo.save_pts_all = 1; 
 oo.pts_ni = pp.ni_l;                            % save lake pressures
-oo.t_span = (1:1:1000)*pd.td/ps.t;               % time span for simulation (in ps.t)
+t_span = (1:1:1000)*pd.td/ps.t;               % time span for simulation (in ps.t)
 
 %% save initial parameters
 save([oo.rn, oo.fn],'pp','pd','ps','gg','aa','vv','oo');
-[tt,vv,info] = nevis_timesteps(oo.t_span,vv,aa,pp,gg,oo);
+[tt,vv,info] = nevis_timesteps(t_span,vv,aa,pp,gg,oo);
 
 %% expand/update variables
 aa = nevis_inputs(vv.t,aa,vv,pp,gg,oo);

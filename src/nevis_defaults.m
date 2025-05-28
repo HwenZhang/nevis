@@ -93,7 +93,7 @@ if ~isfield(pd,'kl_h'), pd.kl_h = 0.0; end
 if ~isfield(pd,'c0'), pd.c0 = 0.0; end
 
 %% Default options
-%method options
+% method options
 if ~isfield(oo,'no_channels'), oo.no_channels = 0; end
 if ~isfield(oo,'no_sheet'), oo.no_sheet = 0; end
 if ~isfield(oo,'noXi'), oo.noXi = 1; end
@@ -102,26 +102,34 @@ if ~isfield(oo,'mean_perms'), oo.mean_perms = 1; end
 if ~isfield(oo,'blister'), oo.blister = 1; end
 if ~isfield(oo,'use_modified_N'), oo.use_modified_N = 0; end
 if ~isfield(oo,'input_gaussian'), oo.input_gaussian = 0; end
-if ~isfield(oo,'relaxation_term'), oo.relaxation_term = 0; end % 0 is alpha hb, 1 is alpha deltap hb
+if ~isfield(oo,'relaxation_term'), oo.relaxation_term = 0; end      % 0 is alpha hb, 1 is alpha deltap hb
+if ~isfield(oo,'initial_condition'), oo.initial_condition = 0; end  % 0 is using default file 0365.mat, 1 is using steady-state drainage system
+if ~isfield(oo,'include_ice'), oo.include_ice = 0; end              % couple to ice flow
+if ~isfield(oo,'include_blister'), oo.include_blister = 1; end      % couple to blister
+if ~isfield(oo,'include_pressure'), oo.include_pressure = 1; end    % couple to pressure
+
 % if ~isfield(oo,'method'), oo.method = 'lrtb_vel'; end % [ obsolete ]
 % if ~isfield(oo,'include_moulins'), oo.include_moulins = 1; end  % [ obsolete ]
 % if ~isfield(oo,'include_diag'), oo.include_diag = 1; end  % [ obsolete ]
-%input options
+
+% input options
+if ~isfield(oo,'surface_runoff'), oo.surface_runoff = 0; end   % use surface runoff: 1 for surface runoff, 0 for direct moulin input
+if ~isfield(oo,'RACMO_runoff'), oo.RACMO_runoff = 0; end       % use pp.runoff function(t) for runoff
 if ~isfield(oo,'distributed_input'), oo.distributed_input = 0; end
-if ~isfield(oo,'input_function'), oo.input_function = 0; end
-%saving options
+if ~isfield(oo,'include_lake'), oo.include_lake = 1; end
+    
+% saving options
 if ~isfield(oo,'save_timesteps'), oo.save_timesteps = 0; end
 if ~isfield(oo,'save_pts_all'), oo.save_pts_all = 0; end
 if ~isfield(oo,'code'), oo.root = ''; end
 if ~isfield(oo,'root'), oo.root = ''; end
 if ~isfield(oo,'fn'), oo.fn = 'var'; end
-%plotting options
+
+% plotting options
 if ~isfield(oo,'reversey'), oo.reversey = 0; end
 if ~isfield(oo,'halfcmap'), oo.halfcmap = 1; end
-%timestepping options
-if ~isfield(oo,'include_ice'), oo.include_ice = 0; end              % couple to ice flow
-if ~isfield(oo,'include_blister'), oo.include_blister = 1; end      % couple to blister
-if ~isfield(oo,'include_pressure'), oo.include_pressure = 1; end    % couple to pressure
+
+% timestepping options
 if ~isfield(oo,'change_timestep'), oo.change_timestep = 1; end
 if ~isfield(oo,'adjust_boundaries'), oo.adjust_boundaries = 0; end
 if ~isfield(oo,'Tol_F'), oo.Tol_F = 1e-3; end
@@ -131,4 +139,3 @@ if ~isfield(oo,'check_Fs'), oo.check_Fs = 1; end
 if ~isfield(oo,'Tol_Fs'), oo.Tol_Fs = oo.Tol_F*[1 1 .1 .1 .1 .1]; end
 
 end
-

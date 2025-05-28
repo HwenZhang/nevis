@@ -1,7 +1,7 @@
 %% Import necessary libraries
 % casename = 'nevis_regional_RACMO_kappa1e_11_kls1e0_mu1e1_c01e0';
-casename = oo.casename;
-% casename = 'nreg_1mm_cg0_00_a0_01_kh0_ks1_mu1e1_c1_V1e8_t300';
+% casename = oo.casename;
+casename = 'nreg_0mm_cg0_00_a0_1_kh0_ks1_mu5e0_c1_V0e8';
 % casename = 'test_2009_140km_mu2e1_kappa0';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -11,18 +11,19 @@ path = [oo.rn,'/'];
 addpath(oo.code);                               % add path to code
   
 dt = 0.2*pd.td/ps.t;
-t_span = (0:2000)*(0.2*pd.td/ps.t);
-tmin = 0*pd.td/ps.t;
-tmax = 400*pd.td/ps.t;
-tmin_d = tmin*ps.t/pd.td; 
-tmax_d = tmax*ps.t/pd.td;                        % time range for the plot
-t_init = 1450; t_end = 1600;                     % time range for animation
 
-t_init = 275; t_end = 400;                       % time range for animation
+t_init = 900; t_end = 1000;                       % time range for animation
 tmin = 0*pd.td/ps.t;
-tmax = 400*pd.td/ps.t;
+tmax = 1000*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                        % time range for the plot
+
+tmin = 0*pd.td/ps.t;
+tmax = 800*pd.td/ps.t;
+tmin_d = tmin*ps.t/pd.td; 
+tmax_d = tmax*ps.t/pd.td;                        % time range for the plot
+t_init = 350; t_end = 400;                       % time range for animation
+
 pp.c0=1.0;
 pp.kl_s=0;
 pd.m_l=1.0;
@@ -65,7 +66,7 @@ E = (ps.m*ps.x^2)*[tt.E];      % dimensional source terms  (m^3/s)
 h_b = ps.hb*[tt.pts_hb];       %
 p_b = ps.phi*[tt.pts_pb];      %
 V_b = ps.x^2*ps.hb*[tt.Vb];
-R_b = ps.x*[tt.Rb];
+% R_b = ps.x*[tt.Rb];
 
 % phi = (ps.phi)*[tt.phi];     % dimensional hydrulic potential (MPa)
 N = (ps.phi)*[tt.N];           % dimensional effective stress (MPa)
@@ -198,7 +199,7 @@ yyaxis right
 
 % panel (e)
 ax = nexttile(leftLayout);
-hb_analytical = 3*V_b./(pi*R_b.^2);
+% hb_analytical = 3*V_b./(pi*R_b.^2);
 yyaxis left
     plot(ax,t,h_b,'b-',LineWidth=1.5);
     hold on
@@ -238,7 +239,7 @@ yyaxis right
     plot(ax,t,V_b,'r-',LineWidth=1.5);
     hold on
     % plot(ax,t,Rb_analytical,'r--',LineWidth=1.5);
-    ylim([0 1.1e8])
+    ylim([0 1.1e9])
     ylabel('V_b [ m ]');
     legend('p_b','p_w','V_b','NumColumns',2,location='southwest')
 
@@ -254,7 +255,7 @@ pqnet = pcolor(ax,xx,yy,zq);
 set(pqnet,'linestyle','none'); % shading interp
 cx = colorbar();
 colormap(parula)
-clim([0 1])
+clim([0 5])
 cx.Label.String = 'q_{all} [ m^2 s^{-1} ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
@@ -380,7 +381,7 @@ axis equal
 axis tight
 
 %% make video
-v = VideoWriter(['./results/videos/' casename],'MPEG-4');
+v = VideoWriter(['./results/videos/' casename '_2'],'MPEG-4');
 % v = VideoWriter(['./results/' oo.casename],'MPEG-4');
 v.FrameRate = 1;
 open(v)

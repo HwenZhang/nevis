@@ -133,7 +133,7 @@ while t<t_stop+oo.dt_min
     tt(ti).t = t;
     tt(ti).m = sum(aa.m(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));  % basal melt, scaled with ps.m*ps.x^2
     % supraglacial input, scaled with ps.m*ps.x^2
-    tt(ti).E = sum(aa.E(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));
+    tt(ti).E = sum(aa.E(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));  % moulin input, scaled with ps.m*ps.x^2
     
     tt(ti).Qb_in = aa.Qb_in(pp.ni_l);                         % inflow to the blister
     tt(ti).Qb_dec = vv2.Qb_dec;                               % relaxation term of the blister
@@ -143,7 +143,7 @@ while t<t_stop+oo.dt_min
 
     % channel cross sectional area at the nodes
     temp = gg.nmeanx*vv.Sx;
-    tt(ti).Sx_b = temp(pp.ni_l);
+    tt(ti).Sx_b = temp(pp.ni_l);                              % average channel cross section in x-direction
     temp = gg.nmeany*vv.Sy;
     tt(ti).Sy_b = temp(pp.ni_l);
     temp = gg.nmeans*vv.Ss;
@@ -153,34 +153,30 @@ while t<t_stop+oo.dt_min
 
     tt(ti).Q_in = vv2.Q_in;                                   % inflow, scaled with ps.Q
     tt(ti).Q_out = vv2.Q_out;                                 % outflow, scaled with ps.Q
-    tt(ti).Qb_out = vv2.Qb_out;                               % outflow from the blister scaled with ps.Q
+    tt(ti).Qb_out = vv2.Qb_out;                               % outflow from the blister scaled with ps.Q, from residual
 
     tt(ti).Q_outQ = vv2.Q_outQ;                               % channel outflow, scaled with ps.Q
     tt(ti).Q_outq = vv2.Q_outq;                               % sheet outflow, scaled with ps.Q
-    tt(ti).Q_outb = vv2.Q_outb;                               % blister outflow, scaled with ps.Q
+    tt(ti).Q_outb = vv2.Q_outb;                               % blister outflow, scaled with ps.Q, from calculation of the flux term
 
     tt(ti).phi = mean(vv.phi(gg.ns));                         % mean potential, scaled with ps.phi
-    % mean effective pressure, scaled with ps.phi
-    tt(ti).N = mean(aa.phi_0(gg.ns)-vv.phi(gg.ns));  
-
-    % total cavity sheet volume, scaled with ps.h*ps.x^2
-    tt(ti).hs = sum(vv.hs(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns)); 
-
-    % total blister volume, scaled with ps.hb*ps.x^2
-    tt(ti).Vb = sum(vv.hb(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns)); 
-
-    % blister radius (only works for a single blister)
-    [~, maxIdx] = max(vv.hb);
-    nonzeroIdx = find(vv.hb > 1e-4*vv.hb(maxIdx));
-    [~, localIdx] = min(vv.hb(nonzeroIdx));
-    minidx = nonzeroIdx(localIdx);
-    if isempty(minidx)
-        tt(ti).Rb = 0;
-    else
-        tt(ti).Rb = ((gg.nx(maxIdx)-gg.nx(minidx)).^2 + (gg.ny(maxIdx)-gg.ny(minidx)).^2).^(1/2);
-    end
-    disp(['Radius of the blister is ' num2str(tt(ti).Rb) '.']);
+    tt(ti).N = mean(aa.phi_0(gg.ns)-vv.phi(gg.ns));           % mean effective pressure, scaled with ps.phi
+    tt(ti).hs = sum(vv.hs(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));% total cavity sheet volume, scaled with ps.h*ps.x^2
+    tt(ti).Vb = sum(vv.hb(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));% total blister volume, scaled with ps.hb*ps.x^2
     disp(['Volume of the blister is ' num2str(tt(ti).Vb) '.']);
+    
+    % blister radius (only works for a single blister)
+    % [~, maxIdx] = max(vv.hb);
+    % nonzeroIdx = find(vv.hb > 1e-4*vv.hb(maxIdx));
+    % [~, localIdx] = min(vv.hb(nonzeroIdx));
+    % minidx = nonzeroIdx(localIdx);
+    % if isempty(minidx)
+    %     tt(ti).Rb = 0;
+    % else
+    %     tt(ti).Rb = ((gg.nx(maxIdx)-gg.nx(minidx)).^2 + (gg.ny(maxIdx)-gg.ny(minidx)).^2).^(1/2);
+    % end
+    % disp(['Radius of the blister is ' num2str(tt(ti).Rb) '.']);
+    % 
    
     % total channel volume, scaled with ps.S*ps.x
     tt(ti).S = sum(vv.Sx(gg.ein).*(gg.emean(gg.ein,:)*gg.Dx))+...
