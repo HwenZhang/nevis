@@ -1,11 +1,9 @@
 %% Script to run NEVIS regional model 
-% This script is designed to run the NEVIS regional model for the outlet glacier in Stevens et al. 2018
-% The surface runoff data can be either from RACMO or a prescribed function
-% The surface and bed profiles are the same as in Stevens et al. 2018
-% Initial condition can be either from the default condition (2008 DOY 365) or
-% from a steady-state drainage system, either summertime or wintertime
+% This script is designed to run the NEVIS 1-dimensional model for an idealised ice sheet
+% The surface runoff is set up by a prescribed function
+% The surface and bed profiles are the same as in Hewitt 2013
 
-% Author: Hanwen Zhang 
+% Author: Hanwen Zhang  
 % Date: 2025-05
 format compact
 
@@ -15,7 +13,7 @@ oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'nreg_60mm_cg0_00_a0_01_kh0_ks1_mu5e0_c1_V0e8';           
+oo.casename = 'n1d_30mm_cg0_00_a0_1_kh0_ks1_mu5e0_c1_V0e8';           
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
@@ -35,7 +33,7 @@ oo.initial_condition = 1;                       % 1 is default condition from 03
 
 % leakage term
 if oo.relaxation_term == 0                      % 0: exponential decay: -\alpha_0(1+h/hc+S/Sc) h_b         
-    pd.alpha_b = 1.0/(100*pd.td);                % relaxation rate (s^-1)
+    pd.alpha_b = 1.0/(10*pd.td);                % relaxation rate (s^-1)
     pd.kappa_b = 0;                             % relaxation coeff 
     pd.m_l=0;
 elseif oo.relaxation_term == 1                  % 1: proportional to pressure diff and thickness: -\kappa/\mu(p_b-p_w)h_b
@@ -49,7 +47,7 @@ elseif oo.relaxation_term == 2                  % 2: channel control, enhanced a
 end
 
 % alter default parmaeters 
-runoff_max = 60;                                % prescribed runoff (mm/day)
+runoff_max = 30;                                % prescribed runoff (mm/day)
 pd.mu = 5.0e0;                                  % water viscosity (Pa s)
 pd.Ye = 8.8e9;                                  % Young's modulus (Pa)
 pd.B = pd.Ye*(1e3)^3/(12*(1-0.33^2));           % bending stiffness (Pa m^3)
@@ -75,13 +73,14 @@ ps = struct;
 [ps,pp] = nevis_nondimension(pd,ps,oo);   
 
 %% grid and geometry
-load([oo.dn, 'morlighem_for_nevis_140km']);       % load Morlighem bedmap (previously collated)
-dd = morlighem_for_nevis_140km; dd.skip = 6;
-gg = nevis_grid(dd.X_km(1:dd.skip:end,1)/ps.x,dd.Y_km(1,1:dd.skip:end)/ps.x,oo); 
-b = reshape(dd.B_km(1:dd.skip:end,1:dd.skip:end)/ps.z,gg.nIJ,1);
-s = reshape(dd.S_km(1:dd.skip:end,1:dd.skip:end)/ps.z,gg.nIJ,1);
-x = dd.X_km(1:dd.skip:end,1)/ps.x;
-y = dd.Y_km(1,1:dd.skip:end)/ps.x;
+L = 5e4;                               % length of the domain [m]
+x = linspace(0,(L/ps.x),201); 
+y = linspace(0,(L/ps.x),1);            % 1-d grid of length 50km 
+oo.yperiodic = 1;                      % oo.yperiodic = 1 necessary for a 1-d grid
+oo.xperiodic = 0;
+gg = nevis_grid(x,y,oo); 
+b = (0/ps.z)*gg.nx;                    % flat bed
+s = (1060/ps.z)*(1-ps.x*gg.nx/L).^0.5; % ice surface topography 
 
 %% mask with minimum ice thickness
 H = max(s-b,0);
@@ -110,32 +109,17 @@ vv.hs = ((((pd.u_b*pd.h_r/pd.l_r)./((pd.u_b/pd.l_r)+(pd.K_c.*((ps.phi*N).^3)))))
 aa.phi_b = max(aa.phi_0,aa.phi_a);                % prescribed boundary pressure at overburden or atmospheric (LAS 18 Nov. 2015)
 
 %% moulins 
-oo.density_moulins = 1;
 oo.keep_all_moulins = 0;
-
-% create new moulin locations:
-% [pp.ni_m,pp.sum_m] = nevis_moulins_density_joughin([],[],gg,oo,aa,ps);
-
-% load consistent location moulins for all runs:
-temp = load([oo.dn, 'nevis_170207a.mat'], 'pp');
-pp_temp = temp.pp;
-pp.ni_m = pp_temp.ni_m;   % consistent locations
-pp.sum_m = pp_temp.sum_m; % consistent locations
+oo.random_moulins = 10;         
+[pp.ni_m,pp.sum_m] = nevis_moulins([],[],gg,oo);  % one moulin at the lake location
 
 %% supraglacial lakes
- pp.x_l = [1e4/ps.x];                                            % x-coord of lakes
- pp.y_l = [-1e4/ps.x];                                           % y-coord of lakes
- pp.V_l = [0e8/(ps.Q0*ps.t)];                                    % volume of lakes         
- pp.t_drainage = [100*pd.td/ps.t];                               % time of lake drainages (assumed to be the middle time of the Gaussian)
- pp.t_duration = [0.25*pd.td/ps.t];                              % duration of lake drainages, 6hr
- [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo);          % calculate lake catchments 
-
-%% parameters for timesteping
- % hourly timesteps, save timesteps, save moulin pressures
- oo.dt = 0.01/24*pd.td/ps.t; % hourly timesteps
- oo.save_timesteps = 1;      % save timesteps
- oo.save_pts_all = 1; 
- oo.pts_ni = pp.ni_l;   
+pp.x_l = [0.75*L/ps.x];                                         % x-coord of lakes
+pp.y_l = [0];                                                   % y-coord of lakes
+pp.V_l = [0e8/(ps.Q0*ps.t)];                                    % volume of lakes         
+pp.t_drainage = [100*pd.td/ps.t];                               % time of lake drainages (assumed to be the middle time of the Gaussian)
+pp.t_duration = [0.25*pd.td/ps.t];                              % duration of lake drainages, 6hr
+[pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo);          % calculate lake catchments 
 
 %% surface input
 % to include distributed runoff from e.g. RACMO, define function
@@ -158,19 +142,10 @@ pp.meltE = @(t) (runoff_max/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t)));
 pp.input_function = @(t) runoff_moulins(((t*ps.t)/pd.td),runoff_2009_nevis140,pp.sum_m,gg.Dx(1))./ps.m; % RACMO moulin input (m3/sec)
 
 %% Timestep 
-if oo.initial_condition
-    % load initial condition from 2008 DOY 365 (default)
-    load(['./initial_condition/', 'nevis_init_default0365.mat'],'vv')
-    pp.meltE = @(t) (runoff_max/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t)));
-else
-    % use steady-state drainage system, either summertime or wintertime
-    load(['./initial_condition/', 'nevis_init_condition_summer_alpha0_1.mat'],'vv')
-    pp.meltE = @(t) (runoff_max/1000/pd.td/ps.m);
-end
 oo.dt = 1/24*pd.td/ps.t; 
 oo.save_timesteps = 1; 
 oo.save_pts_all = 1; 
-oo.pts_ni = pp.ni_l;                            % save lake pressures
+oo.pts_ni = pp.ni_l;                             % save lake pressures
 oo.t_span = (1:1:1000)*pd.td/ps.t;               % time span for simulation (in ps.t)
 
 %% save initial parameters
@@ -185,4 +160,4 @@ vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo); % calculate node discharge
 save([oo.rn, oo.fn],'pp','pd','ps','gg','aa','oo','tt');
 
 %% Simple animate
-nevis_regional_animation
+% nevis_regional_animation

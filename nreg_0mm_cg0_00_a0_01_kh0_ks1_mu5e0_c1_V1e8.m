@@ -15,7 +15,8 @@ oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'nreg_60mm_cg0_00_a0_01_kh0_ks1_mu5e0_c1_V0e8';           
+oo.casename = 'nreg_0mm_cg0_00_a0_01_kh0_ks1_mu5e0_c1_V1e8'; 
+% oo.casename = 'nreg_RACMO_cg0_00_a0_01_kh0_ks1_mu5e0_c1_V0e8';           
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
@@ -31,7 +32,7 @@ oo.evaluate_variables = 1;
 oo.use_modified_N = 0;
 oo.input_gaussian = 1;
 oo.relaxation_term = 0;                         % 0 is alpha hb, 1 is alpha deltap hb
-oo.initial_condition = 1;                       % 1 is default condition from 0365.mat, 0 is using steady-state drainage system, wither summertime or wintertime
+oo.initial_condition = 0;                       % 1 is default condition from 0365.mat, 0 is using steady-state drainage system, wither summertime or wintertime
 
 % leakage term
 if oo.relaxation_term == 0                      % 0: exponential decay: -\alpha_0(1+h/hc+S/Sc) h_b         
@@ -49,7 +50,7 @@ elseif oo.relaxation_term == 2                  % 2: channel control, enhanced a
 end
 
 % alter default parmaeters 
-runoff_max = 60;                                % prescribed runoff (mm/day)
+runoff_max = 0;                                % prescribed runoff (mm/day)
 pd.mu = 5.0e0;                                  % water viscosity (Pa s)
 pd.Ye = 8.8e9;                                  % Young's modulus (Pa)
 pd.B = pd.Ye*(1e3)^3/(12*(1-0.33^2));           % bending stiffness (Pa m^3)
@@ -125,7 +126,7 @@ pp.sum_m = pp_temp.sum_m; % consistent locations
 %% supraglacial lakes
  pp.x_l = [1e4/ps.x];                                            % x-coord of lakes
  pp.y_l = [-1e4/ps.x];                                           % y-coord of lakes
- pp.V_l = [0e8/(ps.Q0*ps.t)];                                    % volume of lakes         
+ pp.V_l = [1e8/(ps.Q0*ps.t)];                                    % volume of lakes         
  pp.t_drainage = [100*pd.td/ps.t];                               % time of lake drainages (assumed to be the middle time of the Gaussian)
  pp.t_duration = [0.25*pd.td/ps.t];                              % duration of lake drainages, 6hr
  [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo);          % calculate lake catchments 
@@ -164,14 +165,15 @@ if oo.initial_condition
     pp.meltE = @(t) (runoff_max/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t)));
 else
     % use steady-state drainage system, either summertime or wintertime
-    load(['./initial_condition/', 'nevis_init_condition_summer_alpha0_1.mat'],'vv')
+    % load(['./initial_condition/', 'nevis_init_condition_summer_alpha0_01.mat'],'vv')
+    load(['./initial_condition/', 'nevis_init_condition_winter_alpha0_01.mat'],'vv')
     pp.meltE = @(t) (runoff_max/1000/pd.td/ps.m);
 end
 oo.dt = 1/24*pd.td/ps.t; 
 oo.save_timesteps = 1; 
 oo.save_pts_all = 1; 
 oo.pts_ni = pp.ni_l;                            % save lake pressures
-oo.t_span = (1:1:1000)*pd.td/ps.t;               % time span for simulation (in ps.t)
+oo.t_span = (1:1:800)*pd.td/ps.t;               % time span for simulation (in ps.t)
 
 %% save initial parameters
 save([oo.rn, oo.fn],'pp','pd','ps','gg','aa','vv','oo');

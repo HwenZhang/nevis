@@ -1,6 +1,7 @@
 #!/bin/bash
 
 original_file="nevis_regional_blister.m"
+original_file="nevis_1d_example.m"
 
 # Debug: Print lines that mention oo.casename
 echo "Looking for oo.casename in $original_file..."

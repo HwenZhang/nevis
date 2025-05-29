@@ -1,5 +1,5 @@
 %% Import necessary libraries
-casename = 'nevis_regional_test_2009_140km_mu1e1_kappa1e_11_Vl1e8_td200';
+casename = 'nreg_60mm_cg0_00_a0_1_kh0_ks1_mu5e0_c1_V0e8';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];             % path to the case results
@@ -16,7 +16,7 @@ cmap = [linspace(0,1,n)', linspace(0,1,n)', ones(n,1);
 
 %% read in the screenshot at the intial timestep
 formatSpec = '%04d';
-tframe = 21.0;
+tframe = 1.0;
 nframe = floor(tframe/0.1)+1;
 vva = load([path num2str(nframe,formatSpec)], 'vv');
 vva = vva.vv;

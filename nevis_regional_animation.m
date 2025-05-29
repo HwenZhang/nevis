@@ -1,7 +1,5 @@
 %% Import necessary libraries
-% casename = 'nevis_regional_RACMO_kappa1e_11_kls1e0_mu1e1_c01e0';
-% casename = oo.casename;
-casename = 'nreg_0mm_cg0_00_a0_1_kh0_ks1_mu5e0_c1_V0e8';
+casename = 'nreg_60mm_cg0_00_a0_01_kh0_ks1_mu5e0_c1_V0e8';
 % casename = 'test_2009_140km_mu2e1_kappa0';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -19,10 +17,10 @@ tmin_d = tmin*ps.t/pd.td;
 tmax_d = tmax*ps.t/pd.td;                        % time range for the plot
 
 tmin = 0*pd.td/ps.t;
-tmax = 800*pd.td/ps.t;
+tmax = 1000*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                        % time range for the plot
-t_init = 350; t_end = 400;                       % time range for animation
+t_init = 950; t_end = 1000;                       % time range for animation
 
 pp.c0=1.0;
 pp.kl_s=0;
