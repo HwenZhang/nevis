@@ -101,7 +101,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     if isfield(vv,'m'), m = vv.m; else m = aa.m; end
     if isfield(vv,'E'), E = vv.E; else E = aa.E; end
     if isfield(vv,'Qb_in'), Qb_in = vv.Qb; else Qb_in = aa.Qb_in; end
-    % if isfield(vv,'Ql'), Ql = vv.Ql; else Ql = aa.Ql; end
+    if isfield(vv,'H'), H = vv.H; else H = aa.H; end
     if isfield(vv,'Ub'), Ub = vv.Ub; else Ub = aa.Ub; end
     sigma = aa.sigma;
 
@@ -531,7 +531,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         R4 = - pp.c12*(Sy-Sy_old).*dt^(-1) + Sy_t;
         R5 = - pp.c12*(Ss-Ss_old).*dt^(-1) + Ss_t;
         R6 = - pp.c12*(Sr-Sr_old).*dt^(-1) + Sr_t;
-        R7 = - pb + (aa.phi_0-aa.phi_a) + pp.c49 * (gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*hb; % blister pressure
+        R7 = - pb + (aa.phi_0-aa.phi_a) + pp.c49 * (gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(H.^3.*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*hb); % blister pressure
         R8 =        - (hb-hb_old).*dt^(-1) + hb_t; % mass conservation
         
  
@@ -938,7 +938,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         DF6_pb = - (sparse(1:length(cin),1:length(cin), c14.*Sr(cin).*abs(cmean(cin,:)*(Nm)).^(n_Glen-1)*n_Glen ,length(cin),length(cin))*cmean(cin,nin)) * DNm_pb;
 
         % DF7  ns eqns
-        biharmonic = (gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(gg.nddx*gg.eddx + gg.nddy*gg.fddy);
+        biharmonic = (gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(H.^3.*(gg.nddx*gg.eddx + gg.nddy*gg.fddy));
         DF7_hb = c49 * biharmonic(ns,ns);
         temp = sparse(nin, 1:length(nin), -ones(length(nin),1), nIJ, length(nin));
         DF7_pb = temp(ns,:);

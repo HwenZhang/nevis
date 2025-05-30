@@ -1,5 +1,5 @@
 %% Import necessary libraries
-casename = 'nreg_60mm_cg0_00_a0_01_kh0_ks1_mu5e0_c1_V0e8';
+casename = 'nreg_0mm_cg0_00_a0_01_kh0_ks1_mu5e0_c1_V1e8';
 % casename = 'test_2009_140km_mu2e1_kappa0';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -16,15 +16,13 @@ tmax = 1000*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                        % time range for the plot
 
+% used for runs with initial condition
 tmin = 0*pd.td/ps.t;
-tmax = 1000*pd.td/ps.t;
+tmax = 200*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                        % time range for the plot
-t_init = 950; t_end = 1000;                       % time range for animation
+t_init = 95; t_end = 200;                       % time range for animation
 
-pp.c0=1.0;
-pp.kl_s=0;
-pd.m_l=1.0;
 %% colormap
 n = 256; % number of colors
 cmap = [linspace(0,1,n)', linspace(0,1,n)', ones(n,1); 
@@ -55,9 +53,9 @@ Q_in = ps.Q*[tt.Q_in];          % dimensional influx (m^3/s)
 Q_out = ps.Q*[tt.Q_out];        % dimensional outflux (m^3/s)
 Qb_out = ps.Q0*[tt.Qb_out];     % dimensional outflux from blister sheet mass conservation (m^3/s)
 
-Q_out_b = ps.Q0*[tt.Q_outb];    % dimensional sheet outflux (m^3/s)
+Q_out_b = ps.Q0*[tt.Q_outb];    % dimensional blister outflux (m^3/s)
 Q_out_Q = ps.Q*[tt.Q_outQ];     % dimensional channel outflux (m^3/s)
-Q_out_q = ps.Q*[tt.Q_outq];     % dimensional blister outflux (m^3/s)
+Q_out_q = ps.Q*[tt.Q_outq];     % dimensional sheet outflux (m^3/s)
 
 m = (ps.m*ps.x^2)*[tt.m];      % dimensional melting rate (m^3/s)
 E = (ps.m*ps.x^2)*[tt.E];      % dimensional source terms  (m^3/s)
@@ -118,20 +116,25 @@ ax = nexttile(leftLayout);
 plot(ax,t,Q_b_in,'b-',t,Q_b_dec,'r-',LineWidth=1.5);
 hold on;
 plot(ax,t,Q_out+Q_out_b,color=[0,0.5,0],LineStyle='-',LineWidth=1.5);
+
+plot(ax,t,Q_out_b,color=[1,0,0],LineStyle='--',LineWidth=1.5);
+plot(ax,t,Q_out_Q,color=[0,1,0],LineStyle='--',LineWidth=1.5);
+plot(ax,t,Q_out_q,color=[0,0,1],LineStyle='--',LineWidth=1.5);
+
 plot(ax,t,E,color=[0,0,0],LineStyle='-',LineWidth=1.5);
 
 x1 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
 
 xlabel('t [ d ]');
 ylabel('Q [ m^3/s ]');
-h=legend('Q_{b,in}','Q_{b,relax}','Q_{out}','Q_{in}','NumColumns',2);
+h=legend('Q_{b,in}','Q_{b,relax}','Q_{out}','Q_{outb}','Q_{outQ}','Q_{outq}','Q_{in}','NumColumns',2);
 h.Location='southwest';
 text(0.025,0.8,'(a) flux','Units','normalized','FontSize',14)
 
 xlim([tmin_d tmax_d])
 set(gca, 'YScale', 'log')
-ylim([1e0 1e4])
-yticks([1e0,1e1,1e2,1e3,1e4])
+ylim([1e1 1e4])
+% yticks([1e2,1e3,1e4])
 grid on
 grid minor
 
