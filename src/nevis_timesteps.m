@@ -166,18 +166,18 @@ while t<t_stop+oo.dt_min
     disp(['Volume of the blister is ' num2str(tt(ti).Vb) '.']);
     
     % blister radius (only works for a single blister)
-    % [~, maxIdx] = max(vv.hb);
-    % nonzeroIdx = find(vv.hb > 1e-4*vv.hb(maxIdx));
-    % [~, localIdx] = min(vv.hb(nonzeroIdx));
-    % minidx = nonzeroIdx(localIdx);
-    % if isempty(minidx)
-    %     tt(ti).Rb = 0;
-    % else
-    %     tt(ti).Rb = ((gg.nx(maxIdx)-gg.nx(minidx)).^2 + (gg.ny(maxIdx)-gg.ny(minidx)).^2).^(1/2);
-    % end
-    % disp(['Radius of the blister is ' num2str(tt(ti).Rb) '.']);
-    % 
-   
+    [~, maxIdx] = max(vv.hb);
+    nonzeroIdx = find(vv.hb > 1e-8);
+    [~, localIdx] = min(vv.hb(nonzeroIdx));
+    minidx = nonzeroIdx(localIdx);
+    if isempty(minidx)
+        tt(ti).Rb = 0;
+    else
+        tt(ti).Rb = ((gg.nx(maxIdx)-gg.nx(minidx)).^2 + (gg.ny(maxIdx)-gg.ny(minidx)).^2).^(1/2);
+    end
+    disp(['Radius of the blister is ' num2str(tt(ti).Rb) '.']);
+   tt(ti).hb_max = vv.hb(maxIdx); % maximum blister thickness
+
     % total channel volume, scaled with ps.S*ps.x
     tt(ti).S = sum(vv.Sx(gg.ein).*(gg.emean(gg.ein,:)*gg.Dx))+...
                sum(vv.Sy(gg.fin).*(gg.fmean(gg.fin,:)*gg.Dy))+...

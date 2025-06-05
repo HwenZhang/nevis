@@ -13,7 +13,7 @@ oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'n1d_30mm_cg0_00_a0_01_kh0_ks0_mu5e0_c1_V1e8';           
+oo.casename = 'n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8';           
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
@@ -33,7 +33,7 @@ oo.initial_condition = 1;                       % 1 is default condition from 03
 
 % leakage term
 if oo.relaxation_term == 0                      % 0: exponential decay: -\alpha_0(1+h/hc+S/Sc) h_b         
-    pd.alpha_b = 1.0/(100*pd.td);                % relaxation rate (s^-1)
+    pd.alpha_b = 0.0/(100*pd.td);                % relaxation rate (s^-1)
     pd.kappa_b = 0;                             % relaxation coeff 
     pd.m_l=0;
 elseif oo.relaxation_term == 1                  % 1: proportional to pressure diff and thickness: -\kappa/\mu(p_b-p_w)h_b
@@ -47,8 +47,8 @@ elseif oo.relaxation_term == 2                  % 2: channel control, enhanced a
 end
 
 % alter default parmaeters 
-runoff_max = 30;                                % prescribed runoff (mm/day)
-pd.mu = 5.0e0;                                  % water viscosity (Pa s)
+runoff_max = 0;                                % prescribed runoff (mm/day)
+pd.mu = 1.0e2;                                  % water viscosity (Pa s)
 pd.Ye = 8.8e9;                                  % Young's modulus (Pa)
 pd.B = pd.Ye*(1e3)^3/(12*(1-0.33^2));           % bending stiffness (Pa m^3)
 pd.c_e_reg2 = 0.00/1e3/9.81;                    % elastic sheet thickness [m/Pa]
@@ -74,13 +74,14 @@ ps = struct;
 
 %% grid and geometry
 L = 5e4;                               % length of the domain [m]
-x = linspace(0,(L/ps.x),401); 
+x = linspace(0,(L/ps.x),801); 
 y = linspace(0,(L/ps.x),1);            % 1-d grid of length 50km 
 oo.yperiodic = 1;                      % oo.yperiodic = 1 necessary for a 1-d grid
 oo.xperiodic = 0;
 gg = nevis_grid(x,y,oo); 
 b = (0/ps.z)*gg.nx;                    % flat bed
-s = (1060/ps.z)*(1-ps.x*gg.nx/L).^0.5; % ice surface topography 
+% s = (1060/ps.z)*(1-ps.x*gg.nx/L).^0.5; % ice surface topography 
+s = 1000*ones(size(b));
 
 %% mask with minimum ice thickness
 H = max(s-b,0);
@@ -117,7 +118,7 @@ oo.random_moulins = 10;
 pp.x_l = [0.5*L/ps.x];                                         % x-coord of lakes
 pp.y_l = [0];                                                   % y-coord of lakes
 pp.V_l = [1e8/(ps.Q0*ps.t)];                                    % volume of lakes         
-pp.t_drainage = [700*pd.td/ps.t];                               % time of lake drainages (assumed to be the middle time of the Gaussian)
+pp.t_drainage = [200*pd.td/ps.t];                               % time of lake drainages (assumed to be the middle time of the Gaussian)
 pp.t_duration = [0.25*pd.td/ps.t];                              % duration of lake drainages, 6hr
 [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo);          % calculate lake catchments 
 

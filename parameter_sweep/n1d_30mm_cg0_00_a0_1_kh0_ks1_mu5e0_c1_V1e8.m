@@ -13,7 +13,7 @@ oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'n1d_30mm_cg0_00_a0_01_kh0_ks0_mu5e0_c1_V1e8';           
+oo.casename = 'n1d_30mm_cg0_00_a0_1_kh0_ks1_mu5e0_c1_V1e8';           
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
@@ -33,7 +33,7 @@ oo.initial_condition = 1;                       % 1 is default condition from 03
 
 % leakage term
 if oo.relaxation_term == 0                      % 0: exponential decay: -\alpha_0(1+h/hc+S/Sc) h_b         
-    pd.alpha_b = 1.0/(100*pd.td);                % relaxation rate (s^-1)
+    pd.alpha_b = 1.0/(10*pd.td);                % relaxation rate (s^-1)
     pd.kappa_b = 0;                             % relaxation coeff 
     pd.m_l=0;
 elseif oo.relaxation_term == 1                  % 1: proportional to pressure diff and thickness: -\kappa/\mu(p_b-p_w)h_b
@@ -64,7 +64,7 @@ pd.melt = pd.G/pd.rho_w/pd.L;                   % geothermal heat derived basal 
 pd.melt = 0*(pd.G+(pd.u_b*pd.tau_b))/pd.rho_w/pd.L;  % geothermal heat + frictional heating derived basal melt [m/s]
 pd.meltinterior = ((pd.G+((100/pd.ty)*pd.tau_b))/pd.rho_w/pd.L)*1e3; % flux of basal melt up to the ~icedivide (200 km) [m2/s]
 pd.E_lapse = 40/1000/pd.td/10^3;
-pd.kl_s = 0.0;                                  % leakage dependence on S
+pd.kl_s = 1.0;                                  % leakage dependence on S
 pd.kl_h = 0.0;                                  % leakage dependence on h
 pd.c0 = 1.0;                                    % constant for leakage dependence on S and h, default is 1.0
 
@@ -74,7 +74,7 @@ ps = struct;
 
 %% grid and geometry
 L = 5e4;                               % length of the domain [m]
-x = linspace(0,(L/ps.x),401); 
+x = linspace(0,(L/ps.x),801); 
 y = linspace(0,(L/ps.x),1);            % 1-d grid of length 50km 
 oo.yperiodic = 1;                      % oo.yperiodic = 1 necessary for a 1-d grid
 oo.xperiodic = 0;
@@ -114,7 +114,7 @@ oo.random_moulins = 10;
 [pp.ni_m,pp.sum_m] = nevis_moulins([],[],gg,oo);  % one moulin at the lake location
 
 %% supraglacial lakes
-pp.x_l = [0.5*L/ps.x];                                         % x-coord of lakes
+pp.x_l = [0.75*L/ps.x];                                         % x-coord of lakes
 pp.y_l = [0];                                                   % y-coord of lakes
 pp.V_l = [1e8/(ps.Q0*ps.t)];                                    % volume of lakes         
 pp.t_drainage = [700*pd.td/ps.t];                               % time of lake drainages (assumed to be the middle time of the Gaussian)

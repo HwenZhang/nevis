@@ -54,6 +54,9 @@ if oo.include_lake && isfield(pp,'ni_l') && ~isempty(pp.ni_l)
         pp.lake_input_function = @(t) (pp.V_l)./pp.t_duration...
                         .*(t>=pp.t_drainage-0.5*pp.t_duration).*(t<=pp.t_drainage+0.5*pp.t_duration);
     end
+    if oo.input_constant
+        pp.lake_input_function = @(t) (t>=pp.t_drainage).*(t<=pp.t_drainage+pp.t_duration).*pp.V_l./pp.t_duration; % constant input
+    end
     Q_lake(pp.ni_l) = pp.lake_input_function(t);      % add input from lake at point pp.ni_l
 end
 aa.Qb_in = Q_lake;                                    % aa.Qb_in is the lake-drainage input to the blister model

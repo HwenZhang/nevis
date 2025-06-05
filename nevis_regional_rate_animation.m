@@ -1,5 +1,5 @@
 %% Import necessary libraries
-casename = 'nreg_60mm_cg0_00_a0_01_kh0_ks1_mu5e0_c1_V1e8';
+casename = 'nreg_0mm_cg0_00_a0_1_kh0_ks1_mu5e0_c1_V1e8';
 % casename = 'test_2009_140km_mu2e1_kappa0';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -8,8 +8,7 @@ oo.code = '../nevis/src';                       % code directory
 path = [oo.rn,'/'];
 addpath(oo.code);                               % add path to code
   
-dt = 0.2*pd.td/ps.t;
-
+dt = 1.0*pd.td/ps.t;
 t_init = 900; t_end = 1000;                       % time range for animation
 tmin = 0*pd.td/ps.t;
 tmax = 1000*pd.td/ps.t;
@@ -22,7 +21,6 @@ tmax = 200*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                        % time range for the plot
 t_init = 95; t_end = 200;                       % time range for animation
-
 %% colormap
 n = 256; % number of colors
 cmap = [linspace(0,1,n)', linspace(0,1,n)', ones(n,1); 
@@ -34,10 +32,14 @@ tframe = 1.0;
 nframe = 1;
 vva = load([path num2str(nframe,formatSpec)], 'vv');
 vva = vva.vv;
+vva0 = vva;
+
 aa = nevis_inputs(vva.t,aa,vva,pp,gg,oo);
 [vv2] = nevis_backbone(inf,vva,vva,aa,pp,gg,oo);     % expand solution variables
 vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo);          % calculate node discharge
-qnet = ps.qs*(vv2.qs + vv2.qe + vv2.qQ + 0*vv2.Q);
+vv20 = vv2;
+qnet = (vv2.qs + vv2.qe + vv2.qQ + vv2.Q);
+qnet0 = (vv20.qs + vv20.qe + vv20.qQ + vv20.Q);
 
 xx = (ps.x/10^3)*gg.nx; % x grid in km
 yy = (ps.x/10^3)*gg.ny;  
@@ -250,31 +252,31 @@ yyaxis right
 
 % total flux
 ax = nexttile(rightLayout);
-zq = reshape(qnet,gg.nI,gg.nJ);
+zq = ps.qs/ps.t*reshape((qnet-qnet0)/dt,gg.nI,gg.nJ);
 zphi = (ps.phi)*reshape(vva.phi,gg.nI,gg.nJ); 
 pqnet = pcolor(ax,xx,yy,zq);
 set(pqnet,'linestyle','none'); % shading interp
 cx = colorbar();
 colormap(parula)
-clim([0 5e-1])
-cx.Label.String = 'q_{all} [ m^2 s^{-1} ]'; 
+clim([-1 1])
+cx.Label.String = 'dq_{all}/dt'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
 
 hold on
 [C4,pqnet_contour] = contour(ax,xx,yy,zphi,'linecolor','k','linewidth',0.5);
 
-title('net flux','FontSize',14);
+title('net flux rate','FontSize',14);
 ylabel('y (km)')
 axis equal
 
 %% cavity sheet thickness
 ax = nexttile(rightLayout);
-zhs = (ps.hs)*reshape(vva.hs,gg.nI,gg.nJ); 
+zhs = (ps.hs/ps.t)*reshape((vva.hs-vva0.hs)/dt,gg.nI,gg.nJ); 
 phs = pcolor(ax,xx,yy,zhs); 
 set(phs,'linestyle','none'); % shading interp
 cx = colorbar();
-cx.Label.String = 'h_s [ m ]'; 
+cx.Label.String = 'dh_s/dt'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.3 0.5]; 
 clim([0 0.1]);
@@ -282,17 +284,17 @@ clim([0 0.1]);
 hold on
 [Cphi,phs_contour] = contour(ax,xx,yy,zphi,'linecolor','k','linewidth',0.5);
 
-title('cavity sheet and \phi contour','FontSize',14);
+title('cavity sheet rate and \phi contour','FontSize',14);
 ylabel('y (km)')
 axis equal
 
 %% blister sheet thickness
 ax = nexttile(rightLayout);
-zhe = (ps.hb)*reshape(vva.hb,gg.nI,gg.nJ); 
+zhe = (ps.hb/ps.t)*reshape((vva.hb-vva0.hs)/dt,gg.nI,gg.nJ); 
 pblister = pcolor(ax,xx,yy,zhe); 
 set(pblister,'linestyle','none'); % shading interp
 cx = colorbar();
-cx.Label.String = 'h_b [ m ]'; 
+cx.Label.String = 'dh_b/dt'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
 clim([0 0.5]);
@@ -301,23 +303,25 @@ hold on
 zpb = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ); 
 [Cb,pblister_contour] = contour(ax,xx,yy,zpb,'linecolor','k','linewidth',0.5);
 
-title('blister sheet and pb contour','FontSize',14);
+title('blister sheet rate and pb contour','FontSize',14);
 ylabel('y (km)')
 axis equal
 
 %% cross-sectional area
 ax = nexttile(rightLayout);
-zS = (ps.S)*reshape(0.25*(gg.nmeanx*vva.Sx + gg.nmeany*vva.Sy + gg.nmeans*vva.Ss + gg.nmeanr*vva.Sr) ,gg.nI,gg.nJ); 
+Smean = 0.25*(gg.nmeanx*vva.Sx + gg.nmeany*vva.Sy + gg.nmeans*vva.Ss + gg.nmeanr*vva.Sr);
+Smean0 = 0.25*(gg.nmeanx*vva0.Sx + gg.nmeany*vva0.Sy + gg.nmeans*vva0.Ss + gg.nmeanr*vva0.Sr);
+zS = (ps.S/ps.t)*reshape((Smean-Smean0)/dt ,gg.nI,gg.nJ); 
 pS = pcolor(ax,xx,yy,zS); 
 set(pS,'linestyle','none');
 % shading interp
 cx = colorbar();
-cx.Label.String = 'S [ m^2 ]'; 
+cx.Label.String = 'dS/dt'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
 clim([0 10]); 
 
-title('channel cross section','FontSize',14);
+title('channel cross section rate','FontSize',14);
 ylabel('y (km)')
 xlim([0 50])
 ylim([0 10])
@@ -382,8 +386,7 @@ axis equal
 axis tight
 
 %% make video
-v = VideoWriter(['./results/videos/' casename '_2'],'MPEG-4');
-% v = VideoWriter(['./results/' oo.casename],'MPEG-4');
+v = VideoWriter(['./results/videos/' casename '_perturb'],'MPEG-4');
 v.FrameRate = 1;
 open(v)
 for i_t = t_init:t_end
@@ -395,20 +398,25 @@ for i_t = t_init:t_end
 
     N = (ps.phi/10^6)*(aa.phi_0-vva.phi);
     pb = (ps.phi/10^6)*(vva.pb-(aa.phi_0-aa.phi_a));
+
     [vv2] = nevis_backbone(inf,vva,vva,aa,pp,gg,oo); % expand solution variables
     vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo); % calculate node discharge
-    qnet = ps.qs*(vv2.qs + vv2.qe + vv2.qQ + 0*vv2.Q);
+    qnet = (vv2.qs + vv2.qe + vv2.qQ + vv2.Q);
+    qnet0 = (vv20.qs + vv20.qe + vv20.qQ + vv20.Q);
 
-    pqnet.CData = reshape(qnet,gg.nI,gg.nJ); 
+    pqnet.CData = reshape((qnet-qnet0)/dt,gg.nI,gg.nJ); 
     pqnet_contour.ZData = (ps.phi)*reshape(vva.phi,gg.nI,gg.nJ);
 
-    phs.CData = (ps.hs)*reshape(vva.hs,gg.nI,gg.nJ);
+    phs.CData = reshape((vva.hs-vva0.hs)/dt,gg.nI,gg.nJ);
     phs_contour.ZData = (ps.phi)*reshape(vva.phi,gg.nI,gg.nJ);
 
-    pblister.CData = (ps.hb)*reshape(vva.hb,gg.nI,gg.nJ); 
+    pblister.CData = reshape((vva.hb-vva0.hb)/dt,gg.nI,gg.nJ); 
     pblister_contour.ZData = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ);
 
-    pS.CData = (ps.S)*reshape(0.25*(gg.nmeanx*vva.Sx + gg.nmeany*vva.Sy + gg.nmeans*vva.Ss + gg.nmeanr*vva.Sr),gg.nI,gg.nJ);
+    Smean = 0.25*(gg.nmeanx*vva.Sx + gg.nmeany*vva.Sy + gg.nmeans*vva.Ss + gg.nmeanr*vva.Sr);
+    Smean0 = 0.25*(gg.nmeanx*vva0.Sx + gg.nmeany*vva0.Sy + gg.nmeans*vva0.Ss + gg.nmeanr*vva0.Sr);
+    pS.CData = reshape((Smean-Smean0)/dt,gg.nI,gg.nJ);
+
     peff.CData = reshape(N,gg.nI,gg.nJ); 
     ppb.CData = reshape(pb,gg.nI,gg.nJ);
 
@@ -421,12 +429,15 @@ for i_t = t_init:t_end
     x5.Value = vva.t*ps.t/pd.td;
     x6.Value = vva.t*ps.t/pd.td;
     
-    disp(min(vva.hb));
+    disp(min((qnet-qnet0)/dt));
+    
     refreshdata
     drawnow
+    vva0 = vva; % save the last timestep for the next iteration
+    vv20 = vv2; % save the last expanded variables for the next iteration
     % pause(0.2)
     frame = getframe(gcf);
-    writeVideo(v,frame)
+    if i_t > t_init, writeVideo(v,frame);end
 end
 
 close(v)

@@ -1,5 +1,5 @@
 %% Import necessary libraries
-casename = 'n1d_30mm_cg0_00_a0_1_kh0_ks1_mu5e0_c1_V0e8';
+casename = 'n1d_30mm_cg0_00_a0_01_kh0_ks0_mu5e0_c1_V1e8';
 % casename = 'test_2009_140km_mu2e1_kappa0';
 load(['./results/' casename '/' casename])
 % oo.fn = ['/',casename];                         % filename (same as casename)
@@ -13,8 +13,8 @@ tmin = 0*pd.td/ps.t;
 tmax = 1000*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                        % time range for the plot
-t_init = 950; t_end = 1000;                      % time range for animation
-
+t_init = 685; t_end = 800;                      % time range for animation
+oo.input_constant = 0;
 %% colormap
 n = 256; % number of colors
 cmap = [linspace(0,1,n)', linspace(0,1,n)', ones(n,1); 
@@ -29,7 +29,11 @@ vva = vva.vv;
 aa = nevis_inputs(vva.t,aa,vva,pp,gg,oo);
 [vv2] = nevis_backbone(inf,vva,vva,aa,pp,gg,oo);     % expand solution variables
 vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo);          % calculate node discharge
-qnet = ps.qs*(vv2.qs + vv2.qe + vv2.qQ + vv2.Q);
+qnet = ps.qs*(vv2.qs + vv2.qe + vv2.qQ);
+qs = ps.qs*vv2.qs;
+qb = ps.qs*vv2.qb;
+qQ = ps.qs*vv2.qQ;
+Q = ps.qs*vv2.Q;
 
 xx = (ps.x/10^3)*gg.nx; % x grid in km
 yy = (ps.x/10^3)*gg.ny;  
@@ -196,12 +200,12 @@ yyaxis left
     ylabel('h [ m ]');
     text(0.025,0.8,'(e) h_b and p_b at the lake','Units','normalized','FontSize',14)
 
-yyaxis right
-    plot(ax,t,p_b/1e6,'r-',LineWidth=1.5);
-    hold on
-    x5 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
-    xlabel('t [ d ]');
-    ylabel('p_b [ MPa ]');
+% yyaxis right
+%     plot(ax,t,R_b,'r-',LineWidth=1.5);
+%     hold on
+%     x5 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
+%     xlabel('t [ d ]');
+%     ylabel('R_b [ m ]');
     xlim([tmin_d tmax_d])
     grid on
     grid minor
@@ -234,188 +238,170 @@ yyaxis right
     x6 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
 
 %% right sublayout：3 行 2 列
+% total flux
+ax = nexttile(rightLayout);
+yyaxis left
+    pqs = plot(ax,xx(gg.ns),qs(gg.ns),'b-','LineWidth',1.5);
+    hold on
+    pqb = plot(ax,xx(gg.ns),qb(gg.ns),'b--','LineWidth',1.5);
+    pqQ = plot(ax,xx(gg.ns),qQ(gg.ns),'b-.','LineWidth',1.5);
+    % display(max(Q));
 
-% % total flux
-% ax = nexttile(rightLayout);
-% zq = reshape(qnet,gg.nI,gg.nJ);
-% zphi = (ps.phi)*reshape(vva.phi,gg.nI,gg.nJ); 
-% pqnet = pcolor(ax,xx,yy,zq);
-% set(pqnet,'linestyle','none'); % shading interp
-% cx = colorbar();
-% colormap(parula)
-% clim([0 5])
-% cx.Label.String = 'q_{all} [ m^2 s^{-1} ]'; 
-% cx.Label.Units = 'normalized'; 
-% cx.Label.Position = [2.2 0.5]; 
+    title('net flux','FontSize',14);
+    ylim([0 0.5*ps.qs])
+    ylabel('q [m^3/s]')
+    legend([pqs pqb pqQ],'q_s','q_b','q_Q','NumColumns',2,'Location','northwest');
 
-% hold on
-% [C4,pqnet_contour] = contour(ax,xx,yy,zphi,'linecolor','k','linewidth',0.5);
+yyaxis right
+    pphi1 = plot(ax,xx,ps.phi/1e6*vva.phi,'r-','LineWidth',1.5);
+    ylim([0 10]);
+    xlim([0 50])
+    xlabel('x (km)')
+    ylabel('\phi [ MPa ]')
+    grid on
+    grid minor
 
-% title('net flux','FontSize',14);
-% ylabel('y (km)')
-% axis equal
+%% cavity sheet thickness
+ax = nexttile(rightLayout);
+yyaxis left
+    phs = plot(ax,xx(gg.ns),ps.hs*vva.hs(gg.ns),'b-','LineWidth',1.5); 
+    title('cavity sheet and \phi contour','FontSize',14);
+    ylim([0 0.1]);
+    ylabel('h_s [m]')
+yyaxis right
+    pphi2 = plot(ax,xx(gg.nin),ps.phi/1e6*vva.phi(gg.nin),'r-','LineWidth',1.5);
+    hold on
+    xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
+    xlabel('x (km)')
+    ylabel('\phi [ MPa ]')
+    ylim([0 10]);
+    xlim([0 50])
+    grid on
+    grid minor
 
-% %% cavity sheet thickness
-% ax = nexttile(rightLayout);
-% zhs = (ps.hs)*reshape(vva.hs,gg.nI,gg.nJ); 
-% phs = pcolor(ax,xx,yy,zhs); 
-% set(phs,'linestyle','none'); % shading interp
-% cx = colorbar();
-% cx.Label.String = 'h_s [ m ]'; 
-% cx.Label.Units = 'normalized'; 
-% cx.Label.Position = [2.3 0.5]; 
-% clim([0 0.1]);
+%% blister sheet thickness
+ax = nexttile(rightLayout);
+yyaxis left
+    pblister = plot(ax,xx(gg.ns),ps.hb*vva.hb(gg.ns),'b-','LineWidth',1.5); 
+    ylim([0 0.2]);
+    ylabel('h_b [m]')
+    title('blister sheet and pb','FontSize',14);
+yyaxis right
+    pphi3 = plot(ax,xx(gg.nin),ps.phi/1e6*vva.pb(gg.nin),'r-','LineWidth',1.5);
+    hold on
+    xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
+    xlabel('x (km)')
+    ylabel('\phi [ MPa ]')
+    ylim([0 10]);
+    xlim([0 50])
+    grid on
+    grid minor
 
-% hold on
-% [Cphi,phs_contour] = contour(ax,xx,yy,zphi,'linecolor','k','linewidth',0.5);
+%% cross-sectional area
+ax = nexttile(rightLayout);
+Smean = (0.25*(gg.nmeanx*vva.Sx + gg.nmeany*vva.Sy + gg.nmeans*vva.Ss + gg.nmeanr*vva.Sr)); 
+yyaxis left
+    pS = plot(ax,xx(gg.nin),ps.S*Smean(gg.nin),'b-','LineWidth',1.5); 
+    ylim([0 10])
+    title('channel cross section','FontSize',14);
+    ylabel('y [km]')
 
-% title('cavity sheet and \phi contour','FontSize',14);
-% ylabel('y (km)')
-% axis equal
+yyaxis right
+    pphi4 = plot(ax,xx(gg.nin),ps.phi/1e6*vva.pb(gg.nin),'r-','LineWidth',1.5);
+    hold on
+    xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
+    xlabel('x (km)')
+    ylabel('\phi [ MPa ]')
+    ylim([0 10]);
+    xlim([0 50])
+    grid on
+    grid minor
 
-% %% blister sheet thickness
-% ax = nexttile(rightLayout);
-% zhe = (ps.hb)*reshape(vva.hb,gg.nI,gg.nJ); 
-% pblister = pcolor(ax,xx,yy,zhe); 
-% set(pblister,'linestyle','none'); % shading interp
-% cx = colorbar();
-% cx.Label.String = 'h_b [ m ]'; 
-% cx.Label.Units = 'normalized'; 
-% cx.Label.Position = [2.2 0.5]; 
-% clim([0 0.5]);
-% hold on
+%% effective pressure
+ax = nexttile(rightLayout);
+N = ((aa.phi_0-vva.phi)); 
+peff = plot(ax,xx(gg.nin),(ps.phi/10^6)*N(gg.nin),'k-','LineWidth',1.5); 
+ylim([-3 3]); 
+title('effective pressure','FontSize',14);
+xlabel('x (km)')
+ylabel('N [MPa]')
+hold on
+% add moulins
+if ~isfield(pp,'ni_m'), pp.ni_m = []; end
+x = (ps.x/10^3)*gg.nx(pp.ni_m);
+mscale = 100;
+for i_m = 1:length(pp.ni_m)
+    if aa.E(pp.ni_m(i_m))>0
+        plot(x(i_m),0,'ko','Markersize',8+aa.E(pp.ni_m(i_m))/mscale,'MarkerFaceColor',1*[1 1 1]); % mark moulins   
+    else
+        plot(x(i_m),0,'ko','Markersize',8,'MarkerFaceColor',0.8*[1 1 1]); % mark moulins  
+    end
+end
+axis tight
+grid on
+grid minor
 
-% zpb = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ); 
-% [Cb,pblister_contour] = contour(ax,xx,yy,zpb,'linecolor','k','linewidth',0.5);
-
-% title('blister sheet and pb contour','FontSize',14);
-% ylabel('y (km)')
-% axis equal
-
-% %% cross-sectional area
-% ax = nexttile(rightLayout);
-% zS = (ps.S)*reshape(0.25*(gg.nmeanx*vva.Sx + gg.nmeany*vva.Sy + gg.nmeans*vva.Ss + gg.nmeanr*vva.Sr) ,gg.nI,gg.nJ); 
-% pS = pcolor(ax,xx,yy,zS); 
-% set(pS,'linestyle','none');
-% % shading interp
-% cx = colorbar();
-% cx.Label.String = 'S [ m^2 ]'; 
-% cx.Label.Units = 'normalized'; 
-% cx.Label.Position = [2.2 0.5]; 
-% clim([0 10]); 
-
-% title('channel cross section','FontSize',14);
-% ylabel('y (km)')
-% xlim([0 50])
-% ylim([0 10])
-% axis equal
-% axis tight
-
-% %% effective pressure
-% ax = nexttile(rightLayout);
-% zN = (ps.phi/10^6)*reshape((aa.phi_0-vva.phi),gg.nI,gg.nJ); 
-% peff = pcolor(ax,xx,yy,zN); 
-% set(peff,'linestyle','none'); % shading interp
-% hold on
-
-% % xlabel('x (km)')
-% cx = colorbar();
-% colormap(ax,cmap)
-% cx.Label.String = 'N [ MPa ]'; 
-% cx.Label.Units = 'normalized'; 
-% cx.Label.Position = [2.2 0.5]; 
-% clim([-3 3]); 
-
-% % add moulins
-% if ~isfield(pp,'ni_m'), pp.ni_m = []; end
-% x = (ps.x/10^3)*gg.nx(pp.ni_m);
-% y = (ps.x/10^3)*gg.ny(pp.ni_m);
-% mscale = 100;
-% for i_m = 1:length(pp.ni_m)
-%     if aa.E(pp.ni_m(i_m))>0
-%         plot(x(i_m),y(i_m),'ko','Markersize',4+aa.E(pp.ni_m(i_m))/mscale,'MarkerFaceColor',1*[1 1 1]); % mark moulins   
-%     else
-%         plot(x(i_m),y(i_m),'ko','Markersize',4,'MarkerFaceColor',0.8*[1 1 1]); % mark moulins  
-%     end
-% end
-
-% title('effective pressure','FontSize',14);
-% ylabel('y (km)')
-% axis equal
-% axis tight
-
-% %% effective pressure
-% ax = nexttile(rightLayout);
-% zpb = (ps.phi/10^6)*reshape((vva.pb-(aa.phi_0-aa.phi_a)),gg.nI,gg.nJ); 
-% ppb = pcolor(xx,yy,zpb); 
-% set(ppb,'linestyle','none');
-% % shading interp
-% cx = colorbar();
-% colormap(ax,cmap)
-% cx.Label.String = 'p_b [ MPa ]'; 
-% cx.Label.Units = 'normalized'; 
-% cx.Label.Position = [2.2 0.5]; 
-% pbmax = max(abs(vva.pb-(aa.phi_0-aa.phi_a)));
-% clim([-1 1]); 
-
-% time = ['t=' num2str(vva.t*ps.t/pd.td,'%.1f') ' d'];
-% ttext = text(0.1,8,time,"Position",[0.7 0.8],"Units","normalized");
-% ttext.FontSize=16;
-
-% title('blister pressure','FontSize',14);
-% ylabel('y (km)')
-% xlabel('x (km)')
-% axis equal
-% axis tight
+%% effective pressure
+ax = nexttile(rightLayout);
+time = ['t=' num2str(vva.t*ps.t/pd.td,'%.1f') ' d'];
+ttext = text(0.1,8,time,"Position",[0.7 0.8],"Units","normalized");
+ttext.FontSize=16;
 
 %% make video
-% v = VideoWriter(['./results/videos/' casename '_2'],'MPEG-4');
-% % v = VideoWriter(['./results/' oo.casename],'MPEG-4');
-% v.FrameRate = 1;
-% open(v)
-% for i_t = t_init:t_end
-%     disp(['Frame ',num2str(i_t-t_init),' / ',num2str(t_end-t_init),' ...']);
-%     %% load timestep
-%     vva = load([path num2str(i_t,formatSpec)], 'vv');
-%     vva = vva.vv;
-%     aa = nevis_inputs(vva.t,aa,vva,pp,gg,oo);
+v = VideoWriter(['./results/videos/' casename '_test'],'MPEG-4');
+% v = VideoWriter(['./results/' oo.casename],'MPEG-4');
+v.FrameRate = 1;
+open(v)
+for i_t = t_init:t_end
+    disp(['Frame ',num2str(i_t-t_init),' / ',num2str(t_end-t_init),' ...']);
+    %% load timestep
+    vva = load([path num2str(i_t,formatSpec)], 'vv');
+    vva = vva.vv;
+    aa = nevis_inputs(vva.t,aa,vva,pp,gg,oo);
 
-%     N = (ps.phi/10^6)*(aa.phi_0-vva.phi);
-%     pb = (ps.phi/10^6)*(vva.pb-(aa.phi_0-aa.phi_a));
-%     [vv2] = nevis_backbone(inf,vva,vva,aa,pp,gg,oo); % expand solution variables
-%     vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo); % calculate node discharge
-%     qnet = ps.qs*(vv2.qs + vv2.qe + vv2.qQ + vv2.Q);
+    N = (ps.phi/10^6)*(aa.phi_0-vva.phi);
+    pb = (ps.phi/10^6)*(vva.pb-(aa.phi_0-aa.phi_a));
+    [vv2] = nevis_backbone(inf,vva,vva,aa,pp,gg,oo); % expand solution variables
+    vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo); % calculate node discharge
 
-%     pqnet.CData = reshape(qnet,gg.nI,gg.nJ); 
-%     pqnet_contour.ZData = (ps.phi)*reshape(vva.phi,gg.nI,gg.nJ);
+    qnet = ps.qs*(vv2.qs + vv2.qe + vv2.qQ);
+    qs = ps.qs*vv2.qs;
+    qb = ps.qs*vv2.qb;
+    qQ = ps.qs*vv2.qQ;
 
-%     phs.CData = (ps.hs)*reshape(vva.hs,gg.nI,gg.nJ);
-%     phs_contour.ZData = (ps.phi)*reshape(vva.phi,gg.nI,gg.nJ);
+    pqs.YData = qs(gg.ns);
+    pqb.YData = qb(gg.ns);
+    pqQ.YData = qQ(gg.ns);
 
-%     pblister.CData = (ps.hb)*reshape(vva.hb,gg.nI,gg.nJ); 
-%     pblister_contour.ZData = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ);
+    phs.YData = (ps.hs)*vva.hs(gg.ns);
+    pblister.YData = (ps.hb)*vva.hb(gg.ns); 
+    Smean = (ps.S)*0.25*(gg.nmeanx*vva.Sx + gg.nmeany*vva.Sy + gg.nmeans*vva.Ss + gg.nmeanr*vva.Sr);
+    pS.YData = Smean(gg.nin);
+    peff.YData = N(gg.nin);
+    % ppb.YData = pb(gg.nin);
 
-%     pS.CData = (ps.S)*reshape(0.25*(gg.nmeanx*vva.Sx + gg.nmeany*vva.Sy + gg.nmeans*vva.Ss + gg.nmeanr*vva.Sr),gg.nI,gg.nJ);
-%     peff.CData = reshape(N,gg.nI,gg.nJ); 
-%     ppb.CData = reshape(pb,gg.nI,gg.nJ);
+    pphi1.YData = (ps.phi/1e6)*vva.phi(gg.nin);
+    pphi2.YData = (ps.phi/1e6)*vva.phi(gg.nin);
+    pphi3.YData = (ps.phi/1e6)*vva.pb(gg.nin);
+    pphi4.YData = (ps.phi/1e6)*vva.pb(gg.nin);
 
-%     set(ttext,{'string'},{['t=' num2str(vva.t*ps.t/(24*60*60),'%.1f'), ' d']})  %notice the column vector of new values
+    set(ttext,{'string'},{['t=' num2str(vva.t*ps.t/(24*60*60),'%.1f'), ' d']})  %notice the column vector of new values
     
-%     x1.Value = vva.t*ps.t/pd.td;
-%     x2.Value = vva.t*ps.t/pd.td;
-%     x3.Value = vva.t*ps.t/pd.td;
-%     x4.Value = vva.t*ps.t/pd.td;
-%     x5.Value = vva.t*ps.t/pd.td;
-%     x6.Value = vva.t*ps.t/pd.td;
+    x1.Value = vva.t*ps.t/pd.td;
+    x2.Value = vva.t*ps.t/pd.td;
+    x3.Value = vva.t*ps.t/pd.td;
+    x4.Value = vva.t*ps.t/pd.td;
+    x5.Value = vva.t*ps.t/pd.td;
+    x6.Value = vva.t*ps.t/pd.td;
     
-%     disp(min(vva.hb));
-%     refreshdata
-%     drawnow
-%     % pause(0.2)
-%     frame = getframe(gcf);
-%     writeVideo(v,frame)
-% end
-% close(v)
+    disp(min(vva.hb));
+    refreshdata
+    drawnow
+    % pause(0.2)
+    frame = getframe(gcf);
+    writeVideo(v,frame)
+end
+close(v)
 
 % end
 

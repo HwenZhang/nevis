@@ -116,7 +116,9 @@ if ~isfield(oo,'surface_runoff'), oo.surface_runoff = 0; end   % use surface run
 if ~isfield(oo,'RACMO_runoff'), oo.RACMO_runoff = 0; end       % use pp.runoff function(t) for runoff
 if ~isfield(oo,'distributed_input'), oo.distributed_input = 0; end
 if ~isfield(oo,'include_lake'), oo.include_lake = 1; end
-    
+if ~isfield(oo,'input_gaussian'), oo.input_gaussian = 1; end   % whether to use Gaussian input function for moulins
+if ~isfield(oo,'input_constant'), oo.input_constant = 0; end   % whether to use constant input function for moulins
+
 % saving options
 if ~isfield(oo,'save_timesteps'), oo.save_timesteps = 0; end
 if ~isfield(oo,'save_pts_all'), oo.save_pts_all = 0; end

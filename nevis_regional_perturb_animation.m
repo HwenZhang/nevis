@@ -1,5 +1,6 @@
+% function nevis_regional_perturb_animation(casename)
 %% Import necessary libraries
-casename = 'nevis_regional_test_2009_140km_mu2e1_kappa1e_11_Vl1e8';
+casename = 'nreg_0mm_cg0_00_a0_01_kh0_ks1_mu5e0_c1_V1e8';
 % casename = 'test_2009_140km_mu2e1_kappa0';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -8,19 +9,13 @@ oo.code = '../nevis/src';                       % code directory
 path = [oo.rn,'/'];
 addpath(oo.code);                               % add path to code
   
-dt = 0.2*pd.td/ps.t;
-t_span = (0:2000)*(0.2*pd.td/ps.t);
+dt = 1.0*pd.td/ps.t;
+% used for runs with initial condition
 tmin = 0*pd.td/ps.t;
-tmax = 400*pd.td/ps.t;
+tmax = 200*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                        % time range for the plot
-t_init = 1450; t_end = 1600;                       % time range for animation
-
-t_init = 290; t_end = 365;                        % time range for animation
-tmin = 0*pd.td/ps.t;
-tmax = 365*pd.td/ps.t;
-tmin_d = tmin*ps.t/pd.td; 
-tmax_d = tmax*ps.t/pd.td;                        % time range for the plot
+t_init = 95; t_end = 200;                       % time range for animation
 
 %% colormap
 n = 256; % number of colors
@@ -29,14 +24,18 @@ cmap = [linspace(0,1,n)', linspace(0,1,n)', ones(n,1);
 
 %% read in the screenshot at the intial timestep
 formatSpec = '%04d';
-tframe = 1.0;
-nframe = 1;
+tframe = 2.0;
+nframe = t_init-1;
 vva = load([path num2str(nframe,formatSpec)], 'vv');
 vva = vva.vv;
+vva0 = vva;
+
 aa = nevis_inputs(vva.t,aa,vva,pp,gg,oo);
 [vv2] = nevis_backbone(inf,vva,vva,aa,pp,gg,oo);     % expand solution variables
 vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo);          % calculate node discharge
-qnet = ps.qs*(vv2.qs + vv2.qe + vv2.qQ + vv2.Q);
+vv20 = vv2;
+qnet = (vv2.qs + vv2.qe + vv2.qb + vv2.qQ + vv2.Q);
+qnet0 = (vv20.qs + vv20.qe + vv20.qb + vv20.qQ + vv20.Q);
 
 xx = (ps.x/10^3)*gg.nx; % x grid in km
 yy = (ps.x/10^3)*gg.ny;  
@@ -52,16 +51,16 @@ Q_in = ps.Q*[tt.Q_in];          % dimensional influx (m^3/s)
 Q_out = ps.Q*[tt.Q_out];        % dimensional outflux (m^3/s)
 Qb_out = ps.Q0*[tt.Qb_out];     % dimensional outflux from blister sheet mass conservation (m^3/s)
 
-Q_out_b = ps.Q0*[tt.Q_outb];    % dimensional sheet outflux (m^3/s)
+Q_out_b = ps.Q0*[tt.Q_outb];    % dimensional blister outflux (m^3/s)
 Q_out_Q = ps.Q*[tt.Q_outQ];     % dimensional channel outflux (m^3/s)
-Q_out_q = ps.Q*[tt.Q_outq];     % dimensional blister outflux (m^3/s)
+Q_out_q = ps.Q*[tt.Q_outq];     % dimensional sheet outflux (m^3/s)
 
 m = (ps.m*ps.x^2)*[tt.m];      % dimensional melting rate (m^3/s)
 E = (ps.m*ps.x^2)*[tt.E];      % dimensional source terms  (m^3/s)
 h_b = ps.hb*[tt.pts_hb];       %
 p_b = ps.phi*[tt.pts_pb];      %
 V_b = ps.x^2*ps.hb*[tt.Vb];
-R_b = ps.x*[tt.Rb];
+% R_b = ps.x*[tt.Rb];
 
 % phi = (ps.phi)*[tt.phi];     % dimensional hydrulic potential (MPa)
 N = (ps.phi)*[tt.N];           % dimensional effective stress (MPa)
@@ -115,20 +114,25 @@ ax = nexttile(leftLayout);
 plot(ax,t,Q_b_in,'b-',t,Q_b_dec,'r-',LineWidth=1.5);
 hold on;
 plot(ax,t,Q_out+Q_out_b,color=[0,0.5,0],LineStyle='-',LineWidth=1.5);
+
+plot(ax,t,Q_out_b,color=[1,0,0],LineStyle='--',LineWidth=1.5);
+plot(ax,t,Q_out_Q,color=[0,1,0],LineStyle='--',LineWidth=1.5);
+plot(ax,t,Q_out_q,color=[0,0,1],LineStyle='--',LineWidth=1.5);
+
 plot(ax,t,E,color=[0,0,0],LineStyle='-',LineWidth=1.5);
 
 x1 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
 
 xlabel('t [ d ]');
 ylabel('Q [ m^3/s ]');
-h=legend('Q_{b,in}','Q_{b,relax}','Q_{out}','Q_{in}','NumColumns',2);
+h=legend('Q_{b,in}','Q_{b,relax}','Q_{out}','Q_{outb}','Q_{outQ}','Q_{outq}','Q_{in}','NumColumns',2);
 h.Location='southwest';
 text(0.025,0.8,'(a) flux','Units','normalized','FontSize',14)
 
 xlim([tmin_d tmax_d])
 set(gca, 'YScale', 'log')
 ylim([1e1 1e4])
-yticks([1e1,1e2,1e3,1e4])
+% yticks([1e2,1e3,1e4])
 grid on
 grid minor
 
@@ -194,7 +198,7 @@ yyaxis right
 
 % panel (e)
 ax = nexttile(leftLayout);
-hb_analytical = 3*V_b./(pi*R_b.^2);
+% hb_analytical = 3*V_b./(pi*R_b.^2);
 yyaxis left
     plot(ax,t,h_b,'b-',LineWidth=1.5);
     hold on
@@ -234,7 +238,7 @@ yyaxis right
     plot(ax,t,V_b,'r-',LineWidth=1.5);
     hold on
     % plot(ax,t,Rb_analytical,'r--',LineWidth=1.5);
-    ylim([0 1.5e8])
+    ylim([0 1.1e9])
     ylabel('V_b [ m ]');
     legend('p_b','p_w','V_b','NumColumns',2,location='southwest')
 
@@ -244,74 +248,79 @@ yyaxis right
 
 % total flux
 ax = nexttile(rightLayout);
-zq = reshape(qnet,gg.nI,gg.nJ);
+zq = ps.qs*reshape((qnet-qnet0),gg.nI,gg.nJ);
 zphi = (ps.phi)*reshape(vva.phi,gg.nI,gg.nJ); 
 pqnet = pcolor(ax,xx,yy,zq);
 set(pqnet,'linestyle','none'); % shading interp
 cx = colorbar();
-colormap(parula)
-clim([0 1])
-cx.Label.String = 'q_{all} [ m^2 s^{-1} ]'; 
+colormap(ax,cmap)
+clim([-ps.qs ps.qs])
+cx.Label.String = '\Delta q_{all} [m^3/s]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
 
 hold on
 [C4,pqnet_contour] = contour(ax,xx,yy,zphi,'linecolor','k','linewidth',0.5);
 
-title('net flux','FontSize',14);
+title('net flux change','FontSize',14);
 ylabel('y (km)')
 axis equal
 
 %% cavity sheet thickness
 ax = nexttile(rightLayout);
-zhs = (ps.hs)*reshape(vva.hs,gg.nI,gg.nJ); 
+zhs = (ps.hs)*reshape((vva.hs-vva0.hs),gg.nI,gg.nJ); 
 phs = pcolor(ax,xx,yy,zhs); 
 set(phs,'linestyle','none'); % shading interp
 cx = colorbar();
-cx.Label.String = 'h_s [ m ]'; 
+colormap(ax,cmap)
+cx.Label.String = '\Delta h_s [m]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.3 0.5]; 
-clim([0 0.1]);
+clim([-0.5*ps.hs 0.5*ps.hs]);
 
 hold on
 [Cphi,phs_contour] = contour(ax,xx,yy,zphi,'linecolor','k','linewidth',0.5);
 
-title('cavity sheet and \phi contour','FontSize',14);
+title('cavity sheet change and \phi contour','FontSize',14);
 ylabel('y (km)')
 axis equal
 
 %% blister sheet thickness
 ax = nexttile(rightLayout);
-zhe = (ps.hb)*reshape(vva.hb,gg.nI,gg.nJ); 
+zhe = (ps.hb)*reshape((vva.hb-vva0.hb),gg.nI,gg.nJ); 
 pblister = pcolor(ax,xx,yy,zhe); 
 set(pblister,'linestyle','none'); % shading interp
 cx = colorbar();
-cx.Label.String = 'h_b [ m ]'; 
+colormap(ax,cmap)
+cx.Label.String = '\Delta h_b [m]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-clim([0 1.0]);
+clim([-0.5*ps.hb 0.5*ps.hb]);
 hold on
 
 zpb = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ); 
 [Cb,pblister_contour] = contour(ax,xx,yy,zpb,'linecolor','k','linewidth',0.5);
 
-title('blister sheet and pb contour','FontSize',14);
+title('blister sheet change and pb contour','FontSize',14);
 ylabel('y (km)')
 axis equal
 
 %% cross-sectional area
 ax = nexttile(rightLayout);
-zS = (ps.S)*reshape(0.25*(gg.nmeanx*vva.Sx + gg.nmeany*vva.Sy + gg.nmeans*vva.Ss + gg.nmeanr*vva.Sr) ,gg.nI,gg.nJ); 
+Smean = 0.25*(gg.nmeanx*vva.Sx + gg.nmeany*vva.Sy + gg.nmeans*vva.Ss + gg.nmeanr*vva.Sr);
+Smean0 = 0.25*(gg.nmeanx*vva0.Sx + gg.nmeany*vva0.Sy + gg.nmeans*vva0.Ss + gg.nmeanr*vva0.Sr);
+zS = (ps.S)*reshape((Smean-Smean0) ,gg.nI,gg.nJ); 
 pS = pcolor(ax,xx,yy,zS); 
 set(pS,'linestyle','none');
 % shading interp
 cx = colorbar();
-cx.Label.String = 'S [ m^2 ]'; 
+colormap(ax,cmap)
+cx.Label.String = '\Delta S [m^2]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-clim([0 1]); 
+clim([-3*ps.S 3*ps.S]); 
 
-title('channel cross section','FontSize',14);
+title('channel cross section change','FontSize',14);
 ylabel('y (km)')
 xlim([0 50])
 ylim([0 10])
@@ -320,7 +329,7 @@ axis tight
 
 %% effective pressure
 ax = nexttile(rightLayout);
-zN = (ps.phi/10^6)*reshape((aa.phi_0-vva.phi),gg.nI,gg.nJ); 
+zN = (ps.phi/10^6)*reshape((aa.phi_0-vva.phi)-(aa.phi_0-vva0.phi),gg.nI,gg.nJ); 
 peff = pcolor(ax,xx,yy,zN); 
 set(peff,'linestyle','none'); % shading interp
 hold on
@@ -328,10 +337,10 @@ hold on
 % xlabel('x (km)')
 cx = colorbar();
 colormap(ax,cmap)
-cx.Label.String = 'N [ MPa ]'; 
+cx.Label.String = '\Delta N [ MPa ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-clim([-3 3]); 
+clim([-ps.phi/1e6 ps.phi/1e6]); 
 
 % add moulins
 if ~isfield(pp,'ni_m'), pp.ni_m = []; end
@@ -351,19 +360,19 @@ ylabel('y (km)')
 axis equal
 axis tight
 
-%% effective pressure
+%% blister pressure
 ax = nexttile(rightLayout);
-zpb = (ps.phi/10^6)*reshape((vva.pb-(aa.phi_0-aa.phi_a)),gg.nI,gg.nJ); 
+zpb = (ps.phi/10^6)*reshape((vva.pb-(aa.phi_0-aa.phi_a))-(vva0.pb-(aa.phi_0-aa.phi_a)),gg.nI,gg.nJ); 
 ppb = pcolor(xx,yy,zpb); 
 set(ppb,'linestyle','none');
 % shading interp
 cx = colorbar();
 colormap(ax,cmap)
-cx.Label.String = 'p_b [ MPa ]'; 
+cx.Label.String = '\Delta p_b [ MPa ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
 pbmax = max(abs(vva.pb-(aa.phi_0-aa.phi_a)));
-clim([-1 1]); 
+clim([-0.25*ps.phi/1e6 0.25*ps.phi/1e6]); 
 
 time = ['t=' num2str(vva.t*ps.t/pd.td,'%.1f') ' d'];
 ttext = text(0.1,8,time,"Position",[0.7 0.8],"Units","normalized");
@@ -376,35 +385,43 @@ axis equal
 axis tight
 
 %% make video
-v = VideoWriter(['./results/videos/' casename],'MPEG-4');
-% v = VideoWriter(['./results/' oo.casename],'MPEG-4');
+v = VideoWriter(['./results/videos/' casename '_perturb'],'MPEG-4');
 v.FrameRate = 1;
 open(v)
+
+N0 = (ps.phi/10^6)*(aa.phi_0-vva0.phi);
+pb0 = (ps.phi/10^6)*(vva0.pb-(aa.phi_0-aa.phi_a));
+qnet0 = (vv20.qs + vv20.qe + vv20.qb + vv20.qQ + vv20.Q);
+
 for i_t = t_init:t_end
     disp(['Frame ',num2str(i_t-t_init),' / ',num2str(t_end-t_init),' ...']);
-    %% load timestep
+
     vva = load([path num2str(i_t,formatSpec)], 'vv');
     vva = vva.vv;
     aa = nevis_inputs(vva.t,aa,vva,pp,gg,oo);
 
-    N = (ps.phi/10^6)*(aa.phi_0-vva.phi);
+    N = (ps.phi/10^6)*(aa.phi_0-vva.phi); 
     pb = (ps.phi/10^6)*(vva.pb-(aa.phi_0-aa.phi_a));
+
     [vv2] = nevis_backbone(inf,vva,vva,aa,pp,gg,oo); % expand solution variables
     vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo); % calculate node discharge
-    qnet = ps.qs*(vv2.qs + vv2.qe + vv2.qQ + vv2.Q);
-
-    pqnet.CData = reshape(qnet,gg.nI,gg.nJ); 
+    qnet = (vv2.qs + vv2.qe + vv2.qb + vv2.qQ + vv2.Q);
+    
+    pqnet.CData = ps.qs*reshape((qnet-qnet0),gg.nI,gg.nJ); 
     pqnet_contour.ZData = (ps.phi)*reshape(vva.phi,gg.nI,gg.nJ);
 
-    phs.CData = (ps.hs)*reshape(vva.hs,gg.nI,gg.nJ);
+    phs.CData = ps.hs*reshape((vva.hs-vva0.hs),gg.nI,gg.nJ);
     phs_contour.ZData = (ps.phi)*reshape(vva.phi,gg.nI,gg.nJ);
 
-    pblister.CData = (ps.hb)*reshape(vva.hb,gg.nI,gg.nJ); 
+    pblister.CData = ps.hb*reshape((vva.hb-vva0.hb),gg.nI,gg.nJ); 
     pblister_contour.ZData = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ);
 
-    pS.CData = (ps.S)*reshape(0.25*(gg.nmeanx*vva.Sx + gg.nmeany*vva.Sy + gg.nmeans*vva.Ss + gg.nmeanr*vva.Sr),gg.nI,gg.nJ);
-    peff.CData = reshape(N,gg.nI,gg.nJ); 
-    ppb.CData = reshape(pb,gg.nI,gg.nJ);
+    Smean = 0.25*(gg.nmeanx*vva.Sx + gg.nmeany*vva.Sy + gg.nmeans*vva.Ss + gg.nmeanr*vva.Sr);
+    Smean0 = 0.25*(gg.nmeanx*vva0.Sx + gg.nmeany*vva0.Sy + gg.nmeans*vva0.Ss + gg.nmeanr*vva0.Sr);
+    pS.CData = ps.S*reshape((Smean-Smean0),gg.nI,gg.nJ);
+
+    peff.CData = ps.phi/1e6*reshape(N-N0,gg.nI,gg.nJ); 
+    ppb.CData = ps.phi/1e6*reshape(pb-pb0,gg.nI,gg.nJ);
 
     set(ttext,{'string'},{['t=' num2str(vva.t*ps.t/(24*60*60),'%.1f'), ' d']})  %notice the column vector of new values
     
@@ -415,12 +432,13 @@ for i_t = t_init:t_end
     x5.Value = vva.t*ps.t/pd.td;
     x6.Value = vva.t*ps.t/pd.td;
     
-    disp(min(vva.hb));
+    % disp(min((qnet-qnet0)/dt));
+    
     refreshdata
-    drawnow
+    if i_t > t_init, drawnow; end
     % pause(0.2)
     frame = getframe(gcf);
-    writeVideo(v,frame)
+    if i_t > t_init, writeVideo(v,frame);end
 end
 
 close(v)
@@ -428,3 +446,4 @@ close(v)
 
 % img = getframe(gcf);
 % imwrite(img.cdata, ['./results/figures/' oo.casename, '_2dplot.png']);
+% end

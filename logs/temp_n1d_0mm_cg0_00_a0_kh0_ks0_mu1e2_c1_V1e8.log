@@ -1,0 +1,4121 @@
+WARNING: package sun.awt.X11 not in java.desktop
+WARNING: package sun.awt.X11 not in java.desktop
+nevis_grid: Setting up grid ...
+  801-by-1 nodes
+  1 vertical layers
+  0<x<5, 0<y<5
+nevis_grid: Done
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0001 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.0041667 ...
+nevis_timesteps: Done [ 0.026426 s, 0 iterations ]
+nevis_timesteps: t = 0.10417 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: dt = 0.0083333 ...
+nevis_timesteps: Done [ 0.0070679 s, 0 iterations ]
+nevis_timesteps: t = 0.1125 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: dt = 0.016667 ...
+nevis_timesteps: Done [ 0.0071678 s, 0 iterations ]
+nevis_timesteps: t = 0.12917 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: dt = 0.033333 ...
+nevis_timesteps: Done [ 0.0070937 s, 0 iterations ]
+nevis_timesteps: t = 0.1625 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: dt = 0.0375 ...
+nevis_timesteps: Done [ 0.0072133 s, 0 iterations ]
+nevis_timesteps: t = 0.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0002 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0069128 s, 0 iterations ]
+nevis_timesteps: t = 0.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0003 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.007974 s, 0 iterations ]
+nevis_timesteps: t = 0.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0004 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0066661 s, 0 iterations ]
+nevis_timesteps: t = 0.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0005 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0071665 s, 0 iterations ]
+nevis_timesteps: t = 0.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0006 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0070563 s, 0 iterations ]
+nevis_timesteps: t = 0.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0007 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0068575 s, 0 iterations ]
+nevis_timesteps: t = 0.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0008 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.006744 s, 0 iterations ]
+nevis_timesteps: t = 0.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0009 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.007026 s, 0 iterations ]
+nevis_timesteps: t = 1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0010 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0064074 s, 0 iterations ]
+nevis_timesteps: t = 1.1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0011 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0070653 s, 0 iterations ]
+nevis_timesteps: t = 1.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0012 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0076887 s, 0 iterations ]
+nevis_timesteps: t = 1.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0013 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0069879 s, 0 iterations ]
+nevis_timesteps: t = 1.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0014 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0067572 s, 0 iterations ]
+nevis_timesteps: t = 1.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0015 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0073495 s, 0 iterations ]
+nevis_timesteps: t = 1.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0016 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0070747 s, 0 iterations ]
+nevis_timesteps: t = 1.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0017 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0078702 s, 0 iterations ]
+nevis_timesteps: t = 1.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0018 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0069119 s, 0 iterations ]
+nevis_timesteps: t = 1.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0019 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0064043 s, 0 iterations ]
+nevis_timesteps: t = 2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0020 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0070717 s, 0 iterations ]
+nevis_timesteps: t = 2.1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0021 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0076048 s, 0 iterations ]
+nevis_timesteps: t = 2.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0022 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.010105 s, 0 iterations ]
+nevis_timesteps: t = 2.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0023 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0080842 s, 0 iterations ]
+nevis_timesteps: t = 2.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0024 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0077394 s, 0 iterations ]
+nevis_timesteps: t = 2.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0025 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0070736 s, 0 iterations ]
+nevis_timesteps: t = 2.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0026 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0063343 s, 0 iterations ]
+nevis_timesteps: t = 2.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0027 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0068225 s, 0 iterations ]
+nevis_timesteps: t = 2.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0028 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0064675 s, 0 iterations ]
+nevis_timesteps: t = 2.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0029 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0067508 s, 0 iterations ]
+nevis_timesteps: t = 3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0030 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0081415 s, 0 iterations ]
+nevis_timesteps: t = 3.1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0031 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0064321 s, 0 iterations ]
+nevis_timesteps: t = 3.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0032 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0075859 s, 0 iterations ]
+nevis_timesteps: t = 3.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0033 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0061794 s, 0 iterations ]
+nevis_timesteps: t = 3.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0034 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0064123 s, 0 iterations ]
+nevis_timesteps: t = 3.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0035 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0061005 s, 0 iterations ]
+nevis_timesteps: t = 3.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0036 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0063445 s, 0 iterations ]
+nevis_timesteps: t = 3.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0037 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0081608 s, 0 iterations ]
+nevis_timesteps: t = 3.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0038 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0062723 s, 0 iterations ]
+nevis_timesteps: t = 3.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0039 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0064023 s, 0 iterations ]
+nevis_timesteps: t = 4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0040 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0065464 s, 0 iterations ]
+nevis_timesteps: t = 4.1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0041 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0058399 s, 0 iterations ]
+nevis_timesteps: t = 4.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0042 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0062867 s, 0 iterations ]
+nevis_timesteps: t = 4.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0043 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0061483 s, 0 iterations ]
+nevis_timesteps: t = 4.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0044 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0059852 s, 0 iterations ]
+nevis_timesteps: t = 4.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0045 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0088251 s, 0 iterations ]
+nevis_timesteps: t = 4.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0046 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.014753 s, 0 iterations ]
+nevis_timesteps: t = 4.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0047 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0083838 s, 0 iterations ]
+nevis_timesteps: t = 4.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0048 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0084208 s, 0 iterations ]
+nevis_timesteps: t = 4.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0049 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0078552 s, 0 iterations ]
+nevis_timesteps: t = 5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0050 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0074528 s, 0 iterations ]
+nevis_timesteps: t = 5.1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0051 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0077069 s, 0 iterations ]
+nevis_timesteps: t = 5.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0052 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0080108 s, 0 iterations ]
+nevis_timesteps: t = 5.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0053 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.008194 s, 0 iterations ]
+nevis_timesteps: t = 5.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0054 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0066946 s, 0 iterations ]
+nevis_timesteps: t = 5.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0055 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0073072 s, 0 iterations ]
+nevis_timesteps: t = 5.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0056 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0068735 s, 0 iterations ]
+nevis_timesteps: t = 5.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0057 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0066335 s, 0 iterations ]
+nevis_timesteps: t = 5.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0058 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0068737 s, 0 iterations ]
+nevis_timesteps: t = 5.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0059 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0071833 s, 0 iterations ]
+nevis_timesteps: t = 6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0060 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0073262 s, 0 iterations ]
+nevis_timesteps: t = 6.1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0061 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0072736 s, 0 iterations ]
+nevis_timesteps: t = 6.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0062 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0071317 s, 0 iterations ]
+nevis_timesteps: t = 6.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0063 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0070994 s, 0 iterations ]
+nevis_timesteps: t = 6.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0064 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0071178 s, 0 iterations ]
+nevis_timesteps: t = 6.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0065 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0074483 s, 0 iterations ]
+nevis_timesteps: t = 6.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0066 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0075799 s, 0 iterations ]
+nevis_timesteps: t = 6.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0067 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0068888 s, 0 iterations ]
+nevis_timesteps: t = 6.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0068 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0070327 s, 0 iterations ]
+nevis_timesteps: t = 6.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0069 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0076383 s, 0 iterations ]
+nevis_timesteps: t = 7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0070 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0072185 s, 0 iterations ]
+nevis_timesteps: t = 7.1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0071 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0066907 s, 0 iterations ]
+nevis_timesteps: t = 7.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0072 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.006094 s, 0 iterations ]
+nevis_timesteps: t = 7.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0073 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0064678 s, 0 iterations ]
+nevis_timesteps: t = 7.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0074 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.007263 s, 0 iterations ]
+nevis_timesteps: t = 7.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0075 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0070679 s, 0 iterations ]
+nevis_timesteps: t = 7.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0076 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0066254 s, 0 iterations ]
+nevis_timesteps: t = 7.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0077 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0063919 s, 0 iterations ]
+nevis_timesteps: t = 7.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0078 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0068035 s, 0 iterations ]
+nevis_timesteps: t = 7.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0079 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0069661 s, 0 iterations ]
+nevis_timesteps: t = 8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0080 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0065298 s, 0 iterations ]
+nevis_timesteps: t = 8.1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0081 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0060242 s, 0 iterations ]
+nevis_timesteps: t = 8.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0082 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0068287 s, 0 iterations ]
+nevis_timesteps: t = 8.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0083 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0063755 s, 0 iterations ]
+nevis_timesteps: t = 8.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0084 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0062881 s, 0 iterations ]
+nevis_timesteps: t = 8.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0085 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0065762 s, 0 iterations ]
+nevis_timesteps: t = 8.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0086 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0055787 s, 0 iterations ]
+nevis_timesteps: t = 8.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0087 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.005929 s, 0 iterations ]
+nevis_timesteps: t = 8.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0088 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0056647 s, 0 iterations ]
+nevis_timesteps: t = 8.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0089 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0053752 s, 0 iterations ]
+nevis_timesteps: t = 9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0090 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0060488 s, 0 iterations ]
+nevis_timesteps: t = 9.1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0091 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0058042 s, 0 iterations ]
+nevis_timesteps: t = 9.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0092 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0050179 s, 0 iterations ]
+nevis_timesteps: t = 9.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0093 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0056261 s, 0 iterations ]
+nevis_timesteps: t = 9.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0094 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0052763 s, 0 iterations ]
+nevis_timesteps: t = 9.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0095 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0055848 s, 0 iterations ]
+nevis_timesteps: t = 9.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0096 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0049855 s, 0 iterations ]
+nevis_timesteps: t = 9.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0097 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0050822 s, 0 iterations ]
+nevis_timesteps: t = 9.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0098 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0050509 s, 0 iterations ]
+nevis_timesteps: t = 9.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0099 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0047105 s, 0 iterations ]
+nevis_timesteps: t = 10 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0100 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.00506 s, 0 iterations ]
+nevis_timesteps: t = 10.1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0101 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0053015 s, 0 iterations ]
+nevis_timesteps: t = 10.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0102 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.004886 s, 0 iterations ]
+nevis_timesteps: t = 10.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0103 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0052322 s, 0 iterations ]
+nevis_timesteps: t = 10.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0104 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0051203 s, 0 iterations ]
+nevis_timesteps: t = 10.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0105 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0050605 s, 0 iterations ]
+nevis_timesteps: t = 10.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0106 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0048305 s, 0 iterations ]
+nevis_timesteps: t = 10.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0107 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0045337 s, 0 iterations ]
+nevis_timesteps: t = 10.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0108 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0050649 s, 0 iterations ]
+nevis_timesteps: t = 10.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0109 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0045794 s, 0 iterations ]
+nevis_timesteps: t = 11 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0110 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0048572 s, 0 iterations ]
+nevis_timesteps: t = 11.1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0111 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0049821 s, 0 iterations ]
+nevis_timesteps: t = 11.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0112 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0047982 s, 0 iterations ]
+nevis_timesteps: t = 11.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0113 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0045127 s, 0 iterations ]
+nevis_timesteps: t = 11.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0114 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0041208 s, 0 iterations ]
+nevis_timesteps: t = 11.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0115 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0047435 s, 0 iterations ]
+nevis_timesteps: t = 11.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0116 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0045149 s, 0 iterations ]
+nevis_timesteps: t = 11.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0117 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0037834 s, 0 iterations ]
+nevis_timesteps: t = 11.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0118 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0044605 s, 0 iterations ]
+nevis_timesteps: t = 11.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0119 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0050311 s, 0 iterations ]
+nevis_timesteps: t = 12 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0120 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0043086 s, 0 iterations ]
+nevis_timesteps: t = 12.1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0121 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0044923 s, 0 iterations ]
+nevis_timesteps: t = 12.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0122 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0047112 s, 0 iterations ]
+nevis_timesteps: t = 12.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0123 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0042286 s, 0 iterations ]
+nevis_timesteps: t = 12.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0124 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0045175 s, 0 iterations ]
+nevis_timesteps: t = 12.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0125 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0040599 s, 0 iterations ]
+nevis_timesteps: t = 12.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0126 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0041687 s, 0 iterations ]
+nevis_timesteps: t = 12.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0127 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0041495 s, 0 iterations ]
+nevis_timesteps: t = 12.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0128 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0039873 s, 0 iterations ]
+nevis_timesteps: t = 12.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0129 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0039085 s, 0 iterations ]
+nevis_timesteps: t = 13 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0130 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.003656 s, 0 iterations ]
+nevis_timesteps: t = 13.1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0131 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.003722 s, 0 iterations ]
+nevis_timesteps: t = 13.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0132 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0037631 s, 0 iterations ]
+nevis_timesteps: t = 13.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0133 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.003635 s, 0 iterations ]
+nevis_timesteps: t = 13.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0134 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0034511 s, 0 iterations ]
+nevis_timesteps: t = 13.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0135 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0035623 s, 0 iterations ]
+nevis_timesteps: t = 13.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0136 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.00356 s, 0 iterations ]
+nevis_timesteps: t = 13.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0137 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.003695 s, 0 iterations ]
+nevis_timesteps: t = 13.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0138 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0037946 s, 0 iterations ]
+nevis_timesteps: t = 13.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0139 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0037385 s, 0 iterations ]
+nevis_timesteps: t = 14 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0140 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0041049 s, 0 iterations ]
+nevis_timesteps: t = 14.1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0141 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0036923 s, 0 iterations ]
+nevis_timesteps: t = 14.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0142 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0035994 s, 0 iterations ]
+nevis_timesteps: t = 14.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0143 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0039174 s, 0 iterations ]
+nevis_timesteps: t = 14.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0144 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.003991 s, 0 iterations ]
+nevis_timesteps: t = 14.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0145 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.003616 s, 0 iterations ]
+nevis_timesteps: t = 14.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0146 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0038648 s, 0 iterations ]
+nevis_timesteps: t = 14.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0147 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0041625 s, 0 iterations ]
+nevis_timesteps: t = 14.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0148 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0037943 s, 0 iterations ]
+nevis_timesteps: t = 14.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0149 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.004018 s, 0 iterations ]
+nevis_timesteps: t = 15 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0150 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0035979 s, 0 iterations ]
+nevis_timesteps: t = 15.1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0151 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0038012 s, 0 iterations ]
+nevis_timesteps: t = 15.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0152 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0041536 s, 0 iterations ]
+nevis_timesteps: t = 15.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0153 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0034809 s, 0 iterations ]
+nevis_timesteps: t = 15.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0154 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0039253 s, 0 iterations ]
+nevis_timesteps: t = 15.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0155 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.004064 s, 0 iterations ]
+nevis_timesteps: t = 15.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0156 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.003486 s, 0 iterations ]
+nevis_timesteps: t = 15.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0157 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0038808 s, 0 iterations ]
+nevis_timesteps: t = 15.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0158 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0039383 s, 0 iterations ]
+nevis_timesteps: t = 15.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0159 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0034152 s, 0 iterations ]
+nevis_timesteps: t = 16 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0160 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0037276 s, 0 iterations ]
+nevis_timesteps: t = 16.1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0161 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0038152 s, 0 iterations ]
+nevis_timesteps: t = 16.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0162 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0035708 s, 0 iterations ]
+nevis_timesteps: t = 16.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0163 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0034069 s, 0 iterations ]
+nevis_timesteps: t = 16.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0164 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0040362 s, 0 iterations ]
+nevis_timesteps: t = 16.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0165 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0038896 s, 0 iterations ]
+nevis_timesteps: t = 16.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0166 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.003512 s, 0 iterations ]
+nevis_timesteps: t = 16.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0167 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.00383 s, 0 iterations ]
+nevis_timesteps: t = 16.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0168 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0038258 s, 0 iterations ]
+nevis_timesteps: t = 16.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0169 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0043974 s, 0 iterations ]
+nevis_timesteps: t = 17 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0170 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0038049 s, 0 iterations ]
+nevis_timesteps: t = 17.1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0171 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0033162 s, 0 iterations ]
+nevis_timesteps: t = 17.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0172 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0037889 s, 0 iterations ]
+nevis_timesteps: t = 17.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0173 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0041023 s, 0 iterations ]
+nevis_timesteps: t = 17.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0174 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0037606 s, 0 iterations ]
+nevis_timesteps: t = 17.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0175 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0032207 s, 0 iterations ]
+nevis_timesteps: t = 17.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0176 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0036112 s, 0 iterations ]
+nevis_timesteps: t = 17.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0177 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0036535 s, 0 iterations ]
+nevis_timesteps: t = 17.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0178 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0036649 s, 0 iterations ]
+nevis_timesteps: t = 17.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0179 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0036462 s, 0 iterations ]
+nevis_timesteps: t = 18 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0180 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.003365 s, 0 iterations ]
+nevis_timesteps: t = 18.1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0181 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0032344 s, 0 iterations ]
+nevis_timesteps: t = 18.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0182 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0038386 s, 0 iterations ]
+nevis_timesteps: t = 18.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0183 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0030251 s, 0 iterations ]
+nevis_timesteps: t = 18.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0184 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0040903 s, 0 iterations ]
+nevis_timesteps: t = 18.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0185 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.003315 s, 0 iterations ]
+nevis_timesteps: t = 18.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0186 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0038471 s, 0 iterations ]
+nevis_timesteps: t = 18.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0187 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0030829 s, 0 iterations ]
+nevis_timesteps: t = 18.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0188 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0033695 s, 0 iterations ]
+nevis_timesteps: t = 18.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0189 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0034347 s, 0 iterations ]
+nevis_timesteps: t = 19 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0190 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.003798 s, 0 iterations ]
+nevis_timesteps: t = 19.1 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0191 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.003906 s, 0 iterations ]
+nevis_timesteps: t = 19.2 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0192 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0039912 s, 0 iterations ]
+nevis_timesteps: t = 19.3 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0193 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0035204 s, 0 iterations ]
+nevis_timesteps: t = 19.4 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0194 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0037693 s, 0 iterations ]
+nevis_timesteps: t = 19.5 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0195 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0034825 s, 0 iterations ]
+nevis_timesteps: t = 19.6 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0196 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0033357 s, 0 iterations ]
+nevis_timesteps: t = 19.7 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0197 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0031396 s, 0 iterations ]
+nevis_timesteps: t = 19.8 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0198 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+nevis_timesteps: Done [ 0.0032977 s, 0 iterations ]
+nevis_timesteps: t = 19.9 [ / 100 ]
+Volume of the blister is 0.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0199 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.1 ...
+**norm_F = 1268.9651 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.059605 ...
+**norm_F = 0.40395 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.029802 ...
+**norm_F = 0.0023254 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.014901 ...
+**norm_F = 0.10254 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.0074506 ...
+**norm_F = 0.0013078 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.0037253 ...
+nevis_timesteps: Done [ 9.6484 s, 20 iterations ]
+nevis_timesteps: t = 19.9037 [ / 100 ]
+Volume of the blister is 1.9942e-05.
+nevis_timesteps: dt = 0.0018626 ...
+**norm_F = 0.010864 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00093132 ...
+nevis_timesteps: Done [ 0.33683 s, 3 iterations ]
+nevis_timesteps: t = 19.9047 [ / 100 ]
+Volume of the blister is 2.8891e-05.
+nevis_timesteps: dt = 0.00093132 ...
+**norm_F = 0.020666 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.31768 s, 2 iterations ]
+nevis_timesteps: t = 19.9051 [ / 100 ]
+Volume of the blister is 3.4052e-05.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.031414 s, 2 iterations ]
+nevis_timesteps: t = 19.9056 [ / 100 ]
+Volume of the blister is 3.9592e-05.
+nevis_timesteps: dt = 0.00093132 ...
+**norm_F = 0.66265 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.32266 s, 2 iterations ]
+nevis_timesteps: t = 19.9061 [ / 100 ]
+Volume of the blister is 4.5536e-05.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.045917 s, 3 iterations ]
+nevis_timesteps: t = 19.9065 [ / 100 ]
+Volume of the blister is 5.1913e-05.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.045228 s, 3 iterations ]
+nevis_timesteps: t = 19.907 [ / 100 ]
+Volume of the blister is 5.8751e-05.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.044863 s, 3 iterations ]
+nevis_timesteps: t = 19.9075 [ / 100 ]
+Volume of the blister is 6.6081e-05.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.043267 s, 3 iterations ]
+nevis_timesteps: t = 19.9079 [ / 100 ]
+Volume of the blister is 7.3935e-05.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.044344 s, 3 iterations ]
+nevis_timesteps: t = 19.9084 [ / 100 ]
+Volume of the blister is 8.2349e-05.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.043509 s, 3 iterations ]
+nevis_timesteps: t = 19.9088 [ / 100 ]
+Volume of the blister is 9.1359e-05.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.03236 s, 2 iterations ]
+nevis_timesteps: t = 19.9093 [ / 100 ]
+Volume of the blister is 0.000101.
+nevis_timesteps: dt = 0.00093132 ...
+**norm_F = 8.6682 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.32855 s, 3 iterations ]
+nevis_timesteps: t = 19.9098 [ / 100 ]
+Volume of the blister is 0.00011132.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.030468 s, 2 iterations ]
+nevis_timesteps: t = 19.9102 [ / 100 ]
+Volume of the blister is 0.00012236.
+nevis_timesteps: dt = 0.00093132 ...
+nevis_timesteps: Done [ 0.14257 s, 10 iterations ]
+nevis_timesteps: t = 19.9112 [ / 100 ]
+Volume of the blister is 0.00014597.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.02965 s, 2 iterations ]
+nevis_timesteps: t = 19.9116 [ / 100 ]
+Volume of the blister is 0.00015946.
+nevis_timesteps: dt = 0.00093132 ...
+nevis_timesteps: Done [ 0.11495 s, 8 iterations ]
+nevis_timesteps: t = 19.9126 [ / 100 ]
+Volume of the blister is 0.00018827.
+nevis_timesteps: dt = 0.00093132 ...
+nevis_timesteps: Done [ 0.08784 s, 6 iterations ]
+nevis_timesteps: t = 19.9135 [ / 100 ]
+Volume of the blister is 0.00022111.
+nevis_timesteps: dt = 0.00093132 ...
+**norm_F = 173.0941 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.3175 s, 2 iterations ]
+nevis_timesteps: t = 19.914 [ / 100 ]
+Volume of the blister is 0.00023981.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.032422 s, 2 iterations ]
+nevis_timesteps: t = 19.9144 [ / 100 ]
+Volume of the blister is 0.00025974.
+nevis_timesteps: dt = 0.00093132 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  7.276331e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 35246.4542 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.31789 s, 2 iterations ]
+nevis_timesteps: t = 19.9149 [ / 100 ]
+Volume of the blister is 0.00028099.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.030479 s, 2 iterations ]
+nevis_timesteps: t = 19.9154 [ / 100 ]
+Volume of the blister is 0.00030364.
+nevis_timesteps: dt = 0.00093132 ...
+**norm_F = 84.2472 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.31306 s, 2 iterations ]
+nevis_timesteps: t = 19.9158 [ / 100 ]
+Volume of the blister is 0.00032776.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.060328 s, 4 iterations ]
+nevis_timesteps: t = 19.9163 [ / 100 ]
+Volume of the blister is 0.00035345.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.046003 s, 3 iterations ]
+nevis_timesteps: t = 19.9168 [ / 100 ]
+Volume of the blister is 0.0003808.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.077681 s, 5 iterations ]
+nevis_timesteps: t = 19.9172 [ / 100 ]
+Volume of the blister is 0.0004099.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.046263 s, 3 iterations ]
+nevis_timesteps: t = 19.9177 [ / 100 ]
+Volume of the blister is 0.00044086.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.032514 s, 2 iterations ]
+nevis_timesteps: t = 19.9182 [ / 100 ]
+Volume of the blister is 0.00047378.
+nevis_timesteps: dt = 0.00093132 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.054489e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 0.14568 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.42406 s, 9 iterations ]
+nevis_timesteps: t = 19.9186 [ / 100 ]
+Volume of the blister is 0.00050878.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.051379 s, 3 iterations ]
+nevis_timesteps: t = 19.9191 [ / 100 ]
+Volume of the blister is 0.00054597.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.04503 s, 3 iterations ]
+nevis_timesteps: t = 19.9196 [ / 100 ]
+Volume of the blister is 0.00058548.
+nevis_timesteps: dt = 0.00046566 ...
+**norm_F = 1.0277 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.30378 s, 2 iterations ]
+nevis_timesteps: t = 19.9198 [ / 100 ]
+Volume of the blister is 0.00060645.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.030453 s, 2 iterations ]
+nevis_timesteps: t = 19.92 [ / 100 ]
+Volume of the blister is 0.00062807.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.043574 s, 3 iterations ]
+nevis_timesteps: t = 19.9205 [ / 100 ]
+Volume of the blister is 0.00067261.
+nevis_timesteps: dt = 0.00046566 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  2.104256e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 0.7119 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.31069 s, 2 iterations ]
+nevis_timesteps: t = 19.9207 [ / 100 ]
+Volume of the blister is 0.00069624.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.030326 s, 2 iterations ]
+nevis_timesteps: t = 19.921 [ / 100 ]
+Volume of the blister is 0.00072059.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.1115 s, 8 iterations ]
+nevis_timesteps: t = 19.9214 [ / 100 ]
+Volume of the blister is 0.00077073.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.043518 s, 3 iterations ]
+nevis_timesteps: t = 19.9219 [ / 100 ]
+Volume of the blister is 0.00082391.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.070635 s, 5 iterations ]
+nevis_timesteps: t = 19.9224 [ / 100 ]
+Volume of the blister is 0.00088028.
+nevis_timesteps: dt = 0.00046566 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.849893e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.057188e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+nevis_timesteps: Done [ 0.21046 s, 15 iterations ]
+nevis_timesteps: t = 19.9228 [ / 100 ]
+Volume of the blister is 0.00094002.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.030399 s, 2 iterations ]
+nevis_timesteps: t = 19.9231 [ / 100 ]
+Volume of the blister is 0.00097166.
+nevis_timesteps: dt = 0.00046566 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.590638e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 12.3505 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.30522 s, 2 iterations ]
+nevis_timesteps: t = 19.9233 [ / 100 ]
+Volume of the blister is 0.0010042.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.030865 s, 2 iterations ]
+nevis_timesteps: t = 19.9235 [ / 100 ]
+Volume of the blister is 0.0010377.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.071061 s, 5 iterations ]
+nevis_timesteps: t = 19.924 [ / 100 ]
+Volume of the blister is 0.0011067.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.043811 s, 3 iterations ]
+nevis_timesteps: t = 19.9244 [ / 100 ]
+Volume of the blister is 0.0011797.
+nevis_timesteps: dt = 0.00046566 ...
+**norm_F = 0.027058 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.30506 s, 2 iterations ]
+nevis_timesteps: t = 19.9247 [ / 100 ]
+Volume of the blister is 0.0012183.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.030151 s, 2 iterations ]
+nevis_timesteps: t = 19.9249 [ / 100 ]
+Volume of the blister is 0.001258.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.27814 s, 20 iterations ]
+nevis_timesteps: t = 19.9254 [ / 100 ]
+Volume of the blister is 0.0013397.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.030949 s, 2 iterations ]
+nevis_timesteps: t = 19.9256 [ / 100 ]
+Volume of the blister is 0.0013829.
+nevis_timesteps: dt = 0.00046566 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  2.047369e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 1.6973 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.30107 s, 2 iterations ]
+nevis_timesteps: t = 19.9258 [ / 100 ]
+Volume of the blister is 0.0014273.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.02907 s, 2 iterations ]
+nevis_timesteps: t = 19.9261 [ / 100 ]
+Volume of the blister is 0.001473.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.24214 s, 18 iterations ]
+nevis_timesteps: t = 19.9265 [ / 100 ]
+Volume of the blister is 0.0015668.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.03009 s, 2 iterations ]
+nevis_timesteps: t = 19.9268 [ / 100 ]
+Volume of the blister is 0.0016164.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.13389 s, 9 iterations ]
+nevis_timesteps: t = 19.9272 [ / 100 ]
+Volume of the blister is 0.0017183.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.13403 s, 9 iterations ]
+nevis_timesteps: t = 19.9277 [ / 100 ]
+Volume of the blister is 0.0018259.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.10543 s, 7 iterations ]
+nevis_timesteps: t = 19.9282 [ / 100 ]
+Volume of the blister is 0.0019394.
+nevis_timesteps: dt = 0.00046566 ...
+**norm_F = 6110.3028 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.31589 s, 2 iterations ]
+nevis_timesteps: t = 19.9284 [ / 100 ]
+Volume of the blister is 0.0019993.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.030305 s, 2 iterations ]
+nevis_timesteps: t = 19.9286 [ / 100 ]
+Volume of the blister is 0.0020609.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.044779 s, 3 iterations ]
+nevis_timesteps: t = 19.9291 [ / 100 ]
+Volume of the blister is 0.0021873.
+nevis_timesteps: dt = 0.00046566 ...
+**norm_F = 0.15528 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.3118 s, 2 iterations ]
+nevis_timesteps: t = 19.9293 [ / 100 ]
+Volume of the blister is 0.0022539.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.030045 s, 2 iterations ]
+nevis_timesteps: t = 19.9296 [ / 100 ]
+Volume of the blister is 0.0023223.
+nevis_timesteps: dt = 0.00046566 ...
+**norm_F = 244.4546 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.32258 s, 3 iterations ]
+nevis_timesteps: t = 19.9298 [ / 100 ]
+Volume of the blister is 0.0023926.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.029734 s, 2 iterations ]
+nevis_timesteps: t = 19.93 [ / 100 ]
+Volume of the blister is 0.0024647.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.24376 s, 17 iterations ]
+nevis_timesteps: t = 19.9305 [ / 100 ]
+Volume of the blister is 0.0026127.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.030582 s, 2 iterations ]
+nevis_timesteps: t = 19.9307 [ / 100 ]
+Volume of the blister is 0.0026906.
+nevis_timesteps: dt = 0.00046566 ...
+**norm_F = 0.89536 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.31192 s, 2 iterations ]
+nevis_timesteps: t = 19.931 [ / 100 ]
+Volume of the blister is 0.0027706.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.030038 s, 2 iterations ]
+nevis_timesteps: t = 19.9312 [ / 100 ]
+Volume of the blister is 0.0028527.
+nevis_timesteps: dt = 0.00046566 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  7.424729e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+nevis_timesteps: Done [ 0.19424 s, 14 iterations ]
+nevis_timesteps: t = 19.9317 [ / 100 ]
+Volume of the blister is 0.0030212.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.029659 s, 2 iterations ]
+nevis_timesteps: t = 19.9319 [ / 100 ]
+Volume of the blister is 0.0031098.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.055581 s, 4 iterations ]
+nevis_timesteps: t = 19.9324 [ / 100 ]
+Volume of the blister is 0.0032916.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.057272 s, 4 iterations ]
+nevis_timesteps: t = 19.9328 [ / 100 ]
+Volume of the blister is 0.0034829.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.070126 s, 5 iterations ]
+nevis_timesteps: t = 19.9333 [ / 100 ]
+Volume of the blister is 0.003684.
+nevis_timesteps: dt = 0.00046566 ...
+nevis_timesteps: Done [ 0.09834 s, 7 iterations ]
+nevis_timesteps: t = 19.9338 [ / 100 ]
+Volume of the blister is 0.0038954.
+nevis_timesteps: dt = 0.00046566 ...
+**norm_F = 1.4707 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.3007 s, 2 iterations ]
+nevis_timesteps: t = 19.934 [ / 100 ]
+Volume of the blister is 0.0040064.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.029063 s, 2 iterations ]
+nevis_timesteps: t = 19.9342 [ / 100 ]
+Volume of the blister is 0.0041203.
+nevis_timesteps: dt = 0.00046566 ...
+**norm_F = 1507.0268 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.30128 s, 2 iterations ]
+nevis_timesteps: t = 19.9345 [ / 100 ]
+Volume of the blister is 0.0042369.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.029618 s, 2 iterations ]
+nevis_timesteps: t = 19.9347 [ / 100 ]
+Volume of the blister is 0.0043565.
+nevis_timesteps: dt = 0.00046566 ...
+**norm_F = 0.52276 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.31314 s, 3 iterations ]
+nevis_timesteps: t = 19.9349 [ / 100 ]
+Volume of the blister is 0.004479.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.042293 s, 3 iterations ]
+nevis_timesteps: t = 19.9352 [ / 100 ]
+Volume of the blister is 0.0046045.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.043537 s, 3 iterations ]
+nevis_timesteps: t = 19.9354 [ / 100 ]
+Volume of the blister is 0.0047331.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.042134 s, 3 iterations ]
+nevis_timesteps: t = 19.9356 [ / 100 ]
+Volume of the blister is 0.0048648.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.042776 s, 3 iterations ]
+nevis_timesteps: t = 19.9359 [ / 100 ]
+Volume of the blister is 0.0049998.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.043133 s, 3 iterations ]
+nevis_timesteps: t = 19.9361 [ / 100 ]
+Volume of the blister is 0.0051379.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.043857 s, 3 iterations ]
+nevis_timesteps: t = 19.9363 [ / 100 ]
+Volume of the blister is 0.0052795.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.043224 s, 3 iterations ]
+nevis_timesteps: t = 19.9366 [ / 100 ]
+Volume of the blister is 0.0054244.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.042541 s, 3 iterations ]
+nevis_timesteps: t = 19.9368 [ / 100 ]
+Volume of the blister is 0.0055728.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.043029 s, 3 iterations ]
+nevis_timesteps: t = 19.937 [ / 100 ]
+Volume of the blister is 0.0057248.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.028325 s, 2 iterations ]
+nevis_timesteps: t = 19.9373 [ / 100 ]
+Volume of the blister is 0.0058803.
+nevis_timesteps: dt = 0.00046566 ...
+**norm_F = 0.018694 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.31625 s, 3 iterations ]
+nevis_timesteps: t = 19.9375 [ / 100 ]
+Volume of the blister is 0.0060396.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.028179 s, 2 iterations ]
+nevis_timesteps: t = 19.9377 [ / 100 ]
+Volume of the blister is 0.0062026.
+nevis_timesteps: dt = 0.00046566 ...
+**norm_F = 0.008893 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.31285 s, 3 iterations ]
+nevis_timesteps: t = 19.938 [ / 100 ]
+Volume of the blister is 0.0063695.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.042061 s, 3 iterations ]
+nevis_timesteps: t = 19.9382 [ / 100 ]
+Volume of the blister is 0.0065402.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.042698 s, 3 iterations ]
+nevis_timesteps: t = 19.9384 [ / 100 ]
+Volume of the blister is 0.006715.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.044064 s, 3 iterations ]
+nevis_timesteps: t = 19.9386 [ / 100 ]
+Volume of the blister is 0.0068938.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.054544 s, 4 iterations ]
+nevis_timesteps: t = 19.9389 [ / 100 ]
+Volume of the blister is 0.0070767.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.042481 s, 3 iterations ]
+nevis_timesteps: t = 19.9391 [ / 100 ]
+Volume of the blister is 0.0072639.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.055244 s, 4 iterations ]
+nevis_timesteps: t = 19.9393 [ / 100 ]
+Volume of the blister is 0.0074553.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.04308 s, 3 iterations ]
+nevis_timesteps: t = 19.9396 [ / 100 ]
+Volume of the blister is 0.0076512.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.056013 s, 4 iterations ]
+nevis_timesteps: t = 19.9398 [ / 100 ]
+Volume of the blister is 0.0078515.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.04228 s, 3 iterations ]
+nevis_timesteps: t = 19.94 [ / 100 ]
+Volume of the blister is 0.0080564.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.056725 s, 4 iterations ]
+nevis_timesteps: t = 19.9403 [ / 100 ]
+Volume of the blister is 0.0082659.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.056349 s, 4 iterations ]
+nevis_timesteps: t = 19.9405 [ / 100 ]
+Volume of the blister is 0.0084801.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.056472 s, 4 iterations ]
+nevis_timesteps: t = 19.9407 [ / 100 ]
+Volume of the blister is 0.0086991.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.056281 s, 4 iterations ]
+nevis_timesteps: t = 19.941 [ / 100 ]
+Volume of the blister is 0.0089231.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.043499 s, 3 iterations ]
+nevis_timesteps: t = 19.9412 [ / 100 ]
+Volume of the blister is 0.009152.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.069196 s, 5 iterations ]
+nevis_timesteps: t = 19.9414 [ / 100 ]
+Volume of the blister is 0.009386.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.043137 s, 3 iterations ]
+nevis_timesteps: t = 19.9417 [ / 100 ]
+Volume of the blister is 0.0096252.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.085311 s, 6 iterations ]
+nevis_timesteps: t = 19.9419 [ / 100 ]
+Volume of the blister is 0.0098696.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.056147 s, 4 iterations ]
+nevis_timesteps: t = 19.9421 [ / 100 ]
+Volume of the blister is 0.010119.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.068998 s, 5 iterations ]
+nevis_timesteps: t = 19.9424 [ / 100 ]
+Volume of the blister is 0.010375.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.056597 s, 4 iterations ]
+nevis_timesteps: t = 19.9426 [ / 100 ]
+Volume of the blister is 0.010635.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.04239 s, 3 iterations ]
+nevis_timesteps: t = 19.9428 [ / 100 ]
+Volume of the blister is 0.010902.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.083646 s, 6 iterations ]
+nevis_timesteps: t = 19.9431 [ / 100 ]
+Volume of the blister is 0.011174.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.043949 s, 3 iterations ]
+nevis_timesteps: t = 19.9433 [ / 100 ]
+Volume of the blister is 0.011452.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.096149 s, 7 iterations ]
+nevis_timesteps: t = 19.9435 [ / 100 ]
+Volume of the blister is 0.011736.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.056327 s, 4 iterations ]
+nevis_timesteps: t = 19.9438 [ / 100 ]
+Volume of the blister is 0.012026.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.071303 s, 5 iterations ]
+nevis_timesteps: t = 19.944 [ / 100 ]
+Volume of the blister is 0.012322.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 243.3491 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.3014 s, 2 iterations ]
+nevis_timesteps: t = 19.9441 [ / 100 ]
+Volume of the blister is 0.012474.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.028991 s, 2 iterations ]
+nevis_timesteps: t = 19.9442 [ / 100 ]
+Volume of the blister is 0.012626.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.042465 s, 3 iterations ]
+nevis_timesteps: t = 19.9445 [ / 100 ]
+Volume of the blister is 0.012935.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 10.8668 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.30096 s, 2 iterations ]
+nevis_timesteps: t = 19.9446 [ / 100 ]
+Volume of the blister is 0.013093.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029543 s, 2 iterations ]
+nevis_timesteps: t = 19.9447 [ / 100 ]
+Volume of the blister is 0.013252.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.042056 s, 3 iterations ]
+nevis_timesteps: t = 19.9449 [ / 100 ]
+Volume of the blister is 0.013574.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.15178 s, 11 iterations ]
+nevis_timesteps: t = 19.9452 [ / 100 ]
+Volume of the blister is 0.013903.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030545 s, 2 iterations ]
+nevis_timesteps: t = 19.9453 [ / 100 ]
+Volume of the blister is 0.01407.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.13892 s, 10 iterations ]
+nevis_timesteps: t = 19.9455 [ / 100 ]
+Volume of the blister is 0.014409.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.028736 s, 2 iterations ]
+nevis_timesteps: t = 19.9456 [ / 100 ]
+Volume of the blister is 0.014582.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.083338 s, 6 iterations ]
+nevis_timesteps: t = 19.9459 [ / 100 ]
+Volume of the blister is 0.014931.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.043207 s, 3 iterations ]
+nevis_timesteps: t = 19.9461 [ / 100 ]
+Volume of the blister is 0.015287.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 57.271 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.302 s, 2 iterations ]
+nevis_timesteps: t = 19.9462 [ / 100 ]
+Volume of the blister is 0.015469.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030028 s, 2 iterations ]
+nevis_timesteps: t = 19.9463 [ / 100 ]
+Volume of the blister is 0.015653.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.069651 s, 5 iterations ]
+nevis_timesteps: t = 19.9466 [ / 100 ]
+Volume of the blister is 0.016024.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.082306 s, 6 iterations ]
+nevis_timesteps: t = 19.9468 [ / 100 ]
+Volume of the blister is 0.016402.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.08537 s, 6 iterations ]
+nevis_timesteps: t = 19.947 [ / 100 ]
+Volume of the blister is 0.016788.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.04323 s, 3 iterations ]
+nevis_timesteps: t = 19.9473 [ / 100 ]
+Volume of the blister is 0.017182.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.098748 s, 7 iterations ]
+nevis_timesteps: t = 19.9475 [ / 100 ]
+Volume of the blister is 0.017584.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.082881 s, 6 iterations ]
+nevis_timesteps: t = 19.9477 [ / 100 ]
+Volume of the blister is 0.017993.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.042889 s, 3 iterations ]
+nevis_timesteps: t = 19.948 [ / 100 ]
+Volume of the blister is 0.018411.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.364781e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 6.0012 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.30387 s, 2 iterations ]
+nevis_timesteps: t = 19.9481 [ / 100 ]
+Volume of the blister is 0.018624.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029076 s, 2 iterations ]
+nevis_timesteps: t = 19.9482 [ / 100 ]
+Volume of the blister is 0.018839.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.069679 s, 5 iterations ]
+nevis_timesteps: t = 19.9484 [ / 100 ]
+Volume of the blister is 0.019273.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.056075 s, 4 iterations ]
+nevis_timesteps: t = 19.9487 [ / 100 ]
+Volume of the blister is 0.019715.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.096511 s, 7 iterations ]
+nevis_timesteps: t = 19.9489 [ / 100 ]
+Volume of the blister is 0.020167.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.056843 s, 4 iterations ]
+nevis_timesteps: t = 19.9491 [ / 100 ]
+Volume of the blister is 0.020626.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.057864 s, 4 iterations ]
+nevis_timesteps: t = 19.9494 [ / 100 ]
+Volume of the blister is 0.021095.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.094759 s, 7 iterations ]
+nevis_timesteps: t = 19.9496 [ / 100 ]
+Volume of the blister is 0.021573.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.084451 s, 6 iterations ]
+nevis_timesteps: t = 19.9498 [ / 100 ]
+Volume of the blister is 0.022059.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.069394 s, 5 iterations ]
+nevis_timesteps: t = 19.9501 [ / 100 ]
+Volume of the blister is 0.022555.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.095316 s, 7 iterations ]
+nevis_timesteps: t = 19.9503 [ / 100 ]
+Volume of the blister is 0.02306.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.071065 s, 5 iterations ]
+nevis_timesteps: t = 19.9505 [ / 100 ]
+Volume of the blister is 0.023575.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.070235 s, 5 iterations ]
+nevis_timesteps: t = 19.9508 [ / 100 ]
+Volume of the blister is 0.024099.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.097938 s, 7 iterations ]
+nevis_timesteps: t = 19.951 [ / 100 ]
+Volume of the blister is 0.024633.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.056002 s, 4 iterations ]
+nevis_timesteps: t = 19.9512 [ / 100 ]
+Volume of the blister is 0.025177.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.057208 s, 4 iterations ]
+nevis_timesteps: t = 19.9515 [ / 100 ]
+Volume of the blister is 0.025731.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.09706 s, 7 iterations ]
+nevis_timesteps: t = 19.9517 [ / 100 ]
+Volume of the blister is 0.026295.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.056935 s, 4 iterations ]
+nevis_timesteps: t = 19.9519 [ / 100 ]
+Volume of the blister is 0.026869.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.042456 s, 3 iterations ]
+nevis_timesteps: t = 19.9522 [ / 100 ]
+Volume of the blister is 0.027454.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.099127 s, 7 iterations ]
+nevis_timesteps: t = 19.9524 [ / 100 ]
+Volume of the blister is 0.028049.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.068769 s, 5 iterations ]
+nevis_timesteps: t = 19.9526 [ / 100 ]
+Volume of the blister is 0.028655.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.042702 s, 3 iterations ]
+nevis_timesteps: t = 19.9529 [ / 100 ]
+Volume of the blister is 0.029271.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.096386 s, 7 iterations ]
+nevis_timesteps: t = 19.9531 [ / 100 ]
+Volume of the blister is 0.029899.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.099827 s, 7 iterations ]
+nevis_timesteps: t = 19.9533 [ / 100 ]
+Volume of the blister is 0.030538.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.043364 s, 3 iterations ]
+nevis_timesteps: t = 19.9536 [ / 100 ]
+Volume of the blister is 0.031188.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 0.041452 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.30363 s, 2 iterations ]
+nevis_timesteps: t = 19.9537 [ / 100 ]
+Volume of the blister is 0.031518.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029519 s, 2 iterations ]
+nevis_timesteps: t = 19.9538 [ / 100 ]
+Volume of the blister is 0.031852.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.082231 s, 6 iterations ]
+nevis_timesteps: t = 19.954 [ / 100 ]
+Volume of the blister is 0.032525.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.043142 s, 3 iterations ]
+nevis_timesteps: t = 19.9542 [ / 100 ]
+Volume of the blister is 0.033209.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.1258 s, 9 iterations ]
+nevis_timesteps: t = 19.9545 [ / 100 ]
+Volume of the blister is 0.033906.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 354.3284 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.30312 s, 2 iterations ]
+nevis_timesteps: t = 19.9546 [ / 100 ]
+Volume of the blister is 0.03426.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029437 s, 2 iterations ]
+nevis_timesteps: t = 19.9547 [ / 100 ]
+Volume of the blister is 0.034617.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.097214 s, 7 iterations ]
+nevis_timesteps: t = 19.9549 [ / 100 ]
+Volume of the blister is 0.035337.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.19469 s, 14 iterations ]
+nevis_timesteps: t = 19.9552 [ / 100 ]
+Volume of the blister is 0.03607.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030443 s, 2 iterations ]
+nevis_timesteps: t = 19.9553 [ / 100 ]
+Volume of the blister is 0.036442.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.084235 s, 6 iterations ]
+nevis_timesteps: t = 19.9555 [ / 100 ]
+Volume of the blister is 0.037193.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  7.254828e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 30779.2377 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.31058 s, 3 iterations ]
+nevis_timesteps: t = 19.9556 [ / 100 ]
+Volume of the blister is 0.037575.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.027986 s, 2 iterations ]
+nevis_timesteps: t = 19.9558 [ / 100 ]
+Volume of the blister is 0.03796.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.18478 s, 14 iterations ]
+nevis_timesteps: t = 19.956 [ / 100 ]
+Volume of the blister is 0.038737.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.028219 s, 2 iterations ]
+nevis_timesteps: t = 19.9561 [ / 100 ]
+Volume of the blister is 0.039131.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 0.87338 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.29318 s, 2 iterations ]
+nevis_timesteps: t = 19.9562 [ / 100 ]
+Volume of the blister is 0.039529.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.042649 s, 3 iterations ]
+nevis_timesteps: t = 19.9563 [ / 100 ]
+Volume of the blister is 0.03993.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.02893 s, 2 iterations ]
+nevis_timesteps: t = 19.9565 [ / 100 ]
+Volume of the blister is 0.040335.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.17419 s, 13 iterations ]
+nevis_timesteps: t = 19.9567 [ / 100 ]
+Volume of the blister is 0.04115.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.02959 s, 2 iterations ]
+nevis_timesteps: t = 19.9568 [ / 100 ]
+Volume of the blister is 0.041565.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 2011.5088 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.29405 s, 2 iterations ]
+nevis_timesteps: t = 19.9569 [ / 100 ]
+Volume of the blister is 0.041982.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.043038 s, 3 iterations ]
+nevis_timesteps: t = 19.957 [ / 100 ]
+Volume of the blister is 0.042403.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029264 s, 2 iterations ]
+nevis_timesteps: t = 19.9572 [ / 100 ]
+Volume of the blister is 0.042828.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.13453 s, 10 iterations ]
+nevis_timesteps: t = 19.9574 [ / 100 ]
+Volume of the blister is 0.043684.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029289 s, 2 iterations ]
+nevis_timesteps: t = 19.9575 [ / 100 ]
+Volume of the blister is 0.044118.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.069038 s, 5 iterations ]
+nevis_timesteps: t = 19.9577 [ / 100 ]
+Volume of the blister is 0.044995.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.053987 s, 4 iterations ]
+nevis_timesteps: t = 19.958 [ / 100 ]
+Volume of the blister is 0.045885.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.13622 s, 10 iterations ]
+nevis_timesteps: t = 19.9582 [ / 100 ]
+Volume of the blister is 0.04679.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.028879 s, 2 iterations ]
+nevis_timesteps: t = 19.9583 [ / 100 ]
+Volume of the blister is 0.047249.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.042141 s, 3 iterations ]
+nevis_timesteps: t = 19.9586 [ / 100 ]
+Volume of the blister is 0.048175.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.901071e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 1.313 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.2977 s, 2 iterations ]
+nevis_timesteps: t = 19.9587 [ / 100 ]
+Volume of the blister is 0.048645.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.028988 s, 2 iterations ]
+nevis_timesteps: t = 19.9588 [ / 100 ]
+Volume of the blister is 0.049119.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.080879 s, 6 iterations ]
+nevis_timesteps: t = 19.959 [ / 100 ]
+Volume of the blister is 0.050074.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.054305 s, 4 iterations ]
+nevis_timesteps: t = 19.9593 [ / 100 ]
+Volume of the blister is 0.051044.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.055393 s, 4 iterations ]
+nevis_timesteps: t = 19.9595 [ / 100 ]
+Volume of the blister is 0.052028.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.12014 s, 9 iterations ]
+nevis_timesteps: t = 19.9597 [ / 100 ]
+Volume of the blister is 0.053028.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.265509e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.700439e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 184136.9129 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.2945 s, 2 iterations ]
+nevis_timesteps: t = 19.9598 [ / 100 ]
+Volume of the blister is 0.053535.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030079 s, 2 iterations ]
+nevis_timesteps: t = 19.96 [ / 100 ]
+Volume of the blister is 0.054046.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 0.98843 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.29473 s, 2 iterations ]
+nevis_timesteps: t = 19.9601 [ / 100 ]
+Volume of the blister is 0.054561.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.042567 s, 3 iterations ]
+nevis_timesteps: t = 19.9602 [ / 100 ]
+Volume of the blister is 0.05508.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.0288 s, 2 iterations ]
+nevis_timesteps: t = 19.9603 [ / 100 ]
+Volume of the blister is 0.055603.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.17214 s, 13 iterations ]
+nevis_timesteps: t = 19.9605 [ / 100 ]
+Volume of the blister is 0.056656.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029549 s, 2 iterations ]
+nevis_timesteps: t = 19.9607 [ / 100 ]
+Volume of the blister is 0.05719.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.082609 s, 6 iterations ]
+nevis_timesteps: t = 19.9609 [ / 100 ]
+Volume of the blister is 0.058267.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.055992 s, 4 iterations ]
+nevis_timesteps: t = 19.9611 [ / 100 ]
+Volume of the blister is 0.05936.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.12246 s, 9 iterations ]
+nevis_timesteps: t = 19.9614 [ / 100 ]
+Volume of the blister is 0.060468.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.556809e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+nevis_timesteps: Done [ 0.21066 s, 16 iterations ]
+nevis_timesteps: t = 19.9616 [ / 100 ]
+Volume of the blister is 0.061593.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029218 s, 2 iterations ]
+nevis_timesteps: t = 19.9617 [ / 100 ]
+Volume of the blister is 0.062163.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.10904 s, 8 iterations ]
+nevis_timesteps: t = 19.9619 [ / 100 ]
+Volume of the blister is 0.063312.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.15975 s, 12 iterations ]
+nevis_timesteps: t = 19.9622 [ / 100 ]
+Volume of the blister is 0.064478.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.041672 s, 3 iterations ]
+nevis_timesteps: t = 19.9623 [ / 100 ]
+Volume of the blister is 0.065069.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029099 s, 2 iterations ]
+nevis_timesteps: t = 19.9624 [ / 100 ]
+Volume of the blister is 0.065664.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 0.69949 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.29642 s, 2 iterations ]
+nevis_timesteps: t = 19.9625 [ / 100 ]
+Volume of the blister is 0.066264.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.040909 s, 3 iterations ]
+nevis_timesteps: t = 19.9626 [ / 100 ]
+Volume of the blister is 0.066867.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.028598 s, 2 iterations ]
+nevis_timesteps: t = 19.9627 [ / 100 ]
+Volume of the blister is 0.067475.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.10892 s, 8 iterations ]
+nevis_timesteps: t = 19.963 [ / 100 ]
+Volume of the blister is 0.068699.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.041688 s, 3 iterations ]
+nevis_timesteps: t = 19.9632 [ / 100 ]
+Volume of the blister is 0.069941.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.930463e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.501169e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 0.3508 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.30099 s, 2 iterations ]
+nevis_timesteps: t = 19.9633 [ / 100 ]
+Volume of the blister is 0.07057.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.0294 s, 2 iterations ]
+nevis_timesteps: t = 19.9634 [ / 100 ]
+Volume of the blister is 0.071204.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 3.2892 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.31002 s, 3 iterations ]
+nevis_timesteps: t = 19.9636 [ / 100 ]
+Volume of the blister is 0.071841.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.028984 s, 2 iterations ]
+nevis_timesteps: t = 19.9637 [ / 100 ]
+Volume of the blister is 0.072484.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.10744 s, 8 iterations ]
+nevis_timesteps: t = 19.9639 [ / 100 ]
+Volume of the blister is 0.073777.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.042968 s, 3 iterations ]
+nevis_timesteps: t = 19.9641 [ / 100 ]
+Volume of the blister is 0.075088.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.946066e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.393444e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  3.109721e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 1.595528864886649e+19 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.29685 s, 2 iterations ]
+nevis_timesteps: t = 19.9643 [ / 100 ]
+Volume of the blister is 0.075752.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.028535 s, 2 iterations ]
+nevis_timesteps: t = 19.9644 [ / 100 ]
+Volume of the blister is 0.076421.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.263661e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.578229e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+nevis_timesteps: Done [ 0.20514 s, 15 iterations ]
+nevis_timesteps: t = 19.9646 [ / 100 ]
+Volume of the blister is 0.077767.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.028916 s, 2 iterations ]
+nevis_timesteps: t = 19.9647 [ / 100 ]
+Volume of the blister is 0.078449.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  2.112040e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.954165e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.174496e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 0.075477 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.29801 s, 2 iterations ]
+nevis_timesteps: t = 19.9648 [ / 100 ]
+Volume of the blister is 0.079136.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.028446 s, 2 iterations ]
+nevis_timesteps: t = 19.965 [ / 100 ]
+Volume of the blister is 0.079827.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  9.756881e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 104.0854 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.31282 s, 3 iterations ]
+nevis_timesteps: t = 19.9651 [ / 100 ]
+Volume of the blister is 0.080522.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029719 s, 2 iterations ]
+nevis_timesteps: t = 19.9652 [ / 100 ]
+Volume of the blister is 0.081223.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.080386 s, 6 iterations ]
+nevis_timesteps: t = 19.9654 [ / 100 ]
+Volume of the blister is 0.082632.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.054428 s, 4 iterations ]
+nevis_timesteps: t = 19.9657 [ / 100 ]
+Volume of the blister is 0.08406.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  2.140122e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 49.355 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.30286 s, 2 iterations ]
+nevis_timesteps: t = 19.9658 [ / 100 ]
+Volume of the blister is 0.084783.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030048 s, 2 iterations ]
+nevis_timesteps: t = 19.9659 [ / 100 ]
+Volume of the blister is 0.085511.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  2.006186e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 68.7971 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.3153 s, 3 iterations ]
+nevis_timesteps: t = 19.966 [ / 100 ]
+Volume of the blister is 0.086243.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.02861 s, 2 iterations ]
+nevis_timesteps: t = 19.9661 [ / 100 ]
+Volume of the blister is 0.08698.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.06813 s, 5 iterations ]
+nevis_timesteps: t = 19.9664 [ / 100 ]
+Volume of the blister is 0.088464.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.056291 s, 4 iterations ]
+nevis_timesteps: t = 19.9666 [ / 100 ]
+Volume of the blister is 0.089966.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.084241 s, 6 iterations ]
+nevis_timesteps: t = 19.9668 [ / 100 ]
+Volume of the blister is 0.091487.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.876638e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+nevis_timesteps: Done [ 0.11009 s, 8 iterations ]
+nevis_timesteps: t = 19.9671 [ / 100 ]
+Volume of the blister is 0.093028.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.13606 s, 10 iterations ]
+nevis_timesteps: t = 19.9673 [ / 100 ]
+Volume of the blister is 0.094587.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.042895 s, 3 iterations ]
+nevis_timesteps: t = 19.9674 [ / 100 ]
+Volume of the blister is 0.095376.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029859 s, 2 iterations ]
+nevis_timesteps: t = 19.9675 [ / 100 ]
+Volume of the blister is 0.09617.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.084475 s, 6 iterations ]
+nevis_timesteps: t = 19.9678 [ / 100 ]
+Volume of the blister is 0.097768.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.0567 s, 4 iterations ]
+nevis_timesteps: t = 19.968 [ / 100 ]
+Volume of the blister is 0.099385.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  9.909463e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 2421.06 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.30069 s, 2 iterations ]
+nevis_timesteps: t = 19.9681 [ / 100 ]
+Volume of the blister is 0.1002.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030074 s, 2 iterations ]
+nevis_timesteps: t = 19.9682 [ / 100 ]
+Volume of the blister is 0.10103.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  4.185150e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  9.436822e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 1.2912 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.31413 s, 3 iterations ]
+nevis_timesteps: t = 19.9683 [ / 100 ]
+Volume of the blister is 0.10185.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029914 s, 2 iterations ]
+nevis_timesteps: t = 19.9685 [ / 100 ]
+Volume of the blister is 0.10269.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.16381 s, 12 iterations ]
+nevis_timesteps: t = 19.9687 [ / 100 ]
+Volume of the blister is 0.10436.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029159 s, 2 iterations ]
+nevis_timesteps: t = 19.9688 [ / 100 ]
+Volume of the blister is 0.10521.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  6.706392e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.957891e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  7.537185e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 275.1091 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.31476 s, 3 iterations ]
+nevis_timesteps: t = 19.9689 [ / 100 ]
+Volume of the blister is 0.10606.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.028768 s, 2 iterations ]
+nevis_timesteps: t = 19.969 [ / 100 ]
+Volume of the blister is 0.10692.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.10924 s, 8 iterations ]
+nevis_timesteps: t = 19.9693 [ / 100 ]
+Volume of the blister is 0.10865.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.096483 s, 7 iterations ]
+nevis_timesteps: t = 19.9695 [ / 100 ]
+Volume of the blister is 0.11039.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.055886 s, 4 iterations ]
+nevis_timesteps: t = 19.9697 [ / 100 ]
+Volume of the blister is 0.11216.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  2.159553e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+nevis_timesteps: Done [ 0.12365 s, 9 iterations ]
+nevis_timesteps: t = 19.97 [ / 100 ]
+Volume of the blister is 0.11394.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  2.095968e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+nevis_timesteps: Done [ 0.11142 s, 8 iterations ]
+nevis_timesteps: t = 19.9702 [ / 100 ]
+Volume of the blister is 0.11575.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.097425 s, 7 iterations ]
+nevis_timesteps: t = 19.9704 [ / 100 ]
+Volume of the blister is 0.11757.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  7.032577e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+nevis_timesteps: Done [ 0.24461 s, 18 iterations ]
+nevis_timesteps: t = 19.9707 [ / 100 ]
+Volume of the blister is 0.11942.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029777 s, 2 iterations ]
+nevis_timesteps: t = 19.9708 [ / 100 ]
+Volume of the blister is 0.12035.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  2.043930e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+nevis_timesteps: Done [ 0.13636 s, 10 iterations ]
+nevis_timesteps: t = 19.971 [ / 100 ]
+Volume of the blister is 0.12223.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.04269 s, 3 iterations ]
+nevis_timesteps: t = 19.9711 [ / 100 ]
+Volume of the blister is 0.12318.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029281 s, 2 iterations ]
+nevis_timesteps: t = 19.9712 [ / 100 ]
+Volume of the blister is 0.12413.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.080574 s, 6 iterations ]
+nevis_timesteps: t = 19.9715 [ / 100 ]
+Volume of the blister is 0.12605.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.055686 s, 4 iterations ]
+nevis_timesteps: t = 19.9717 [ / 100 ]
+Volume of the blister is 0.12799.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 0.25217 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.30044 s, 2 iterations ]
+nevis_timesteps: t = 19.9718 [ / 100 ]
+Volume of the blister is 0.12897.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.028469 s, 2 iterations ]
+nevis_timesteps: t = 19.9719 [ / 100 ]
+Volume of the blister is 0.12995.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 1.0742 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.31257 s, 3 iterations ]
+nevis_timesteps: t = 19.9721 [ / 100 ]
+Volume of the blister is 0.13094.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029321 s, 2 iterations ]
+nevis_timesteps: t = 19.9722 [ / 100 ]
+Volume of the blister is 0.13194.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.083682 s, 6 iterations ]
+nevis_timesteps: t = 19.9724 [ / 100 ]
+Volume of the blister is 0.13394.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 0.34695 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.2975 s, 2 iterations ]
+nevis_timesteps: t = 19.9725 [ / 100 ]
+Volume of the blister is 0.13495.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.042345 s, 3 iterations ]
+nevis_timesteps: t = 19.9726 [ / 100 ]
+Volume of the blister is 0.13596.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029655 s, 2 iterations ]
+nevis_timesteps: t = 19.9728 [ / 100 ]
+Volume of the blister is 0.13698.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.10907 s, 8 iterations ]
+nevis_timesteps: t = 19.973 [ / 100 ]
+Volume of the blister is 0.13904.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.055727 s, 4 iterations ]
+nevis_timesteps: t = 19.9732 [ / 100 ]
+Volume of the blister is 0.14111.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.055932 s, 4 iterations ]
+nevis_timesteps: t = 19.9735 [ / 100 ]
+Volume of the blister is 0.1432.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 16.054 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.29504 s, 2 iterations ]
+nevis_timesteps: t = 19.9736 [ / 100 ]
+Volume of the blister is 0.14426.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.028155 s, 2 iterations ]
+nevis_timesteps: t = 19.9737 [ / 100 ]
+Volume of the blister is 0.14532.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  2.800748e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 201664.0778 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.31452 s, 3 iterations ]
+nevis_timesteps: t = 19.9738 [ / 100 ]
+Volume of the blister is 0.14639.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.042885 s, 3 iterations ]
+nevis_timesteps: t = 19.9739 [ / 100 ]
+Volume of the blister is 0.14746.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.043105 s, 3 iterations ]
+nevis_timesteps: t = 19.974 [ / 100 ]
+Volume of the blister is 0.14854.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.043602 s, 3 iterations ]
+nevis_timesteps: t = 19.9742 [ / 100 ]
+Volume of the blister is 0.14962.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029027 s, 2 iterations ]
+nevis_timesteps: t = 19.9743 [ / 100 ]
+Volume of the blister is 0.15071.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.16413 s, 12 iterations ]
+nevis_timesteps: t = 19.9745 [ / 100 ]
+Volume of the blister is 0.1529.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029698 s, 2 iterations ]
+nevis_timesteps: t = 19.9746 [ / 100 ]
+Volume of the blister is 0.15401.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.12236 s, 9 iterations ]
+nevis_timesteps: t = 19.9749 [ / 100 ]
+Volume of the blister is 0.15623.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.097219 s, 7 iterations ]
+nevis_timesteps: t = 19.9751 [ / 100 ]
+Volume of the blister is 0.15847.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.15103 s, 11 iterations ]
+nevis_timesteps: t = 19.9753 [ / 100 ]
+Volume of the blister is 0.16073.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.028822 s, 2 iterations ]
+nevis_timesteps: t = 19.9754 [ / 100 ]
+Volume of the blister is 0.16187.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.685808e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.694073e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 42.4846 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.30239 s, 2 iterations ]
+nevis_timesteps: t = 19.9756 [ / 100 ]
+Volume of the blister is 0.16302.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030626 s, 2 iterations ]
+nevis_timesteps: t = 19.9757 [ / 100 ]
+Volume of the blister is 0.16417.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.096184 s, 7 iterations ]
+nevis_timesteps: t = 19.9759 [ / 100 ]
+Volume of the blister is 0.16648.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  3.853309e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+nevis_timesteps: Done [ 0.20433 s, 15 iterations ]
+nevis_timesteps: t = 19.9761 [ / 100 ]
+Volume of the blister is 0.16882.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029077 s, 2 iterations ]
+nevis_timesteps: t = 19.9763 [ / 100 ]
+Volume of the blister is 0.16999.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  2.096470e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+nevis_timesteps: Done [ 0.1238 s, 9 iterations ]
+nevis_timesteps: t = 19.9765 [ / 100 ]
+Volume of the blister is 0.17236.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.10913 s, 8 iterations ]
+nevis_timesteps: t = 19.9767 [ / 100 ]
+Volume of the blister is 0.17475.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.1771 s, 13 iterations ]
+nevis_timesteps: t = 19.977 [ / 100 ]
+Volume of the blister is 0.17716.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030614 s, 2 iterations ]
+nevis_timesteps: t = 19.9771 [ / 100 ]
+Volume of the blister is 0.17837.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.547413e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+nevis_timesteps: Done [ 0.13872 s, 10 iterations ]
+nevis_timesteps: t = 19.9773 [ / 100 ]
+Volume of the blister is 0.18081.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.042808 s, 3 iterations ]
+nevis_timesteps: t = 19.9774 [ / 100 ]
+Volume of the blister is 0.18204.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029184 s, 2 iterations ]
+nevis_timesteps: t = 19.9775 [ / 100 ]
+Volume of the blister is 0.18327.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.11189 s, 8 iterations ]
+nevis_timesteps: t = 19.9778 [ / 100 ]
+Volume of the blister is 0.18576.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.056461 s, 4 iterations ]
+nevis_timesteps: t = 19.978 [ / 100 ]
+Volume of the blister is 0.18826.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.043645 s, 3 iterations ]
+nevis_timesteps: t = 19.9782 [ / 100 ]
+Volume of the blister is 0.19078.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.097752 s, 7 iterations ]
+nevis_timesteps: t = 19.9785 [ / 100 ]
+Volume of the blister is 0.19332.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.10924 s, 8 iterations ]
+nevis_timesteps: t = 19.9787 [ / 100 ]
+Volume of the blister is 0.19589.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.12139 s, 9 iterations ]
+nevis_timesteps: t = 19.9789 [ / 100 ]
+Volume of the blister is 0.19847.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.10793 s, 8 iterations ]
+nevis_timesteps: t = 19.9792 [ / 100 ]
+Volume of the blister is 0.20108.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.619443e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+nevis_timesteps: Done [ 0.10942 s, 8 iterations ]
+nevis_timesteps: t = 19.9794 [ / 100 ]
+Volume of the blister is 0.2037.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.056831 s, 4 iterations ]
+nevis_timesteps: t = 19.9796 [ / 100 ]
+Volume of the blister is 0.20635.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.042306 s, 3 iterations ]
+nevis_timesteps: t = 19.9799 [ / 100 ]
+Volume of the blister is 0.20901.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  2.345755e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  4.891303e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 670511900.7112 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.29858 s, 2 iterations ]
+nevis_timesteps: t = 19.98 [ / 100 ]
+Volume of the blister is 0.21035.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029217 s, 2 iterations ]
+nevis_timesteps: t = 19.9801 [ / 100 ]
+Volume of the blister is 0.2117.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  6.212616e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  2.413123e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 1.9287 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.31718 s, 3 iterations ]
+nevis_timesteps: t = 19.9802 [ / 100 ]
+Volume of the blister is 0.21306.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029444 s, 2 iterations ]
+nevis_timesteps: t = 19.9803 [ / 100 ]
+Volume of the blister is 0.21441.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.927528e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+nevis_timesteps: Done [ 0.11138 s, 8 iterations ]
+nevis_timesteps: t = 19.9806 [ / 100 ]
+Volume of the blister is 0.21714.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.056277 s, 4 iterations ]
+nevis_timesteps: t = 19.9808 [ / 100 ]
+Volume of the blister is 0.21989.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.086934 s, 6 iterations ]
+nevis_timesteps: t = 19.981 [ / 100 ]
+Volume of the blister is 0.22265.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.11359 s, 8 iterations ]
+nevis_timesteps: t = 19.9813 [ / 100 ]
+Volume of the blister is 0.22544.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.14044 s, 10 iterations ]
+nevis_timesteps: t = 19.9815 [ / 100 ]
+Volume of the blister is 0.22824.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.043253 s, 3 iterations ]
+nevis_timesteps: t = 19.9816 [ / 100 ]
+Volume of the blister is 0.22966.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.03021 s, 2 iterations ]
+nevis_timesteps: t = 19.9817 [ / 100 ]
+Volume of the blister is 0.23107.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.083706 s, 6 iterations ]
+nevis_timesteps: t = 19.982 [ / 100 ]
+Volume of the blister is 0.23392.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.058403 s, 4 iterations ]
+nevis_timesteps: t = 19.9822 [ / 100 ]
+Volume of the blister is 0.23678.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 3.8983 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.30702 s, 2 iterations ]
+nevis_timesteps: t = 19.9823 [ / 100 ]
+Volume of the blister is 0.23822.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.02885 s, 2 iterations ]
+nevis_timesteps: t = 19.9824 [ / 100 ]
+Volume of the blister is 0.23967.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  3.923175e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 0.3773 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.3214 s, 3 iterations ]
+nevis_timesteps: t = 19.9825 [ / 100 ]
+Volume of the blister is 0.24112.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029001 s, 2 iterations ]
+nevis_timesteps: t = 19.9827 [ / 100 ]
+Volume of the blister is 0.24257.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 4.0232 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.30127 s, 2 iterations ]
+nevis_timesteps: t = 19.9828 [ / 100 ]
+Volume of the blister is 0.24403.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.044398 s, 3 iterations ]
+nevis_timesteps: t = 19.9829 [ / 100 ]
+Volume of the blister is 0.2455.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.02939 s, 2 iterations ]
+nevis_timesteps: t = 19.983 [ / 100 ]
+Volume of the blister is 0.24697.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.081631 s, 6 iterations ]
+nevis_timesteps: t = 19.9832 [ / 100 ]
+Volume of the blister is 0.24992.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.071623 s, 5 iterations ]
+nevis_timesteps: t = 19.9835 [ / 100 ]
+Volume of the blister is 0.25289.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.057631 s, 4 iterations ]
+nevis_timesteps: t = 19.9837 [ / 100 ]
+Volume of the blister is 0.25587.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.13812 s, 10 iterations ]
+nevis_timesteps: t = 19.9839 [ / 100 ]
+Volume of the blister is 0.25888.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.031978 s, 2 iterations ]
+nevis_timesteps: t = 19.9841 [ / 100 ]
+Volume of the blister is 0.26039.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.07082 s, 5 iterations ]
+nevis_timesteps: t = 19.9843 [ / 100 ]
+Volume of the blister is 0.26342.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.073217 s, 5 iterations ]
+nevis_timesteps: t = 19.9845 [ / 100 ]
+Volume of the blister is 0.26647.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.973342e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+nevis_timesteps: Done [ 0.1112 s, 8 iterations ]
+nevis_timesteps: t = 19.9848 [ / 100 ]
+Volume of the blister is 0.26953.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.14048 s, 10 iterations ]
+nevis_timesteps: t = 19.985 [ / 100 ]
+Volume of the blister is 0.27262.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.043527 s, 3 iterations ]
+nevis_timesteps: t = 19.9851 [ / 100 ]
+Volume of the blister is 0.27417.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029881 s, 2 iterations ]
+nevis_timesteps: t = 19.9852 [ / 100 ]
+Volume of the blister is 0.27573.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.084517 s, 6 iterations ]
+nevis_timesteps: t = 19.9854 [ / 100 ]
+Volume of the blister is 0.27884.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.0566 s, 4 iterations ]
+nevis_timesteps: t = 19.9857 [ / 100 ]
+Volume of the blister is 0.28198.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  6.347609e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 0.29526 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.31392 s, 2 iterations ]
+nevis_timesteps: t = 19.9858 [ / 100 ]
+Volume of the blister is 0.28356.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030011 s, 2 iterations ]
+nevis_timesteps: t = 19.9859 [ / 100 ]
+Volume of the blister is 0.28514.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  2.213799e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  8.933382e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 113.9422 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.3212 s, 3 iterations ]
+nevis_timesteps: t = 19.986 [ / 100 ]
+Volume of the blister is 0.28672.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030487 s, 2 iterations ]
+nevis_timesteps: t = 19.9861 [ / 100 ]
+Volume of the blister is 0.28831.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.16927 s, 12 iterations ]
+nevis_timesteps: t = 19.9864 [ / 100 ]
+Volume of the blister is 0.2915.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029429 s, 2 iterations ]
+nevis_timesteps: t = 19.9865 [ / 100 ]
+Volume of the blister is 0.2931.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  2.917194e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.051458e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 15077.1258 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.32562 s, 3 iterations ]
+nevis_timesteps: t = 19.9866 [ / 100 ]
+Volume of the blister is 0.29471.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030927 s, 2 iterations ]
+nevis_timesteps: t = 19.9867 [ / 100 ]
+Volume of the blister is 0.29632.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.08563 s, 6 iterations ]
+nevis_timesteps: t = 19.987 [ / 100 ]
+Volume of the blister is 0.29954.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.057699 s, 4 iterations ]
+nevis_timesteps: t = 19.9872 [ / 100 ]
+Volume of the blister is 0.30279.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 0.83339 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.30859 s, 2 iterations ]
+nevis_timesteps: t = 19.9873 [ / 100 ]
+Volume of the blister is 0.30442.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.031706 s, 2 iterations ]
+nevis_timesteps: t = 19.9874 [ / 100 ]
+Volume of the blister is 0.30605.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  3.446997e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  9.146584e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 0.11319 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.32176 s, 3 iterations ]
+nevis_timesteps: t = 19.9875 [ / 100 ]
+Volume of the blister is 0.30769.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030977 s, 2 iterations ]
+nevis_timesteps: t = 19.9877 [ / 100 ]
+Volume of the blister is 0.30933.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.27759 s, 20 iterations ]
+nevis_timesteps: t = 19.9879 [ / 100 ]
+Volume of the blister is 0.31262.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030015 s, 2 iterations ]
+nevis_timesteps: t = 19.988 [ / 100 ]
+Volume of the blister is 0.31427.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 5.5865 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.32188 s, 3 iterations ]
+nevis_timesteps: t = 19.9881 [ / 100 ]
+Volume of the blister is 0.31592.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030203 s, 2 iterations ]
+nevis_timesteps: t = 19.9882 [ / 100 ]
+Volume of the blister is 0.31758.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.084533 s, 6 iterations ]
+nevis_timesteps: t = 19.9885 [ / 100 ]
+Volume of the blister is 0.32091.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.056159 s, 4 iterations ]
+nevis_timesteps: t = 19.9887 [ / 100 ]
+Volume of the blister is 0.32425.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 0.072843 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.30293 s, 2 iterations ]
+nevis_timesteps: t = 19.9888 [ / 100 ]
+Volume of the blister is 0.32593.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.044143 s, 3 iterations ]
+nevis_timesteps: t = 19.9889 [ / 100 ]
+Volume of the blister is 0.32761.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.044032 s, 3 iterations ]
+nevis_timesteps: t = 19.9891 [ / 100 ]
+Volume of the blister is 0.3293.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.044704 s, 3 iterations ]
+nevis_timesteps: t = 19.9892 [ / 100 ]
+Volume of the blister is 0.33098.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029741 s, 2 iterations ]
+nevis_timesteps: t = 19.9893 [ / 100 ]
+Volume of the blister is 0.33267.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.521207e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+nevis_timesteps: Done [ 0.25015 s, 18 iterations ]
+nevis_timesteps: t = 19.9895 [ / 100 ]
+Volume of the blister is 0.33606.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.057545 s, 4 iterations ]
+nevis_timesteps: t = 19.9896 [ / 100 ]
+Volume of the blister is 0.33777.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030063 s, 2 iterations ]
+nevis_timesteps: t = 19.9898 [ / 100 ]
+Volume of the blister is 0.33947.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.08441 s, 6 iterations ]
+nevis_timesteps: t = 19.99 [ / 100 ]
+Volume of the blister is 0.34289.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.055173 s, 4 iterations ]
+nevis_timesteps: t = 19.9902 [ / 100 ]
+Volume of the blister is 0.34632.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.17938 s, 13 iterations ]
+nevis_timesteps: t = 19.9905 [ / 100 ]
+Volume of the blister is 0.34976.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.031839 s, 2 iterations ]
+nevis_timesteps: t = 19.9906 [ / 100 ]
+Volume of the blister is 0.35149.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.043557 s, 3 iterations ]
+nevis_timesteps: t = 19.9908 [ / 100 ]
+Volume of the blister is 0.35495.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 208.6535 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.32054 s, 3 iterations ]
+nevis_timesteps: t = 19.9909 [ / 100 ]
+Volume of the blister is 0.35668.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.056618 s, 4 iterations ]
+nevis_timesteps: t = 19.991 [ / 100 ]
+Volume of the blister is 0.35842.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.043505 s, 3 iterations ]
+nevis_timesteps: t = 19.9912 [ / 100 ]
+Volume of the blister is 0.36016.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030583 s, 2 iterations ]
+nevis_timesteps: t = 19.9913 [ / 100 ]
+Volume of the blister is 0.36191.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  2.073514e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 2.2084 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.32233 s, 3 iterations ]
+nevis_timesteps: t = 19.9914 [ / 100 ]
+Volume of the blister is 0.36366.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.071847 s, 5 iterations ]
+nevis_timesteps: t = 19.9915 [ / 100 ]
+Volume of the blister is 0.36541.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030662 s, 2 iterations ]
+nevis_timesteps: t = 19.9916 [ / 100 ]
+Volume of the blister is 0.36716.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 81628471.2407 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.31928 s, 3 iterations ]
+nevis_timesteps: t = 19.9917 [ / 100 ]
+Volume of the blister is 0.36892.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.042418 s, 3 iterations ]
+nevis_timesteps: t = 19.9919 [ / 100 ]
+Volume of the blister is 0.37067.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030591 s, 2 iterations ]
+nevis_timesteps: t = 19.992 [ / 100 ]
+Volume of the blister is 0.37244.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.1011 s, 7 iterations ]
+nevis_timesteps: t = 19.9922 [ / 100 ]
+Volume of the blister is 0.37597.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.098243 s, 7 iterations ]
+nevis_timesteps: t = 19.9924 [ / 100 ]
+Volume of the blister is 0.3795.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.07104 s, 5 iterations ]
+nevis_timesteps: t = 19.9927 [ / 100 ]
+Volume of the blister is 0.38305.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.11241 s, 8 iterations ]
+nevis_timesteps: t = 19.9929 [ / 100 ]
+Volume of the blister is 0.38661.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  3.790202e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 135404.9413 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.30726 s, 2 iterations ]
+nevis_timesteps: t = 19.993 [ / 100 ]
+Volume of the blister is 0.3884.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029719 s, 2 iterations ]
+nevis_timesteps: t = 19.9931 [ / 100 ]
+Volume of the blister is 0.39018.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.14239 s, 10 iterations ]
+nevis_timesteps: t = 19.9934 [ / 100 ]
+Volume of the blister is 0.39376.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.044117 s, 3 iterations ]
+nevis_timesteps: t = 19.9935 [ / 100 ]
+Volume of the blister is 0.39555.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.058675 s, 4 iterations ]
+nevis_timesteps: t = 19.9936 [ / 100 ]
+Volume of the blister is 0.39735.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030802 s, 2 iterations ]
+nevis_timesteps: t = 19.9937 [ / 100 ]
+Volume of the blister is 0.39915.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.11263 s, 8 iterations ]
+nevis_timesteps: t = 19.9939 [ / 100 ]
+Volume of the blister is 0.40275.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.070607 s, 5 iterations ]
+nevis_timesteps: t = 19.9942 [ / 100 ]
+Volume of the blister is 0.40636.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.394801e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 1.8991 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.3066 s, 2 iterations ]
+nevis_timesteps: t = 19.9943 [ / 100 ]
+Volume of the blister is 0.40816.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030027 s, 2 iterations ]
+nevis_timesteps: t = 19.9944 [ / 100 ]
+Volume of the blister is 0.40997.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  7.599163e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+nevis_timesteps: Done [ 0.22391 s, 16 iterations ]
+nevis_timesteps: t = 19.9946 [ / 100 ]
+Volume of the blister is 0.4136.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029248 s, 2 iterations ]
+nevis_timesteps: t = 19.9948 [ / 100 ]
+Volume of the blister is 0.41541.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  7.628034e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 0.03345 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.31018 s, 2 iterations ]
+nevis_timesteps: t = 19.9949 [ / 100 ]
+Volume of the blister is 0.41723.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.043002 s, 3 iterations ]
+nevis_timesteps: t = 19.995 [ / 100 ]
+Volume of the blister is 0.41905.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.045611 s, 3 iterations ]
+nevis_timesteps: t = 19.9951 [ / 100 ]
+Volume of the blister is 0.42087.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030771 s, 2 iterations ]
+nevis_timesteps: t = 19.9952 [ / 100 ]
+Volume of the blister is 0.42269.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.071469 s, 5 iterations ]
+nevis_timesteps: t = 19.9955 [ / 100 ]
+Volume of the blister is 0.42634.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 7.0585 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.32481 s, 3 iterations ]
+nevis_timesteps: t = 19.9956 [ / 100 ]
+Volume of the blister is 0.42817.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030291 s, 2 iterations ]
+nevis_timesteps: t = 19.9957 [ / 100 ]
+Volume of the blister is 0.43.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 1.004 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.33397 s, 4 iterations ]
+nevis_timesteps: t = 19.9958 [ / 100 ]
+Volume of the blister is 0.43183.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.043291 s, 3 iterations ]
+nevis_timesteps: t = 19.9959 [ / 100 ]
+Volume of the blister is 0.43366.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.044894 s, 3 iterations ]
+nevis_timesteps: t = 19.996 [ / 100 ]
+Volume of the blister is 0.43549.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.044053 s, 3 iterations ]
+nevis_timesteps: t = 19.9962 [ / 100 ]
+Volume of the blister is 0.43733.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.056998 s, 4 iterations ]
+nevis_timesteps: t = 19.9963 [ / 100 ]
+Volume of the blister is 0.43916.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.043267 s, 3 iterations ]
+nevis_timesteps: t = 19.9964 [ / 100 ]
+Volume of the blister is 0.441.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.043711 s, 3 iterations ]
+nevis_timesteps: t = 19.9965 [ / 100 ]
+Volume of the blister is 0.44284.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.057406 s, 4 iterations ]
+nevis_timesteps: t = 19.9966 [ / 100 ]
+Volume of the blister is 0.44468.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.031452 s, 2 iterations ]
+nevis_timesteps: t = 19.9967 [ / 100 ]
+Volume of the blister is 0.44652.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 5416.7441 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.32419 s, 3 iterations ]
+nevis_timesteps: t = 19.9969 [ / 100 ]
+Volume of the blister is 0.44836.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.031012 s, 2 iterations ]
+nevis_timesteps: t = 19.997 [ / 100 ]
+Volume of the blister is 0.4502.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.11605 s, 8 iterations ]
+nevis_timesteps: t = 19.9972 [ / 100 ]
+Volume of the blister is 0.45389.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.057095 s, 4 iterations ]
+nevis_timesteps: t = 19.9974 [ / 100 ]
+Volume of the blister is 0.45759.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.25203 s, 18 iterations ]
+nevis_timesteps: t = 19.9977 [ / 100 ]
+Volume of the blister is 0.46128.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.04298 s, 3 iterations ]
+nevis_timesteps: t = 19.9978 [ / 100 ]
+Volume of the blister is 0.46313.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.072161 s, 5 iterations ]
+nevis_timesteps: t = 19.9979 [ / 100 ]
+Volume of the blister is 0.46498.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.057625 s, 4 iterations ]
+nevis_timesteps: t = 19.998 [ / 100 ]
+Volume of the blister is 0.46683.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.045199 s, 3 iterations ]
+nevis_timesteps: t = 19.9981 [ / 100 ]
+Volume of the blister is 0.46868.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030216 s, 2 iterations ]
+nevis_timesteps: t = 19.9983 [ / 100 ]
+Volume of the blister is 0.47054.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.11384 s, 8 iterations ]
+nevis_timesteps: t = 19.9985 [ / 100 ]
+Volume of the blister is 0.47424.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.099831 s, 7 iterations ]
+nevis_timesteps: t = 19.9987 [ / 100 ]
+Volume of the blister is 0.47795.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.11422 s, 8 iterations ]
+nevis_timesteps: t = 19.999 [ / 100 ]
+Volume of the blister is 0.48166.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.441500e-16.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 1926.0938 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.31333 s, 2 iterations ]
+nevis_timesteps: t = 19.9991 [ / 100 ]
+Volume of the blister is 0.48352.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.04359 s, 3 iterations ]
+nevis_timesteps: t = 19.9992 [ / 100 ]
+Volume of the blister is 0.48538.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.059398 s, 4 iterations ]
+nevis_timesteps: t = 19.9993 [ / 100 ]
+Volume of the blister is 0.48723.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.058865 s, 4 iterations ]
+nevis_timesteps: t = 19.9994 [ / 100 ]
+Volume of the blister is 0.48909.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.04459 s, 3 iterations ]
+nevis_timesteps: t = 19.9995 [ / 100 ]
+Volume of the blister is 0.49095.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.04514 s, 3 iterations ]
+nevis_timesteps: t = 19.9997 [ / 100 ]
+Volume of the blister is 0.4928.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.044701 s, 3 iterations ]
+nevis_timesteps: t = 19.9998 [ / 100 ]
+Volume of the blister is 0.49466.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.057711 s, 4 iterations ]
+nevis_timesteps: t = 19.9999 [ / 100 ]
+Volume of the blister is 0.49652.
+nevis_timesteps: dt = 0.00011565 ...
+nevis_timesteps: Done [ 0.044205 s, 3 iterations ]
+nevis_timesteps: t = 20 [ / 100 ]
+Volume of the blister is 0.49836.
+nevis_timesteps: Done
+nevis_timesteps: Saving ./results/n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8/0200 ...
+nevis_timesteps: Done
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.044971 s, 3 iterations ]
+nevis_timesteps: t = 20.0001 [ / 100 ]
+Volume of the blister is 0.50022.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.058299 s, 4 iterations ]
+nevis_timesteps: t = 20.0002 [ / 100 ]
+Volume of the blister is 0.50208.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.071683 s, 5 iterations ]
+nevis_timesteps: t = 20.0003 [ / 100 ]
+Volume of the blister is 0.50394.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.045448 s, 3 iterations ]
+nevis_timesteps: t = 20.0005 [ / 100 ]
+Volume of the blister is 0.5058.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.029486 s, 2 iterations ]
+nevis_timesteps: t = 20.0006 [ / 100 ]
+Volume of the blister is 0.50765.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.085939 s, 6 iterations ]
+nevis_timesteps: t = 20.0008 [ / 100 ]
+Volume of the blister is 0.51137.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.058099 s, 4 iterations ]
+nevis_timesteps: t = 20.001 [ / 100 ]
+Volume of the blister is 0.51508.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 0.21137 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.3183 s, 3 iterations ]
+nevis_timesteps: t = 20.0012 [ / 100 ]
+Volume of the blister is 0.51694.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.044148 s, 3 iterations ]
+nevis_timesteps: t = 20.0013 [ / 100 ]
+Volume of the blister is 0.51879.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.04517 s, 3 iterations ]
+nevis_timesteps: t = 20.0014 [ / 100 ]
+Volume of the blister is 0.52065.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.057648 s, 4 iterations ]
+nevis_timesteps: t = 20.0015 [ / 100 ]
+Volume of the blister is 0.5225.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.044663 s, 3 iterations ]
+nevis_timesteps: t = 20.0016 [ / 100 ]
+Volume of the blister is 0.52436.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.060136 s, 4 iterations ]
+nevis_timesteps: t = 20.0017 [ / 100 ]
+Volume of the blister is 0.52621.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.031239 s, 2 iterations ]
+nevis_timesteps: t = 20.0019 [ / 100 ]
+Volume of the blister is 0.52806.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.058652 s, 4 iterations ]
+nevis_timesteps: t = 20.0021 [ / 100 ]
+Volume of the blister is 0.53177.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.2158 s, 15 iterations ]
+nevis_timesteps: t = 20.0023 [ / 100 ]
+Volume of the blister is 0.53547.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030734 s, 2 iterations ]
+nevis_timesteps: t = 20.0024 [ / 100 ]
+Volume of the blister is 0.53732.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.071696 s, 5 iterations ]
+nevis_timesteps: t = 20.0027 [ / 100 ]
+Volume of the blister is 0.54102.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  4.740204e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+nevis_timesteps: Done [ 0.24245 s, 17 iterations ]
+nevis_timesteps: t = 20.0029 [ / 100 ]
+Volume of the blister is 0.54471.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030741 s, 2 iterations ]
+nevis_timesteps: t = 20.003 [ / 100 ]
+Volume of the blister is 0.54656.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.13039 s, 9 iterations ]
+nevis_timesteps: t = 20.0033 [ / 100 ]
+Volume of the blister is 0.55025.
+nevis_timesteps: dt = 0.00023283 ...
+[Warning: Matrix is close to singular or badly scaled. Results may be
+inaccurate. RCOND =  1.612355e-17.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 240)
+In n1d_0mm_cg0_00_a0_kh0_ks0_mu1e2_c1_V1e8 (line 154)
+] 
+**norm_F = 3.5517 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.33487 s, 3 iterations ]
+nevis_timesteps: t = 20.0034 [ / 100 ]
+Volume of the blister is 0.55209.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.030026 s, 2 iterations ]
+nevis_timesteps: t = 20.0035 [ / 100 ]
+Volume of the blister is 0.55393.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.15695 s, 11 iterations ]
+nevis_timesteps: t = 20.0037 [ / 100 ]
+Volume of the blister is 0.55761.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.031203 s, 2 iterations ]
+nevis_timesteps: t = 20.0038 [ / 100 ]
+Volume of the blister is 0.55945.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.05833 s, 4 iterations ]
+nevis_timesteps: t = 20.0041 [ / 100 ]
+Volume of the blister is 0.56312.
+nevis_timesteps: dt = 0.00023283 ...
+nevis_timesteps: Done [ 0.27126 s, 19 iterations ]
+nevis_timesteps: t = 20.0043 [ / 100 ]
+Volume of the blister is 0.56678.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.12699 s, 9 iterations ]
+nevis_timesteps: t = 20.0044 [ / 100 ]
+Volume of the blister is 0.56861.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.031138 s, 2 iterations ]
+nevis_timesteps: t = 20.0045 [ / 100 ]
+Volume of the blister is 0.57044.
+nevis_timesteps: dt = 0.00023283 ...
+**norm_F = 0.084966 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.37154 s, 6 iterations ]
+nevis_timesteps: t = 20.0047 [ / 100 ]
+Volume of the blister is 0.57227.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.057832 s, 4 iterations ]
+nevis_timesteps: t = 20.0048 [ / 100 ]
+Volume of the blister is 0.5741.
+nevis_timesteps: dt = 0.00011642 ...
+nevis_timesteps: Done [ 0.15866 s, 11 iterations ]
+nevis_timesteps: t = 20.0049 [ / 100 ]
+Volume of the blister is 0.57592.
+nevis_timesteps: dt = 5.8208e-05 ...
+nevis_timesteps: Done [ 0.24309 s, 17 iterations ]
+nevis_timesteps: t = 20.0049 [ / 100 ]
+Volume of the blister is 0.57683.
+nevis_timesteps: dt = 2.9104e-05 ...
+nevis_timesteps: Done [ 0.031225 s, 2 iterations ]
+nevis_timesteps: t = 20.005 [ / 100 ]
+Volume of the blister is 0.57729.
+nevis_timesteps: dt = 5.8208e-05 ...
+nevis_timesteps: Done [ 0.11281 s, 8 iterations ]
+nevis_timesteps: t = 20.005 [ / 100 ]
+Volume of the blister is 0.5782.
+nevis_timesteps: dt = 5.8208e-05 ...
+nevis_timesteps: Done [ 0.18239 s, 13 iterations ]
+nevis_timesteps: t = 20.0051 [ / 100 ]
+Volume of the blister is 0.57911.
+nevis_timesteps: dt = 2.9104e-05 ...
+nevis_timesteps: Done [ 0.14115 s, 10 iterations ]
+nevis_timesteps: t = 20.0051 [ / 100 ]
+Volume of the blister is 0.57956.
+nevis_timesteps: dt = 1.4552e-05 ...
+nevis_timesteps: Done [ 0.01581 s, 1 iterations ]
+nevis_timesteps: t = 20.0051 [ / 100 ]
+Volume of the blister is 0.57979.
+nevis_timesteps: dt = 2.9104e-05 ...
+nevis_timesteps: Done [ 0.029713 s, 2 iterations ]
+nevis_timesteps: t = 20.0052 [ / 100 ]
+Volume of the blister is 0.58025.
+nevis_timesteps: dt = 5.8208e-05 ...
+nevis_timesteps: Done [ 0.15461 s, 11 iterations ]
+nevis_timesteps: t = 20.0052 [ / 100 ]
+Volume of the blister is 0.58115.
+nevis_timesteps: dt = 2.9104e-05 ...
+nevis_timesteps: Done [ 0.030313 s, 2 iterations ]
+nevis_timesteps: t = 20.0053 [ / 100 ]
+Volume of the blister is 0.58161.
+nevis_timesteps: dt = 5.8208e-05 ...
+nevis_timesteps: Done [ 0.14233 s, 10 iterations ]
+nevis_timesteps: t = 20.0053 [ / 100 ]
+Volume of the blister is 0.58252.
+nevis_timesteps: dt = 2.9104e-05 ...
+nevis_timesteps: Done [ 0.031339 s, 2 iterations ]
+nevis_timesteps: t = 20.0053 [ / 100 ]
+Volume of the blister is 0.58297.
+nevis_timesteps: dt = 5.8208e-05 ...
+**norm_F = 0.0010887 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 2.9104e-05 ...
+nevis_timesteps: Done [ 0.31224 s, 2 iterations ]
+nevis_timesteps: t = 20.0054 [ / 100 ]
+Volume of the blister is 0.58343.
+nevis_timesteps: dt = 2.9104e-05 ...
+nevis_timesteps: Done [ 0.057827 s, 4 iterations ]
+nevis_timesteps: t = 20.0054 [ / 100 ]
+Volume of the blister is 0.58388.
+nevis_timesteps: dt = 2.9104e-05 ...
+nevis_timesteps: Done [ 0.16883 s, 12 iterations ]
+nevis_timesteps: t = 20.0054 [ / 100 ]
+Volume of the blister is 0.58433.
+nevis_timesteps: dt = 1.4552e-05 ...
+nevis_timesteps: Done [ 0.22297 s, 16 iterations ]
+nevis_timesteps: t = 20.0054 [ / 100 ]
+Volume of the blister is 0.58456.
+nevis_timesteps: dt = 7.276e-06 ...
+nevis_timesteps: Done [ 0.044306 s, 3 iterations ]
+nevis_timesteps: t = 20.0054 [ / 100 ]
+Volume of the blister is 0.58467.
+nevis_timesteps: dt = 7.276e-06 ...
+nevis_timesteps: Done [ 0.18487 s, 13 iterations ]
+nevis_timesteps: t = 20.0055 [ / 100 ]
+Volume of the blister is 0.58479.
+nevis_timesteps: dt = 3.638e-06 ...
+**norm_F = 0.0013302 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 1.819e-06 ...
+nevis_timesteps: Done [ 0.38035 s, 7 iterations ]
+nevis_timesteps: t = 20.0055 [ / 100 ]
+Volume of the blister is 0.58481.
+nevis_timesteps: dt = 1.819e-06 ...
+nevis_timesteps: Done [ 0.086644 s, 6 iterations ]
+nevis_timesteps: t = 20.0055 [ / 100 ]
+Volume of the blister is 0.58484.
+nevis_timesteps: dt = 1.819e-06 ...
+nevis_timesteps: Done [ 0.016495 s, 1 iterations ]
+nevis_timesteps: t = 20.0055 [ / 100 ]
+Volume of the blister is 0.58487.
+nevis_timesteps: dt = 3.638e-06 ...
+nevis_timesteps: Done [ 0.17128 s, 12 iterations ]
+nevis_timesteps: t = 20.0055 [ / 100 ]
+Volume of the blister is 0.58493.
+nevis_timesteps: dt = 1.819e-06 ...
+nevis_timesteps: Done [ 0.084575 s, 6 iterations ]
+nevis_timesteps: t = 20.0055 [ / 100 ]
+Volume of the blister is 0.58496.
+nevis_timesteps: dt = 1.819e-06 ...
+nevis_timesteps: Done [ 0.16974 s, 12 iterations ]
+nevis_timesteps: t = 20.0055 [ / 100 ]
+Volume of the blister is 0.58498.
+nevis_timesteps: dt = 1e-06 ...
+nevis_timesteps: Done [ 0.03072 s, 2 iterations ]
+nevis_timesteps: t = 20.0055 [ / 100 ]
+Volume of the blister is 0.585.
+nevis_timesteps: dt = 2e-06 ...
+nevis_timesteps: Done [ 0.098861 s, 7 iterations ]
+nevis_timesteps: t = 20.0055 [ / 100 ]
+Volume of the blister is 0.58503.
+nevis_timesteps: dt = 2e-06 ...
+nevis_timesteps: Done [ 0.070666 s, 5 iterations ]
+nevis_timesteps: t = 20.0055 [ / 100 ]
+Volume of the blister is 0.58506.
+nevis_timesteps: dt = 2e-06 ...
+nevis_timesteps: Done [ 0.031388 s, 2 iterations ]
+nevis_timesteps: t = 20.0055 [ / 100 ]
+Volume of the blister is 0.58509.
+nevis_timesteps: dt = 4e-06 ...
+nevis_timesteps: Done [ 0.030443 s, 2 iterations ]
+nevis_timesteps: t = 20.0055 [ / 100 ]
+Volume of the blister is 0.58516.
+nevis_timesteps: dt = 8e-06 ...
+nevis_timesteps: Done [ 0.030001 s, 2 iterations ]
+nevis_timesteps: t = 20.0055 [ / 100 ]
+Volume of the blister is 0.58528.
+nevis_timesteps: dt = 1.6e-05 ...
+nevis_timesteps: Done [ 0.056484 s, 4 iterations ]
+nevis_timesteps: t = 20.0055 [ / 100 ]
+Volume of the blister is 0.58553.
+nevis_timesteps: dt = 1.6e-05 ...
+nevis_timesteps: Done [ 0.015492 s, 1 iterations ]
+nevis_timesteps: t = 20.0055 [ / 100 ]
+Volume of the blister is 0.58578.
+nevis_timesteps: dt = 3.2e-05 ...
+nevis_timesteps: Done [ 0.10025 s, 7 iterations ]
+nevis_timesteps: t = 20.0056 [ / 100 ]
+Volume of the blister is 0.58628.
+nevis_timesteps: dt = 3.2e-05 ...
+**norm_F = 0.0012415 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 1.6e-05 ...
+nevis_timesteps: Done [ 0.36298 s, 6 iterations ]
+nevis_timesteps: t = 20.0056 [ / 100 ]
+Volume of the blister is 0.58653.
+nevis_timesteps: dt = 1.6e-05 ...
+nevis_timesteps: Done [ 0.08609 s, 6 iterations ]
+nevis_timesteps: t = 20.0056 [ / 100 ]
+Volume of the blister is 0.58678.
+nevis_timesteps: dt = 1.6e-05 ...
+nevis_timesteps: Done [ 0.10195 s, 7 iterations ]
+nevis_timesteps: t = 20.0056 [ / 100 ]
+Volume of the blister is 0.58702.
+nevis_timesteps: dt = 1.6e-05 ...
+nevis_timesteps: Done [ 0.16946 s, 12 iterations ]
+nevis_timesteps: t = 20.0056 [ / 100 ]
+Volume of the blister is 0.58727.
+nevis_timesteps: dt = 8e-06 ...
+nevis_timesteps: Done [ 0.12827 s, 9 iterations ]
+nevis_timesteps: t = 20.0056 [ / 100 ]
+Volume of the blister is 0.5874.
+nevis_timesteps: dt = 8e-06 ...
+nevis_timesteps: Done [ 0.11317 s, 8 iterations ]
+nevis_timesteps: t = 20.0056 [ / 100 ]
+Volume of the blister is 0.58752.
+nevis_timesteps: dt = 8e-06 ...
+nevis_timesteps: Done [ 0.20969 s, 15 iterations ]
+nevis_timesteps: t = 20.0056 [ / 100 ]
+Volume of the blister is 0.58765.
+nevis_timesteps: dt = 4e-06 ...
+**norm_F = 0.0012049 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 2e-06 ...
+nevis_timesteps: Done [ 0.41104 s, 9 iterations ]
+nevis_timesteps: t = 20.0056 [ / 100 ]
+Volume of the blister is 0.58768.
+nevis_timesteps: dt = 2e-06 ...
+**norm_F = 0.0013354 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: dt = 1e-06 ...
+nevis_timesteps: Done [ 0.37968 s, 7 iterations ]
+nevis_timesteps: t = 20.0056 [ / 100 ]
+Volume of the blister is 0.58769.
+nevis_timesteps: dt = 1e-06 ...
+**norm_F = 0.0012807 exceeds tolerance after 20 Newton iterations
+nevis_timesteps: Failed [ 0.27964 s, 20 iterations, dt = 1e-06 ]

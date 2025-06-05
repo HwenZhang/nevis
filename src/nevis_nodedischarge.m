@@ -19,6 +19,8 @@ function [vv] = nevis_nodedischarge(vv,aa,pp,gg,oo)
     qsy = vv.qsy;
     qex = vv.qex;
     qey = vv.qey;
+    qbx = vv.qbx;
+    qby = vv.qby;
     Qx = vv.Qx;
     Qy = vv.Qy;
     Qs = vv.Qs;
@@ -35,6 +37,10 @@ function [vv] = nevis_nodedischarge(vv,aa,pp,gg,oo)
     % scaled with ps.qs
     vv.qexn = pp.c5/pp.c4*nmeanxin(:,ein)*qex(ein); 
     vv.qeyn = pp.c5/pp.c4*nmeanyin(:,fin)*qey(fin);
+    % scaled with ps.qs
+    vv.qbxn = nmeanxin(:,ein)*qbx(ein); 
+    vv.qbyn = nmeanyin(:,fin)*qby(fin);
+
     % channel discharge on nodes converted to 2d flux, scaled with ps.qs
     % [ divide by effective perpendicular area, eg (nmeansin(:,cin)*Qs(cin))./(2*Dx.*Dy./Ds) etc, then x component is qs.*(Dx./Ds) ]
     % [ note dds goes forward in x and y, ddr goes forward in x, backward in y ]
@@ -56,6 +62,7 @@ function [vv] = nevis_nodedischarge(vv,aa,pp,gg,oo)
     % absolute values, scaled witn ps.qs
     vv.qs = (vv.qsxn.^2+vv.qsyn.^2).^(1/2);
     vv.qe = (vv.qexn.^2+vv.qeyn.^2).^(1/2);
+    vv.qb = (vv.qbxn.^2+vv.qbyn.^2).^(1/2);
     vv.qQ = (vv.qQxn.^2+vv.qQyn.^2).^(1/2);
     vv.Q = (vv.Qxn.^2+vv.Qyn.^2).^(1/2);
     
