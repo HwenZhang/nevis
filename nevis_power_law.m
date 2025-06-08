@@ -123,7 +123,7 @@ plot(t0-200.0, Rb_a, 'b--', 'LineWidth', 2);
 legend('Blister radius', 'Fitted power law', 'Analytical solution', 'Location', 'NorthWest');
 % Display the power law exponent
 exponent = p(1);
-text(0.02, 0.5, sprintf('Power law exponent: %.2f', exponent), 'Units', 'normalized', 'FontSize', 14, 'Color', 'r');
+% text(0.02, 0.4, sprintf('Power law exponent: %.2f', exponent), 'Units', 'normalized', 'FontSize', 14, 'Color', 'r');
 
 subplot(3,1,2)
 loglog(t0-200.0, R_b0, 'k-', 'LineWidth', 2);

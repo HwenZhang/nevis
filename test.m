@@ -6,7 +6,7 @@ clear; clc;
 
 %% 参数设定
 L  = 1.0;        % 空间域长度
-Nx = 200;        % 网格点数
+Nx = 100;        % 网格点数
 dx = L / (Nx-1); % 空间步长 （注意：Nx-1 个区间）
 x  = linspace(0, L, Nx)';  % 空间坐标列向量
 
@@ -17,6 +17,7 @@ Nt   = round(Tend / dt);
 %% 初始条件：中间一点有非零厚度，其余为0
 h = zeros(Nx, 1);
 % h(round(Nx/2)) = 0.1;
+h = (abs(x-0.5*L)<0.25*L).*(0.01.*(1-(x-L/2).^2/(L/4)^2).^2); % 
 
 %% 预分配通量数组
 q = zeros(Nx+1, 1);  % q 在 i+1/2 处有 Nx+1 个值（从 0.5,1.5,...,Nx+0.5）
@@ -48,8 +49,8 @@ for n = 1:Nt
         else
             d5hdx = 0; % 边界处五阶导数为0
         end
-        q(i+1) = - 1000*h3avg * dhdx;
-        % q(i+1) = - 1*h3avg * d5hdx;
+        % q(i+1) = - 1000*h3avg * dhdx;
+        q(i+1) = - 1*h3avg * d5hdx;
     end
     
     % 计算通量散度：dq/dx 在格点 i 处
@@ -61,7 +62,7 @@ for n = 1:Nt
     
     % 更新 h
     h = h_old + dt * dhdt;
-    h(round(Nx/2)) = h(round(Nx/2)) + 1e4*dt; % 在中间点添加一个小的正项，模拟源项
+    h(round(Nx/2)) = h(round(Nx/2)) + 0e4*dt; % 在中间点添加一个小的正项，模拟源项
 
     % 保证厚度非负
     h(h < 0) = 0;

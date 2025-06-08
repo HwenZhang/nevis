@@ -75,7 +75,7 @@ ps = struct;
 
 %% grid and geometry
 L = 1e5;                               % length of the domain [m]
-x = linspace(0,(L/ps.x),6401); 
+x = linspace(0,(L/ps.x),1601); 
 y = linspace(0,(L/ps.x),1);            % 1-d grid of length 50km 
 oo.yperiodic = 1;                      % oo.yperiodic = 1 necessary for a 1-d grid
 oo.xperiodic = 0;
@@ -116,7 +116,7 @@ oo.random_moulins = 10;
 [pp.ni_m,pp.sum_m] = nevis_moulins([],[],gg,oo);  % one moulin at the lake location
 
 %% supraglacial lakes
-pp.x_l = [0.5*L/ps.x];                                         % x-coord of lakes
+pp.x_l = [0.5*L/ps.x];                                          % x-coord of lakes
 pp.y_l = [0];                                                   % y-coord of lakes
 pp.V_l = [1e8/(ps.Q0*ps.t)];                                    % volume of lakes         
 pp.t_drainage = [200*pd.td/ps.t];                               % time of lake drainages (assumed to be the middle time of the Gaussian)
