@@ -13,7 +13,7 @@ oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'n1d_0mm_cg0_00_a0_01_kh0_ks0_mu1e3_c1_V1e8';           
+oo.casename = 'n1d_0mm_cg0_00_a0_01_kh0_ks0_mu1e2_c1_V1e8';           
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
@@ -48,7 +48,7 @@ end
 
 % alter default parmaeters 
 runoff_max = 0;                                % prescribed runoff (mm/day)
-pd.mu = 1.0e3;                                  % water viscosity (Pa s)
+pd.mu = 1.0e2;                                  % water viscosity (Pa s)
 pd.Ye = 8.8e9;                                  % Young's modulus (Pa)
 pd.B = pd.Ye*(1e3)^3/(12*(1-0.33^2));           % bending stiffness (Pa m^3)
 pd.c_e_reg2 = 0.00/1e3/9.81;                    % elastic sheet thickness [m/Pa]
@@ -74,7 +74,7 @@ ps = struct;
 
 %% grid and geometry
 L = 5e4;                               % length of the domain [m]
-x = linspace(0,(L/ps.x),401); 
+x = linspace(0,(L/ps.x),1601); 
 y = linspace(0,(L/ps.x),1);            % 1-d grid of length 50km 
 oo.yperiodic = 1;                      % oo.yperiodic = 1 necessary for a 1-d grid
 oo.xperiodic = 0;
@@ -146,7 +146,7 @@ oo.dt = 1/24*pd.td/ps.t;
 oo.save_timesteps = 1; 
 oo.save_pts_all = 1; 
 oo.pts_ni = pp.ni_l;                             % save lake pressures
-oo.t_span = (1:1:1000)*pd.td/ps.t;               % time span for simulation (in ps.t)
+oo.t_span = (1:0.5:1000)*pd.td/ps.t;             % time span for simulation (in ps.t)
 
 %% save initial parameters
 save([oo.rn, oo.fn],'pp','pd','ps','gg','aa','vv','oo');

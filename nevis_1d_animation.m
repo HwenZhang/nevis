@@ -1,5 +1,5 @@
 %% Import necessary libraries
-casename = 'n1d_30mm_cg0_00_a0_01_kh0_ks0_mu5e0_c1_V1e8';
+casename = 'n1d_0mm_cg0_00_a0_01_kh0_ks0_mu1e2_c1_V1e8';
 % casename = 'test_2009_140km_mu2e1_kappa0';
 load(['./results/' casename '/' casename])
 % oo.fn = ['/',casename];                         % filename (same as casename)
@@ -9,11 +9,11 @@ path = [oo.rn,'/'];
 addpath(oo.code);                               % add path to code
   
 dt = oo.dt;
-tmin = 0*pd.td/ps.t;
+tmin = 500*pd.td/ps.t;
 tmax = 1000*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                        % time range for the plot
-t_init = 685; t_end = 800;                      % time range for animation
+t_init = 2*690; t_end = 2*800;                      % time range for animation
 oo.input_constant = 0;
 %% colormap
 n = 256; % number of colors
@@ -29,11 +29,13 @@ vva = vva.vv;
 aa = nevis_inputs(vva.t,aa,vva,pp,gg,oo);
 [vv2] = nevis_backbone(inf,vva,vva,aa,pp,gg,oo);     % expand solution variables
 vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo);          % calculate node discharge
-qnet = ps.qs*(vv2.qs + vv2.qe + vv2.qQ);
+
 qs = ps.qs*vv2.qs;
+qe = ps.qs*vv2.qe;
 qb = ps.qs*vv2.qb;
 qQ = ps.qs*vv2.qQ;
 Q = ps.qs*vv2.Q;
+qnet = ps.qs*(vv2.qs + vv2.qe + vv2.qb + vv2.qQ);
 
 xx = (ps.x/10^3)*gg.nx; % x grid in km
 yy = (ps.x/10^3)*gg.ny;  
@@ -106,11 +108,12 @@ rightLayout.Layout.TileSpan = [1, 3];
 rightLayout.TileSpacing = 'compact';
 rightLayout.Padding = 'compact';
 
-%% 左侧子 layout：6 行 1 列（垂直）
+%% LEFT layout
 % panel (a)
 ax = nexttile(leftLayout);
-plot(ax,t,Q_b_in,'b-',t,Q_b_dec,'r-',LineWidth=1.5);
+plot(ax,t,Q_b_in,'b-',LineWidth=1.5);
 hold on;
+plot(ax,t,Q_b_dec,'r-',LineWidth=1.5);
 plot(ax,t,Q_out+Q_out_b,color=[0,0.5,0],LineStyle='-',LineWidth=1.5);
 plot(ax,t,E,color=[0,0,0],LineStyle='-',LineWidth=1.5);
 
@@ -118,7 +121,7 @@ x1 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
 
 xlabel('t [ d ]');
 ylabel('Q [ m^3/s ]');
-h=legend('Q_{b,in}','Q_{b,relax}','Q_{out}','Q_{in}','NumColumns',2);
+h=legend('Q_{b,in}','Q_{b,relax}','Q_{out}','moulin','NumColumns',2);
 h.Location='southwest';
 text(0.025,0.8,'(a) flux','Units','normalized','FontSize',14)
 
@@ -237,31 +240,61 @@ yyaxis right
 
     x6 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
 
-%% right sublayout：3 行 2 列
-% total flux
+%% RIGHT layout：3 行 2 列
+% panel(a): total flux
 ax = nexttile(rightLayout);
-yyaxis left
-    pqs = plot(ax,xx(gg.ns),qs(gg.ns),'b-','LineWidth',1.5);
-    hold on
-    pqb = plot(ax,xx(gg.ns),qb(gg.ns),'b--','LineWidth',1.5);
-    pqQ = plot(ax,xx(gg.ns),qQ(gg.ns),'b-.','LineWidth',1.5);
-    % display(max(Q));
+% yyaxis left
+pqs = plot(ax,xx(gg.ns),qs(gg.ns),'b-','LineWidth',1.5);
+hold on
+pqb = plot(ax,xx(gg.ns),qb(gg.ns),'b--','LineWidth',1.5);
+pqQ = plot(ax,xx(gg.ns),qQ(gg.ns),'b-.','LineWidth',1.5);
+pflux = plot(ax, xx(gg.ns),qnet(gg.ns),'k-','LineWidth',1.5);
 
-    title('net flux','FontSize',14);
-    ylim([0 0.5*ps.qs])
-    ylabel('q [m^3/s]')
-    legend([pqs pqb pqQ],'q_s','q_b','q_Q','NumColumns',2,'Location','northwest');
+title('flux','FontSize',14);
+ylim([0 2*ps.qs])
+ylabel('q [m^3/s]')
+xlim([0 50])
+xlabel('x (km)')
+legend([pqs pqb pqQ pflux],'q_s','q_b','q_Q','q_{net}','NumColumns',2,'Location','northwest');
+grid on
+grid minor
+if vva.t*ps.t/pd.td <= 700.0
+    time = [num2str(700.0-vva.t*ps.t/pd.td,'%.1f') ' d' ' before drainage'];
+else
+    time = [num2str(vva.t*ps.t/pd.td-700.0,'%.1f') ' d' ' after drainage'];
+end
+ttext = text(0.1,8,time,"Position",[0.5 0.9],"Units","normalized");
+ttext.FontSize=18;
+text(0.025,0.1,'(1) flux','Units','normalized','FontSize',14)
 
-yyaxis right
-    pphi1 = plot(ax,xx,ps.phi/1e6*vva.phi,'r-','LineWidth',1.5);
-    ylim([0 10]);
-    xlim([0 50])
-    xlabel('x (km)')
-    ylabel('\phi [ MPa ]')
-    grid on
-    grid minor
+% yyaxis right
+%     pphi1 = plot(ax,xx,ps.phi/1e6*vva.phi,'r-','LineWidth',1.5);
+%     ylim([0 10]);
+%     xlim([0 50])
+%     xlabel('x (km)')
+%     ylabel('\phi [ MPa ]')
+%     grid on
+%     grid minor
 
-%% cavity sheet thickness
+% panel(f): effective pressure
+ax = nexttile(rightLayout);
+L = 5e4; % length of the domain [m]
+s = (1060)*(1-1e3*xx/L).^0.5; % ice surface topography 
+b = (0)*xx; % flat bed
+H = max(s-b,0); % ice thickness
+plot(ax,xx(gg.nin),s(gg.nin),'b-','LineWidth',1.5);
+hold on
+plot(ax,xx(gg.nin),b(gg.nin),'k-','LineWidth',1.5);
+xlabel('x (km)')
+ylabel('z [m]')
+title('ice surface and bed','FontSize',14);
+ylim([0 1100])
+xlim([0 50])
+grid on
+grid minor
+text(0.025,0.1,'(2) ice surface and bed','Units','normalized','FontSize',14)
+
+% panel(b): cavity sheet thickness
 ax = nexttile(rightLayout);
 yyaxis left
     phs = plot(ax,xx(gg.ns),ps.hs*vva.hs(gg.ns),'b-','LineWidth',1.5); 
@@ -278,12 +311,13 @@ yyaxis right
     xlim([0 50])
     grid on
     grid minor
+text(0.025,0.1,'(3) cavity sheet','Units','normalized','FontSize',14)
 
-%% blister sheet thickness
+% panel(c): blister sheet thickness
 ax = nexttile(rightLayout);
 yyaxis left
     pblister = plot(ax,xx(gg.ns),ps.hb*vva.hb(gg.ns),'b-','LineWidth',1.5); 
-    ylim([0 0.2]);
+    ylim([0 1.0]);
     ylabel('h_b [m]')
     title('blister sheet and pb','FontSize',14);
 yyaxis right
@@ -296,56 +330,58 @@ yyaxis right
     xlim([0 50])
     grid on
     grid minor
+text(0.025,0.1,'(4) blister sheet','Units','normalized','FontSize',14)
 
-%% cross-sectional area
+% panel(d): cross-sectional area
 ax = nexttile(rightLayout);
 Smean = (0.25*(gg.nmeanx*vva.Sx + gg.nmeany*vva.Sy + gg.nmeans*vva.Ss + gg.nmeanr*vva.Sr)); 
-yyaxis left
-    pS = plot(ax,xx(gg.nin),ps.S*Smean(gg.nin),'b-','LineWidth',1.5); 
-    ylim([0 10])
-    title('channel cross section','FontSize',14);
-    ylabel('y [km]')
+% yyaxis left
+pS = plot(ax,xx(gg.nin),ps.S*Smean(gg.nin),'b-','LineWidth',1.5); 
+ylim([0 8])
+title('channel cross section','FontSize',14);
+ylabel('y [km]')
 
-yyaxis right
-    pphi4 = plot(ax,xx(gg.nin),ps.phi/1e6*vva.pb(gg.nin),'r-','LineWidth',1.5);
-    hold on
-    xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
-    xlabel('x (km)')
-    ylabel('\phi [ MPa ]')
-    ylim([0 10]);
-    xlim([0 50])
-    grid on
-    grid minor
+% yyaxis right
+%     pphi4 = plot(ax,xx(gg.nin),ps.phi/1e6*vva.pb(gg.nin),'r-','LineWidth',1.5);
+%     hold on
+%     xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
+%     ylabel('\phi [ MPa ]')
+%     ylim([0 10]);
+xlabel('x (km)')
+xlim([0 50])
+grid on
+grid minor
+text(0.025,0.1,'(5) channel cross section','Units','normalized','FontSize',14)
 
-%% effective pressure
+% panel(e): effective pressure
 ax = nexttile(rightLayout);
 N = ((aa.phi_0-vva.phi)); 
-peff = plot(ax,xx(gg.nin),(ps.phi/10^6)*N(gg.nin),'k-','LineWidth',1.5); 
-ylim([-3 3]); 
+peff = plot(ax,xx(gg.nin),(ps.phi/10^6)*N(gg.nin),'k-','LineWidth',1.5);  
+yline(0,'-k','LineWidth',1.5); % horizontal line at y=0
+text(0.03,0.55, 'N=0','Units','normalized','FontSize',14,'Color','k');
+% id_max_hb = find(vva.hb(gg.nin)==max(vva.hb(gg.nin)));
+% xline(xx(id_max_hb),'--k','LineWidth',1.5); % dashed line
+
 title('effective pressure','FontSize',14);
 xlabel('x (km)')
 ylabel('N [MPa]')
 hold on
 % add moulins
-if ~isfield(pp,'ni_m'), pp.ni_m = []; end
-x = (ps.x/10^3)*gg.nx(pp.ni_m);
-mscale = 100;
-for i_m = 1:length(pp.ni_m)
-    if aa.E(pp.ni_m(i_m))>0
-        plot(x(i_m),0,'ko','Markersize',8+aa.E(pp.ni_m(i_m))/mscale,'MarkerFaceColor',1*[1 1 1]); % mark moulins   
-    else
-        plot(x(i_m),0,'ko','Markersize',8,'MarkerFaceColor',0.8*[1 1 1]); % mark moulins  
-    end
-end
+% if ~isfield(pp,'ni_m'), pp.ni_m = []; end
+% x = (ps.x/10^3)*gg.nx(pp.ni_m);
+% mscale = 100;
+% for i_m = 1:length(pp.ni_m)
+%     if aa.E(pp.ni_m(i_m))>0
+%         plot(x(i_m),0,'ko','Markersize',8+aa.E(pp.ni_m(i_m))/mscale,'MarkerFaceColor',1*[1 1 1]); % mark moulins   
+%     else
+%         plot(x(i_m),0,'ko','Markersize',8,'MarkerFaceColor',0.8*[1 1 1]); % mark moulins  
+%     end
+% end
 axis tight
+ylim([-3 3]);
 grid on
 grid minor
-
-%% effective pressure
-ax = nexttile(rightLayout);
-time = ['t=' num2str(vva.t*ps.t/pd.td,'%.1f') ' d'];
-ttext = text(0.1,8,time,"Position",[0.7 0.8],"Units","normalized");
-ttext.FontSize=16;
+text(0.025,0.1,'(6) effective pressure','Units','normalized','FontSize',14)
 
 %% make video
 v = VideoWriter(['./results/videos/' casename '_test'],'MPEG-4');
@@ -364,7 +400,7 @@ for i_t = t_init:t_end
     [vv2] = nevis_backbone(inf,vva,vva,aa,pp,gg,oo); % expand solution variables
     vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo); % calculate node discharge
 
-    qnet = ps.qs*(vv2.qs + vv2.qe + vv2.qQ);
+    qnet = ps.qs*(vv2.qs + vv2.qe + vv2.qb + vv2.qQ);
     qs = ps.qs*vv2.qs;
     qb = ps.qs*vv2.qb;
     qQ = ps.qs*vv2.qQ;
@@ -372,6 +408,7 @@ for i_t = t_init:t_end
     pqs.YData = qs(gg.ns);
     pqb.YData = qb(gg.ns);
     pqQ.YData = qQ(gg.ns);
+    pflux.YData = qnet(gg.ns);
 
     phs.YData = (ps.hs)*vva.hs(gg.ns);
     pblister.YData = (ps.hb)*vva.hb(gg.ns); 
@@ -380,13 +417,18 @@ for i_t = t_init:t_end
     peff.YData = N(gg.nin);
     % ppb.YData = pb(gg.nin);
 
-    pphi1.YData = (ps.phi/1e6)*vva.phi(gg.nin);
+    % pphi1.YData = (ps.phi/1e6)*vva.phi(gg.nin);
     pphi2.YData = (ps.phi/1e6)*vva.phi(gg.nin);
     pphi3.YData = (ps.phi/1e6)*vva.pb(gg.nin);
-    pphi4.YData = (ps.phi/1e6)*vva.pb(gg.nin);
+    % pphi4.YData = (ps.phi/1e6)*vva.pb(gg.nin);
 
-    set(ttext,{'string'},{['t=' num2str(vva.t*ps.t/(24*60*60),'%.1f'), ' d']})  %notice the column vector of new values
-    
+    if vva.t*ps.t/pd.td <= 700.0
+        time = [num2str(700.0-vva.t*ps.t/pd.td,'%.1f') ' d' ' before drainage'];
+    else
+        time = [num2str(vva.t*ps.t/pd.td-700.0,'%.1f') ' d' ' after drainage'];
+    end
+    set(ttext,{'string'},{time})  %notice the column vector of new values
+
     x1.Value = vva.t*ps.t/pd.td;
     x2.Value = vva.t*ps.t/pd.td;
     x3.Value = vva.t*ps.t/pd.td;
