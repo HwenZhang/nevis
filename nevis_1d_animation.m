@@ -1,20 +1,24 @@
 %% Import necessary libraries
-casename = 'n1d_0mm_cg0_00_a0_01_kh0_ks0_mu1e2_c1_V1e8';
-% casename = 'test_2009_140km_mu2e1_kappa0';
+% casename = oo.casename;
+casename = 'n1d_Vconst_cg0_00_a0_kh0_ks0_mu1e_1_c1_V1e8';
 load(['./results/' casename '/' casename])
 % oo.fn = ['/',casename];                         % filename (same as casename)
 % oo.rn = [oo.root,oo.results,oo.fn];             % path to the case results
 % oo.code = '../nevis/src';                       % code directory  
-path = [oo.rn,'/'];
-addpath(oo.code);                               % add path to code
+path = [oo.rn,'/']; 
+addpath(oo.code);                                % add path to code
   
-dt = oo.dt;
-tmin = 500*pd.td/ps.t;
-tmax = 1000*pd.td/ps.t;
+dt = 0.5*pd.td;
+tmin = 0*pd.td/ps.t;
+tmax = 3000*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                        % time range for the plot
-t_init = 2*690; t_end = 2*800;                      % time range for animation
+t_init = 50; t_end = 201;                       % time range for animation
 oo.input_constant = 0;
+
+xmax_km = 200; % maximum x value in km
+xmin_km = 0;  % minimum x value in km
+
 %% colormap
 n = 256; % number of colors
 cmap = [linspace(0,1,n)', linspace(0,1,n)', ones(n,1); 
@@ -22,8 +26,9 @@ cmap = [linspace(0,1,n)', linspace(0,1,n)', ones(n,1);
 
 %% read in the screenshot at the intial timestep
 formatSpec = '%04d';
-tframe = 800.0*pd.td/ps.t; % time frame for the screenshot
+tframe = 1.0*pd.td/ps.t; % time frame for the screenshot
 nframe = round(tframe/1.0); % frame number
+nframe = 1;
 vva = load([path num2str(nframe,formatSpec)], 'vv');
 vva = vva.vv;
 aa = nevis_inputs(vva.t,aa,vva,pp,gg,oo);
@@ -44,6 +49,7 @@ yy(gg.nout) = NaN;
 
 %% read in the time series
 t = (ps.t/(24*60*60))*[tt.t];             % dimensional time series (days)
+tc = 0.5*(t(1:end-1) + t(2:end));         % center time for plotting
 Q_b_in = pd.Q_0*[tt.Qb_in];               % dimensional influx (m^3/s)
 Q_b_dec = ps.h*ps.x^2/ps.t*[tt.Qb_dec];   % dimensional relaxation (m^3/s)
 
@@ -60,6 +66,8 @@ E = (ps.m*ps.x^2)*[tt.E];      % dimensional source terms  (m^3/s)
 h_b = ps.hb*[tt.pts_hb];       %
 p_b = ps.phi*[tt.pts_pb];      %
 V_b = ps.x^2*ps.hb*[tt.Vb];
+% R_b = sgolayfilt(ps.x*[tt.Rb],3,11); % radius of the blister (m)
+R_b = smoothdata(ps.x*[tt.Rb],'movmean',101); % radius of the blister (m)
 % R_b = ps.x*[tt.Rb];
 
 % phi = (ps.phi)*[tt.phi];     % dimensional hydrulic potential (MPa)
@@ -203,12 +211,12 @@ yyaxis left
     ylabel('h [ m ]');
     text(0.025,0.8,'(e) h_b and p_b at the lake','Units','normalized','FontSize',14)
 
-% yyaxis right
-%     plot(ax,t,R_b,'r-',LineWidth=1.5);
-%     hold on
-%     x5 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
-%     xlabel('t [ d ]');
-%     ylabel('R_b [ m ]');
+yyaxis right
+    plot(ax,t,R_b,'r-',LineWidth=1.5);
+    hold on
+    x5 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
+    xlabel('t [ d ]');
+    ylabel('R_b [ m ]');
     xlim([tmin_d tmax_d])
     grid on
     grid minor
@@ -231,12 +239,13 @@ yyaxis left
     grid minor  
 yyaxis right
 % Rb_analytical = (3/pi*V_b./h_b).^(1/2);
-    plot(ax,t,V_b,'r-',LineWidth=1.5);
+    dRdt = gradient(R_b,t);
+    plot(ax,t,dRdt,'r-',LineWidth=1.5);
     hold on
     % plot(ax,t,Rb_analytical,'r--',LineWidth=1.5);
-    ylim([0 1.1e9])
-    ylabel('V_b [ m ]');
-    legend('p_b','p_w','V_b','NumColumns',2,location='southwest')
+    ylim([0 100])
+    ylabel('dV_b/dt [ m/d ]');
+    legend('p_b','p_w','dV_b/dt','NumColumns',2,location='northeast')
 
     x6 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
 
@@ -253,7 +262,7 @@ pflux = plot(ax, xx(gg.ns),qnet(gg.ns),'k-','LineWidth',1.5);
 title('flux','FontSize',14);
 ylim([0 2*ps.qs])
 ylabel('q [m^3/s]')
-xlim([0 50])
+xlim([xmin_km xmax_km])
 xlabel('x (km)')
 legend([pqs pqb pqQ pflux],'q_s','q_b','q_Q','q_{net}','NumColumns',2,'Location','northwest');
 grid on
@@ -270,7 +279,7 @@ text(0.025,0.1,'(1) flux','Units','normalized','FontSize',14)
 % yyaxis right
 %     pphi1 = plot(ax,xx,ps.phi/1e6*vva.phi,'r-','LineWidth',1.5);
 %     ylim([0 10]);
-%     xlim([0 50])
+%     xlim([xmin_km xmax_km])
 %     xlabel('x (km)')
 %     ylabel('\phi [ MPa ]')
 %     grid on
@@ -289,7 +298,7 @@ xlabel('x (km)')
 ylabel('z [m]')
 title('ice surface and bed','FontSize',14);
 ylim([0 1100])
-xlim([0 50])
+xlim([xmin_km xmax_km])
 grid on
 grid minor
 text(0.025,0.1,'(2) ice surface and bed','Units','normalized','FontSize',14)
@@ -308,7 +317,7 @@ yyaxis right
     xlabel('x (km)')
     ylabel('\phi [ MPa ]')
     ylim([0 10]);
-    xlim([0 50])
+    xlim([xmin_km xmax_km])
     grid on
     grid minor
 text(0.025,0.1,'(3) cavity sheet','Units','normalized','FontSize',14)
@@ -317,7 +326,7 @@ text(0.025,0.1,'(3) cavity sheet','Units','normalized','FontSize',14)
 ax = nexttile(rightLayout);
 yyaxis left
     pblister = plot(ax,xx(gg.ns),ps.hb*vva.hb(gg.ns),'b-','LineWidth',1.5); 
-    ylim([0 1.0]);
+    ylim([0 0.05]);
     ylabel('h_b [m]')
     title('blister sheet and pb','FontSize',14);
 yyaxis right
@@ -327,10 +336,10 @@ yyaxis right
     xlabel('x (km)')
     ylabel('\phi [ MPa ]')
     ylim([0 10]);
-    xlim([0 50])
+    xlim([xmin_km xmax_km])
     grid on
     grid minor
-text(0.025,0.1,'(4) blister sheet','Units','normalized','FontSize',14)
+text(0.725,0.5,'(4) blister sheet','Units','normalized','FontSize',14)
 
 % panel(d): cross-sectional area
 ax = nexttile(rightLayout);
@@ -348,7 +357,7 @@ ylabel('y [km]')
 %     ylabel('\phi [ MPa ]')
 %     ylim([0 10]);
 xlabel('x (km)')
-xlim([0 50])
+xlim([xmin_km xmax_km])
 grid on
 grid minor
 text(0.025,0.1,'(5) channel cross section','Units','normalized','FontSize',14)
@@ -384,7 +393,7 @@ grid minor
 text(0.025,0.1,'(6) effective pressure','Units','normalized','FontSize',14)
 
 %% make video
-v = VideoWriter(['./results/videos/' casename '_test'],'MPEG-4');
+v = VideoWriter(['./results/videos/' casename],'MPEG-4');
 % v = VideoWriter(['./results/' oo.casename],'MPEG-4');
 v.FrameRate = 1;
 open(v)
@@ -444,8 +453,3 @@ for i_t = t_init:t_end
     writeVideo(v,frame)
 end
 close(v)
-
-% end
-
-% img = getframe(gcf);
-% imwrite(img.cdata, ['./results/figures/' oo.casename, '_2dplot.png']);

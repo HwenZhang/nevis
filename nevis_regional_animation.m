@@ -1,6 +1,7 @@
 %% Import necessary libraries
-casename = 'nreg_60mm_cg0_00_a0_01_kh0_ks1_mu5e0_c1_V1e8';
-% casename = 'test_2009_140km_mu2e1_kappa0';
+casename = oo.casename;
+% casename = 'nreg_60mm_cg0_00_a0_01_kh0_ks1_mu5e0_c1_V1e8';
+
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];             % path to the case results

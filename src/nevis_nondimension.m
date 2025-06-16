@@ -95,6 +95,7 @@ pp.c42 = ps.hb^3*ps.Psi/(12*pd.mu*ps.qb);
 pp.c43 = ps.Q0*ps.t/ps.x^2/ps.hb;
 pp.c44 = pd.alpha_b*ps.hb*ps.t/ps.hb;
 pp.c45 = ps.qb*ps.t/ps.x/ps.hb;
+pp.c46 = pd.rho_w*pd.g*ps.hb/ps.phi;
 pp.c48 = 1;
 pp.c49 = ps.B*ps.hb/ps.x^4/ps.phi;
 pp.c50 = pd.alpha_b*ps.hb*ps.t/ps.h;

@@ -167,8 +167,9 @@ while t<t_stop+oo.dt_min
     
     % blister radius (only works for a single blister)
     [~, maxIdx] = max(vv.hb);
-    nonzeroIdx = find(vv.hb > 1e-8);
-    [~, localIdx] = min(vv.hb(nonzeroIdx));
+    maxIdx = 1;
+    nonzeroIdx = find(vv.hb > 1e-5);
+    [~, localIdx] = max((gg.nx(nonzeroIdx)-gg.nx(maxIdx)).^2+(gg.ny(nonzeroIdx)-gg.ny(maxIdx)).^2);
     minidx = nonzeroIdx(localIdx);
     if isempty(minidx)
         tt(ti).Rb = 0;
