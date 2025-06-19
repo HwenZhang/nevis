@@ -181,7 +181,7 @@ for iter_new = 1:max_iter_new+1
     end
     % update the blister volume and radius
     if oo.include_blister
-        temp2 = length(gg.ns); vv.hb(gg.ns) = X(temp1+(1:temp2)); temp1=temp1+temp2;
+        temp2 = length(gg.ns); vv.hb(gg.ns) = X(temp1+(1:temp2)); temp1=temp1+temp2; % vv.hb=max(vv.hb,0);
         if oo.include_pressure
             temp2 = length(gg.nin); vv.pb(gg.nin) = X(temp1+(1:temp2)); % temp1=temp1+temp2;
         end

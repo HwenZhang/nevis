@@ -69,7 +69,8 @@ if ~isfield(pd,'V_m_reg'), pd.V_m_reg = 0; end                     % regularizin
 if ~isfield(pd,'p_w_reg'), pd.p_w_reg = 1*pd.rho_w*pd.g; end       % pressure range for regularization on top of moulins [Pa] [ obsolete ]
 if ~isfield(pd,'sigma_log'), pd.sigma_log = 0; end                 % regularizing storage [ obsolete ]
 if ~isfield(pd,'N_sigma'), pd.N_sigma = pd.N_reg; end              % effective pressure below which regularizing storage hits in [Pa] [ obsolete ]
-if ~isfield(pd,'hb_reg'), pd.hb_reg = 0e-3; end                    % regularizing thickness of blister [m] [ obsolete ]
+if ~isfield(pd,'hb_reg1'), pd.hb_reg1 = 1e-5; end                  % regularizing thickness of blister [m] [ obsolete ]
+if ~isfield(pd,'hb_reg2'), pd.hb_reg2 = 1e-2; end                  % regularizing thickness of blister [m] [ obsolete ]
 
 if ~isfield(pd,'p_a_reg'), pd.p_a_reg = 1*pd.rho_w*pd.g; end       % pressure range for regularization of ? 
 if ~isfield(pd,'E_lapse'), pd.E_lapse = 60/1000/pd.td/10^3; end    % surface melt lapse rate [m/s/m]

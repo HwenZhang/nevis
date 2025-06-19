@@ -111,6 +111,10 @@ elseif oo.relaxation_term == 2
     pp.c51 = pd.alpha_b*ps.hb*ps.t/ps.hb;
     pp.c52 = pd.alpha_b*ps.hb*ps.t/ps.h;
     pp.m_l = pd.m_l;
+elseif oo.relaxation_term == 3
+    pp.c51 = pd.kappa_b*ps.hb*ps.t*ps.phi/ps.hb/pd.mu;
+    pp.c52 = pd.kappa_b*ps.hb*ps.t*ps.phi/ps.h/pd.mu;
+    pp.m_l = pd.m_l;
 else
     error("Invalid relaxation term!")
 end
@@ -138,7 +142,8 @@ pp.N_reg = pd.N_reg/ps.phi;
 %pp.N_reg1 = pd.N_reg1/ps.phi;
 pp.p_w_reg = pd.p_w_reg/ps.phi;
 pp.p_a_reg = pd.p_a_reg/ps.phi;
-pp.hb_reg = pd.hb_reg/ps.hb;
+pp.hb_reg1 = pd.hb_reg1/ps.hb;
+pp.hb_reg2 = pd.hb_reg2/ps.hb;
 
 pp.E_lapse = pd.E_lapse/ps.m*ps.z;
 pp.E_amp = pd.E_amp; 
