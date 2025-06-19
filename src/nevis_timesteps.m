@@ -169,7 +169,7 @@ while t<t_stop+oo.dt_min
     [~, maxIdx] = max(vv.hb);
     disp(['Max thickness of the blister is ' num2str(max(vv.hb)) '.']);
     disp(['Min thickness of the blister is ' num2str(min(vv.hb)) '.']);
-    maxIdx = 1;
+    maxIdx = pp.ni_l;
     nonzeroIdx = find(vv.hb > 1e-5);
     [~, localIdx] = max((gg.nx(nonzeroIdx)-gg.nx(maxIdx)).^2+(gg.ny(nonzeroIdx)-gg.ny(maxIdx)).^2);
     minidx = nonzeroIdx(localIdx);
@@ -241,11 +241,12 @@ while t<t_stop+oo.dt_min
         if t + dt > t_save-oo.dt_min, dt = t_save-t; end 
         disp(['nevis_timesteps: dt = ',num2str(dt),' ...']);
         [vv1,vv2,info] = nevis_timestep(dt,vv,aa,pp,gg,oo);  % time iteration
-
+        
         %% check success and adjust size of timestep [ taken from hydro_timestep_diag ]
         if ~info.failed
             accept = 1; 
             t = t + dt;
+            vv1.hb=max(vv1.hb,0);
             vv = vv1;
             vv.dt = dt;
             vv.t = t;

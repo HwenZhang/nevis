@@ -1157,7 +1157,7 @@ end
 
 function out = Reg_hb(hb,hb0)
     out = tanh(hb/hb0);
-    out = hb>0;
+    out = 1;
 end
 
 function out = DReg_hb_Dhb(hb,hb0)

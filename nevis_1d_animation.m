@@ -1,6 +1,6 @@
 %% Import necessary libraries
 % casename = oo.casename;
-casename = 'n1d_Vconst_cg0_00_a0_kh0_ks0_mu1e_1_c1_V1e8';
+casename = 'n1d_Qconst_cg0_00_a0_kh0_ks0_mu5e0_c1_V1e7';
 load(['./results/' casename '/' casename])
 % oo.fn = ['/',casename];                         % filename (same as casename)
 % oo.rn = [oo.root,oo.results,oo.fn];             % path to the case results
@@ -10,13 +10,13 @@ addpath(oo.code);                                % add path to code
   
 dt = 0.5*pd.td;
 tmin = 0*pd.td/ps.t;
-tmax = 2800*pd.td/ps.t;
+tmax = 2000*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                        % time range for the plot
-t_init = 500; t_end = 600;                       % time range for animation
+t_init = 500; t_end = 501;                       % time range for animation
 oo.input_constant = 0;
 
-xmax_km = 400; % maximum x value in km
+xmax_km = 100; % maximum x value in km
 xmin_km = 0;  % minimum x value in km
 
 %% colormap
@@ -332,12 +332,12 @@ yyaxis left
     ylabel('h_b [m]')
     title('blister sheet and pb','FontSize',14);
 yyaxis right
-    pphi3 = plot(ax,xx(gg.nin),ps.phi/1e6*vva.pb(gg.nin),'r-','LineWidth',1.5);
+    pphi3 = plot(xx(gg.nin),ps.phi/1e6*(vva.pb(gg.nin)+aa.phi_a(gg.nin)),'r-','LineWidth',1.5);
     hold on
     xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
     xlabel('x (km)')
     ylabel('\phi [ MPa ]')
-    ylim([0 10]);
+    % ylim([0 10]);
     xlim([xmin_km xmax_km])
     grid on
     grid minor
@@ -430,7 +430,7 @@ for i_t = t_init:t_end
 
     % pphi1.YData = (ps.phi/1e6)*vva.phi(gg.nin);
     pphi2.YData = (ps.phi/1e6)*vva.phi(gg.nin);
-    pphi3.YData = (ps.phi/1e6)*vva.pb(gg.nin);
+    pphi3.YData = (ps.phi/1e6)*(vva.pb(gg.nin)+aa.phi_a(gg.nin));
     % pphi4.YData = (ps.phi/1e6)*vva.pb(gg.nin);
 
     if vva.t*ps.t/pd.td <= 700.0
