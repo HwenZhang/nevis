@@ -14,7 +14,7 @@ oo.code = '../nevis/src';                      % code directory
 oo.analysis = '../nevis/analysis';             % analysis code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'n1d_Vconst_cg0_00_a0_kh0_ks0_mu5e0_c1_V1e7';           
+oo.casename = 'n1d_Vconst_cg0_00_a0_kh0_ks0_mu5e0_c1_V1e7_DX62_5';           
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
@@ -77,7 +77,7 @@ ps = struct;
 
 %% grid and geometry
 L = 1e5;                               % length of the domain [m]
-x = linspace(0,(L/ps.x),3201); 
+x = linspace(0,(L/ps.x),1601); 
 y = linspace(0,(L/ps.x),1);            % 1-d grid of length 50km 
 oo.yperiodic = 1;                      % oo.yperiodic = 1 necessary for a 1-d grid
 oo.xperiodic = 0;
@@ -103,7 +103,7 @@ pd.k_f = 0.9;                                     % percent overburden (k-factor
 vv.phi = aa.phi_a+pd.k_f*(aa.phi_0-aa.phi_a);     % initial pressure  k_f*phi_0
 N = aa.phi_0-vv.phi;                              % N for initial cavity sheet size 
 vv.hs = ((((pd.u_b*pd.h_r/pd.l_r)./((pd.u_b/pd.l_r)+(pd.K_c.*((ps.phi*N).^3)))))./ps.h); % initial cavity sheet size as f(N)
-vv.hb = 0.0*ones(size(vv.hs)); % initial cavity base thickness
+% vv.hb = 0.0*ones(size(vv.hs)); % initial cavity base thickness
 %% boundary conditions
 % aa.phi = aa.phi_a(gg.nbdy)+k_factor*(aa.phi_0(gg.nbdy)-aa.phi_a(gg.nbdy));    % prescribed boundary pressure
 % aa.phi_b = aa.phi_0;                            % prescribed boundary pressure at overburden
@@ -119,7 +119,7 @@ pp.x_l = [0.1*L/ps.x];                                          % x-coord of lak
 pp.y_l = [0];                                                   % y-coord of lakes
 pp.V_l = [1e7/(ps.Q0*ps.t)];                                    % volume of lakes         
 pp.t_drainage = [50*pd.td/ps.t];                                % time of lake drainages (assumed to be the middle time of the Gaussian)
-pp.t_duration = [0.1*pd.td/ps.t];                               % duration of lake drainages, 6hr
+pp.t_duration = [0.25*pd.td/ps.t];                              % duration of lake drainages, 6hr
 [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo);          % calculate lake catchments 
 
 %% surface input

@@ -136,10 +136,11 @@ pp.A_m = pd.A_m/ps.x^2/ps.sigma;
 pp.phi_s = pd.phi_s/ps.phi;
 pp.td = pd.td/ps.t;
 pp.ty = pd.ty/ps.t;
+pp.N0 = 1e-3;
 
 pp.Psi_reg = pd.Psi_reg/ps.Psi; 
 pp.N_reg = pd.N_reg/ps.phi;
-%pp.N_reg1 = pd.N_reg1/ps.phi;
+pp.N_reg1 = pd.N_reg1/ps.phi;
 pp.p_w_reg = pd.p_w_reg/ps.phi;
 pp.p_a_reg = pd.p_a_reg/ps.phi;
 pp.hb_reg1 = pd.hb_reg1/ps.hb;

@@ -163,13 +163,15 @@ while t<t_stop+oo.dt_min
     tt(ti).N = mean(aa.phi_0(gg.ns)-vv.phi(gg.ns));           % mean effective pressure, scaled with ps.phi
     tt(ti).hs = sum(vv.hs(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));% total cavity sheet volume, scaled with ps.h*ps.x^2
     tt(ti).Vb = sum(vv.hb(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));% total blister volume, scaled with ps.hb*ps.x^2
+
     disp(['Volume of the blister is ' num2str(tt(ti).Vb) '.']);
-    
+    disp(['The most negative effective pressure is ' num2str(min(aa.phi_0(gg.ns)-vv.phi(gg.ns))) '.']);
+
     % blister radius (only works for a single blister)
     [~, maxIdx] = max(vv.hb);
-    disp(['Max thickness of the blister is ' num2str(max(vv.hb)) '.']);
-    disp(['Min thickness of the blister is ' num2str(min(vv.hb)) '.']);
-    maxIdx = pp.ni_l;
+    % disp(['Max thickness of the blister is ' num2str(max(vv.hb)) '.']);
+    % disp(['Min thickness of the blister is ' num2str(min(vv.hb)) '.']);
+    % maxIdx = pp.ni_l;
     nonzeroIdx = find(vv.hb > 1e-5);
     [~, localIdx] = max((gg.nx(nonzeroIdx)-gg.nx(maxIdx)).^2+(gg.ny(nonzeroIdx)-gg.ny(maxIdx)).^2);
     minidx = nonzeroIdx(localIdx);
@@ -178,7 +180,7 @@ while t<t_stop+oo.dt_min
     else
         tt(ti).Rb = ((gg.nx(maxIdx)-gg.nx(minidx)).^2 + (gg.ny(maxIdx)-gg.ny(minidx)).^2).^(1/2);
     end
-    disp(['Radius of the blister is ' num2str(tt(ti).Rb) '.']);
+    % disp(['Radius of the blister is ' num2str(tt(ti).Rb) '.']);
    tt(ti).hb_max = vv.hb(maxIdx); % maximum blister thickness
 
     % total channel volume, scaled with ps.S*ps.x
@@ -246,7 +248,7 @@ while t<t_stop+oo.dt_min
         if ~info.failed
             accept = 1; 
             t = t + dt;
-            vv1.hb=max(vv1.hb,0);
+            % vv1.hb=max(vv1.hb,0);
             vv = vv1;
             vv.dt = dt;
             vv.t = t;

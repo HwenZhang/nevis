@@ -459,6 +459,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         h_t = - pp.c4*(gg.nddx(:,:)*qsx + gg.nddy(:,:)*qsy) ... % cavity sheet flux divergence
               - pp.c5*(gg.nddx(:,:)*qex + gg.nddy(:,:)*qey) ... % poroelastic sheet flux divergence
               + pp.c6*m ...                                     % basal melting rate
+              + pp.c6*(1-Reg_N(Nm,pp.N_reg1)).*E ...                  % moulin input once N>0, the subglacial drainage system is no longer overwhelmed
               + pp.c52*(pp.c0+pp.kl_h*hs+pp.kl_s*Smean).*max(pb-phi+aa.phi_a,0).*(hb+pp.hb_reg1).^(pp.m_l).*Reg_hb(hb,pp.hb_reg2) ...                                   % blister influx
               - pp.c9*((gg.nddx(:,:)*Qx).*gg.Dy.^(-1) + (gg.nddy(:,:)*Qy).*gg.Dx.^(-1)) ... % x,y channel divergence
               - pp.c9*((gg.ndds(:,:)*Qs) + (gg.nddr(:,:)*Qr)) ...                           % s,r channel divergence
@@ -467,7 +468,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
               + pp.c11*((gg.nmeansin(:,gg.cin)*(Xics(gg.cin)+Xis(gg.cin))).*gg.Ds.*gg.Dx.^(-1).*gg.Dy.^(-1) +... % s,r dissipation
                         (gg.nmeanrin(:,gg.cin)*(Xicr(gg.cin)+Xir(gg.cin))).*gg.Dr.*gg.Dx.^(-1).*gg.Dy.^(-1));    
             % pp.c1*hs_t + pp.c2*hd_t + pp.c3*hv_t + pp.c3*hm_t + pp.c8*channels
-    
+            % 
+
         Sx_t = - pp.c14*Sx.*abs(gg.emean(:,:)*(Nm)).^(pp.n_Glen-1).*(gg.emean(:,:)*(Nm)) ... % ice creep closure
                + pp.c13*(Xicx+Xix) ...  % wall melting opening
                + pp.c35*aa.lcx.*(gg.emean(:,:)*Ub).*max(1-pp.c36*Sx,0); % 
@@ -491,9 +493,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         % blister volume
         % h_t + div(q) = Q_in - (p_b-p_w)/mu*h
         hb_t = - pp.c45*(gg.nddx(:,:)*qbx + gg.nddy(:,:)*qby)...
-               + pp.c43*Qb_in./gg.Dx./gg.Dy...
+               + pp.c43*Qb_in./gg.Dx./gg.Dy... % lake influx;
                - pp.c51*(pp.c0+pp.kl_h*hs+pp.kl_s*Smean).*max(pb-phi+aa.phi_a,0).*(hb+pp.hb_reg1).^(pp.m_l).*Reg_hb(hb,pp.hb_reg2)...
-               + pp.c7*E; % moulin and lake influx;
+               + pp.c7*Reg_N(Nm,pp.N_reg1).*E; % moulin influx to the blister if the subglacial drainage system is overwhelmed, 
 
         % display Vb and Rb in the calculation
         % disp([pp.c42*aa.Qb_in(pp.ni_l); -pp.c43*Vb(pp.ni_l)./(Rb(pp.ni_l)+pp.R_b_reg).^2; -pp.c44*(aa.phi_0(pp.ni_l)-phi(pp.ni_l)).*Rb(pp.ni_l)]);
@@ -862,6 +864,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
                 - c3*Dhm_phi(nin,nin).*dt.^(-1) ...
                 - c4*( nddx(nin,ein)*Dqsx_phi(:,nin) + nddy(nin,fin)*Dqsy_phi(:,nin) ) ...
                 - c5*( nddx(nin,ein)*Dqex_phi(:,nin) + nddy(nin,fin)*Dqey_phi(:,nin) ) ...
+                - sparse(1:length(nin),1:length(nin),c6*DReg_N_Dphi(Nm(nin),pp.N_reg1).*E(nin),length(nin),length(nin)) ...
                 + sparse(1:length(nin),1:length(nin),Dy(nin).^(-1),length(nin),length(nin))*( -c9*nddx(nin,ein)*DQx_phi(:,nin) + c11*nmeanx(nin,ein)*(DXicx_phi(:,nin)+DXix_phi(:,nin)) )...
                 + sparse(1:length(nin),1:length(nin),Dx(nin).^(-1),length(nin),length(nin))*( -c9*nddy(nin,fin)*DQy_phi(:,nin) + c11*nmeany(nin,fin)*(DXicy_phi(:,nin)+DXiy_phi(:,nin)) )...
                 - c9*ndds(nin,cin)*DQs_phi(:,nin) ...
@@ -951,7 +954,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         % DF8 nin eqns
         DF8_pb = - c45*(gg.nddx(nin,ein)*Dqbx_pb(:,nin) + gg.nddy(nin,fin)*Dqby_pb(:,nin))...
                  + sparse(1:length(nin), 1:length(nin), - c51*(pp.c0+pp.kl_h*hs(nin)+pp.kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)>0).*(hb(nin)+pp.hb_reg1).^pp.m_l.*Reg_hb(hb(nin),pp.hb_reg2), length(nin), length(nin));
-        DF8_phi = sparse(1:length(nin), 1:length(nin), + c51*(pp.c0+pp.kl_h*hs(nin)+pp.kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)>0).*(hb(nin)+pp.hb_reg1).^pp.m_l.*Reg_hb(hb(nin),pp.hb_reg2), length(nin), length(nin));
+        DF8_phi = sparse(1:length(nin), 1:length(nin), + c51*(pp.c0+pp.kl_h*hs(nin)+pp.kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)>0).*(hb(nin)+pp.hb_reg1).^pp.m_l.*Reg_hb(hb(nin),pp.hb_reg2)...
+                                                       + c7*DReg_N_Dphi(Nm(nin),pp.N_reg1).*E(nin), length(nin), length(nin));
         temp = sparse(1:length(nin), nin, - ones(length(nin),1).*dt.^(-1)... 
                                           - pp.m_l*c51*(pp.c0+pp.kl_h*hs(nin)+pp.kl_s*Smean(nin)).*max(pb(nin)-phi(nin)+phi_a(nin),0).*(hb(nin)+pp.hb_reg1).^max(pp.m_l-1,0).*Reg_hb(hb(nin),pp.hb_reg2)...
                                           - c51*(pp.c0+pp.kl_h*hs(nin)+pp.kl_s*Smean(nin)).*max(pb(nin)-phi(nin)+phi_a(nin),0).*(hb(nin)+pp.hb_reg1).^pp.m_l.*DReg_hb_Dhb(hb(nin),pp.hb_reg2), length(nin), nIJ);
@@ -1163,4 +1167,12 @@ end
 function out = DReg_hb_Dhb(hb,hb0)
     out = 1-tanh(hb/hb0).^2;
     out = 0;
+end
+
+function out = Reg_N(N,N0)
+    out = 0.5 - 0.5*tanh(N/N0);
+end
+
+function out = DReg_N_Dphi(N,N0)
+    out = 0.5*(1-tanh(N/N0).^2)/N0;
 end

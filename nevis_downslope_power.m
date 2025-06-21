@@ -1,5 +1,5 @@
 %% Import necessary libraries
-casename = 'n1d_Vconst_cg0_00_a0_kh0_ks0_mu5e0_c1_V1e7';
+casename = 'n1d_Vconst_cg0_00_a0_kh0_ks0_mu5e0_c1_V1e7_DX62_5'; % case name
 load(['./results/' casename '/' casename])
 path = [oo.rn,'/'];
 addpath(oo.code);                               % add path to code
@@ -112,13 +112,7 @@ set(gca, 'FontSize', 14);
 %         hold on
 %         plot(t0-inject_time, Q0*((t0-inject_time)*pd.td), 'm--', 'LineWidth', 2);
 %         ylabel('Blister volume (km^3)');
-% legend('Blister radius(front)', 'Analytical solution x_f=(0.75V_0)^{2/3}(\frac{\rho_w g \theta}{\mu})t^{1/3}', 'Location', 'NorthWest','Interpreter','latex');
-legend( ...
-  'Blister radius (front)', ...
-  '$x_f=(0.75V_0)^{2/3}\!\bigl(\frac{\rho_w g \theta}{\mu}\bigr)t^{1/3}$', ...
-  'Location','NorthWest', ...
-  'Interpreter','latex' ...
-);
+legend('Blister radius(front)', 'Analytical solution x_f=(0.75V_0)^{2/3}(\rho_w g \theta/\mu)t^{1/3}', 'Location', 'NorthWest');
 
 
 % Save the figure

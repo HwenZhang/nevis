@@ -1,6 +1,6 @@
 %% Import necessary libraries
 % casename = oo.casename;
-casename = 'n2d_30mm_cg0_00_kappa1e_5_kh0_ks0_mu1e6_c1_V1e7_test'; 
+casename = 'n2d_30mm_cg0_00_alpha0_2_kh0_ks1_mu1e6_c1_V0e7_test2'; 
 
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -16,10 +16,10 @@ tmin = 0*pd.td/ps.t;
 tmax = 2*365*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                       % time range for the plot
-t_init = 365-40; t_end = 365+80;                      % time range for animation
+t_init = 365-10; t_end = 365*2;                      % time range for animation
 
 %% colormap
-n = 256; % number of colors
+n = 256; % number of color
 cmap = [linspace(0,1,n)', linspace(0,1,n)', ones(n,1); 
         ones(n,1), linspace(1,0,n)', linspace(1,0,n)'];
 
