@@ -17,13 +17,14 @@ cmap = [linspace(0,1,n)', linspace(0,1,n)', ones(n,1);
 
 %% read in the screenshot at the intial timestep
 formatSpec = '%04d';
-tframe = 300.0*pd.td/ps.t; % time frame for the screenshot
+tframe = 10.0*pd.td/ps.t; % time frame for the screenshot
 nframe = round(tframe/1.0); % frame number
 vva = load([path num2str(nframe,formatSpec)], 'vv');
 vva = vva.vv;
 aa = nevis_inputs(vva.t,aa,vva,pp,gg,oo);
 pp.hb_reg1 = 0;
 pp.hb_reg2 = 0;
+pp.N_reg1 = 1e3;
 [vv2] = nevis_backbone(inf,vva,vva,aa,pp,gg,oo);     % expand solution variables
 vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo);          % calculate node discharge
 qnet = ps.qs*(vv2.qs + vv2.qe + vv2.qQ);
@@ -56,7 +57,7 @@ h_b = ps.hb*[tt.pts_hb];       %
 p_b = ps.phi*[tt.pts_pb];      %
 V_b = ps.x^2*ps.hb*[tt.Vb];
 R_b = ps.x*[tt.Rb];
-R_b = smoothdata(ps.x*[tt.Rb],'gaussian',101); % radius of the blister (m)
+% R_b = smoothdata(ps.x*[tt.Rb],'gaussian',101); % radius of the blister (m)
 hb_max = ps.hb*[tt.hb_max]; % maximum blister base thickness (m)
 
 % phi = (ps.phi)*[tt.phi];     % dimensional hydrulic potential (MPa)
@@ -91,7 +92,7 @@ t0 = t(growth_phase); % Filter out times before 200 days
 R_b0 = R_b(growth_phase); % Filter out corresponding R_b values
 hb_max0 = hb_max(growth_phase); % Filter out corresponding hb_max values
 V2d = V_b(growth_phase)/1e5; % Filter out corresponding V_b values
-xf = (0.75)^(2/3)*(pd.rho_w*pd.g*0.01/pd.mu)^(1/3)*(V_b/1e5).^(2/3).*((t-inject_time)*pd.td).^(1/3);
+xf = (0.75)^(2/3)*(pd.rho_w*pd.g*0.1/pd.mu)^(1/3)*(V_b/1e5).^(2/3).*((t-inject_time)*pd.td).^(1/3);
 Q0 = (ps.Q0*ps.t).*pp.V_l./(pp.t_duration*ps.t)/1e5;
 
 % Rb_a = (8.42*pd.B*1000*Q0^3/pd.mu)^(1/10)*((t0-inject_time)*pd.td).^(0.4);

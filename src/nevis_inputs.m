@@ -42,24 +42,18 @@ else
 end
 
 %% Prescribe blister input
-% aa.Q_lake is the input to the blister model
-Q_lake = zeros(gg.nIJ,1);                            % set the lake input to 0 everywhere
 if oo.include_lake && isfield(pp,'ni_l') && ~isempty(pp.ni_l)
     % use the following function to precribe the input from each lake to the local blister
     if oo.input_gaussian
         pp.lake_input_function = @(t) (pp.V_l)./(sqrt(2*pi)*pp.t_duration)...
-                        .*exp(-0.5./pp.t_duration.^2.*(t-pp.t_drainage).^2)...
-                        .*(t>=pp.t_drainage-5*pp.t_duration).*(t<=pp.t_drainage+5*pp.t_duration);
+                        .*exp(-0.5./pp.t_duration.^2.*(t-pp.t_drainage).^2);
+                        % .*(t>=pp.t_drainage-5*pp.t_duration).*(t<=pp.t_drainage+5*pp.t_duration);
     else
         pp.lake_input_function = @(t) (pp.V_l)./pp.t_duration...
                         .*(t>=pp.t_drainage-0.5*pp.t_duration).*(t<=pp.t_drainage+0.5*pp.t_duration);
     end
-    if oo.input_constant
-        pp.lake_input_function = @(t) (t>=pp.t_drainage).*(t<=pp.t_drainage+pp.t_duration).*pp.V_l./pp.t_duration; % constant input
-    end
-    Q_lake(pp.ni_l) = pp.lake_input_function(t);      % add input from lake at point pp.ni_l
+    aa.Qb_in(pp.ni_l) = pp.lake_input_function(t)./gg.Dx(pp.ni_l)./gg.Dy(pp.ni_l);      % add input from lake at point pp.ni_l
 end
-aa.Qb_in = Q_lake;                                    % aa.Qb_in is the lake-drainage input to the blister model
 
 %% boundary input
 if isfield(pp,'Q_in')

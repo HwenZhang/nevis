@@ -32,6 +32,7 @@ oo.relaxation_term = 0;                         % 0 is alpha hb, 1 is alpha delt
 oo.initial_condition = 1;                       % 1 is default condition from 0365.mat, 0 is using steady-state drainage system, wither summertime or wintertime
 oo.input_constant = 1;                          % 1 is constant input, 0 is Gaussian input
 oo.mean_perms = 1;
+oo.modified = 0;
 % leakage term
 if oo.relaxation_term == 0                      % 0: exponential decay: -\alpha_0(1+h/hc+S/Sc) h_b         
     pd.alpha_b = 0.0/(100*pd.td);                % relaxation rate (s^-1)
@@ -119,7 +120,7 @@ oo.random_moulins = 10;
 pp.x_l = [0.5*L/ps.x];                                          % x-coord of lakes
 pp.y_l = [0];                                                   % y-coord of lakes
 pp.V_l = [1e8/(ps.Q0*ps.t)];                                    % volume of lakes         
-pp.t_drainage = [200*pd.td/ps.t];                               % time of lake drainages (assumed to be the middle time of the Gaussian)
+pp.t_drainage = [50*pd.td/ps.t];                                % time of lake drainages (assumed to be the middle time of the Gaussian)
 pp.t_duration = [1800*pd.td/ps.t];                              % duration of lake drainages, 6hr
 [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo);          % calculate lake catchments 
 
@@ -148,7 +149,8 @@ oo.dt = 1/24*pd.td/ps.t;
 oo.save_timesteps = 1; 
 oo.save_pts_all = 1; 
 oo.pts_ni = pp.ni_l;                             % save lake pressures
-oo.t_span = (1:0.5:2000)*pd.td/ps.t;               % time span for simulation (in ps.t)
+% oo.t_span = (1:0.5:2000)*pd.td/ps.t;               % time span for simulation (in ps.t)
+oo.t_span = [(1:1:44)*pd.td/ps.t (45:0.05:100)*pd.td/ps.t (101:1:1000)*pd.td/ps.t]; % 
 
 %% save initial parameters
 save([oo.rn, oo.fn],'pp','pd','ps','gg','aa','vv','oo');

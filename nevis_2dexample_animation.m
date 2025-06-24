@@ -1,6 +1,6 @@
 %% Import necessary libraries
 % casename = oo.casename;
-casename = 'n2d_30mm_cg0_00_alpha0_2_kh0_ks1_mu1e6_c1_V0e7_test2'; 
+casename = 'n2d_100m3s_cg0_00_alpha1e_1_kappa1e_30_kh0_ks1e3_mu1e3_V1e7_t';   
 
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -9,15 +9,6 @@ oo.code = '../nevis/src';                       % code directory
 path = [oo.rn,'/'];
 addpath(oo.code);                               % add path to code
   
-dt = 0.5*pd.td/ps.t;
-
-% used for runs with initial condition
-tmin = 0*pd.td/ps.t;
-tmax = 2*365*pd.td/ps.t;
-tmin_d = tmin*ps.t/pd.td; 
-tmax_d = tmax*ps.t/pd.td;                       % time range for the plot
-t_init = 365-10; t_end = 365*2;                      % time range for animation
-
 %% colormap
 n = 256; % number of color
 cmap = [linspace(0,1,n)', linspace(0,1,n)', ones(n,1); 
@@ -40,7 +31,15 @@ xx(gg.nout) = NaN;
 yy(gg.nout) = NaN;
 
 %% read in the time series
-t = (ps.t/(24*60*60))*[tt.t];             % dimensional time series (days)
+t = (ps.t/(24*60*60))*[tt.t];               % dimensional time series (days)
+tspan = (ps.t/pd.td)*oo.t_span;
+tmin = 0*pd.td/ps.t;
+tmax = 2*365*pd.td/ps.t;
+tmin_d = tmin*ps.t/pd.td; 
+tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
+[~,t_init] = min(abs(tspan-450));             % initial time step
+[~,t_end] = min(abs(tspan-475));              % final time step
+
 Q_b_in = pd.Q_0*[tt.Qb_in];               % dimensional influx (m^3/s)
 Q_b_dec = ps.h*ps.x^2/ps.t*[tt.Qb_dec];   % dimensional relaxation (m^3/s)
 
@@ -116,20 +115,20 @@ plot(ax,t,Q_out_b,color=[1,0,0],LineStyle='--',LineWidth=1.5);
 plot(ax,t,Q_out_Q,color=[0,1,0],LineStyle='--',LineWidth=1.5);
 plot(ax,t,Q_out_q,color=[0,0,1],LineStyle='--',LineWidth=1.5);
 
-plot(ax,t,E,color=[0,0,0],LineStyle='-',LineWidth=1.5);
+plot(ax,t,E,color=[0,0,0],LineStyle='-.',LineWidth=1.5);
 
 x1 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
 
 xlabel('t [ d ]');
 ylabel('Q [ m^3/s ]');
 h=legend('Q_{b,in}','Q_{b,relax}','Q_{out}','Q_{outb}','Q_{outQ}','Q_{outq}','Q_{in}','NumColumns',2);
-h.Location='southwest';
+h.Location='southeast';
 text(0.025,0.8,'(a) flux','Units','normalized','FontSize',14)
 
 xlim([tmin_d tmax_d])
 set(gca, 'YScale', 'log')
-ylim([1e1 1e4])
-% yticks([1e2,1e3,1e4])
+ylim([1e0 1e4])
+% yticks([1e1,1e2,1e3,1e4])
 grid on
 grid minor
 
@@ -145,7 +144,7 @@ xlabel('t [ d ]');
 ylabel('N [ MPa ]');
 h = legend('N at the blister','averaged N');
 text(0.025,0.8,'(b) effective pressure','Units','normalized','FontSize',14)
-h.Location='southwest';
+h.Location='southeast';
 xlim([tmin_d tmax_d])
 % ylim([0 2])
 grid on    
@@ -165,7 +164,7 @@ yyaxis right
     x3 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
     ylabel('Channel h [ m ]');
     h=legend('h_{cav}','h_{e}','S','NumColumns',2);
-    h.Location='southwest';
+    h.Location='southeast';
     xlim([tmin_d tmax_d])
     % ylim([0 0.05])
     grid on
@@ -188,7 +187,7 @@ yyaxis right
     ylabel('S at blister [ m^2 ]');
     xlim([tmin_d tmax_d])
     h=legend('h_{cav}','S','NumColumns',2);
-    h.Location='southwest';
+    h.Location='southeast';
     % ylim([0 0.05])
     grid on
     grid minor
@@ -217,7 +216,7 @@ yyaxis right
 % panel (f)
 ax = nexttile(leftLayout); 
 yyaxis left
-    plot(ax,t,p_b/1e6,'b-',LineWidth=1.5); % blister pressure + \rho_i g h
+    plot(ax,t,p_b(1,:)/1e6,'b-',LineWidth=1.5); % blister pressure + \rho_i g h
     hold on
     % plot(ax,t,pb_analytical/1e6,'b--',LineWidth=1.5); % blister pressure + \rho_i g h
     plot(ax,t,p_w/1e6,'b-.',LineWidth=1.5); 
@@ -235,9 +234,9 @@ yyaxis right
     plot(ax,t,V_b,'r-',LineWidth=1.5);
     hold on
     % plot(ax,t,Rb_analytical,'r--',LineWidth=1.5);
-    ylim([0 1.1e9])
+    % ylim([0 1.1e8])
     ylabel('V_b [ m ]');
-    legend('p_b','p_w','V_b','NumColumns',2,location='southwest')
+    legend('p_b','p_w','V_b','NumColumns',2,location='southeast')
 
     x6 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
 
@@ -290,7 +289,7 @@ cx = colorbar();
 cx.Label.String = 'h_b [ m ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-clim([-0.1 0.1]);
+clim([0 1.0]);
 hold on
 
 zpb = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ); 
@@ -310,7 +309,7 @@ cx = colorbar();
 cx.Label.String = 'S [ m^2 ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-% clim([0 11]); 
+clim([0 11]); 
 
 title('channel cross section','FontSize',14);
 ylabel('y (km)')
@@ -377,7 +376,7 @@ axis equal
 axis tight
 
 %% make video
-v = VideoWriter(['./results/videos/' casename '_2'],'MPEG-4');
+v = VideoWriter(['./results/videos/' casename],'MPEG-4');
 % v = VideoWriter(['./results/' oo.casename],'MPEG-4');
 v.FrameRate = 1;
 open(v)
@@ -408,7 +407,7 @@ for i_t = t_init:t_end
     ppb.CData = reshape(pb,gg.nI,gg.nJ);
 
     set(ttext,{'string'},{['t=' num2str(vva.t*ps.t/(24*60*60),'%.1f'), ' d']})  %notice the column vector of new values
-    
+
     x1.Value = vva.t*ps.t/pd.td;
     x2.Value = vva.t*ps.t/pd.td;
     x3.Value = vva.t*ps.t/pd.td;

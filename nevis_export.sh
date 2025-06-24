@@ -1,7 +1,7 @@
 #!/bin/bash
 
 original_file="nevis_regional_blister.m"
-original_file="nevis_1d_example.m"
+original_file="nevis_2d_example_hewitt_geometry.m"
 # original_file="nevis_1d_blister.m"
 
 # Debug: Print lines that mention oo.casename

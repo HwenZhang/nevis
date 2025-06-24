@@ -1,6 +1,6 @@
 %% Import necessary libraries
 % casename = oo.casename;
-casename = 'n1d_Qconst_cg0_00_a0_kh0_ks0_mu5e0_c1_V1e7';
+casename = 'n1d_Vconst_cg0_00_a0_kh0_ks0_mu5e0_c1_V1e7_DX62_5';
 load(['./results/' casename '/' casename])
 % oo.fn = ['/',casename];                         % filename (same as casename)
 % oo.rn = [oo.root,oo.results,oo.fn];             % path to the case results
@@ -13,7 +13,7 @@ tmin = 0*pd.td/ps.t;
 tmax = 2000*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                        % time range for the plot
-t_init = 500; t_end = 501;                       % time range for animation
+t_init = 200; t_end = 450;                       % time range for animation
 oo.input_constant = 0;
 
 xmax_km = 100; % maximum x value in km
@@ -328,7 +328,7 @@ text(0.025,0.1,'(3) cavity sheet','Units','normalized','FontSize',14)
 ax = nexttile(rightLayout);
 yyaxis left
     pblister = plot(ax,xx(gg.ns),ps.hb*vva.hb(gg.ns),'b-','LineWidth',1.5); 
-    ylim([0 0.05]);
+    ylim([-0.1 0.1]);
     ylabel('h_b [m]')
     title('blister sheet and pb','FontSize',14);
 yyaxis right

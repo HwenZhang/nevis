@@ -48,6 +48,7 @@ if ~isfield(ps,'qb'), ps.qb = ps.qs; end                  % blister flow scale (
 if ~isfield(ps,'alpha_b'), ps.alpha_b = pd.alpha_b; end   % relaxation rate (s^-1)
     
 %% Dimensionless parameters [ many of these can be chosen to be 1 by suitable choice of scales ]
+pp.c0 = pd.alpha_b*pd.mu/(pd.kappa_b*ps.phi);
 pp.c1 = ps.hs/ps.h;
 pp.c2 = ps.he/ps.h;
 pp.c3 = ps.hv/ps.h;
@@ -96,6 +97,7 @@ pp.c43 = ps.Q0*ps.t/ps.x^2/ps.hb;
 pp.c44 = pd.alpha_b*ps.hb*ps.t/ps.hb;
 pp.c45 = ps.qb*ps.t/ps.x/ps.hb;
 pp.c46 = pd.rho_w*pd.g*ps.hb/ps.phi;
+pp.c47 = ps.Q0*ps.t/ps.x^2/ps.h;
 pp.c48 = 1;
 pp.c49 = ps.B*ps.hb/ps.x^4/ps.phi;
 pp.c50 = pd.alpha_b*ps.hb*ps.t/ps.h;
@@ -120,7 +122,6 @@ else
 end
 pp.kl_s = pd.kl_s;    % leakage dependence on S
 pp.kl_h = pd.kl_h;    % leakage dependence on h
-pp.c0 = pd.c0;        
 
 pp.n_Glen = pd.n_Glen;
 pp.alpha_s = pd.alpha_s;

@@ -30,10 +30,11 @@ mkdir(oo.rn);                                  % create directory for results
 oo.evaluate_variables = 1;
 oo.use_modified_N = 0;
 oo.input_gaussian = 1;
-oo.relaxation_term = 0;                         % 0 is alpha hb, 1 is alpha deltap hb
+oo.relaxation_term = 1;                         % 0 is alpha hb, 1 is alpha deltap hb
 oo.initial_condition = 1;                       % 1 is default condition from 0365.mat, 0 is using steady-state drainage system, wither summertime or wintertime
-oo.input_constant = 1;                          % 1 is constant input, 0 is Gaussian input
+oo.input_constant = 0;                          % 1 is constant input, 0 is Gaussian input
 oo.mean_perms = 1;
+oo.modified_mean_perms = 0;
 % leakage term
 if oo.relaxation_term == 0                      % 0: exponential decay: -\alpha_0(1+h/hc+S/Sc) h_b         
     pd.alpha_b = 0.0/(100*pd.td);                % relaxation rate (s^-1)
@@ -41,7 +42,9 @@ if oo.relaxation_term == 0                      % 0: exponential decay: -\alpha_
     pd.m_l=0;
 elseif oo.relaxation_term == 1                  % 1: proportional to pressure diff and thickness: -\kappa/\mu(p_b-p_w)h_b
     pd.alpha_b = 0;                             % relaxation rate (s^-1)
-    pd.kappa_b = 1e-11;                         % relaxation coeff 
+    pd.kappa_b = 1e-60;                         % relaxation coeff 
+    pd.kl_s = 0e3;                              % leakage dependence on S
+    pd.kl_h = 0.0;                              % leakage dependence on h
     pd.m_l=1;
 elseif oo.relaxation_term == 2                  % 2: channel control, enhanced at channels: -\alpha_0 (\tanh(S/S_c))
     pd.alpha_b = 1.0/(10*pd.td);                % relaxation rate (s^-1)
@@ -52,7 +55,7 @@ end
 % alter default parmaeters 
 runoff_max = 0;                                 % prescribed runoff (mm/day)
 pd.mu = 5.0e0;                                  % water viscosity (Pa s)
-pd.Ye = 0e9;                                  % Young's modulus (Pa)
+pd.Ye = 8.8e9;                                  % Young's modulus (Pa)
 pd.B = pd.Ye*(1e3)^3/(12*(1-0.33^2));           % bending stiffness (Pa m^3)
 pd.c_e_reg2 = 0.00/1e3/9.81;                    % elastic sheet thickness [m/Pa]
 pd.N_reg2 = 1e4; % 1e3                          % regularisation pressure for elastic sheet thickness 
@@ -71,6 +74,10 @@ pd.kl_s = 0.0;                                  % leakage dependence on S
 pd.kl_h = 0.0;                                  % leakage dependence on h
 pd.c0 = 1.0;                                    % constant for leakage dependence on S and h, default is 1.0
 
+pd.hb_reg1 = 0;
+pd.hb_reg2 = 1e-3;
+pd.N_reg1 = 1e3;
+
 % non-dimensionalise
 ps = struct;
 [ps,pp] = nevis_nondimension(pd,ps,oo);   
@@ -82,7 +89,7 @@ y = linspace(0,(L/ps.x),1);            % 1-d grid of length 50km
 oo.yperiodic = 1;                      % oo.yperiodic = 1 necessary for a 1-d grid
 oo.xperiodic = 0;
 gg = nevis_grid(x,y,oo); 
-b = 5e4/ps.z - 0.01*gg.nx*ps.x/ps.z;   % bed slope angle = 0.01
+b = 5e4/ps.z - 0.1*gg.nx*ps.x/ps.z;   % bed slope angle = 0.1
 s = 1000/ps.z + b;
 
 %% mask with minimum ice thickness
@@ -103,7 +110,7 @@ pd.k_f = 0.9;                                     % percent overburden (k-factor
 vv.phi = aa.phi_a+pd.k_f*(aa.phi_0-aa.phi_a);     % initial pressure  k_f*phi_0
 N = aa.phi_0-vv.phi;                              % N for initial cavity sheet size 
 vv.hs = ((((pd.u_b*pd.h_r/pd.l_r)./((pd.u_b/pd.l_r)+(pd.K_c.*((ps.phi*N).^3)))))./ps.h); % initial cavity sheet size as f(N)
-% vv.hb = 0.0*ones(size(vv.hs)); % initial cavity base thickness
+vv.hb = 0*ones(size(vv.hs)); % initial cavity base thickness
 %% boundary conditions
 % aa.phi = aa.phi_a(gg.nbdy)+k_factor*(aa.phi_0(gg.nbdy)-aa.phi_a(gg.nbdy));    % prescribed boundary pressure
 % aa.phi_b = aa.phi_0;                            % prescribed boundary pressure at overburden
@@ -147,7 +154,8 @@ oo.dt = 1/24*pd.td/ps.t;
 oo.save_timesteps = 1; 
 oo.save_pts_all = 1; 
 oo.pts_ni = pp.ni_l;                             % save lake pressures
-oo.t_span = (1:1.0:2000)*pd.td/ps.t;             % time span for simulation (in ps.t)
+oo.t_span = [(1:1:44)*pd.td/ps.t (45:0.01:55)*pd.td/ps.t (56:1:1000)*pd.td/ps.t]; % 
+% oo.t_span = (1:0.2:100)*pd.td/ps.t;              % time span for simulation (in ps.t)
 
 %% save initial parameters
 save([oo.rn, oo.fn],'pp','pd','ps','gg','aa','vv','oo');

@@ -134,8 +134,8 @@ while t<t_stop+oo.dt_min
     tt(ti).m = sum(aa.m(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));  % basal melt, scaled with ps.m*ps.x^2
     % supraglacial input, scaled with ps.m*ps.x^2
     tt(ti).E = sum(aa.E(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));  % moulin input, scaled with ps.m*ps.x^2
-    
-    tt(ti).Qb_in = aa.Qb_in(pp.ni_l);                         % inflow to the blister
+
+    tt(ti).Qb_in = aa.Qb_in(pp.ni_l).*gg.Dx(pp.ni_l).*gg.Dy(pp.ni_l);                         % inflow to the blister
     tt(ti).Qb_dec = vv2.Qb_dec;                               % relaxation term of the blister
                
     tt(ti).pwb = vv.phi(pp.ni_l);                             % hydrulic potential at the lake
@@ -169,8 +169,8 @@ while t<t_stop+oo.dt_min
 
     % blister radius (only works for a single blister)
     [~, maxIdx] = max(vv.hb);
-    % disp(['Max thickness of the blister is ' num2str(max(vv.hb)) '.']);
-    % disp(['Min thickness of the blister is ' num2str(min(vv.hb)) '.']);
+    disp(['Max thickness of the blister is ' num2str(max(vv.hb)) '.']);
+    disp(['Min thickness of the blister is ' num2str(min(vv.hb)) '.']);
     % maxIdx = pp.ni_l;
     nonzeroIdx = find(vv.hb > 1e-5);
     [~, localIdx] = max((gg.nx(nonzeroIdx)-gg.nx(maxIdx)).^2+(gg.ny(nonzeroIdx)-gg.ny(maxIdx)).^2);
@@ -248,7 +248,7 @@ while t<t_stop+oo.dt_min
         if ~info.failed
             accept = 1; 
             t = t + dt;
-            % vv1.hb=max(vv1.hb,0);
+            % vv1.hb = max(vv1.hb,0); % set negative hb to zero
             vv = vv1;
             vv.dt = dt;
             vv.t = t;

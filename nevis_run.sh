@@ -3,9 +3,9 @@
 # Create logs and parameter_sweep directories
 mkdir -p logs parameter_sweep
 
-# Automatically find all MATLAB scripts starting with "nreg" or "n1d"
+# Automatically find all MATLAB scripts starting with "n2d"
 scripts=()
-for file in nreg*.m n1d*.m; do
+for file in n2d*.m; do
     if [ -e "$file" ]; then
         scripts+=("${file%.m}")
     fi
@@ -13,7 +13,7 @@ done
 
 # Check if any scripts were found
 if [ ${#scripts[@]} -eq 0 ]; then
-    echo "No MATLAB scripts starting with 'nreg' or 'n1d' found."
+    echo "No MATLAB scripts starting with 'n2d' found."
     exit 1
 else
     # Output all found script names before execution
