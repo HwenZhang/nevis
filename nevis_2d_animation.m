@@ -1,6 +1,6 @@
 %% Import necessary libraries
 % casename = oo.casename;
-casename = 'n2d_100m3s_cg0_00_alpha1e_1_kappa1e_30_kh0_ks1e3_mu1e3_V1e7_t';   
+casename = 'n2d_100m3s_alpha1e_1_dalphadh0_dalphads10_mu1e3_V1e7';   
 
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -33,8 +33,8 @@ yy(gg.nout) = NaN;
 %% read in the time series
 t = (ps.t/(24*60*60))*[tt.t];               % dimensional time series (days)
 tspan = (ps.t/pd.td)*oo.t_span;
-tmin = 0*pd.td/ps.t;
-tmax = 2*365*pd.td/ps.t;
+tmin = 440*pd.td/ps.t;
+tmax = 500*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
 [~,t_init] = min(abs(tspan-450));             % initial time step

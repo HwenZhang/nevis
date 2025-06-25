@@ -85,15 +85,15 @@ if ~isfield(pd,'r_m'), pd.r_m = 25/1000/pd.td; end                 % base precip
 if ~isfield(pd,'Q0'), pd.Q_0 = 1e3; end
 if ~isfield(pd,'mu'), pd.mu = 1.0e+3; end                          % water viscosity (Pa s)
 if ~isfield(pd,'Ye'), pd.Ye = 8.8e+9; end                          % Young's modulus (Pa)
-if ~isfield(pd,'alpha_b'), pd.alpha_b = 1.0/(24*3600); end         % relaxation rate of the blister (s^-1)
 if ~isfield(pd,'kappa_b'), pd.kappa_b = 1e-9; end                  % relaxation coeff ()
 if ~isfield(pd,'S_crit'), pd.S_crit = 0.1; end                     % critical cross section (m^2), below which there is no leakage to the drainage system
-if ~isfield(pd,'kl_s'), pd.kl_s = 0.0; end
-if ~isfield(pd,'kl_h'), pd.kl_h = 0.0; end
 if ~isfield(pd,'c0'), pd.c0 = 0.0; end
 
-if ~isfield(pd,'alpha_h'), pd.alpha_h = 1.1574e-5; end             % relaxation rate of the blister dependence on h (m^-1 s^-1)
-if ~isfield(pd,'alpha_s'), pd.alpha_s = 1.5595e-5; end             % relaxation rate of the blister dependence on S (m^-2 s^-1)
+if ~isfield(pd,'alpha_b'), pd.alpha_b = 1/(10*pd.td); end          % relaxation rate of the blister (s^-1)
+if ~isfield(pd,'alpha_dh'), pd.alpha_dh = 0; end                   % d (relaxation rate) / d h (m^-1 s^-1)
+if ~isfield(pd,'alpha_ds'), pd.alpha_ds = 0; end                   % d (relaxation rate) / d S (m^-2 s^-1)
+% if ~isfield(pd,'alpha_dh'), pd.alpha_dh = 1.1574e-5; end           % d (relaxation rate) / d h (m^-1 s^-1)
+% if ~isfield(pd,'alpha_ds'), pd.alpha_ds = 1.5595e-5; end           % d (relaxation rate) / d S (m^-2 s^-1)
 
 %% Default options
 % method options

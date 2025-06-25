@@ -45,7 +45,8 @@ if ~isfield(ps,'hb'), ps.hb = 10*ps.h; end               % blister sheet thickne
 if ~isfield(ps,'B'), ps.B = pd.Ye*(ps.z)^3/(12*(1-0.33)^2); end     % ice bending stiffness (m^3)
 if ~isfield(ps,'Q0'), ps.Q0 = pd.Q_0; end                 % blister inflow scale (m^2/s) [L^3 T^-1]   
 if ~isfield(ps,'qb'), ps.qb = ps.qs; end                  % blister flow scale (m^2/s) [L^3 T^-1]   
-if ~isfield(ps,'alpha_b'), ps.alpha_b = pd.alpha_b; end   % relaxation rate (s^-1)
+
+% if ~isfield(ps,'alpha_b'), ps.alpha_b = pd.alpha_b; end   % relaxation rate (s^-1)
     
 %% Dimensionless parameters [ many of these can be chosen to be 1 by suitable choice of scales ]
 pp.ct = 1;
@@ -121,8 +122,8 @@ elseif oo.relaxation_term == 3
 else
     error("Invalid relaxation term!")
 end
-pp.kl_s = pd.kl_s;    % leakage dependence on S
-pp.kl_h = pd.kl_h;    % leakage dependence on h
+pp.kl_s = pd.alpha_ds*ps.S/pd.alpha_b;    % leakage dependence on S
+pp.kl_h = pd.alpha_dh*ps.h/pd.alpha_b;    % leakage dependence on h
 
 pp.n_Glen = pd.n_Glen;
 pp.alpha_s = pd.alpha_s;

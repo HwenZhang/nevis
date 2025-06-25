@@ -13,7 +13,7 @@ oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'n2d_100m3s_alpha1e_1_kappa1e_30_kh0_ks1e3_mu1e3_V1e7';   
+oo.casename = 'n2d_100m3s_alpha1e_1_dalphadh0_dalphads10_mu1e3_V1e7';   
            
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
@@ -27,28 +27,22 @@ mkdir(oo.rn);                                  % create directory for results
 [pd,oo] = nevis_defaults([],oo);  
 
 oo.evaluate_variables = 1;
-oo.use_modified_N = 0;
 oo.input_gaussian = 1;
 oo.relaxation_term = 1;                         % 0 is alpha hb, 1 is alpha deltap hb
 oo.initial_condition = 1;                       % 1 is default condition from 0365.mat, 0 is using steady-state drainage system, wither summertime or wintertime
 
 % leakage term
 if oo.relaxation_term == 0                      % 0: exponential decay: -\alpha_0(1+h/hc+S/Sc) h_b         
-    pd.alpha_b = 1.0/(10*pd.td);                 % relaxation rate (s^-1)
+    pd.alpha_b = 1.0/(10*pd.td);                % relaxation rate (s^-1)
     pd.kappa_b = 0;                             % relaxation coeff 
-    pd.kl_s = 0.0;                              % leakage dependence on S
-    pd.kl_h = 0.0;                              % leakage dependence on h
     pd.m_l = 1;
 elseif oo.relaxation_term == 1                  % 1: proportional to pressure diff and thickness: -\kappa/\mu(p_b-p_w)h_b
     pd.alpha_b = 1.0/(10*pd.td);                % relaxation rate (s^-1)
-    pd.kappa_b = 1e-30;                          % relaxation coeff
-    pd.kl_s = 1.0e3;                              % leakage dependence on S
-    pd.kl_h = 0.0;                              % leakage dependence on h
+    pd.kappa_b = 1e-30;                         % relaxation coeff
     pd.m_l = 1;
 elseif oo.relaxation_term == 2                  % 2: channel control, enhanced at channels: -\alpha_0 (\tanh(S/S_c))
     pd.alpha_b = 1.0/(10*pd.td);                % relaxation rate (s^-1)
     pd.S_crit = 0.1;                            % critical cross section (m^2), below which there is no leakage to the drainage system
-    pd.kl_s = 1.0;                              % leakage dependence on S
     pd.m_l=0;
 elseif oo.relaxation_term == 3                  % pressure diff control: k[hb]/mu*\Delta p       
     pd.m_l = 0;                                 % no dependence on hb
@@ -63,10 +57,10 @@ pd.Ye = 8.8e9;                                  % Young's modulus (Pa)
 pd.B = pd.Ye*(1e3)^3/(12*(1-0.33^2));           % bending stiffness (Pa m^3)
 pd.E_lapse = 30/1000/pd.td/10^3;
 
-pd.hb_reg1 = 0;
-pd.hb_reg2 = 1e-3;
+pd.hb_reg2 = 1e-3;                              % Regularisation parameter for hb, leakage only occurs when hb >> hb_reg2 [abandoned]
 pd.N_reg1 = 1e3;                                % Regularisation parameter for N, (N >> Nreg, input to drainage system; N << -Nreg, input to blister))
-
+pd.alpha_dh = 0.0;                              % alpha for the change in hb, used in the relaxation term [1/(m s)]
+pd.alpha_ds = 1.5595e-4;                        % alpha for the change in hb, used in the relaxation term [1/(m^2 s)]
 % non-dimensionalise
 ps = struct;
 [ps,pp] = nevis_nondimension(pd,ps,oo);   
@@ -117,7 +111,7 @@ oo.random_moulins = 0;
 pp.x_l = [0.5*L/ps.x];                                          % x-coord of lakes
 pp.y_l = [0.5*W/ps.x];                                          % y-coord of lakes
 pp.V_l = [1e7/(ps.Q0*ps.t)];                                    % volume of lakes         
-pp.t_drainage = [1.25*365*pd.td/ps.t];                               % time of lake drainages (assumed to be the middle time of the Gaussian)
+pp.t_drainage = [1.25*365*pd.td/ps.t];                          % time of lake drainages (assumed to be the middle time of the Gaussian)
 pp.t_duration = [0.25*pd.td/ps.t];                              % duration of lake drainages, 6hr
 [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo);          % calculate lake catchments 
 
