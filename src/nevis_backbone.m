@@ -282,8 +282,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     qby = -pp.c42*permby.*Psib_y; % vector of (gg.fIJ,1)
     
     % blister to subglacial drainage system term defined on the nodes
-    Qb_h = pp.c52*(1.0+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(pb-phi+aa.phi_a,0)).*(hb+pp.hb_reg1).^(pp.m_l).*Reg_hb(hb,pp.hb_reg2); % pp.kl_h*hs/ps.hs
-    Qb_s = pp.c51*(1.0+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(pb-phi+aa.phi_a,0)).*(hb+pp.hb_reg1).^(pp.m_l).*Reg_hb(hb,pp.hb_reg2); % pp.kl_h*hs/ps.hs
+    Qb_h = pp.c52*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(pb-phi+aa.phi_a,0)).*(hb+pp.hb_reg1).^(pp.m_l).*Reg_hb(hb,pp.hb_reg2); % pp.kl_h*hs/ps.hs
+    Qb_s = pp.c51*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(pb-phi+aa.phi_a,0)).*(hb+pp.hb_reg1).^(pp.m_l).*Reg_hb(hb,pp.hb_reg2); % pp.kl_h*hs/ps.hs
 
     % boundary edge fluxes
     if ~isempty(gg.ebdy)
@@ -635,6 +635,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         % c50 = pp.c50;
         c51 = pp.c51;
         c52 = pp.c52;
+        ct = pp.ct;
 
         n_Glen = pp.n_Glen;
         alpha_c = pp.alpha_c;
@@ -875,11 +876,11 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
                 - c9*nddr(nin,cin)*DQr_phi(:,nin) ...
                 + sparse(1:length(nin),1:length(nin),Ds(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin))*( + c11*nmeans(nin,cin)*(DXics_phi(:,nin)+DXis_phi(:,nin)) ) ...
                 + sparse(1:length(nin),1:length(nin),Dr(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin))*( + c11*nmeanr(nin,cin)*(DXicr_phi(:,nin)+DXir_phi(:,nin)) ) ...
-                + sparse(1:length(nin), 1:length(nin), -c52*(1.0+kl_h*hs(nin)+kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)>0).*(hb(nin)+hb_reg1).^m_l.*Reg_hb(hb(nin),hb_reg2), length(nin), length(nin));
+                + sparse(1:length(nin), 1:length(nin), -c52*(ct+kl_h*hs(nin)+kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)>0).*(hb(nin)+hb_reg1).^m_l.*Reg_hb(hb(nin),hb_reg2), length(nin), length(nin));
 
-        DF2_pb = sparse(1:length(nin), 1:length(nin), c52*(1.0+kl_h*hs(nin)+kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)>0).*(hb(nin)+hb_reg1).^m_l.*Reg_hb(hb(nin),hb_reg2), length(nin), length(nin));
-        temp   = sparse(1:length(nin), nin, m_l*c52*(1.0+kl_h*hs(nin)+kl_s*Smean(nin)).*(c0+max(pb(nin)-phi(nin)+phi_a(nin),0)).*(hb(nin)+hb_reg1).^max(m_l-1,0).*Reg_hb(hb(nin),hb_reg2)...
-                                          + c52*(1.0+kl_h*hs(nin)+kl_s*Smean(nin)).*(c0+max(pb(nin)-phi(nin)+phi_a(nin),0)).*(hb(nin)+hb_reg1).^m_l.*DReg_hb_Dhb(hb(nin),hb_reg2), length(nin), nIJ);
+        DF2_pb = sparse(1:length(nin), 1:length(nin), c52*(ct+kl_h*hs(nin)+kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)>0).*(hb(nin)+hb_reg1).^m_l.*Reg_hb(hb(nin),hb_reg2), length(nin), length(nin));
+        temp   = sparse(1:length(nin), nin, m_l*c52*(ct+kl_h*hs(nin)+kl_s*Smean(nin)).*(c0+max(pb(nin)-phi(nin)+phi_a(nin),0)).*(hb(nin)+hb_reg1).^max(m_l-1,0).*Reg_hb(hb(nin),hb_reg2)...
+                                          + c52*(ct+kl_h*hs(nin)+kl_s*Smean(nin)).*(c0+max(pb(nin)-phi(nin)+phi_a(nin),0)).*(hb(nin)+hb_reg1).^m_l.*DReg_hb_Dhb(hb(nin),hb_reg2), length(nin), nIJ);
         DF2_hb = temp(:,ns);
 
         DF2_Sx = sparse(1:length(nin),1:length(nin), Dy(nin).^(-1),length(nin),length(nin))*( -c8*dt^(-1).*nmeanx(nin,ein) ...
@@ -921,7 +922,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
 
         DF4_hs = c13*DXiy_hs(:,ns);
 
-        %DF5   
+        %DF5 (cin eqns)
         DF5_Ss = sparse(1:length(cin),1:length(cin),-c12*ones(length(cin),1).*dt.^(-1) ...
             - c14.*abs(cmean(cin,:)*(N)).^(n_Glen-1).*(cmean(cin,:)*(N)) ...
             - c36*c35*aa.lcs(cin).*(cmean(cin,:)*Ub).*(1>c36*Ss(cin)) ,length(cin),length(cin)) ...
@@ -932,7 +933,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
 
         DF5_hs = c13*DXis_hs(:,ns);
 
-        %DF6           
+        %DF6 (cin eqns)
         DF6_Sr = sparse(1:length(cin),1:length(cin),-c12*ones(length(cin),1).*dt.^(-1) ...
             - c14.*abs(cmean(cin,:)*(N)).^(n_Glen-1).*(cmean(cin,:)*(N)) ...
             - c36*c35*aa.lcr(cin).*(cmean(cin,:)*Ub).*(1>c36*Sr(cin)) ,length(cin),length(cin)) ...
@@ -943,7 +944,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
 
         DF6_hs = c13*DXir_hs(:,ns);
 
-        % DF7
+        % DF7 (ns eqns)
         biharmonic = (gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(H.^3.*(gg.nddx*gg.eddx + gg.nddy*gg.fddy));
         DF7_hb = sparse(1:length(ns),1:length(ns),c46*ones(length(ns),1),length(ns),length(ns)) + c49 * biharmonic(ns,ns);
         temp = sparse(nin, 1:length(nin), -ones(length(nin),1), nIJ, length(nin));
@@ -951,14 +952,14 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         temp = sparse(nin, 1:length(nin), zeros(length(nin),1), nIJ, length(nin));
         DF7_phi = temp(ns,:);
 
-        % DF8 nin eqns
+        % DF8 (nin eqns)
         DF8_pb = - c45*(gg.nddx(nin,ein)*Dqbx_pb(:,nin) + gg.nddy(nin,fin)*Dqby_pb(:,nin))...
-                 + sparse(1:length(nin), 1:length(nin), - c51*(1.0+kl_h*hs(nin)+kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)>0).*(hb(nin)+hb_reg1).^m_l.*Reg_hb(hb(nin),hb_reg2), length(nin), length(nin));
-        DF8_phi = sparse(1:length(nin), 1:length(nin), + c51*(1.0+kl_h*hs(nin)+kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)>0).*(hb(nin)+hb_reg1).^m_l.*Reg_hb(hb(nin),hb_reg2)...
+                 + sparse(1:length(nin), 1:length(nin), - c51*(ct+kl_h*hs(nin)+kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)>0).*(hb(nin)+hb_reg1).^m_l.*Reg_hb(hb(nin),hb_reg2), length(nin), length(nin));
+        DF8_phi = sparse(1:length(nin), 1:length(nin), + c51*(ct+kl_h*hs(nin)+kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)>0).*(hb(nin)+hb_reg1).^m_l.*Reg_hb(hb(nin),hb_reg2)...
                                                        + c7*DReg_N_Dphi(N(nin),N_reg1).*E(nin), length(nin), length(nin));
         temp = sparse(1:length(nin), nin, - ones(length(nin),1).*dt.^(-1)...
-                                          - m_l*c51*(1.0+kl_h*hs(nin)+kl_s*Smean(nin)).*(c0+max(pb(nin)-phi(nin)+phi_a(nin),0)).*(hb(nin)+hb_reg1).^max(m_l-1,0).*Reg_hb(hb(nin),hb_reg2)...
-                                          - c51*(1.0+kl_h*hs(nin)+kl_s*Smean(nin)).*(c0+max(pb(nin)-phi(nin)+phi_a(nin),0)).*(hb(nin)+hb_reg1).^m_l.*DReg_hb_Dhb(hb(nin),hb_reg2), length(nin), nIJ);
+                                          - m_l*c51*(ct+kl_h*hs(nin)+kl_s*Smean(nin)).*(c0+max(pb(nin)-phi(nin)+phi_a(nin),0)).*(hb(nin)+hb_reg1).^max(m_l-1,0).*Reg_hb(hb(nin),hb_reg2)...
+                                          - c51*(ct+kl_h*hs(nin)+kl_s*Smean(nin)).*(c0+max(pb(nin)-phi(nin)+phi_a(nin),0)).*(hb(nin)+hb_reg1).^m_l.*DReg_hb_Dhb(hb(nin),hb_reg2), length(nin), nIJ);
         DF8_hb = temp(:,ns) - c45*(gg.nddx(nin,ein)*Dqbx_hb(:,ns) + gg.nddy(nin,fin)*Dqby_hb(:,ns));
         temp = sparse(1:length(nin), nin, - c51*kl_h*(c0+max(pb(nin)-phi(nin)+phi_a(nin),0)).*(hb(nin)+hb_reg1).^m_l.*Reg_hb(hb(nin),hb_reg2), length(nin), nIJ);
         DF8_hs = temp(:,ns);
@@ -1013,7 +1014,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     %         sparse(length(nin),length(ns)) sparse(length(nin),length(nin)) sparse(length(nin),length(ein)) sparse(length(nin),length(fin)) sparse(length(nin),length(cin)) sparse(length(nin),length(cin)) DF8_Vb DF8_Rb ];
     
         %[ alternative that looks nicer : not sure if it will be quicker or slower ]
-        J = [   DF1_hs DF1_phi sparse(length(ns),length(ein)) sparse(length(ns),length(fin)) sparse(length(ns),length(cin)) sparse(length(ns),length(cin)) sparse(length(ns),length(ns)) DF1_pb; ...
+        J = [   DF1_hs DF1_phi sparse(length(ns),length(ein)) sparse(length(ns),length(fin)) sparse(length(ns),length(cin)) sparse(length(ns),length(cin)) sparse(length(ns),length(ns)) sparse(length(ns),length(nin)); ...
                 DF2_hs DF2_phi DF2_Sx DF2_Sy DF2_Ss DF2_Sr DF2_hb DF2_pb; ...
                 DF3_hs DF3_phi DF3_Sx sparse(length(ein),length(fin)) sparse(length(ein),length(cin)) sparse(length(ein),length(cin)) sparse(length(ein),length(ns)) sparse(length(ein),length(nin)); ...
                 DF4_hs DF4_phi sparse(length(fin),length(ein)) DF4_Sy sparse(length(fin),length(cin)) sparse(length(fin),length(cin)) sparse(length(fin),length(ns)) sparse(length(fin),length(nin)); ...
@@ -1160,12 +1161,12 @@ end
 % end
 
 function out = Reg_hb(hb,hb0)
-    out = tanh(hb/hb0);
+    % out = tanh(hb/hb0);
     out = 1;
 end
 
 function out = DReg_hb_Dhb(hb,hb0)
-    out = 1-tanh(hb/hb0).^2;
+    % out = 1-tanh(hb/hb0).^2;
     out = 0;
 end
 

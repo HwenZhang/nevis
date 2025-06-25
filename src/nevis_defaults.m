@@ -92,6 +92,9 @@ if ~isfield(pd,'kl_s'), pd.kl_s = 0.0; end
 if ~isfield(pd,'kl_h'), pd.kl_h = 0.0; end
 if ~isfield(pd,'c0'), pd.c0 = 0.0; end
 
+if ~isfield(pd,'alpha_h'), pd.alpha_h = 1.1574e-5; end             % relaxation rate of the blister dependence on h (m^-1 s^-1)
+if ~isfield(pd,'alpha_s'), pd.alpha_s = 1.5595e-5; end             % relaxation rate of the blister dependence on S (m^-2 s^-1)
+
 %% Default options
 % method options
 if ~isfield(oo,'no_channels'), oo.no_channels = 0; end
@@ -99,15 +102,13 @@ if ~isfield(oo,'no_sheet'), oo.no_sheet = 0; end
 if ~isfield(oo,'noXi'), oo.noXi = 1; end
 if ~isfield(oo,'combine_sheet'), oo.combine_sheet = 1; end
 if ~isfield(oo,'mean_perms'), oo.mean_perms = 1; end
-if ~isfield(oo,'blister'), oo.blister = 1; end
-if ~isfield(oo,'use_modified_N'), oo.use_modified_N = 0; end
+if ~isfield(oo,'modified_mean_perms'), oo.modified_mean_perms = 0; end % whether to use modified mean permeability
 if ~isfield(oo,'input_gaussian'), oo.input_gaussian = 0; end
 if ~isfield(oo,'relaxation_term'), oo.relaxation_term = 0; end      % 0 is alpha hb, 1 is alpha deltap hb
 if ~isfield(oo,'initial_condition'), oo.initial_condition = 0; end  % 0 is using default file 0365.mat, 1 is using steady-state drainage system
 if ~isfield(oo,'include_ice'), oo.include_ice = 0; end              % couple to ice flow
 if ~isfield(oo,'include_blister'), oo.include_blister = 1; end      % couple to blister
-if ~isfield(oo,'include_pressure'), oo.include_pressure = 1; end    % couple to pressure
-
+if ~isfield(oo,'include_pressure'), oo.include_pressure = 1; end    % couple to pressure 
 % if ~isfield(oo,'method'), oo.method = 'lrtb_vel'; end % [ obsolete ]
 % if ~isfield(oo,'include_moulins'), oo.include_moulins = 1; end  % [ obsolete ]
 % if ~isfield(oo,'include_diag'), oo.include_diag = 1; end  % [ obsolete ]
@@ -117,8 +118,6 @@ if ~isfield(oo,'surface_runoff'), oo.surface_runoff = 0; end   % use surface run
 if ~isfield(oo,'RACMO_runoff'), oo.RACMO_runoff = 0; end       % use pp.runoff function(t) for runoff
 if ~isfield(oo,'distributed_input'), oo.distributed_input = 0; end
 if ~isfield(oo,'include_lake'), oo.include_lake = 1; end
-if ~isfield(oo,'input_gaussian'), oo.input_gaussian = 1; end   % whether to use Gaussian input function for moulins
-if ~isfield(oo,'input_constant'), oo.input_constant = 0; end   % whether to use constant input function for moulins
 
 % saving options
 if ~isfield(oo,'save_timesteps'), oo.save_timesteps = 0; end

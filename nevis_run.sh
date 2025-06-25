@@ -5,7 +5,7 @@ mkdir -p logs parameter_sweep
 
 # Automatically find all MATLAB scripts starting with "n2d"
 scripts=()
-for file in n2d*.m; do
+for file in n2d*.m n1d*.m; do
     if [ -e "$file" ]; then
         scripts+=("${file%.m}")
     fi

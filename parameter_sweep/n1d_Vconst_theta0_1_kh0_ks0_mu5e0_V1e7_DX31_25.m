@@ -1,86 +1,92 @@
 %% Script to run NEVIS regional model 
 % This script is designed to run the NEVIS 1-dimensional model for an idealised ice sheet
-% The surface runoff is set up by a prescribed function
-% The surface and bed profiles are the same as in Hewitt 2013
+% No surface runoff, Gaussian influx at early times, then constant volume
+% Linear bed slope, constant ice thickness
 
 % Author: Hanwen Zhang  
-% Date: 2025-05
+% Date: 2025-06-16
 format compact
 
 %% setup paths and directories
 clear,clc
 oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory  
+oo.analysis = '../nevis/analysis';             % analysis code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'n2d_100m3s_alpha1e_1_kappa1e_30_kh0_ks1e3_mu1e3_V1e7';   
-           
-                                               % casename
+oo.casename = 'n1d_Vconst_theta0_1_kh0_ks0_mu5e0_V1e7_DX31_25'; % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
 oo.dn = [oo.root, 'data/', oo.dataset, '/'];   % path to the data
 addpath(oo.code);                              % add path to code
-mkdir(oo.rn);                                  % create directory for results    
+addpath(oo.analysis);                          % add path to analysis
+mkdir(oo.rn);                                  % create directory for results
 
 %% parameters
 % default parameters 
 [pd,oo] = nevis_defaults([],oo);  
 
 oo.evaluate_variables = 1;
-oo.use_modified_N = 0;
 oo.input_gaussian = 1;
 oo.relaxation_term = 1;                         % 0 is alpha hb, 1 is alpha deltap hb
 oo.initial_condition = 1;                       % 1 is default condition from 0365.mat, 0 is using steady-state drainage system, wither summertime or wintertime
+oo.mean_perms = 1;
+oo.modified_mean_perms = 0;
 
 % leakage term
 if oo.relaxation_term == 0                      % 0: exponential decay: -\alpha_0(1+h/hc+S/Sc) h_b         
-    pd.alpha_b = 1.0/(10*pd.td);                 % relaxation rate (s^-1)
+    pd.alpha_b = 0.0/(100*pd.td);                % relaxation rate (s^-1)
     pd.kappa_b = 0;                             % relaxation coeff 
-    pd.kl_s = 0.0;                              % leakage dependence on S
-    pd.kl_h = 0.0;                              % leakage dependence on h
-    pd.m_l = 1;
+    pd.m_l=0;
 elseif oo.relaxation_term == 1                  % 1: proportional to pressure diff and thickness: -\kappa/\mu(p_b-p_w)h_b
-    pd.alpha_b = 1.0/(10*pd.td);                % relaxation rate (s^-1)
-    pd.kappa_b = 1e-30;                          % relaxation coeff
-    pd.kl_s = 1.0e3;                              % leakage dependence on S
+    pd.alpha_b = 0;                             % relaxation rate (s^-1)
+    pd.kappa_b = 1e-60;                         % relaxation coeff 
+    pd.kl_s = 0e3;                              % leakage dependence on S
     pd.kl_h = 0.0;                              % leakage dependence on h
-    pd.m_l = 1;
+    pd.m_l=1;
 elseif oo.relaxation_term == 2                  % 2: channel control, enhanced at channels: -\alpha_0 (\tanh(S/S_c))
     pd.alpha_b = 1.0/(10*pd.td);                % relaxation rate (s^-1)
     pd.S_crit = 0.1;                            % critical cross section (m^2), below which there is no leakage to the drainage system
-    pd.kl_s = 1.0;                              % leakage dependence on S
     pd.m_l=0;
-elseif oo.relaxation_term == 3                  % pressure diff control: k[hb]/mu*\Delta p       
-    pd.m_l = 0;                                 % no dependence on hb
-    pd.kappa_b = 1e-9;
-    pd.alpha_b = 0;
 end
 
-% alter default parmaeters 
-runoff_max = 30;                                % prescribed runoff (mm/day)
-pd.mu = 1.0e3;                                  % water viscosity (Pa s)
+% alter default parameters
+pd.mu = 5.0e0;                                  % water viscosity (Pa s)
 pd.Ye = 8.8e9;                                  % Young's modulus (Pa)
 pd.B = pd.Ye*(1e3)^3/(12*(1-0.33^2));           % bending stiffness (Pa m^3)
-pd.E_lapse = 30/1000/pd.td/10^3;
-
-pd.hb_reg1 = 0;
-pd.hb_reg2 = 1e-3;
-pd.N_reg1 = 1e3;                                % Regularisation parameter for N, (N >> Nreg, input to drainage system; N << -Nreg, input to blister))
+pd.c_e_reg2 = 0.00/1e3/9.81;                    % elastic sheet thickness [m/Pa]
+pd.N_reg1 = 1e3;                                % effective pressure cut off for regularization of moulin input term [Pa]
+pd.N_reg2 = 1e4; % 1e3                          % regularisation pressure for elastic sheet thickness  [Pa]
+pd.u_b = 100/pd.ty;                             % sliding speed [m/s]
+pd.sigma = 0e-3;                                % englacial void fraction
+pd.h_r = 0.1;                                   % roughness height [m]
+pd.l_r = 10;                                    % roughness length [m]
+pd.l_c = 1000;                                  % sheet width contributing to conduit melting [m] default = 10 m
+pd.k_s = 1e-3;                                  % sheet permeability constant
+pd.tau_b = 60e3; %60 kPa                        % driving stress [Pa]
+pd.melt = pd.G/pd.rho_w/pd.L;                   % geothermal heat derived basal melt [m/s]
+pd.melt = 0*(pd.G+(pd.u_b*pd.tau_b))/pd.rho_w/pd.L;  % geothermal heat + frictional heating derived basal melt [m/s]
+pd.meltinterior = ((pd.G+((100/pd.ty)*pd.tau_b))/pd.rho_w/pd.L)*1e3; % flux of basal melt up to the ~icedivide (200 km) [m2/s]
+pd.E_lapse = 40/1000/pd.td/10^3;
+pd.kl_s = 0.0;                                  % leakage dependence on S
+pd.kl_h = 0.0;                                  % leakage dependence on h
+pd.c0 = 1.0;                                    % constant for leakage dependence on S and h, default is 1.0
+pd.hb_reg1 = 0;                                 % regularizing thickness of blister [m]
+pd.hb_reg2 = 1e-3;                              % regularizing thickness of blister [m]
 
 % non-dimensionalise
 ps = struct;
 [ps,pp] = nevis_nondimension(pd,ps,oo);   
 
 %% grid and geometry
-L = 5e4;                                 % length of the domain [m]
-W = 0.2*L;                                   % width of the domain [m]
-x = linspace(0,(L/ps.x),101); 
-y = linspace(0,(W/ps.x),20);        
-oo.yperiodic = 1;                        % oo.yperiodic = 1 necessary for a 1-d grid
+L = 1e5;                               % length of the domain [m]
+x = linspace(0,(L/ps.x),3201); 
+y = linspace(0,(L/ps.x),1);            % 1-d grid of length 50km 
+oo.yperiodic = 1;                      % oo.yperiodic = 1 necessary for a 1-d grid
 oo.xperiodic = 0;
 gg = nevis_grid(x,y,oo); 
-b = (0/ps.z)*gg.nx;                      % flat bed
-s = (1060/ps.z)*(1-ps.x*gg.nx/L).^0.5;   % ice surface topography 
+b = 5e4/ps.z - 0.1*gg.nx*ps.x/ps.z;   % bed slope angle = 0.1
+s = 1000/ps.z + b;
 
 %% mask with minimum ice thickness
 H = max(s-b,0);
@@ -93,8 +99,6 @@ gg.n1m = gg.n1;                                   % label all edge nodes as boun
 gg = nevis_label(gg,gg.n1m);
 oo.adjust_boundaries = 1;                         % enable option of changing conditions
 
-%% plot grid
-% nevis_plot_grid(gg); return;                    % check to see what grid looks like
 
 %% initialize variables
 [aa,vv] = nevis_initialize(b,s,gg,pp,oo);         % default initialisation
@@ -110,14 +114,14 @@ aa.phi_b = max(aa.phi_0,aa.phi_a);                % prescribed boundary pressure
 
 %% moulins 
 oo.keep_all_moulins = 0;
-oo.random_moulins = 0;         
-[pp.ni_m,pp.sum_m] = nevis_moulins([0.25*L/ps.x],[0.5*W/ps.x],gg,oo);     % one moulin at the lake location
+oo.random_moulins = 10;         
+[pp.ni_m,pp.sum_m] = nevis_moulins([],[],gg,oo);  % no moulin at the lake location
 
 %% supraglacial lakes
-pp.x_l = [0.5*L/ps.x];                                          % x-coord of lakes
-pp.y_l = [0.5*W/ps.x];                                          % y-coord of lakes
+pp.x_l = [0.1*L/ps.x];                                          % x-coord of lakes
+pp.y_l = [0];                                                   % y-coord of lakes
 pp.V_l = [1e7/(ps.Q0*ps.t)];                                    % volume of lakes         
-pp.t_drainage = [1.25*365*pd.td/ps.t];                               % time of lake drainages (assumed to be the middle time of the Gaussian)
+pp.t_drainage = [50*pd.td/ps.t];                                % time of lake drainages (assumed to be the middle time of the Gaussian)
 pp.t_duration = [0.25*pd.td/ps.t];                              % duration of lake drainages, 6hr
 [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo);          % calculate lake catchments 
 
@@ -129,18 +133,15 @@ oo.RACMO_runoff = 0;                            % If set to 1, use RACMO input a
                                                 % If set to 0, use prescribed runoff function 
 oo.distributed_input = 0;                       % If set to 1 turns on distributed input
                                                 % If set to 0 , input is collected into moulins 
-
-% load([oo.dn, 'runoff_2009_nevis140.mat']);      % load data for year of interest (previously collated)
-% pp.runoff_function = @(t) runoff(((t*ps.t)/pd.td),runoff_2009_nevis140)./ps.m;  % RACMO input (m/sec)
-pp.meltE = @(t) (runoff_max/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t)));
-pp.input_function = @(t) 100*(1-exp(-t/(300*pd.td/ps.t)))./(ps.m*ps.x^2);     % RACMO moulin input (100 m3/sec)
+pp.input_function = @(t) 0./ps.m;               % RACMO moulin input (m3/sec)
 
 %% Timestep 
 oo.dt = 1/24*pd.td/ps.t; 
 oo.save_timesteps = 1; 
 oo.save_pts_all = 1; 
-oo.pts_ni = [pp.ni_l pp.ni_m];                      % save lake pressures
-oo.t_span = [(1:1:440)*pd.td/ps.t (441:0.2:480)*pd.td/ps.t (481:1:2*365)*pd.td/ps.t];              % time span for simulation (in ps.t)
+oo.pts_ni = pp.ni_l;                             % save lake pressures
+oo.t_span = [(1:1:44)*pd.td/ps.t (45:0.01:55)*pd.td/ps.t (56:1:2000)*pd.td/ps.t]; % 
+% oo.t_span = (1:0.2:100)*pd.td/ps.t;              % time span for simulation (in ps.t)
 
 %% save initial parameters
 save([oo.rn, oo.fn],'pp','pd','ps','gg','aa','vv','oo');
@@ -154,4 +155,4 @@ vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo); % calculate node discharge
 save([oo.rn, oo.fn],'pp','pd','ps','gg','aa','oo','tt');
 
 %% Simple animate
-% nevis_regional_animation
+% nevis_downslope_power_law
