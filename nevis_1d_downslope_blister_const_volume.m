@@ -14,7 +14,7 @@ oo.code = '../nevis/src';                      % code directory
 oo.analysis = '../nevis/analysis';             % analysis code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'n1d_Vconst_theta0_01_kh0_ks0_mu5e0_V1e7_DX250'; % casename
+oo.casename = 'n1d_Vconst_theta0_1_kh0_ks0_mu5e0_V1e7_DX500'; % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
 oo.dn = [oo.root, 'data/', oo.dataset, '/'];   % path to the data
@@ -41,8 +41,8 @@ if oo.relaxation_term == 0                      % 0: exponential decay: -\alpha_
 elseif oo.relaxation_term == 1                  % 1: proportional to pressure diff and thickness: -\kappa/\mu(p_b-p_w)h_b
     pd.alpha_b = 0;                             % relaxation rate (s^-1)
     pd.kappa_b = 1e-60;                         % relaxation coeff 
-    pd.kl_s = 0e3;                              % leakage dependence on S
-    pd.kl_h = 0.0;                              % leakage dependence on h
+    pd.alpha_dh = 0;                            % alpha for the change in hb, used in the relaxation term [1/(m s)]
+    pd.alpha_ds = 0;                            % alpha for the change in S, used in the relaxation term [1/(m s)]
     pd.m_l=1;
 elseif oo.relaxation_term == 2                  % 2: channel control, enhanced at channels: -\alpha_0 (\tanh(S/S_c))
     pd.alpha_b = 1.0/(10*pd.td);                % relaxation rate (s^-1)
@@ -80,7 +80,7 @@ ps = struct;
 
 %% grid and geometry
 L = 1e5;                               % length of the domain [m]
-x = linspace(0,(L/ps.x),401); 
+x = linspace(0,(L/ps.x),201); 
 y = linspace(0,(L/ps.x),1);            % 1-d grid of length 50km 
 oo.yperiodic = 1;                      % oo.yperiodic = 1 necessary for a 1-d grid
 oo.xperiodic = 0;

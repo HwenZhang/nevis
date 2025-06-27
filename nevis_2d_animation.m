@@ -1,6 +1,6 @@
 %% Import necessary libraries
 % casename = oo.casename;
-casename = 'n2d_100m3s_alpha1e_1_dalphadh0_dalphads10_mu1e3_V1e7';   
+casename = 'n2d_0m3s_alpha1e_1_dalphad1e0_dalphads1e0_mu1e3_V1e7';   
 
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -16,7 +16,7 @@ cmap = [linspace(0,1,n)', linspace(0,1,n)', ones(n,1);
 
 %% read in the screenshot at the intial timestep
 formatSpec = '%04d';
-tframe = 1.0;
+tframe = 1.0
 nframe = 1;
 vva = load([path num2str(nframe,formatSpec)], 'vv');
 vva = vva.vv;
@@ -33,8 +33,8 @@ yy(gg.nout) = NaN;
 %% read in the time series
 t = (ps.t/(24*60*60))*[tt.t];               % dimensional time series (days)
 tspan = (ps.t/pd.td)*oo.t_span;
-tmin = 440*pd.td/ps.t;
-tmax = 500*pd.td/ps.t;
+tmin = 450*pd.td/ps.t;
+tmax = 470*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
 [~,t_init] = min(abs(tspan-450));             % initial time step
@@ -135,7 +135,7 @@ grid minor
 % panel (b)
 ax = nexttile(leftLayout);
 if isfield(tt,'pts_phi') && ~isempty([tt.pts_phi])  
-    plot(ax,t,pts_N,'-',LineWidth=1.5);
+    plot(ax,t,pts_N(1,:),'-',LineWidth=1.5);
 end
 hold on
 plot(ax,t,N/1e6,'-',LineWidth=1.5);
@@ -196,7 +196,7 @@ yyaxis right
 ax = nexttile(leftLayout);
 % hb_analytical = 3*V_b./(pi*R_b.^2);
 yyaxis left
-    plot(ax,t,h_b,'b-',LineWidth=1.5);
+    plot(ax,t,h_b(1,:),'b-',LineWidth=1.5);
     hold on
     % plot(ax,t,hb_analytical,'b--',LineWidth=1.5);
     xlabel('t [ d ]');
@@ -204,7 +204,7 @@ yyaxis left
     text(0.025,0.8,'(e) h_b and p_b at the lake','Units','normalized','FontSize',14)
 
 yyaxis right
-    plot(ax,t,p_b/1e6,'r-',LineWidth=1.5);
+    plot(ax,t,p_b(1,:)/1e6,'r-',LineWidth=1.5); % pressure at the blister
     hold on
     x5 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
     xlabel('t [ d ]');
@@ -305,11 +305,14 @@ zS = (ps.S)*reshape(0.25*(gg.nmeanx*vva.Sx + gg.nmeany*vva.Sy + gg.nmeans*vva.Ss
 pS = pcolor(ax,xx,yy,zS); 
 set(pS,'linestyle','none');
 % shading interp
+ax.ColorScale = 'log';
+
 cx = colorbar();
 cx.Label.String = 'S [ m^2 ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-clim([0 11]); 
+clim([1e-4 1e1]);
+cx.Ticks = [1e-4 1e-3 1e-2 1e-1 1e0 1e1];
 
 title('channel cross section','FontSize',14);
 ylabel('y (km)')

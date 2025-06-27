@@ -7,12 +7,11 @@ group1_cases = { ...
     'n1d_0mm_kh0_ks0_mu5e0_V1e8_DX500'};
 group1_leg = {'DX=62.5 m','DX=125 m','DX=250 m','DX=500 m'};
 
-group2_cases = { ...
-    'n1d_Vconst_theta0_1_kh0_ks0_mu5e0_V1e7_DX31_25', ...
-    'n1d_Vconst_theta0_1_kh0_ks0_mu5e0_V1e7_DX62_5', ...
+group2_cases = {'n1d_Vconst_theta0_1_kh0_ks0_mu5e0_V1e7_DX62_5', ...
     'n1d_Vconst_theta0_1_kh0_ks0_mu5e0_V1e7_DX125', ...
-    'n1d_Vconst_theta0_1_kh0_ks0_mu5e0_V1e7_DX250'};
-group2_leg = {'DX=31.25 m','DX=62.5 m','DX=125 m','DX=250 m'};
+    'n1d_Vconst_theta0_1_kh0_ks0_mu5e0_V1e7_DX250', ...
+    'n1d_Vconst_theta0_01_kh0_ks0_mu5e0_V1e7_DX500'};
+group2_leg = {'DX=62.5 m','DX=125 m','DX=250 m','DX=500 m'};
 
 % Injection times for each group
 group1_inj = 200;   % days
@@ -43,6 +42,7 @@ for i = 1:numel(group1_cases)
 end
 
 % analytical solution
+load(['./results/' 'n1d_0mm_kh0_ks0_mu5e0_V1e8_DX500' '/' 'n1d_0mm_kh0_ks0_mu5e0_V1e8_DX500'])
 Q0 = (ps.Q0*ps.t).*pp.V_l./(pp.t_duration*ps.t)/1e5;
 Rb_a = (8.42*pd.B*1000*Q0^3/pd.mu)^(1/10)*((t0)*pd.td).^(0.4);
 plot(t0, Rb_a, 'k--', 'LineWidth', 2, 'DisplayName', '$(8.42  B H Q^3 / \mu)^{1/10} t^{2/5}$');

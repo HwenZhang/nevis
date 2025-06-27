@@ -13,7 +13,7 @@ oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'n2d_100m3s_alpha1e_1_dalphadh0_dalphads10_mu1e3_V1e7';   
+oo.casename = 'n2d_0m3s_alpha1e_1_dalphad1e0_dalphads1e0_mu1e3_V1e7';   
            
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
@@ -59,14 +59,16 @@ pd.E_lapse = 30/1000/pd.td/10^3;
 
 pd.hb_reg2 = 1e-3;                              % Regularisation parameter for hb, leakage only occurs when hb >> hb_reg2 [abandoned]
 pd.N_reg1 = 1e3;                                % Regularisation parameter for N, (N >> Nreg, input to drainage system; N << -Nreg, input to blister))
-pd.alpha_dh = 0.0;                              % alpha for the change in hb, used in the relaxation term [1/(m s)]
-pd.alpha_ds = 1.5595e-4;                        % alpha for the change in hb, used in the relaxation term [1/(m^2 s)]
+pd.alpha_dh = 1.1574e-5;                        % alpha for the change in hb, used in the relaxation term [1/(m s)]
+pd.alpha_ds = 1.5595e-5;                        % alpha for the change in hb, used in the relaxation term [1/(m^2 s)]
+% pd.alpha_dh = pd.k_s*ps.h^(pd.alpha_s-1)*ps.phi^pd.beta_s/ps.hb/ps.x^(pd.beta_s+1);
+% pd.alpha_ds = 1e2*pd.k_c*ps.S^(pd.alpha_c-1)*ps.phi^(pd.beta_c)/ps.hb/ps.x^(pd.beta_c+2);
 % non-dimensionalise
 ps = struct;
 [ps,pp] = nevis_nondimension(pd,ps,oo);   
 
 %% grid and geometry
-L = 5e4;                                 % length of the domain [m]
+L = 5e4;                                     % length of the domain [m]
 W = 0.2*L;                                   % width of the domain [m]
 x = linspace(0,(L/ps.x),101); 
 y = linspace(0,(W/ps.x),20);        
@@ -127,7 +129,7 @@ oo.distributed_input = 0;                       % If set to 1 turns on distribut
 % load([oo.dn, 'runoff_2009_nevis140.mat']);      % load data for year of interest (previously collated)
 % pp.runoff_function = @(t) runoff(((t*ps.t)/pd.td),runoff_2009_nevis140)./ps.m;  % RACMO input (m/sec)
 pp.meltE = @(t) (runoff_max/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t)));
-pp.input_function = @(t) 100*(1-exp(-t/(300*pd.td/ps.t)))./(ps.m*ps.x^2);     % RACMO moulin input (100 m3/sec)
+pp.input_function = @(t) 0*(1-exp(-t/(300*pd.td/ps.t)))./(ps.m*ps.x^2);     % RACMO moulin input (100 m3/sec)
 
 %% Timestep 
 oo.dt = 1/24*pd.td/ps.t; 

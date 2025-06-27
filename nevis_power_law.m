@@ -36,7 +36,7 @@ for i = 1:numel(casenames)
 end
 
 % analytical solution
-Q0 = (ps.Q0*ps.t).*pp.V_l./(pp.t_duration*ps.t)/1e5;
+Q0 = 1e7/(pp.t_duration*ps.t)/1e5;
 Rb_a = (8.42*pd.B*1000*Q0^3/pd.mu)^(1/10)*((t0)*pd.td).^(0.4);
 plot(t0, Rb_a, 'k--', 'LineWidth', 2, 'DisplayName', 'Analytical solution');
 
