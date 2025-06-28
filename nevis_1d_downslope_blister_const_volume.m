@@ -14,7 +14,7 @@ oo.code = '../nevis/src';                      % code directory
 oo.analysis = '../nevis/analysis';             % analysis code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'n1d_Vconst_theta0_1_kh0_ks0_mu5e0_V1e7_DX500'; % casename
+oo.casename = 'n1d_Vconst_theta0_1_kh0_ks0_mu5e0_V1e7_DX250_analysis'; % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
 oo.dn = [oo.root, 'data/', oo.dataset, '/'];   % path to the data
@@ -80,7 +80,7 @@ ps = struct;
 
 %% grid and geometry
 L = 1e5;                               % length of the domain [m]
-x = linspace(0,(L/ps.x),201); 
+x = linspace(0,(L/ps.x),401); 
 y = linspace(0,(L/ps.x),1);            % 1-d grid of length 50km 
 oo.yperiodic = 1;                      % oo.yperiodic = 1 necessary for a 1-d grid
 oo.xperiodic = 0;

@@ -13,7 +13,7 @@ oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'n2d_0m3s_alpha1e_1_dalphad1e0_dalphads1e0_mu1e3_V1e7';   
+oo.casename = 'n2d_0m3s_alpha1e_1_dalphad1e0_dalphads1e0_mu1e3_V1e7_test';   
            
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)

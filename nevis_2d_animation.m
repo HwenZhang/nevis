@@ -1,6 +1,6 @@
 %% Import necessary libraries
 % casename = oo.casename;
-casename = 'n2d_0m3s_alpha1e_1_dalphad1e0_dalphads1e0_mu1e3_V1e7';   
+casename = 'n2d_0m3s_alpha1e_1_dalphad1e0_dalphads1e0_mu1e3_V1e7_test';   
 
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -289,7 +289,7 @@ cx = colorbar();
 cx.Label.String = 'h_b [ m ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-clim([0 1.0]);
+clim([0 0.5]);
 hold on
 
 zpb = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ); 

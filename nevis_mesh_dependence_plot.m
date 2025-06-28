@@ -44,7 +44,7 @@ end
 % analytical solution
 load(['./results/' 'n1d_0mm_kh0_ks0_mu5e0_V1e8_DX500' '/' 'n1d_0mm_kh0_ks0_mu5e0_V1e8_DX500'])
 Q0 = (ps.Q0*ps.t).*pp.V_l./(pp.t_duration*ps.t)/1e5;
-Rb_a = (8.42*pd.B*1000*Q0^3/pd.mu)^(1/10)*((t0)*pd.td).^(0.4);
+Rb_a = (8.42*pd.B*1000*Q0^3/pd.mu)^(1/10)*((t0)*pd.td).^(4/10);
 plot(t0, Rb_a, 'k--', 'LineWidth', 2, 'DisplayName', '$(8.42  B H Q^3 / \mu)^{1/10} t^{2/5}$');
 
 set(ax1, 'XScale','log','YScale','log', ...
@@ -92,4 +92,4 @@ legend(ax2,'show','Location','northwest','Interpreter','latex','NumColumns',1,'B
 axis tight;
 
 % Save combined figure
-exportgraphics(gcf, 'blister_mesh_dependence.png', 'Resolution', 300);
+% exportgraphics(gcf, 'blister_mesh_dependence.png', 'Resolution', 300);

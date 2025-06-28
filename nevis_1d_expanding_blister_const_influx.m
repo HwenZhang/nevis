@@ -13,7 +13,7 @@ oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'n1d_0mm_kh0_ks0_mu5e0_V1e8_DX500';    % casename
+oo.casename = 'n1d_0mm_kh0_ks0_mu5e0_V1e8_DX250_analysis';    % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
 oo.dn = [oo.root, 'data/', oo.dataset, '/'];   % path to the data
@@ -74,8 +74,8 @@ ps = struct;
 [ps,pp] = nevis_nondimension(pd,ps,oo);   
 
 %% grid and geometry
-L = 1e5;                               % length of the domain [m]
-x = linspace(0,(L/ps.x),201); 
+L = 2e5;                               % length of the domain [m]
+x = linspace(0,(L/ps.x),801); 
 y = linspace(0,(L/ps.x),1);            % 1-d grid of length 50km 
 oo.yperiodic = 1;                      % oo.yperiodic = 1 necessary for a 1-d grid
 oo.xperiodic = 0;
@@ -118,8 +118,8 @@ oo.random_moulins = 10;
 pp.x_l = [0.5*L/ps.x];                                          % x-coord of lakes
 pp.y_l = [0];                                                   % y-coord of lakes
 pp.V_l = [1e8/(ps.Q0*ps.t)];                                    % volume of lakes         
-pp.t_drainage = [1100*pd.td/ps.t];                              % time of lake drainages (assumed to be the middle time of the Gaussian)
-pp.t_duration = [1800*pd.td/ps.t];                              % duration of lake drainages, 6hr
+pp.t_drainage = [350*pd.td/ps.t];                              % time of lake drainages (assumed to be the middle time of the Gaussian)
+pp.t_duration = [300*pd.td/ps.t];                              % duration of lake drainages, 6hr
 [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo);          % calculate lake catchments 
 
 %% surface input
@@ -137,7 +137,7 @@ oo.dt = 1/24*pd.td/ps.t;
 oo.save_timesteps = 1; 
 oo.save_pts_all = 1; 
 oo.pts_ni = pp.ni_l;                              % save lake pressures
-oo.t_span = (1:1:1000)*pd.td/ps.t;              % time span for simulation (in ps.t)
+oo.t_span = (1:0.25:500)*pd.td/ps.t;              % time span for simulation (in ps.t)
 % oo.t_span = [(1:1:44)*pd.td/ps.t (45:0.05:100)*pd.td/ps.t (101:1:1000)*pd.td/ps.t]; % 
 
 %% save initial parameters
