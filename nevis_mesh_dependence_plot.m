@@ -38,6 +38,8 @@ for i = 1:numel(group1_cases)
     idx = t > group1_inj;
     t0  = t(idx) - group1_inj;
     R0  = R_b(idx);
+    hb = ps.hb * [tt.hb_max];
+    h0 = hb(idx);
     loglog(t0,R0,'LineWidth',2,'DisplayName',group1_leg{i});
 end
 
