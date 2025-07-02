@@ -13,7 +13,7 @@ oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'n2d_100m3s_alpha1e_1_dalphadh0_1_dalphads1_mu1e1_V1e7_test';   
+oo.casename = 'n2d_100m3s_alpha1e_1_dalphad1_dalphads1_mu1e1_V1e7';   
            
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
@@ -61,7 +61,7 @@ pd.E_lapse = 30/1000/pd.td/10^3;
 pd.hb_reg1 = 0;                                 % Regularisation parameter for hb, leakage only occurs when hb >> hb_reg1
 pd.hb_reg2 = 1e-6;                              % Regularisation parameter for hb, leakage only occurs when hb >> hb_reg2 [abandoned]
 pd.N_reg1 = 1e3;                                % Regularisation parameter for N, (N >> Nreg, input to drainage system; N << -Nreg, input to blister))
-pd.alpha_dh = 1.1574e-6;                        % alpha for the change in hb, used in the relaxation term [1/(m s)] 1.1574e-5 ~ 1e0
+pd.alpha_dh = 1.1574e-5;                        % alpha for the change in hb, used in the relaxation term [1/(m s)] 1.1574e-5 ~ 1e0
 pd.alpha_ds = 1.5595e-5;                        % alpha for the change in hb, used in the relaxation term [1/(m^2 s)]
 % pd.alpha_dh = pd.k_s*ps.h^(pd.alpha_s-1)*ps.phi^pd.beta_s/ps.hb/ps.x^(pd.beta_s+1);
 % pd.alpha_ds = 1e2*pd.k_c*ps.S^(pd.alpha_c-1)*ps.phi^(pd.beta_c)/ps.hb/ps.x^(pd.beta_c+2);
@@ -70,7 +70,7 @@ ps = struct;
 [ps,pp] = nevis_nondimension(pd,ps,oo);   
 
 %% grid and geometry
-L = 5e4;                                     % length of the domain [m]
+L = 1e5;                                     % length of the domain [m]
 W = 0.2*L;                                   % width of the domain [m]
 x = linspace(0,(L/ps.x),101); 
 y = linspace(0,(W/ps.x),20);        
@@ -96,7 +96,7 @@ oo.adjust_boundaries = 1;                         % enable option of changing co
 
 %% initialize variables
 [aa,vv] = nevis_initialize(b,s,gg,pp,oo);         % default initialisation
-pd.k_f = 0.99;                                    % percent overburden (k-factor) 
+pd.k_f = 0.9;                                     % percent overburden (k-factor) 
 vv.phi = aa.phi_a+pd.k_f*(aa.phi_0-aa.phi_a);     % initial pressure  k_f*phi_0
 N = aa.phi_0-vv.phi;                              % N for initial cavity sheet size 
 vv.hs = ((((pd.u_b*pd.h_r/pd.l_r)./((pd.u_b/pd.l_r)+(pd.K_c.*((ps.phi*N).^3)))))./ps.h); % initial cavity sheet size as f(N)
@@ -115,7 +115,7 @@ oo.random_moulins = 0;
 pp.x_l = [0.5*L/ps.x];                                          % x-coord of lakes
 pp.y_l = [0.5*W/ps.x];                                          % y-coord of lakes
 pp.V_l = [1e7/(ps.Q0*ps.t)];                                    % volume of lakes         
-pp.t_drainage = [3.0*365*pd.td/ps.t];                           % time of lake drainages (assumed to be the middle time of the Gaussian)
+pp.t_drainage = [3.5*365*pd.td/ps.t];                           % time of lake drainages (assumed to be the middle time of the Gaussian)
 pp.t_duration = [0.25*pd.td/ps.t];                              % duration of lake drainages, 6hr
 [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo);          % calculate lake catchments 
 
@@ -138,7 +138,7 @@ oo.dt = 1/24*pd.td/ps.t;
 oo.save_timesteps = 1; 
 oo.save_pts_all = 1; 
 oo.pts_ni = [pp.ni_l pp.ni_m];                      % save lake pressures
-oo.t_span = [(1:1:3*365-10)*pd.td/ps.t (3*365-9:0.2:3*365+40)*pd.td/ps.t (3*365+41:1:4*365)*pd.td/ps.t];              % time span for simulation (in ps.t)
+oo.t_span = [(1:1:3*365-1)*pd.td/ps.t (3*365:0.2:3*365+40)*pd.td/ps.t (3*365+41:1:4*365)*pd.td/ps.t];              % time span for simulation (in ps.t)
 % oo.t_span = [(1:1:4*365)*pd.td/ps.t];              % time span for simulation (in ps.t)
 
 %% save initial parameters

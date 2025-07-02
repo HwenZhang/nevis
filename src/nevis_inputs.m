@@ -50,7 +50,7 @@ if oo.include_lake && isfield(pp,'ni_l') && ~isempty(pp.ni_l)
                         % .*(t>=pp.t_drainage-5*pp.t_duration).*(t<=pp.t_drainage+5*pp.t_duration);
     else
         pp.lake_input_function = @(t) (pp.V_l)./pp.t_duration...
-                        .*(t>=pp.t_drainage-0.5*pp.t_duration).*(t<=pp.t_drainage+0.5*pp.t_duration);
+                        .*(t>=pp.t_drainage-0.5*pp.t_duration).*(t<pp.t_drainage+0.5*pp.t_duration);
     end
     aa.Qb_in(pp.ni_l) = pp.lake_input_function(t)./gg.Dx(pp.ni_l)./gg.Dy(pp.ni_l);      % add input from lake at point pp.ni_l
 end

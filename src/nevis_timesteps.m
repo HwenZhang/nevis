@@ -172,7 +172,7 @@ while t<t_stop+oo.dt_min
     disp(['Max thickness of the blister is ' num2str(max(vv.hb)) '.']);
     disp(['Min thickness of the blister is ' num2str(min(vv.hb)) '.']);
     % maxIdx = pp.ni_l;
-    nonzeroIdx = find(vv.hb > 1e-5*max(vv.hb)); % find non-zero thicknesses
+    nonzeroIdx = find(vv.hb > 1e-4); % find non-zero thicknesses
     [~, localIdx] = max((gg.nx(nonzeroIdx)-gg.nx(maxIdx)).^2+(gg.ny(nonzeroIdx)-gg.ny(maxIdx)).^2);
     minidx = nonzeroIdx(localIdx);
     if isempty(minidx)

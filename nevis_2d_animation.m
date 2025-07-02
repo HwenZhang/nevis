@@ -1,6 +1,6 @@
 %% Import necessary libraries
 % casename = oo.casename;
-casename = 'n2d_0m3s_alpha1e_1_dalphad1e0_dalphads1e0_mu1e3_V1e7_test';   
+casename = 'n2d_10m3s_alpha1e_1_dalphadh0_1_dalphads1_mu1e1_V1e7';  % specify the case name
 
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -33,12 +33,12 @@ yy(gg.nout) = NaN;
 %% read in the time series
 t = (ps.t/(24*60*60))*[tt.t];               % dimensional time series (days)
 tspan = (ps.t/pd.td)*oo.t_span;
-tmin = 450*pd.td/ps.t;
-tmax = 470*pd.td/ps.t;
+tmin = 2.9*365*pd.td/ps.t;
+tmax = 3.1*365*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
-[~,t_init] = min(abs(tspan-450));             % initial time step
-[~,t_end] = min(abs(tspan-475));              % final time step
+[~,t_init] = min(abs(tspan-365*2.9));             % initial time step
+[~,t_end] = min(abs(tspan-365*3.1));              % final time step
 
 Q_b_in = pd.Q_0*[tt.Qb_in];               % dimensional influx (m^3/s)
 Q_b_dec = ps.h*ps.x^2/ps.t*[tt.Qb_dec];   % dimensional relaxation (m^3/s)
@@ -122,13 +122,13 @@ x1 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
 xlabel('t [ d ]');
 ylabel('Q [ m^3/s ]');
 h=legend('Q_{b,in}','Q_{b,relax}','Q_{out}','Q_{outb}','Q_{outQ}','Q_{outq}','Q_{in}','NumColumns',2);
-h.Location='southeast';
+h.Location='southwest';
 text(0.025,0.8,'(a) flux','Units','normalized','FontSize',14)
 
 xlim([tmin_d tmax_d])
 set(gca, 'YScale', 'log')
-ylim([1e0 1e4])
-% yticks([1e1,1e2,1e3,1e4])
+ylim([1e-2 1e4])
+% yticks([1e-2,1e1,1e2,1e3,1e4])
 grid on
 grid minor
 
@@ -289,7 +289,7 @@ cx = colorbar();
 cx.Label.String = 'h_b [ m ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-clim([0 0.5]);
+clim([0 0.1]);
 hold on
 
 zpb = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ); 
