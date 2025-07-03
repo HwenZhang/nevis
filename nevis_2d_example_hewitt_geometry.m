@@ -13,7 +13,7 @@ oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'n2d_100m3s_alpha1e_1_dalphadh0_1_dalphads1_mu1e1_V1e7_test';   
+oo.casename = 'n2d_0m3s_alpha1e_5_kappa1e_9_mu1e1_V1e7';   
            
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
@@ -38,8 +38,8 @@ if oo.relaxation_term == 0                      % 0: exponential decay: -\alpha_
     pd.kappa_b = 0;                             % relaxation coeff 
     pd.m_l = 1;
 elseif oo.relaxation_term == 1                  % 1: proportional to pressure diff and thickness: -\kappa/\mu(p_b-p_w)h_b
-    pd.alpha_b = 1.0/(10*pd.td);                % relaxation rate (s^-1)
-    pd.kappa_b = 1e-30;                         % relaxation coeff
+    pd.alpha_b = 1.0/(1e5*pd.td);               % relaxation rate (s^-1)
+    pd.kappa_b = 1e-9;                         % relaxation coeff
     pd.m_l = 1;
 elseif oo.relaxation_term == 2                  % 2: channel control, enhanced at channels: -\alpha_0 (\tanh(S/S_c))
     pd.alpha_b = 1.0/(10*pd.td);                % relaxation rate (s^-1)
@@ -64,7 +64,9 @@ pd.N_reg1 = 1e3;                                % Regularisation parameter for N
 pd.alpha_dh = 1.1574e-6;                        % alpha for the change in hb, used in the relaxation term [1/(m s)] 1.1574e-5 ~ 1e0
 pd.alpha_ds = 1.5595e-5;                        % alpha for the change in hb, used in the relaxation term [1/(m^2 s)]
 % pd.alpha_dh = pd.k_s*ps.h^(pd.alpha_s-1)*ps.phi^pd.beta_s/ps.hb/ps.x^(pd.beta_s+1);
-% pd.alpha_ds = 1e2*pd.k_c*ps.S^(pd.alpha_c-1)*ps.phi^(pd.beta_c)/ps.hb/ps.x^(pd.beta_c+2);
+% pd.alpha_ds = pd.k_c*ps.S^(pd.alpha_c-1)*ps.phi^(pd.beta_c)/ps.hb/ps.x^(pd.beta_c+2);
+pd.alpha_dh = 0;               
+pd.alpha_ds = 0; 
 % non-dimensionalise
 ps = struct;
 [ps,pp] = nevis_nondimension(pd,ps,oo);   
@@ -131,14 +133,14 @@ oo.distributed_input = 0;                       % If set to 1 turns on distribut
 % load([oo.dn, 'runoff_2009_nevis140.mat']);      % load data for year of interest (previously collated)
 % pp.runoff_function = @(t) runoff(((t*ps.t)/pd.td),runoff_2009_nevis140)./ps.m;  % RACMO input (m/sec)
 pp.meltE = @(t) (runoff_max/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t)));
-pp.input_function = @(t) 100*(1-exp(-t/(300*pd.td/ps.t)))./(ps.m*ps.x^2);     % RACMO moulin input (100 m3/sec)
+pp.input_function = @(t) 0*(1-exp(-t/(300*pd.td/ps.t)))./(ps.m*ps.x^2);     % RACMO moulin input (100 m3/sec)
 
 %% Timestep 
 oo.dt = 1/24*pd.td/ps.t; 
 oo.save_timesteps = 1; 
 oo.save_pts_all = 1; 
 oo.pts_ni = [pp.ni_l pp.ni_m];                      % save lake pressures
-oo.t_span = [(1:1:3*365-10)*pd.td/ps.t (3*365-9:0.2:3*365+40)*pd.td/ps.t (3*365+41:1:4*365)*pd.td/ps.t];              % time span for simulation (in ps.t)
+oo.t_span = [(1:1:3*365-6)*pd.td/ps.t (3*365-5:0.1:3*365+10)*pd.td/ps.t (3*365+11:1:4*365)*pd.td/ps.t];              % time span for simulation (in ps.t)
 % oo.t_span = [(1:1:4*365)*pd.td/ps.t];              % time span for simulation (in ps.t)
 
 %% save initial parameters

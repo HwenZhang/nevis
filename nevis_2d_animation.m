@@ -1,6 +1,6 @@
 %% Import necessary libraries
 % casename = oo.casename;
-casename = 'n2d_10m3s_alpha1e_1_dalphadh0_1_dalphads1_mu1e1_V1e7';  % specify the case name
+casename = 'n2d_0m3s_alpha1e_5_kappa1e_10_mu1e1_V1e7';  % specify the case name
 
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -21,6 +21,7 @@ nframe = 1;
 vva = load([path num2str(nframe,formatSpec)], 'vv');
 vva = vva.vv;
 aa = nevis_inputs(vva.t,aa,vva,pp,gg,oo);
+pp.deltap_reg = 5.0e7/ps.phi; % regularization parameter pressure difference (Pa)
 [vv2] = nevis_backbone(inf,vva,vva,aa,pp,gg,oo);     % expand solution variables
 vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo);          % calculate node discharge
 qnet = ps.qs*(vv2.qs + vv2.qe + vv2.qQ + 0*vv2.Q);
@@ -38,7 +39,8 @@ tmax = 3.1*365*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
 [~,t_init] = min(abs(tspan-365*2.9));             % initial time step
-[~,t_end] = min(abs(tspan-365*3.1));              % final time step
+[~,t_end] = min(abs(tspan-1189));              % final time step
+t_end = 1189;
 
 Q_b_in = pd.Q_0*[tt.Qb_in];               % dimensional influx (m^3/s)
 Q_b_dec = ps.h*ps.x^2/ps.t*[tt.Qb_dec];   % dimensional relaxation (m^3/s)
@@ -109,10 +111,10 @@ rightLayout.Padding = 'compact';
 ax = nexttile(leftLayout);
 plot(ax,t,Q_b_in,'b-',t,Q_b_dec,'r-',LineWidth=1.5);
 hold on;
-plot(ax,t,Q_out+Q_out_b,color=[0,0.5,0],LineStyle='-',LineWidth=1.5);
+% plot(ax,t,Q_out+Q_out_b,color=[0,0.5,0],LineStyle='-',LineWidth=1.5);
 
 plot(ax,t,Q_out_b,color=[1,0,0],LineStyle='--',LineWidth=1.5);
-plot(ax,t,Q_out_Q,color=[0,1,0],LineStyle='--',LineWidth=1.5);
+plot(ax,t,Q_out_Q,color=[0,0.5,0],LineStyle='--',LineWidth=1.5);
 plot(ax,t,Q_out_q,color=[0,0,1],LineStyle='--',LineWidth=1.5);
 
 plot(ax,t,E,color=[0,0,0],LineStyle='-.',LineWidth=1.5);
@@ -121,7 +123,7 @@ x1 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
 
 xlabel('t [ d ]');
 ylabel('Q [ m^3/s ]');
-h=legend('Q_{b,in}','Q_{b,relax}','Q_{out}','Q_{outb}','Q_{outQ}','Q_{outq}','Q_{in}','NumColumns',2);
+h=legend('Q_{b,in}','Q_{b,relax}','Q_{outb}','Q_{outQ}','Q_{outq}','Q_{in}','NumColumns',2);
 h.Location='southwest';
 text(0.025,0.8,'(a) flux','Units','normalized','FontSize',14)
 

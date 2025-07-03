@@ -162,6 +162,7 @@ for iter_new = 1:max_iter_new+1
     X = X + step*dX;
     
     vv.phi(gg.nbdy) = aa.phi; % boundary conditions
+    
     temp1 = 0;
     if ~oo.no_sheet
         temp2 = length(gg.ns); 

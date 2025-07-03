@@ -282,8 +282,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     qby = -pp.c42*permby.*Psib_y; % vector of (gg.fIJ,1)
     
     % blister to subglacial drainage system term defined on the nodes
-    Qb_h = pp.c52*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(pb-phi+aa.phi_a,0)).*(hb).^(pp.m_l).*Reg_hb(hb,pp.hb_reg2); % pp.kl_h*hs/ps.hs
-    Qb_s = pp.c51*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(pb-phi+aa.phi_a,0)).*(hb).^(pp.m_l).*Reg_hb(hb,pp.hb_reg2); % pp.kl_h*hs/ps.hs
+    Qb_h = pp.c52*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(Reg_deltaphi(pb-phi+aa.phi_a,pp.deltap_reg),0)).*(hb).^(pp.m_l).*Reg_hb(hb,pp.hb_reg2); % pp.kl_h*hs/ps.hs
+    Qb_s = pp.c51*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(Reg_deltaphi(pb-phi+aa.phi_a,pp.deltap_reg),0)).*(hb).^(pp.m_l).*Reg_hb(hb,pp.hb_reg2); % pp.kl_h*hs/ps.hs
 
     % boundary edge fluxes
     if ~isempty(gg.ebdy)
@@ -1176,4 +1176,14 @@ end
 
 function out = DReg_N_Dphi(N,N0)
     out = 0.5*(1-tanh(N/N0).^2)/N0;
+end
+
+function out = Reg_deltaphi(deltaphi,dp0)
+    out = dp0*tanh(deltaphi/dp0);
+    out = deltaphi; % if no regularisation, use linear function
+end
+
+function out = DReg_deltaphi_Dphi(deltaphi,dp0)
+    out = 1-tanh(deltaphi/dp0).^2;
+    out = 1; % if no regularisation, use linear function
 end

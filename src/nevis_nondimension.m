@@ -49,7 +49,7 @@ if ~isfield(ps,'qb'), ps.qb = ps.qs; end                  % blister flow scale (
 % if ~isfield(ps,'alpha_b'), ps.alpha_b = pd.alpha_b; end   % relaxation rate (s^-1)
     
 %% Dimensionless parameters [ many of these can be chosen to be 1 by suitable choice of scales ]
-pp.ct = 0;
+pp.ct = 1;
 pp.c0 = pd.alpha_b*pd.mu/(pd.kappa_b*ps.phi);
 pp.c1 = ps.hs/ps.h;
 pp.c2 = ps.he/ps.h;
@@ -150,6 +150,7 @@ pp.p_w_reg = pd.p_w_reg/ps.phi;
 pp.p_a_reg = pd.p_a_reg/ps.phi;
 pp.hb_reg1 = pd.hb_reg1/ps.hb;
 pp.hb_reg2 = pd.hb_reg2/ps.hb;
+pp.deltap_reg = pd.deltap_reg/ps.phi;
 
 pp.E_lapse = pd.E_lapse/ps.m*ps.z;
 pp.E_amp = pd.E_amp; 

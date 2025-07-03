@@ -2,7 +2,7 @@
 
 # original_file="nevis_regional_blister.m"
 # original_file="nevis_1d_expanding_blister_const_influx.m"
-original_file="nevis_1d_expanding_blister_const_influx_test.m"
+original_file="nevis_2d_example_hewitt_geometry.m"
 
 # Debug: Print lines that mention oo.casename
 echo "Looking for oo.casename in $original_file..."
