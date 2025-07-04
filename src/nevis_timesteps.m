@@ -313,7 +313,8 @@ while t<t_stop+oo.dt_min
         ti_boundaries = ti+oo.dti_boundaries;
         ni1 = gg.nbdy(vv2.R_bdy<0); % Dirichlet nodes with inflow
         if ~isfield(gg,'n1m'), gg.n1m = gg.n1; end % boundary nodes adjacent to margin
-        ni2 = gg.n1m(vv.phi(gg.n1m)-aa.phi_b(gg.n1m)>pp.p_a_reg); % boundary nodes with too high pressure
+        % ni2 = gg.n1m(vv.phi(gg.n1m)-aa.phi_b(gg.n1m)>pp.p_a_reg); % boundary nodes with too high pressure
+        ni2 = gg.n1m((vv.phi(gg.n1m)-vv.pb(gg.n1m)-aa.phi_a(gg.n1m)+aa.phi_0(gg.n1m))>pp.p_a_reg); % boundary nodes with too high pressure
         if ~isempty(ni1) || ~isempty(ni2)
             if ~isempty(ni1)
                 if oo.verb, disp('nevis_timesteps: Removing Dirichlet indices ...'); disp(ni1); end

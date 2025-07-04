@@ -13,7 +13,7 @@ oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'n2d_0m3s_alpha1e_5_kappa1e_9_mu1e1_V1e7';   
+oo.casename = 'n2d_0m3s_alpha1e_5_kappa1e_10_mu1e1_V1e7_test2';   
            
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
@@ -31,7 +31,7 @@ oo.input_gaussian = 1;
 oo.relaxation_term = 1;                         % 0 is alpha hb, 1 is alpha deltap hb
 oo.initial_condition = 1;                       % 1 is default condition from 0365.mat, 0 is using steady-state drainage system, wither summertime or wintertime
 oo.mean_perm = 1;
-
+oo.display_residual =0;
 % leakage term
 if oo.relaxation_term == 0                      % 0: exponential decay: -\alpha_0(1+h/hc+S/Sc) h_b         
     pd.alpha_b = 1.0/(10*pd.td);                % relaxation rate (s^-1)
@@ -39,7 +39,7 @@ if oo.relaxation_term == 0                      % 0: exponential decay: -\alpha_
     pd.m_l = 1;
 elseif oo.relaxation_term == 1                  % 1: proportional to pressure diff and thickness: -\kappa/\mu(p_b-p_w)h_b
     pd.alpha_b = 1.0/(1e5*pd.td);               % relaxation rate (s^-1)
-    pd.kappa_b = 1e-9;                         % relaxation coeff
+    pd.kappa_b = 1e-10;                         % relaxation coeff
     pd.m_l = 1;
 elseif oo.relaxation_term == 2                  % 2: channel control, enhanced at channels: -\alpha_0 (\tanh(S/S_c))
     pd.alpha_b = 1.0/(10*pd.td);                % relaxation rate (s^-1)
