@@ -108,8 +108,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     % boundary potential
     if ~isempty(gg.nbdy)
         % phi(gg.nbdy) = aa.phi;
-        phi(gg.nbdy) = vv.pb(gg.nbdy) + aa.phi_a(gg.nbdy) - aa.phi_0(gg.nbdy);          % boundary condition
         pb(gg.nbdy) = aa.phi_0(gg.nbdy)-aa.phi_a(gg.nbdy);                              % boundary pb = ice overburden
+        phi(gg.nbdy) = vv.pb(gg.nbdy) + aa.phi_a(gg.nbdy) - aa.phi_0(gg.nbdy);          % boundary condition
+        phi(gg.nbdy) = 0;                                                               % ensure phi is not less than atmospheric pressure
     end
     
     % potential gradients

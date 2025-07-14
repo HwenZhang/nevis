@@ -1,97 +1,197 @@
-%% Combined plot: two sets of cases in a 1x2 subplot layout
-% List of case groups and legends
-group1_cases = { ...
-    'n1d_0mm_kh0_ks0_mu5e0_V1e8_DX62_5', ...
-    'n1d_0mm_kh0_ks0_mu5e0_V1e8_DX125', ...
-    'n1d_0mm_kh0_ks0_mu5e0_V1e8_DX250', ...
-    'n1d_0mm_kh0_ks0_mu5e0_V1e8_DX500'};
-group1_leg = {'DX=62.5 m','DX=125 m','DX=250 m','DX=500 m'};
+%% Import data
+casename = 'n2d_100m3s_alpha1e_5_kappa1e_10_mu1e1_V1e7_highres';  % specify the case name
+load(['./results/' casename '/' casename])
+oo.fn = ['/',casename];                         % filename (same as casename)
+oo.rn = [oo.root,oo.results,oo.fn];             % path to the case results
+oo.code = '../nevis/src';                       % code directory  
+path = [oo.rn,'/'];
+addpath(oo.code);                               % add path to code
 
-group2_cases = {'n1d_Vconst_theta0_1_kh0_ks0_mu5e0_V1e7_DX62_5', ...
-    'n1d_Vconst_theta0_1_kh0_ks0_mu5e0_V1e7_DX125', ...
-    'n1d_Vconst_theta0_1_kh0_ks0_mu5e0_V1e7_DX250', ...
-    'n1d_Vconst_theta0_01_kh0_ks0_mu5e0_V1e7_DX500'};
-group2_leg = {'DX=62.5 m','DX=125 m','DX=250 m','DX=500 m'};
+t = (ps.t/(24*60*60))*[tt.t];               % dimensional time series (days)
+tspan = (ps.t/pd.td)*oo.t_span;
+tmin = 2.9*365*pd.td/ps.t;
+tmax = 3.1*365*pd.td/ps.t;
+tmin_d = tmin*ps.t/pd.td; 
+tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
+[~,t_init] = min(abs(tspan-365*2.9));             % initial time step
+[~,t_end] = min(abs(tspan-3.1*365));              % final time step
+% t_end = 1200;
 
-% Injection times for each group
-group1_inj = 200;   % days
-group2_inj = 51;    % days
+% extrpolate Q_out_Q0
+% Q_out_Q0_interp = interp1(t0, Q_out_Q0, t, 'spline', 'extrap');
+% Q_out_q0_interp = interp1(t0, Q_out_q0, t, 'spline', 'extrap');
 
-% Create figure with two subplots
-figure('Position',[100,100,1000,400]);
+Q_b_in = pd.Q_0*[tt.Qb_in];               % dimensional influx (m^3/s)
+Q_b_dec = ps.h*ps.x^2/ps.t*[tt.Qb_dec];   % dimensional relaxation (m^3/s)
 
-%% --- Group 1 subplot ---
-ax1 = subplot(1,2,1);
-hold on; grid on;
+Q_in = ps.Q*[tt.Q_in];          % dimensional influx (m^3/s)
+Q_out = ps.Q*[tt.Q_out];        % dimensional outflux (m^3/s)
+Qb_out = ps.Q0*[tt.Qb_out];     % dimensional outflux from blister sheet mass conservation (m^3/s)
 
-for i = 1:numel(group1_cases)
-    casename = group1_cases{i};
-    file = fullfile('./results', casename, casename);
-    if exist([file '.mat'],'file')
-        load(file,'ps','tt');
-    else
-        warning('Missing %s',casename);
-        continue;
-    end
-    t   = (ps.t/(24*3600))*[tt.t];
-    R_b = ps.x * [tt.Rb];
-    idx = t > group1_inj;
-    t0  = t(idx) - group1_inj;
-    R0  = R_b(idx);
-    loglog(t0,R0,'LineWidth',2,'DisplayName',group1_leg{i});
+Q_out_b = ps.Q0*[tt.Q_outb];    % dimensional blister outflux (m^3/s)
+Q_out_Q = ps.Q*[tt.Q_outQ];     % dimensional channel outflux (m^3/s)
+Q_out_q = ps.Q*[tt.Q_outq];     % dimensional sheet outflux (m^3/s)
+
+m = (ps.m*ps.x^2)*[tt.m];      % dimensional melting rate (m^3/s)
+E = (ps.m*ps.x^2)*[tt.E];      % dimensional source terms  (m^3/s)
+h_b = ps.hb*[tt.pts_hb];       %
+p_b = ps.phi*[tt.pts_pb];      %
+V_b = ps.x^2*ps.hb*[tt.Vb];
+V_c = ps.x*ps.S*[tt.S];
+V_s = ps.x^2*ps.h*[tt.hs];
+
+% phi = (ps.phi)*[tt.phi];     % dimensional hydrulic potential (MPa)
+N = (ps.phi)*[tt.N];           % dimensional effective stress (MPa)
+hs = ps.x^2*ps.h*[tt.hs];      % integrated hs (m^3)
+hs_b = ps.h*[tt.hs_b];         % integrated hs (m^3)
+he = ps.x^2*ps.h*[tt.he];      % integrated he (m^3)
+p_w = ps.phi*[tt.pwb];     % dimensional hydraulic potential at the lake (MPa)
+
+Sx_b = ps.S*[tt.Sx_b];
+Sy_b = ps.S*[tt.Sy_b];
+Ss_b = ps.S*[tt.Ss_b];
+Sr_b = ps.S*[tt.Sr_b];
+S_ave = (0.25*(Sx_b.^2 + Sy_b.^2 + Ss_b.^2 + Sr_b.^2)).^0.5;
+
+
+A = ps.x^2*sum(gg.Dx.*gg.Dy);
+
+if isfield(tt,'pts_phi') && ~isempty([tt.pts_phi])    
+    pts_phi = (ps.phi/10^6)*[tt.pts_phi];
+    pts_hs = ps.hs*[tt.pts_hs];
+    pts_N = (ps.phi/10^6)*(aa.phi_0(oo.pts_ni)*[tt.t].^0 - [tt.pts_phi]);
+    pts_pw = (ps.phi/10^6)*([tt.pts_phi]-aa.phi_a(oo.pts_ni)*[tt.t].^0);
+    pts_prat = ([tt.pts_phi]-aa.phi_a(oo.pts_ni)*[tt.t].^0)./...
+               (aa.phi_0(oo.pts_ni)*[tt.t].^0-aa.phi_a(oo.pts_ni)*[tt.t].^0);
 end
 
-% analytical solution
-load(['./results/' 'n1d_0mm_kh0_ks0_mu5e0_V1e8_DX500' '/' 'n1d_0mm_kh0_ks0_mu5e0_V1e8_DX500'])
-Q0 = (ps.Q0*ps.t).*pp.V_l./(pp.t_duration*ps.t)/1e5;
-% Rb_a = (8.42*pd.B*1000*Q0^3/pd.mu)^(1/10)*((t0)*pd.td).^(4/10);
-% plot(t0, Rb_a, 'k--', 'LineWidth', 2, 'DisplayName', '$(8.42  B H Q^3 / \mu)^{1/10} t^{2/5}$');
-
-Rb_b = 0.5*(8.42*pd.B*1000*Q0^3/pd.mu)^(1/10)*((t0)*pd.td).^(4/9);
-plot(t0, Rb_b, 'k--', 'LineWidth', 2, 'DisplayName', '$(8.42  B H Q^3 / \mu)^{1/10} t^{2/5}$');
-Rb_c = 1.5*(8.42*pd.B*1000*Q0^3/pd.mu)^(1/10)*((t0)*pd.td).^(4/11);
-plot(t0, Rb_c, 'k--', 'LineWidth', 2, 'DisplayName', '$(8.42  B H Q^3 / \mu)^{1/10} t^{2/5}$');
-
-set(ax1, 'XScale','log','YScale','log', ...
-         'FontSize',14, 'FontName','Times New Roman', ...
-         'LineWidth',1.5, 'TickLength',[0.02 0.025]);
-xlabel(ax1,'Time since injection (days)','Interpreter','latex');
-ylabel(ax1,'Blister radius (m)','Interpreter','latex');
-title(ax1,['$Q_{in}=$ ' num2str(Q0,'%.2e') ' $m^2/s$, with varying $\Delta x$'],'Interpreter','latex','FontSize',16);
-% % legend('show','Location','southoutside','Orientation','horizontal','NumColumns',2);
-l1 = legend(ax1,'show','Location','northwest','NumColumns',1,'Box','on','FontSize',12);
-l1.Interpreter = 'latex';
+%% 创建主 figure
+f = figure('Position', [100, 100, 700, 600]);   % wider to accommodate two columns
+% 改成 3 行 2 列 布局
+mainLayout = tiledlayout(f, 3, 2);
+mainLayout.TileSpacing = 'compact';
+mainLayout.Padding = 'compact';
 
 
-%% --- Group 2 subplot ---
-ax2 = subplot(1,2,2);
-hold on; grid on;
-for i = 1:numel(group2_cases)
-    casename = group2_cases{i};
-    file = fullfile('./results', casename, casename);
-    if exist([file '.mat'],'file')
-        load(file,'ps','pd','tt');
-    else
-        warning('Missing %s',casename);
-        continue;
-    end
-    t   = (ps.t/(24*3600))*[tt.t];
-    R_b = ps.x * [tt.Rb];
-    idx = t >= group2_inj;
-    t0  = t(idx) - group2_inj;
-    R0  = R_b(idx);
-    loglog(t0,R0,'LineWidth',2,'DisplayName',group2_leg{i});
+
+%% panel (a) — tile 1
+ax = nexttile(mainLayout, 1);
+plot(ax, t, Q_b_in, 'b-', t, Q_b_dec, 'r-', 'LineWidth', 1.5); hold on;
+plot(ax, t, Q_out_b, '--r', 'LineWidth', 1.5);
+plot(ax, t, Q_out_Q, '--', 'Color', [0,0.5,0], 'LineWidth', 1.5);
+plot(ax, t, Q_out_q, '--', 'Color', [0,0,1], 'LineWidth', 1.5);
+plot(ax, t, E, '-.', 'LineWidth', 1.5);
+tframe = 0;
+xline(ax, tframe * ps.t/pd.td, '--k', 'LineWidth', 1.5);
+xlim(ax, [tmin_d tmax_d]);
+set(ax, 'YScale', 'log');
+ylim(ax, [1e-2 1e4]);
+xlabel(ax, 't [ d ]');
+ylabel(ax, 'Q [ m^3/s ]');
+text(ax, 0, 1.08, '(a) flux', 'Units', 'normalized', 'FontSize', 14, 'Clipping', 'off');
+
+% legend below
+h = legend(ax, 'Q_{b,in}', 'Q_{b,relax}', 'Q_{outb}', '\DeltaQ_{outQ}', '\DeltaQ_{outq}', 'Q_{in}');
+h.Orientation = 'horizontal';
+h.Location = 'southoutside';
+h.Box = 'off';
+
+grid(ax, 'on');
+grid(ax, 'minor');
+
+%% panel (b) — tile 2
+ax = nexttile(mainLayout, 2);
+if exist('pts_N','var')
+    plot(ax, t, pts_N(1,:), '-', 'LineWidth', 1.5); hold on;
 end
-% Analytical curve for group2
-xf = (0.75)^(2/3) * (pd.rho_w*pd.g*0.1/pd.mu)^(1/3) * (1e7/1e5)^(2/3) * ((t - group2_inj)*pd.td).^(1/3);
-loglog(t - group2_inj,xf,'k--','LineWidth',2,'DisplayName','$(3/4)^{2/3}(\rho_w g \theta / \mu)^{1/3} V^{2/3} t^{1/3}$');
+plot(ax, t, N/1e6, '-', 'LineWidth', 1.5);
+xline(ax, tframe * ps.t/pd.td, '--k', 'LineWidth', 1.5);
 
-set(ax2, 'XScale','log','YScale','log', ...
-         'FontSize',14, 'FontName','Times New Roman', ...
-         'LineWidth',1.5, 'TickLength',[0.02 0.025]);
-xlabel(ax2,'Time since injection (days)','Interpreter','latex');
-ylabel(ax2,'Blister front (m)','Interpreter','latex');
-title(ax2,'$V=100~m^2$, $\theta=0.1$, with varying $\Delta x$','Interpreter','latex','FontSize',16);
-legend(ax2,'show','Location','northwest','Interpreter','latex','NumColumns',1,'Box','on','FontSize',12);
+xlabel(ax, 't [ d ]');
+ylabel(ax, 'N [ MPa ]');
+text(ax, 0, 1.08, '(b) effective pressure', 'Units', 'normalized', 'FontSize', 14, 'Clipping', 'off');
 
-axis tight;
+h = legend(ax, 'N at the blister', 'averaged N');
+h.Orientation = 'horizontal';
+h.Location = 'southoutside';
+h.Box = 'off';
+
+xlim(ax, [tmin_d tmax_d]);
+grid(ax, 'on');
+grid(ax, 'minor');
+
+% %% panel (d) — tile 3
+% ax = nexttile(mainLayout, 3);
+% yyaxis(ax, 'left');
+% plot(ax, t, hs_b, 'b-', 'LineWidth', 1.5);
+% ylabel(ax, 'h at blister [ m ]');
+
+% yyaxis(ax, 'right');
+% plot(ax, t, 0.25*(Sx_b+Sy_b+Ss_b+Sr_b), 'r-', 'LineWidth', 1.5);
+% ylabel(ax, 'S at blister [ m^2 ]');
+
+% xline(ax, tframe * ps.t/pd.td, '--k', 'LineWidth', 1.5);
+% xlim(ax, [tmin_d tmax_d]);
+% xlabel(ax, 't [ d ]');
+% text(ax, 0.025, 0.8, '(d) h and S at the lake', 'Units', 'normalized', 'FontSize', 14);
+
+% h = legend(ax, 'h_{cav}', 'S');
+% h.Orientation = 'horizontal';
+% h.Location = 'southoutside';
+% h.Box = 'off';
+
+% grid(ax, 'on');
+% grid(ax, 'minor');
+
+%% panel (e) — tile 4
+ax = nexttile(mainLayout, 3);
+yyaxis(ax, 'left');
+plot(ax, t, h_b(1,:), 'b-', 'LineWidth', 1.5);
+ylabel(ax, 'h [ m ]');
+
+yyaxis(ax, 'right');
+plot(ax, t, p_b(1,:)/1e6, 'r-', 'LineWidth', 1.5);
+hold on;
+plot(ax, t, p_w/1e6, '-.', 'LineWidth', 1.5);
+ylabel(ax, 'p [ MPa ]');
+ylim([4 10]);
+
+xline(ax, tframe * ps.t/pd.td, '--k', 'LineWidth', 1.5);
+xlim(ax, [tmin_d tmax_d]);
+xlabel(ax, 't [ d ]');
+text(ax, 0, 1.08, '(e) h_b and p_b at the lake', 'Units', 'normalized', 'FontSize', 14, 'Clipping', 'off');
+
+h = legend(ax, 'h_b', 'p_b', 'p_w');
+h.Orientation = 'horizontal';
+h.Location = 'southoutside';
+h.Box = 'off';
+
+grid(ax, 'on');
+grid(ax, 'minor');
+
+%% panel (f) — tile 5
+ax = nexttile(mainLayout, 4);
+% yyaxis(ax, 'left');
+plot(ax, t, V_b, 'r-', 'LineWidth', 1.5);
+hold on;
+plot(ax, t, V_c, 'b-', 'LineWidth', 1.5);
+plot(ax, t, V_s, '-', 'Color', [0, 0.5, 0], 'LineWidth', 1.5);
+
+xline(ax, tframe * ps.t/pd.td, '--k', 'LineWidth', 1.5);
+xlim(ax, [tmin_d tmax_d]);
+ylim(ax, [1e5 1e8]);
+xlabel(ax, 't [ d ]');
+ylabel(ax, 'V [ m ]');
+text(ax, 0, 1.08, '(f) volume', 'Units', 'normalized', 'FontSize', 14, 'Clipping', 'off');
+
+h = legend(ax, 'V_b', 'V_c', 'V_s');
+h.Orientation = 'horizontal';
+h.Location = 'southoutside';
+h.Box = 'off';
+
+set(ax, 'YScale', 'log');
+grid(ax, 'on');
+grid(ax, 'minor');
+
+%%
+ax = nexttile(mainLayout, 5, [1 2]);  % spans both columns on bottom row

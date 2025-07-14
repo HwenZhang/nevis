@@ -110,6 +110,7 @@ if ~isfield(oo,'initial_condition'), oo.initial_condition = 0; end  % 0 is using
 if ~isfield(oo,'include_ice'), oo.include_ice = 0; end              % couple to ice flow
 if ~isfield(oo,'include_blister'), oo.include_blister = 1; end      % couple to blister
 if ~isfield(oo,'include_pressure'), oo.include_pressure = 1; end    % couple to pressure 
+if ~isfield(oo,'verb'), oo.verb = 1; end                            % display if adding or removing Dirichlet boundary points
 % if ~isfield(oo,'method'), oo.method = 'lrtb_vel'; end % [ obsolete ]
 % if ~isfield(oo,'include_moulins'), oo.include_moulins = 1; end  % [ obsolete ]
 % if ~isfield(oo,'include_diag'), oo.include_diag = 1; end  % [ obsolete ]

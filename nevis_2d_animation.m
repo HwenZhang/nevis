@@ -1,6 +1,6 @@
 %% Import necessary libraries
 % casename = oo.casename;
-casename = 'n2d_0m3s_alpha1e_5_kappa1e_10_mu1e1_V1e7_test2';  % specify the case name
+casename = 'n2d_100m3s_alpha1e_5_kappa1e_10_mu1e1_V1e7_highres';  % specify the case name
 
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -32,15 +32,28 @@ xx(gg.nout) = NaN;
 yy(gg.nout) = NaN;
 
 %% read in the time series
+
+% steady state outflux
+casename0 = 'n2d_100m3s_alpha1e_5_kappa1e_10_mu1e1_V0e7_test';
+tt0 = load(['./results/' casename0 '/' casename0],'tt');
+tt0 = tt0.tt; % load the initial time step data
+Q_out_Q0 = 1*ps.Q*[tt0.Q_outQ];     % dimensional channel outflux (m^3/s)
+Q_out_q0 = 1*ps.Q*[tt0.Q_outq];     % dimensional sheet outflux (m^3/s)
+t0 = (ps.t/(24*60*60))*[tt0.t];
+
 t = (ps.t/(24*60*60))*[tt.t];               % dimensional time series (days)
 tspan = (ps.t/pd.td)*oo.t_span;
-tmin = 2.97*365*pd.td/ps.t;
-tmax = 4.0*365*pd.td/ps.t;
+tmin = 2.9*365*pd.td/ps.t;
+tmax = 3.1*365*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
-[~,t_init] = min(abs(tspan-365*2.97));             % initial time step
-[~,t_end] = min(abs(tspan-4.0*365));              % final time step
+[~,t_init] = min(abs(tspan-365*2.99));             % initial time step
+[~,t_end] = min(abs(tspan-3.1*365));              % final time step
 % t_end = 1200;
+
+% extrpolate Q_out_Q0
+Q_out_Q0_interp = interp1(t0, Q_out_Q0, t, 'spline', 'extrap');
+Q_out_q0_interp = interp1(t0, Q_out_q0, t, 'spline', 'extrap');
 
 Q_b_in = pd.Q_0*[tt.Qb_in];               % dimensional influx (m^3/s)
 Q_b_dec = ps.h*ps.x^2/ps.t*[tt.Qb_dec];   % dimensional relaxation (m^3/s)
@@ -114,8 +127,8 @@ hold on;
 % plot(ax,t,Q_out+Q_out_b,color=[0,0.5,0],LineStyle='-',LineWidth=1.5);
 
 plot(ax,t,Q_out_b,color=[1,0,0],LineStyle='--',LineWidth=1.5);
-plot(ax,t,Q_out_Q,color=[0,0.5,0],LineStyle='--',LineWidth=1.5);
-plot(ax,t,Q_out_q,color=[0,0,1],LineStyle='--',LineWidth=1.5);
+plot(ax,t,Q_out_Q-Q_out_Q0_interp,color=[0,0.5,0],LineStyle='--',LineWidth=1.5);
+plot(ax,t,Q_out_q-Q_out_q0_interp,color=[0,0,1],LineStyle='--',LineWidth=1.5);
 
 plot(ax,t,E,color=[0,0,0],LineStyle='-.',LineWidth=1.5);
 
@@ -123,7 +136,7 @@ x1 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
 
 xlabel('t [ d ]');
 ylabel('Q [ m^3/s ]');
-h=legend('Q_{b,in}','Q_{b,relax}','Q_{outb}','Q_{outQ}','Q_{outq}','Q_{in}','NumColumns',2);
+h=legend('Q_{b,in}','Q_{b,relax}','Q_{outb}','\Delta Q_{outQ}','\Delta Q_{outq}','Q_{in}','NumColumns',2);
 h.Location='southwest';
 text(0.025,0.8,'(a) flux','Units','normalized','FontSize',14)
 
@@ -383,7 +396,7 @@ axis tight
 %% make video
 v = VideoWriter(['./results/videos/' casename],'MPEG-4');
 % v = VideoWriter(['./results/' oo.casename],'MPEG-4');
-v.FrameRate = 1;
+v.FrameRate = 3;
 open(v)
 for i_t = t_init:t_end
     disp(['Frame ',num2str(i_t-t_init),' / ',num2str(t_end-t_init),' ...']);

@@ -13,7 +13,7 @@ oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'n2d_0m3s_alpha1e_5_kappa1e_10_mu1e1_V1e7_test2';   
+oo.casename = 'n2d_100m3s_alpha1e_5_kappa1e_10_mu1e1_V0e7_test';   
            
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
@@ -73,9 +73,9 @@ ps = struct;
 
 %% grid and geometry
 L = 5e4;                                     % length of the domain [m]
-W = 0.2*L;                                   % width of the domain [m]
+W = 0.4*L;                                   % width of the domain [m]
 x = linspace(0,(L/ps.x),101); 
-y = linspace(0,(W/ps.x),20);        
+y = linspace(0,(W/ps.x),40);        
 oo.yperiodic = 1;                        % oo.yperiodic = 1 necessary for a 1-d grid
 oo.xperiodic = 0;
 gg = nevis_grid(x,y,oo); 
@@ -116,7 +116,7 @@ oo.random_moulins = 0;
 %% supraglacial lakes
 pp.x_l = [0.5*L/ps.x];                                          % x-coord of lakes
 pp.y_l = [0.5*W/ps.x];                                          % y-coord of lakes
-pp.V_l = [1e7/(ps.Q0*ps.t)];                                    % volume of lakes         
+pp.V_l = [0e7/(ps.Q0*ps.t)];                                    % volume of lakes         
 pp.t_drainage = [3.0*365*pd.td/ps.t];                           % time of lake drainages (assumed to be the middle time of the Gaussian)
 pp.t_duration = [0.25*pd.td/ps.t];                              % duration of lake drainages, 6hr
 [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo);          % calculate lake catchments 
@@ -133,7 +133,7 @@ oo.distributed_input = 0;                       % If set to 1 turns on distribut
 % load([oo.dn, 'runoff_2009_nevis140.mat']);      % load data for year of interest (previously collated)
 % pp.runoff_function = @(t) runoff(((t*ps.t)/pd.td),runoff_2009_nevis140)./ps.m;  % RACMO input (m/sec)
 pp.meltE = @(t) (runoff_max/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t)));
-pp.input_function = @(t) 0*(1-exp(-t/(300*pd.td/ps.t)))./(ps.m*ps.x^2);     % RACMO moulin input (100 m3/sec)
+pp.input_function = @(t) 100*(1-exp(-t/(300*pd.td/ps.t)))./(ps.m*ps.x^2);     % RACMO moulin input (100 m3/sec)
 
 %% Timestep 
 oo.dt = 1/24*pd.td/ps.t; 
