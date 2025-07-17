@@ -13,7 +13,7 @@ oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name     
-oo.casename = 'n2d_100m3s_alpha1e_5_kappa1e_10_mu1e1_V0e7_test';   
+oo.casename = 'n2d_0m3s_alpha1e_5_kappa1e_10_mu1e1_V1e7_test';   
            
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
@@ -58,8 +58,8 @@ pd.Ye = 8.8e9;                                  % Young's modulus (Pa)
 pd.B = pd.Ye*(1e3)^3/(12*(1-0.33^2));           % bending stiffness (Pa m^3)
 pd.E_lapse = 30/1000/pd.td/10^3;
 
-pd.hb_reg1 = 0;                                 % Regularisation parameter for hb, leakage only occurs when hb >> hb_reg1
-pd.hb_reg2 = 1e-6;                              % Regularisation parameter for hb, leakage only occurs when hb >> hb_reg2 [abandoned]
+pd.hb_reg1 = 0;                                 % Regularisation parameter for hb, leakage only occurs when hb >> hb_reg1 [abandoned]
+pd.hb_reg2 = 1e-3;                              % Regularisation parameter for hb, leakage only occurs when hb >> hb_reg2 
 pd.N_reg1 = 1e3;                                % Regularisation parameter for N, (N >> Nreg, input to drainage system; N << -Nreg, input to blister))
 pd.alpha_dh = 1.1574e-6;                        % alpha for the change in hb, used in the relaxation term [1/(m s)] 1.1574e-5 ~ 1e0
 pd.alpha_ds = 1.5595e-5;                        % alpha for the change in hb, used in the relaxation term [1/(m^2 s)]
@@ -116,7 +116,7 @@ oo.random_moulins = 0;
 %% supraglacial lakes
 pp.x_l = [0.5*L/ps.x];                                          % x-coord of lakes
 pp.y_l = [0.5*W/ps.x];                                          % y-coord of lakes
-pp.V_l = [0e7/(ps.Q0*ps.t)];                                    % volume of lakes         
+pp.V_l = [1e7/(ps.Q0*ps.t)];                                    % volume of lakes         
 pp.t_drainage = [3.0*365*pd.td/ps.t];                           % time of lake drainages (assumed to be the middle time of the Gaussian)
 pp.t_duration = [0.25*pd.td/ps.t];                              % duration of lake drainages, 6hr
 [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo);          % calculate lake catchments 
@@ -133,7 +133,7 @@ oo.distributed_input = 0;                       % If set to 1 turns on distribut
 % load([oo.dn, 'runoff_2009_nevis140.mat']);      % load data for year of interest (previously collated)
 % pp.runoff_function = @(t) runoff(((t*ps.t)/pd.td),runoff_2009_nevis140)./ps.m;  % RACMO input (m/sec)
 pp.meltE = @(t) (runoff_max/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t)));
-pp.input_function = @(t) 100*(1-exp(-t/(300*pd.td/ps.t)))./(ps.m*ps.x^2);     % RACMO moulin input (100 m3/sec)
+pp.input_function = @(t) 0*(1-exp(-t/(300*pd.td/ps.t)))./(ps.m*ps.x^2);     % RACMO moulin input (100 m3/sec)
 
 %% Timestep 
 oo.dt = 1/24*pd.td/ps.t; 

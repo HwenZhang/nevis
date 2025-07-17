@@ -109,6 +109,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     if ~isempty(gg.nbdy)
         % phi(gg.nbdy) = aa.phi;
         pb(gg.nbdy) = aa.phi_0(gg.nbdy)-aa.phi_a(gg.nbdy);                              % boundary pb = ice overburden
+        % pb(gg.nbdy) = 0;
         phi(gg.nbdy) = vv.pb(gg.nbdy) + aa.phi_a(gg.nbdy) - aa.phi_0(gg.nbdy);          % boundary condition
         phi(gg.nbdy) = 0;                                                               % ensure phi is not less than atmospheric pressure
     end
@@ -284,8 +285,10 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     qby = -pp.c42*permby.*Psib_y; % vector of (gg.fIJ,1)
     
     % blister to subglacial drainage system term defined on the nodes
-    Qb_h = pp.c52*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(Reg_deltaphi(pb-phi+aa.phi_a,pp.deltap_reg),0)).*(hb).^(pp.m_l).*Reg_hb(hb,pp.hb_reg2).*Reg_H(aa.H); % pp.kl_h*hs/ps.hs
-    Qb_s = pp.c51*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(Reg_deltaphi(pb-phi+aa.phi_a,pp.deltap_reg),0)).*(hb).^(pp.m_l).*Reg_hb(hb,pp.hb_reg2).*Reg_H(aa.H); % pp.kl_h*hs/ps.hs
+    Qb_h = pp.c52*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(Reg_deltaphi(pb-phi+aa.phi_a,pp.deltap_reg),0))...
+           .*(hb).^(pp.m_l).*Reg_hb(hb,pp.hb_reg2).*Reg_H(aa.H); % pp.kl_h*hs/ps.hs
+    Qb_s = pp.c51*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(Reg_deltaphi(pb-phi+aa.phi_a,pp.deltap_reg),0))...
+           .*(hb).^(pp.m_l).*Reg_hb(hb,pp.hb_reg2).*Reg_H(aa.H); % pp.kl_h*hs/ps.hs
 
     % boundary edge fluxes
     if ~isempty(gg.ebdy)
@@ -532,6 +535,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         R4 = - pp.c12*(Sy-Sy_old).*dt^(-1) + Sy_t;
         R5 = - pp.c12*(Ss-Ss_old).*dt^(-1) + Ss_t;
         R6 = - pp.c12*(Sr-Sr_old).*dt^(-1) + Sr_t;
+        % R7 = - pb + pp.c46*hb + phi + pp.c49*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(H.^3.*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*hb); % blister pressure
         R7 = - pb + pp.c46*hb + (aa.phi_0-aa.phi_a) + pp.c49*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(H.^3.*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*hb); % blister pressure
         R8 = - (hb-hb_old).*dt^(-1) + hb_t;        % mass conservation of the blister
         
@@ -1168,7 +1172,7 @@ function out = Reg_hb(hb,hb0)
 end
 
 function out = DReg_hb_Dhb(hb,hb0)
-    % out = 1-tanh(hb/hb0).^2;
+    % out = 1/hb0*(1-tanh(hb/hb0).^2);
     out = 0;
 end
 

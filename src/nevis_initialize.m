@@ -59,8 +59,8 @@ function [aa,vv] = nevis_initialize(b,s,gg,pp,oo)
     Ss = 0*ones(gg.cIJ,1);       % cross sectional area of diagonal s channels
     Sr = 0*ones(gg.cIJ,1);       % cross sectional area of diagonal r channels
     hb = 0*ones(gg.nIJ,1);       % blister thickness
-    % pb = 0*ones(gg.nIJ,1);     % blister pressure
-    pb = (phi_0-phi_a);          % blister pressure
+    % pb = phi;                    % blister pressure
+    pb = (phi_0-phi_a);        % blister pressure
     
     %% boundary conditions
     aa.phi = max(phi_a(gg.nbdy),pp.phi_s); % boundary values
