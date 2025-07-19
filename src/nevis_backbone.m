@@ -285,10 +285,10 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     qby = -pp.c42*permby.*Psib_y; % vector of (gg.fIJ,1)
     
     % blister to subglacial drainage system term defined on the nodes
-    Qb_h = pp.c52*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(Reg_deltaphi(pb-phi+aa.phi_a,pp.deltap_reg),0))...
-           .*(hb).^(pp.m_l).*Reg_hb(hb,pp.hb_reg2).*Reg_H(aa.H); % pp.kl_h*hs/ps.hs
-    Qb_s = pp.c51*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(Reg_deltaphi(pb-phi+aa.phi_a,pp.deltap_reg),0))...
-           .*(hb).^(pp.m_l).*Reg_hb(hb,pp.hb_reg2).*Reg_H(aa.H); % pp.kl_h*hs/ps.hs
+    Qb_h = pp.c52*(1+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(pb-phi+aa.phi_a,0))...
+           .*hb.^(pp.m_l).*Reg_hb(hb,pp.hb_reg2).*Reg_H(aa.H); % influx to subglacial drainage system
+    Qb_s = pp.c51*(1+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(pb-phi+aa.phi_a,0))...
+           .*hb.^(pp.m_l).*Reg_hb(hb,pp.hb_reg2).*Reg_H(aa.H); % outflux from blister
 
     % boundary edge fluxes
     if ~isempty(gg.ebdy)
@@ -641,7 +641,6 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         % c50 = pp.c50;
         c51 = pp.c51;
         c52 = pp.c52;
-        ct = pp.ct;
 
         n_Glen = pp.n_Glen;
         alpha_c = pp.alpha_c;
@@ -882,11 +881,11 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
                 - c9*nddr(nin,cin)*DQr_phi(:,nin) ...
                 + sparse(1:length(nin),1:length(nin),Ds(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin))*( + c11*nmeans(nin,cin)*(DXics_phi(:,nin)+DXis_phi(:,nin)) ) ...
                 + sparse(1:length(nin),1:length(nin),Dr(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin))*( + c11*nmeanr(nin,cin)*(DXicr_phi(:,nin)+DXir_phi(:,nin)) ) ...
-                + sparse(1:length(nin), 1:length(nin), -c52*(ct+kl_h*hs(nin)+kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)>0).*(hb(nin)).^m_l.*Reg_hb(hb(nin),hb_reg2).*Reg_H(aa.H(nin)), length(nin), length(nin));
+                + sparse(1:length(nin), 1:length(nin), -c52*(1+kl_h*hs(nin)+kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)>0).*(hb(nin)).^m_l.*Reg_hb(hb(nin),hb_reg2).*Reg_H(aa.H(nin)), length(nin), length(nin));
 
-        DF2_pb = sparse(1:length(nin), 1:length(nin), c52*(ct+kl_h*hs(nin)+kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)>0).*(hb(nin)).^m_l.*Reg_hb(hb(nin),hb_reg2).*Reg_H(aa.H(nin)), length(nin), length(nin));
-        temp   = sparse(1:length(nin), nin, m_l*c52*(ct+kl_h*hs(nin)+kl_s*Smean(nin)).*(c0+max(pb(nin)-phi(nin)+phi_a(nin),0)).*(hb(nin)).^max(m_l-1,0).*Reg_hb(hb(nin),hb_reg2).*Reg_H(aa.H(nin))...
-                                          + c52*(ct+kl_h*hs(nin)+kl_s*Smean(nin)).*(c0+max(pb(nin)-phi(nin)+phi_a(nin),0)).*(hb(nin)).^m_l.*DReg_hb_Dhb(hb(nin),hb_reg2).*Reg_H(aa.H(nin)), length(nin), nIJ);
+        DF2_pb = sparse(1:length(nin), 1:length(nin), c52*(1+kl_h*hs(nin)+kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)>0).*(hb(nin)).^m_l.*Reg_hb(hb(nin),hb_reg2).*Reg_H(aa.H(nin)), length(nin), length(nin));
+        temp   = sparse(1:length(nin), nin, m_l*c52*(1+kl_h*hs(nin)+kl_s*Smean(nin)).*(c0+max(pb(nin)-phi(nin)+phi_a(nin),0)).*(hb(nin)).^max(m_l-1,0).*Reg_hb(hb(nin),hb_reg2).*Reg_H(aa.H(nin))...
+                                          + c52*(1+kl_h*hs(nin)+kl_s*Smean(nin)).*(c0+max(pb(nin)-phi(nin)+phi_a(nin),0)).*(hb(nin)).^m_l.*DReg_hb_Dhb(hb(nin),hb_reg2).*Reg_H(aa.H(nin)), length(nin), nIJ);
         DF2_hb = temp(:,ns);
 
         DF2_Sx = sparse(1:length(nin),1:length(nin), Dy(nin).^(-1),length(nin),length(nin))*( -c8*dt^(-1).*nmeanx(nin,ein) ...
@@ -960,12 +959,12 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
 
         % DF8 (nin eqns)
         DF8_pb = - c45*(gg.nddx(nin,ein)*Dqbx_pb(:,nin) + gg.nddy(nin,fin)*Dqby_pb(:,nin))...
-                 + sparse(1:length(nin), 1:length(nin), - c51*(ct+kl_h*hs(nin)+kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)>0).*(hb(nin)).^m_l.*Reg_hb(hb(nin),hb_reg2).*Reg_H(aa.H(nin)), length(nin), length(nin));
-        DF8_phi = sparse(1:length(nin), 1:length(nin), + c51*(ct+kl_h*hs(nin)+kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)>0).*(hb(nin)).^m_l.*Reg_hb(hb(nin),hb_reg2).*Reg_H(aa.H(nin))...
+                 + sparse(1:length(nin), 1:length(nin), - c51*(1+kl_h*hs(nin)+kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)>0).*(hb(nin)).^m_l.*Reg_hb(hb(nin),hb_reg2).*Reg_H(aa.H(nin)), length(nin), length(nin));
+        DF8_phi = sparse(1:length(nin), 1:length(nin), + c51*(1+kl_h*hs(nin)+kl_s*Smean(nin)).*(pb(nin)-phi(nin)+phi_a(nin)>0).*(hb(nin)).^m_l.*Reg_hb(hb(nin),hb_reg2).*Reg_H(aa.H(nin))...
                                                        + c7*DReg_N_Dphi(N(nin),N_reg1).*E(nin), length(nin), length(nin));
         temp = sparse(1:length(nin), nin, - ones(length(nin),1).*dt.^(-1)...
-                                          - m_l*c51*(ct+kl_h*hs(nin)+kl_s*Smean(nin)).*(c0+max(pb(nin)-phi(nin)+phi_a(nin),0)).*(hb(nin)).^max(m_l-1,0).*Reg_hb(hb(nin),hb_reg2).*Reg_H(aa.H(nin))...
-                                          - c51*(ct+kl_h*hs(nin)+kl_s*Smean(nin)).*(c0+max(pb(nin)-phi(nin)+phi_a(nin),0)).*(hb(nin)).^m_l.*DReg_hb_Dhb(hb(nin),hb_reg2).*Reg_H(aa.H(nin)), length(nin), nIJ);
+                                          - m_l*c51*(1+kl_h*hs(nin)+kl_s*Smean(nin)).*(c0+max(pb(nin)-phi(nin)+phi_a(nin),0)).*(hb(nin)).^max(m_l-1,0).*Reg_hb(hb(nin),hb_reg2).*Reg_H(aa.H(nin))...
+                                          - c51*(1+kl_h*hs(nin)+kl_s*Smean(nin)).*(c0+max(pb(nin)-phi(nin)+phi_a(nin),0)).*(hb(nin)).^m_l.*DReg_hb_Dhb(hb(nin),hb_reg2).*Reg_H(aa.H(nin)), length(nin), nIJ);
         DF8_hb = temp(:,ns) - c45*(gg.nddx(nin,ein)*Dqbx_hb(:,ns) + gg.nddy(nin,fin)*Dqby_hb(:,ns));
         temp = sparse(1:length(nin), nin, - c51*kl_h*(c0+max(pb(nin)-phi(nin)+phi_a(nin),0)).*(hb(nin)).^m_l.*Reg_hb(hb(nin),hb_reg2).*Reg_H(aa.H(nin)), length(nin), nIJ);
         DF8_hs = temp(:,ns);
@@ -1184,18 +1183,18 @@ function out = DReg_N_Dphi(N,N0)
     out = 0.5*(1-tanh(N/N0).^2)/N0;
 end
 
-function out = Reg_deltaphi(deltaphi,dp0)
-    out = dp0*tanh(deltaphi/dp0);
-    out = deltaphi; % if no regularisation, use linear function
-end
+% function out = Reg_deltaphi(deltaphi,dp0)
+%     % out = dp0*tanh(deltaphi/dp0);
+%     out = deltaphi; % if no regularisation, use linear function
+% end
 
-function out = DReg_deltaphi_Dphi(deltaphi,dp0)
-    out = 1-tanh(deltaphi/dp0).^2;
-    out = 1; % if no regularisation, use linear function
-end
+% function out = DReg_deltaphi_Dphi(deltaphi,dp0)
+%     % out = 1-tanh(deltaphi/dp0).^2;
+%     out = 1; % if no regularisation, use linear function
+% end
 
 function out = Reg_H(H)
-    out = tanh(H/0.4);
+    % out = tanh(H/0.4);
     % out = (H>0.1);
     out = 1;
     % out = 1; % if no regularisation, use linear function

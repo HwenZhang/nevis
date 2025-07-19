@@ -168,10 +168,10 @@ while t<t_stop+oo.dt_min
     disp(['The most negative effective pressure is ' num2str(min(aa.phi_0(gg.ns)-vv.phi(gg.ns))) '.']);
 
     % blister radius (only works for a single blister)
-    [~, maxIdx] = max(vv.hb);
+    % [~, maxIdx] = max(vv.hb);
+    maxIdx = pp.ni_l(1); % the location of the lake/hydrofracture
     disp(['Max thickness of the blister is ' num2str(max(vv.hb)) '.']);
     disp(['Min thickness of the blister is ' num2str(min(vv.hb)) '.']);
-    % maxIdx = pp.ni_l;
     nonzeroIdx = find(vv.hb > 1e-4); % find non-zero thicknesses
     [~, localIdx] = max((gg.nx(nonzeroIdx)-gg.nx(maxIdx)).^2+(gg.ny(nonzeroIdx)-gg.ny(maxIdx)).^2);
     minidx = nonzeroIdx(localIdx);
