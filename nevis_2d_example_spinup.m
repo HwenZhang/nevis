@@ -13,8 +13,7 @@ oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name  
-oo.casename = 'n2d_0m3s_kappa1e_10_mu1e1_hbreg4e_3_spinup';    
-           
+oo.casename = 'n2d_10m3s_kappa1e_8_mu1e3_hbreg0_spinup';    
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
@@ -40,20 +39,20 @@ if oo.relaxation_term == 0                      % 0: exponential decay: -\alpha_
     pd.m_l = 1;
 elseif oo.relaxation_term == 1                  % 1: proportional to pressure diff and thickness: -\kappa/\mu(p_b-p_w)h_b
     pd.alpha_b = 0;                             % relaxation rate (s^-1)
-    pd.kappa_b = 1e-10;                         % relaxation coeff
+    pd.kappa_b = 1e-8;                         % relaxation coeff
     pd.c0 = 1;
     pd.m_l = 1;
 end
 
 % alter default parmaeters 
 runoff_max = 30;                                % prescribed runoff (mm/day)
-moulin_input = 0;                               % prescribed moulin input (m^3/s)
-pd.mu = 1e1;                                    % water viscosity (Pa s)
+moulin_input = 10;                               % prescribed moulin input (m^3/s)
+pd.mu = 1e3;                                    % water viscosity (Pa s)
 pd.Ye = 8.8e9;                                  % Young's modulus (Pa)
 pd.B = pd.Ye*(1e3)^3/(12*(1-0.33^2));           % bending stiffness (Pa m^3)
 pd.E_lapse = 30/1000/pd.td/10^3;
 
-pd.hb_reg1 = 4e-3;                              % Regularisation parameter for hb, representing the thickness of the prewetted layer
+pd.hb_reg1 = 0;                                 % Regularisation parameter for hb, representing the thickness of the prewetted layer
 pd.hb_reg2 = 1e-3;                              % Regularisation parameter for hb, such that leakage only occurs when hb >> hb_reg2 
 pd.N_reg1 = 1e3;                                % Regularisation parameter for N, (N >> Nreg, input to drainage system; N << -Nreg, input to blister))
 % pd.alpha_dh = pd.k_s*ps.h^(pd.alpha_s-1)*ps.phi^pd.beta_s/ps.hb/ps.x^(pd.beta_s+1); 
