@@ -13,8 +13,10 @@ oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory  
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name  
-oo.casename = 'n2d_0m3s_kappa1e_10_mu1e0_hbreg0_spinup';    
-           
+% oo.casename = 'n2d_0m3s_kappa1e_10_mu1e1_hbreg0_spinup';     
+oo.casename = 'n2d_100m3s_kappa1e_10_mu1e1_hbreg0_drainage'; % drainage system filename
+oo.initname = strrep(oo.casename, 'drainage', 'spinup'); % initial condition filename, for spinup
+
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
@@ -29,7 +31,7 @@ mkdir(oo.rn);                                  % create directory for results
 oo.evaluate_variables = 1;
 oo.input_gaussian = 1;
 oo.relaxation_term = 1;                         % 0 is alpha hb, 1 is alpha deltap hb
-oo.initial_condition = 1;                       % 1 is default condition from 0365.mat, 0 is using steady-state drainage system, wither summertime or wintertime
+oo.initial_condition = 0;                       % 1 is default condition from 0365.mat, 0 is using steady-state drainage system, wither summertime or wintertime
 oo.mean_perm = 1;
 oo.display_residual =0;
 % leakage term
@@ -48,7 +50,7 @@ end
 % alter default parmaeters 
 runoff_max = 30;                                % prescribed runoff (mm/day)
 moulin_input = 0;                               % prescribed moulin input (m^3/s)
-pd.mu = 1e0;                                    % water viscosity (Pa s)
+pd.mu = 1e1;                                    % water viscosity (Pa s)
 pd.Ye = 8.8e9;                                  % Young's modulus (Pa)
 pd.B = pd.Ye*(1e3)^3/(12*(1-0.33^2));           % bending stiffness (Pa m^3)
 pd.E_lapse = 30/1000/pd.td/10^3;
@@ -109,8 +111,8 @@ oo.random_moulins = 0;
 %% supraglacial lakes
 pp.x_l = [0.5*L/ps.x];                                          % x-coord of lakes
 pp.y_l = [0.5*W/ps.x];                                          % y-coord of lakes
-pp.V_l = [0e7/(ps.Q0*ps.t)];                                    % volume of lakes         
-pp.t_drainage = [0.5*365*pd.td/ps.t];                           % time of lake drainages (assumed to be the middle time of the Gaussian)
+pp.V_l = [1e7/(ps.Q0*ps.t)];                                    % volume of lakes         
+pp.t_drainage = [3.0*365*pd.td/ps.t];                           % time of lake drainages (assumed to be the middle time of the Gaussian)
 pp.t_duration = [0.25*pd.td/ps.t];                              % duration of lake drainages, 6hr
 [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo);          % calculate lake catchments 
 
@@ -126,14 +128,15 @@ oo.distributed_input = 0;                       % If set to 1 turns on distribut
 % load([oo.dn, 'runoff_2009_nevis140.mat']);      % load data for year of interest (previously collated)
 % pp.runoff_function = @(t) runoff(((t*ps.t)/pd.td),runoff_2009_nevis140)./ps.m;  % RACMO input (m/sec)
 pp.meltE = @(t) (runoff_max/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t)));
-pp.input_function = @(t) moulin_input*(1-exp(-t/(30*pd.td/ps.t)))./(ps.m*ps.x^2);     % RACMO moulin input (100 m3/sec)
+pp.input_function = @(t) moulin_input*(1-exp(-t/(300*pd.td/ps.t)))./(ps.m*ps.x^2);     % RACMO moulin input (100 m3/sec)
 
 %% Timestep 
 oo.dt = 1/24*pd.td/ps.t; 
 oo.save_timesteps = 1; 
 oo.save_pts_all = 1; 
 oo.pts_ni = [pp.ni_l pp.ni_m];                      % save lake pressures
-oo.t_span = (1:1:2*365)*pd.td/ps.t;                 % time span for simulation (in ps.t)
+oo.t_span = [(1:1:3*365-6)*pd.td/ps.t (3*365-5:0.1:3*365+10)*pd.td/ps.t (3*365+11:1:4*365)*pd.td/ps.t];              % time span for simulation (in ps.t)
+% oo.t_span = [(1:1:4*365)*pd.td/ps.t];              % time span for simulation (in ps.t)
 
 %% save initial parameters
 save([oo.rn, oo.fn],'pp','pd','ps','gg','aa','vv','oo');

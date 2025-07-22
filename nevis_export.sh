@@ -1,15 +1,16 @@
 #!/bin/bash
 
 # original_file="nevis_regional_blister.m"
-# original_file="nevis_1d_expanding_blister_const_influx.m"
-original_file="nevis_2d_example_spinup.m"
+# original_file="nevis_2d_example_spinup.m"
+original_file="nevis_2d_example_drainage.m"
 
 # Debug: Print lines that mention oo.casename
 echo "Looking for oo.casename in $original_file..."
 grep "oo.casename" "$original_file"
 
 # Improved sed pattern: handles arbitrary spaces/tabs
-casename=$(sed -nE "s/^[[:space:]]*oo\.casename[[:space:]]*=[[:space:]]*['\"]([^'\"]+)['\"].*/\1/p" "$original_file")
+# casename=$(sed -nE "s/^[[:space:]]*oo\.casename[[:space:]]*=[[:space:]]*['\"]([^'\"]+)['\"].*/\1/p" "$original_file")
+casename=$(sed -nE "s/^[[:space:]]*casename[[:space:]]*=[[:space:]]*['\"]([^'\"]+)['\"].*/\1/p" "$original_file")
 
 # Check and copy
 if [ -z "$casename" ]; then

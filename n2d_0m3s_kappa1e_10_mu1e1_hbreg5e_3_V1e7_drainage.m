@@ -8,7 +8,7 @@
 format compact
 
 %% read in the initial condition
-casename = 'n2d_10m3s_kappa1e_8_mu1e3_hbreg0_drainage'; % drainage system filename
+casename = 'n2d_0m3s_kappa1e_10_mu1e1_hbreg5e_3_V1e7_drainage'; % drainage system filename
 initname = strrep(casename, 'V1e7_drainage', 'spinup'); % initial condition filename, for spinup
 
 data = load(['./results/' initname '/' initname]);

@@ -112,14 +112,14 @@ elseif oo.relaxation_term == 1
     pp.c51 = pd.kappa_b*ps.hb*ps.t*ps.phi/ps.hb/pd.mu;
     pp.c52 = pd.kappa_b*ps.hb*ps.t*ps.phi/ps.h/pd.mu;
     pp.m_l = pd.m_l;
-    pp.c0 = 1;
+    pp.c0 = 0;
 else
     error("Invalid relaxation term!")
 end
 pp.kl_s = pd.alpha_ds*ps.S/(pd.alpha_b+eps);    % leakage dependence on S
 pp.kl_h = pd.alpha_dh*ps.h/(pd.alpha_b+eps);    % leakage dependence on h
-% pp.kl_s = 0;
-% pp.kl_h = 0;                              % leakage dependence on h
+pp.kl_s = 0;
+pp.kl_h = 0;                              % leakage dependence on h
 
  pp.n_Glen = pd.n_Glen;
 pp.alpha_s = pd.alpha_s;
