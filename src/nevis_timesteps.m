@@ -326,7 +326,7 @@ while t<t_stop+oo.dt_min
             vv.nbdy = union(setdiff(gg.nbdy,ni1),ni2);
             gg = nevis_label(gg,vv.nbdy,oo);               % redefine boundary labels
             aa.phi = aa.phi_b(gg.nbdy);                    % boundary conditions
-    %        nevis_plot_grid(gg,gg.nbdy);  % for maintenance
+            % nevis_plot_grid(gg,gg.nbdy);  % for maintenance
         end
     end 
     

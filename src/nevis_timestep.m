@@ -155,6 +155,13 @@ for iter_new = 1:max_iter_new+1
 
     % if condest(J) >=1e20, disp(' Aborting Newton step : J is nearly singular'); info.failed = 1; break; end
     dX = -J\F;
+
+    % ILU 预处理（ILUTP）
+    % iluOpts = struct('type','ilutp','droptol',1e-3);
+    % [M1, M2] = ilu(J, iluOpts);
+    % % GMRES
+    % [dX, ~, ~, ~] = gmres(J, -F, 50, 1e-6, 300, M1, M2);
+
     if any(isnan(dX)), disp(' Aborting Newton step : NaN returned'); info.failed = 1; break; end;
     step = oo.step_new;
     if iter_new>2 && norm_Fs(iter_new)/norm_Fs(iter_new-1)>oo.fac2_new, step = oo.step2_new; end % reduce size of step if previous iterations are slow

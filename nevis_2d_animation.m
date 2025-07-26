@@ -1,6 +1,6 @@
 %% Import necessary libraries
 % casename = oo.casename;
-casename = 'n2d_100m3s_kappa1e_10_mu1e1_hbreg0_V1e7_drainage';  % specify the case name
+casename = 'n2d_100m3s_kappa1e_10_mu1e1_hbreg5e_3_V1e7_drainage';  % specify the case name
 
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -44,11 +44,11 @@ yy(gg.nout) = NaN;
 t = (ps.t/(24*60*60))*[tt.t];               % dimensional time series (days)
 tspan = (ps.t/pd.td)*oo.t_span;
 tmin = 2.0*365*pd.td/ps.t;
-tmax = 4.0*365*pd.td/ps.t;
+tmax = 2.2*365*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
-[~,t_init] = min(abs(tspan-365*2.9));             % initial time step
-[~,t_end] = min(abs(tspan-3.1*365));              % final time step
+[~,t_init] = min(abs(tspan-365*2.05));             % initial time step
+[~,t_end] = min(abs(tspan-2.5*365));              % final time step
 % t_end = 1200;
 
 % extrpolate Q_out_Q0
@@ -137,7 +137,7 @@ x1 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
 xlabel('t [ d ]');
 ylabel('Q [ m^3/s ]');
 h=legend('Q_{b,in}','Q_{b,relax}','Q_{outb}','\Delta Q_{outQ}','\Delta Q_{outq}','Q_{in}','NumColumns',2);
-h.Location='southwest';
+h.Location='southeast';
 text(0.025,0.8,'(a) flux','Units','normalized','FontSize',14)
 
 xlim([tmin_d tmax_d])

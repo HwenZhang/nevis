@@ -104,14 +104,16 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     if isfield(vv,'H'), H = vv.H; else H = aa.H; end
     if isfield(vv,'Ub'), Ub = vv.Ub; else Ub = aa.Ub; end
     sigma = aa.sigma;
+    % prewetted layer thickness
+    hb_reg1 = aa.hb_reg1;
 
     % boundary potential
     if ~isempty(gg.nbdy)
         % phi(gg.nbdy) = aa.phi;
         pb(gg.nbdy) = aa.phi_0(gg.nbdy)-aa.phi_a(gg.nbdy);                              % boundary pb = ice overburden
         % pb(gg.nbdy) = 0;
-        phi(gg.nbdy) = vv.pb(gg.nbdy) + aa.phi_a(gg.nbdy) - aa.phi_0(gg.nbdy);          % boundary condition
-        phi(gg.nbdy) = 0;                                                               % ensure phi is not less than atmospheric pressure
+        phi(gg.nbdy) = pb(gg.nbdy) + aa.phi_a(gg.nbdy) - aa.phi_0(gg.nbdy);             % boundary condition
+        % phi(gg.nbdy) = aa.phi_b(gg.nbdy);                                                               % ensure phi is not less than atmospheric pressure
     end
     
     % potential gradients
@@ -285,10 +287,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     qby = -pp.c42*permby.*Psib_y; % vector of (gg.fIJ,1)
     
     % blister to subglacial drainage system term defined on the nodes
-    Qb_h = pp.c52*(1+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(pb-phi+aa.phi_a,0))...
-           .*hb.^(pp.m_l).*Reg_hb(hb,pp.hb_reg2).*Reg_H(aa.H); % influx to subglacial drainage system
-    Qb_s = pp.c51*(1+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(pb-phi+aa.phi_a,0))...
-           .*hb.^(pp.m_l).*Reg_hb(hb,pp.hb_reg2).*Reg_H(aa.H); % outflux from blister
+    Qb_h = pp.c52*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(Reg_deltaphi(pb-phi+aa.phi_a,pp.deltap_reg),0)).*(hb).^(pp.m_l).*Reg_hb(hb,pp.hb_reg2).*Reg_H(aa.H); % pp.kl_h*hs/ps.hs
+    Qb_s = pp.c51*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*(pp.c0+max(Reg_deltaphi(pb-phi+aa.phi_a,pp.deltap_reg),0)).*(hb).^(pp.m_l).*Reg_hb(hb,pp.hb_reg2).*Reg_H(aa.H); % pp.kl_h*hs/ps.hs
 
     % boundary edge fluxes
     if ~isempty(gg.ebdy)
@@ -1058,84 +1058,90 @@ function out = Dhm_fun(p_w,p_i,sigma_m,pp,~)
 end
 function out = hv_fun(p_w,p_i,sigma,pp,~)
 % storage as function of pressure p_w
-    sigma_log = pp.c39;
-    N0 = pp.c40;
-    N_reg1 = pp.c30;
+    % sigma_log = pp.c39;
+    % N0 = pp.c40;
+    % N_reg1 = pp.c30;
     
-    N = p_i-p_w;
-    Sigma_log = - sigma_log*log(min((N+N_reg1)./N0,1));
-    ii_neg = N<0; 
-    Sigma_log(ii_neg) = -sigma_log*log(min((N_reg1)./N0,1)) -sigma_log*N(ii_neg)/N_reg1;  %has continuous derivative
+    % N = p_i-p_w;
+    % Sigma_log = - sigma_log*log(min((N+N_reg1)./N0,1));
+    % ii_neg = N<0; 
+    % Sigma_log(ii_neg) = -sigma_log*log(min((N_reg1)./N0,1)) -sigma_log*N(ii_neg)/N_reg1;  %has continuous derivative
 
-    out = sigma.*p_w + Sigma_log;
+    % out = sigma.*p_w + Sigma_log;
+    
+    out = sigma.*p_w;
 end
 function out = Dhv_fun(p_w,p_i,sigma,pp,~)
 % derivative of storage as function of pressure p_w
-    sigma_log = pp.c39;
-    N0 = pp.c40;
-    N_reg1 = pp.c30;
+    % sigma_log = pp.c39;
+    % N0 = pp.c40;
+    % N_reg1 = pp.c30;
     
-    N = p_i-p_w;
-    DSigma_log = -sigma_log*(N+N_reg1).^(-1).*(N+N_reg1<=N0);
-    ii_neg = N<0; DSigma_log(ii_neg) = -sigma_log/N_reg1; 
+    % N = p_i-p_w;
+    % DSigma_log = -sigma_log*(N+N_reg1).^(-1).*(N+N_reg1<=N0);
+    % ii_neg = N<0; DSigma_log(ii_neg) = -sigma_log/N_reg1; 
     
-    out = sigma.*p_w.^0 + DSigma_log;
+    % out = sigma.*p_w.^0 + DSigma_log;
+
+    out = sigma.*p_w.^0;
 end
 function out = he_fun(N,p_i,pp,~)
 % elastic sheet depth as function of effective pressure N
-    gamma_e = pp.gamma_e;
-    c_e_power = pp.c24;
-    N_reg = pp.N_reg;
-    c_e_log = pp.c28;
-    c_e_reg1 = pp.c29;
-    N_reg1 = pp.c30;
-    c_e_reg2 = pp.c31;
-    N_reg2 = pp.c32;
-    c_e_reg3 = pp.c37;
-    N_reg3 = pp.c38;
+    % gamma_e = pp.gamma_e;
+    % c_e_power = pp.c24;
+    % N_reg = pp.N_reg;
+    % c_e_log = pp.c28;
+    % c_e_reg1 = pp.c29;
+    % N_reg1 = pp.c30;
+    % c_e_reg2 = pp.c31;
+    % N_reg2 = pp.c32;
+    % c_e_reg3 = pp.c37;
+    % N_reg3 = pp.c38;
     
-    he_power = c_e_power*(max(p_i-N,0).*(p_i.^2+N_reg^2).^(-1/2)).^(gamma_e);
-    he_log = -c_e_log*log(min((N.^2+N_reg^2).^(1/2).*(p_i.^2+N_reg^2).^(-1/2),1));  %[ effective pressure must be positive ]
+    % he_power = c_e_power*(max(p_i-N,0).*(p_i.^2+N_reg^2).^(-1/2)).^(gamma_e);
+    % he_log = -c_e_log*log(min((N.^2+N_reg^2).^(1/2).*(p_i.^2+N_reg^2).^(-1/2),1));  %[ effective pressure must be positive ]
 
-    he_reg = - c_e_reg1*log(min((N+N_reg1).*(p_i+N_reg).^(-1),1));
-    ii_neg = N<0; 
-    he_reg(ii_neg) = -c_e_reg1*log(min((N_reg1).*(p_i(ii_neg)+N_reg).^(-1),1)) -c_e_reg1*N(ii_neg)/N_reg1;  %has continuous derivative
+    % he_reg = - c_e_reg1*log(min((N+N_reg1).*(p_i+N_reg).^(-1),1));
+    % ii_neg = N<0; 
+    % he_reg(ii_neg) = -c_e_reg1*log(min((N_reg1).*(p_i(ii_neg)+N_reg).^(-1),1)) -c_e_reg1*N(ii_neg)/N_reg1;  %has continuous derivative
 
-    he_reg2 = -c_e_reg2*min(N,0) + 1/2*N_reg2*c_e_reg2*min(max(1-N/N_reg2,0),1).^2;
+    % he_reg2 = -c_e_reg2*min(N,0) + 1/2*N_reg2*c_e_reg2*min(max(1-N/N_reg2,0),1).^2;
 
-    he_reg3 = -c_e_reg3*log(min((N+N_reg1)./N_reg3,1));
-    ii_neg = N<0; 
-    he_reg3(ii_neg) = -c_e_reg3*log(min((N_reg1)./N_reg3,1)) -c_e_reg3*N(ii_neg)/N_reg1;  %has continuous derivative
+    % he_reg3 = -c_e_reg3*log(min((N+N_reg1)./N_reg3,1));
+    % ii_neg = N<0; 
+    % he_reg3(ii_neg) = -c_e_reg3*log(min((N_reg1)./N_reg3,1)) -c_e_reg3*N(ii_neg)/N_reg1;  %has continuous derivative
 
-    out =  he_power + he_log + he_reg + he_reg2 + he_reg3;
+    % out =  he_power + he_log + he_reg + he_reg2 + he_reg3;
+    out = 0*N;
 end
 function out = Dhe_fun(N,p_i,pp,~)
 % derivative of elastic sheet depth as function of effective pressure N
-    gamma_e = pp.gamma_e;
-    c_e_power = pp.c24;
-    N_reg = pp.N_reg;
-    c_e_log = pp.c28;
-    c_e_reg = pp.c29;
-    N_reg1 = pp.c30;
-    c_e_reg2 = pp.c31;
-    N_reg2 = pp.c32;
-    c_e_reg3 = pp.c37;
-    N_reg3 = pp.c38;
+    % gamma_e = pp.gamma_e;
+    % c_e_power = pp.c24;
+    % N_reg = pp.N_reg;
+    % c_e_log = pp.c28;
+    % c_e_reg = pp.c29;
+    % N_reg1 = pp.c30;
+    % c_e_reg2 = pp.c31;
+    % N_reg2 = pp.c32;
+    % c_e_reg3 = pp.c37;
+    % N_reg3 = pp.c38;
 
-    Dhe_power = -gamma_e*c_e_power*(max(p_i-N,0).*(p_i.^2+N_reg^2).^(-1/2)).^(gamma_e-1).*(p_i.^2+N_reg^2).^(-1/2).*(N<=p_i);
-    Dhe_log = -c_e_log.*N.*(N.^2+N_reg^2).^(-1).*(N<=p_i);  %[ effective pressure must be positive ]
+    % Dhe_power = -gamma_e*c_e_power*(max(p_i-N,0).*(p_i.^2+N_reg^2).^(-1/2)).^(gamma_e-1).*(p_i.^2+N_reg^2).^(-1/2).*(N<=p_i);
+    % Dhe_log = -c_e_log.*N.*(N.^2+N_reg^2).^(-1).*(N<=p_i);  %[ effective pressure must be positive ]
 
-    Dhe_reg = -c_e_reg.*(N+N_reg1).^(-1).*(N+N_reg1<=p_i+N_reg);
-    ii_neg = N<0; 
-    Dhe_reg(ii_neg) = -c_e_reg/N_reg1;
+    % Dhe_reg = -c_e_reg.*(N+N_reg1).^(-1).*(N+N_reg1<=p_i+N_reg);
+    % ii_neg = N<0; 
+    % Dhe_reg(ii_neg) = -c_e_reg/N_reg1;
 
-    Dhe_reg2 = -c_e_reg2*min(max(1-N/N_reg2,0),1);
+    % Dhe_reg2 = -c_e_reg2*min(max(1-N/N_reg2,0),1);
 
-    Dhe_reg3 = -c_e_reg3*(N+N_reg1).^(-1).*(N+N_reg1<=N_reg3);
-    ii_neg = N<0; 
-    Dhe_reg3(ii_neg) = -c_e_reg3/N_reg1; 
+    % Dhe_reg3 = -c_e_reg3*(N+N_reg1).^(-1).*(N+N_reg1<=N_reg3);
+    % ii_neg = N<0; 
+    % Dhe_reg3(ii_neg) = -c_e_reg3/N_reg1; 
 
-    out = Dhe_power + Dhe_log + Dhe_reg + Dhe_reg2 + Dhe_reg3;
+    % out = Dhe_power + Dhe_log + Dhe_reg + Dhe_reg2 + Dhe_reg3;
+    out = 0*N;
 end
 
 % function out = Qbh_fun(hb,Smean,pb,phi,pp,aa)
@@ -1183,15 +1189,15 @@ function out = DReg_N_Dphi(N,N0)
     out = 0.5*(1-tanh(N/N0).^2)/N0;
 end
 
-% function out = Reg_deltaphi(deltaphi,dp0)
-%     % out = dp0*tanh(deltaphi/dp0);
-%     out = deltaphi; % if no regularisation, use linear function
-% end
+function out = Reg_deltaphi(deltaphi,dp0)
+    % out = dp0*tanh(deltaphi/dp0);
+    out = deltaphi; % if no regularisation, use linear function
+end
 
-% function out = DReg_deltaphi_Dphi(deltaphi,dp0)
-%     % out = 1-tanh(deltaphi/dp0).^2;
-%     out = 1; % if no regularisation, use linear function
-% end
+function out = DReg_deltaphi_Dphi(deltaphi,dp0)
+    % out = 1-tanh(deltaphi/dp0).^2;
+    out = 1; % if no regularisation, use linear function
+end
 
 function out = Reg_H(H)
     % out = tanh(H/0.4);

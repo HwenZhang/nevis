@@ -50,6 +50,10 @@ function [aa,vv] = nevis_initialize(b,s,gg,pp,oo)
 
     %% input to and out from the blister
     Qb_in = 0*ones(gg.nIJ,1);
+
+    %% Prewetted layer thickness
+    hb_reg1 = pp.hb_reg1*ones(gg.nIJ,1);
+    hb_reg1(gg.nout) = 0; % regularisation
     
     %% variables
     phi = phi_a+0*(phi_0-phi_a); % potential
@@ -82,6 +86,7 @@ function [aa,vv] = nevis_initialize(b,s,gg,pp,oo)
     aa.Ub = Ub; 
     aa.E = E;
     aa.Qb_in = Qb_in;
+    aa.hb_reg1 = hb_reg1; % prewetted layer thickness
     
     % solution fields
     vv.phi = phi; 

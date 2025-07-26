@@ -9,8 +9,15 @@ echo "Looking for oo.casename in $original_file..."
 grep "oo.casename" "$original_file"
 
 # Improved sed pattern: handles arbitrary spaces/tabs
+if [ "$original_file" = "nevis_2d_example_drainage.m" ]; then
+    echo "Using nevis_2d_example_drainage.m as the original file."
+    casename=$(sed -nE "s/^[[:space:]]*casename[[:space:]]*=[[:space:]]*['\"]([^'\"]+)['\"].*/\1/p" "$original_file")
+elif [ "$original_file" = "nevis_2d_example_spinup.m" ]; then
+    echo "Using nevis_2d_example_spinup.m as the original file."
+    casename=$(sed -nE "s/^[[:space:]]*oo\.casename[[:space:]]*=[[:space:]]*['\"]([^'\"]+)['\"].*/\1/p" "$original_file")
+fi
 # casename=$(sed -nE "s/^[[:space:]]*oo\.casename[[:space:]]*=[[:space:]]*['\"]([^'\"]+)['\"].*/\1/p" "$original_file")
-casename=$(sed -nE "s/^[[:space:]]*casename[[:space:]]*=[[:space:]]*['\"]([^'\"]+)['\"].*/\1/p" "$original_file")
+# casename=$(sed -nE "s/^[[:space:]]*casename[[:space:]]*=[[:space:]]*['\"]([^'\"]+)['\"].*/\1/p" "$original_file")
 
 # Check and copy
 if [ -z "$casename" ]; then

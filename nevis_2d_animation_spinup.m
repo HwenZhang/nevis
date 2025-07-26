@@ -1,6 +1,6 @@
 %% Import necessary libraries
 % casename = oo.casename;
-casename = 'n2d_0m3s_kappa1e_10_mu1e1_hbreg1e_3_spinup';  % specify the case name
+casename = 'n2d_100m3s_kappa1e_10_mu1e1_hbreg0_spinup';  % specify the case name
 
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -47,7 +47,7 @@ tmin = 0*365*pd.td/ps.t;
 tmax = 2.0*365*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
-[~,t_init] = min(abs(tspan-365*1.75));             % initial time step
+[~,t_init] = min(abs(tspan-365*1.5));             % initial time step
 [~,t_end] = min(abs(tspan-2.0*365));              % final time step
 % t_end = 1200;
 

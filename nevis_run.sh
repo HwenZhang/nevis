@@ -15,16 +15,26 @@ done
 if [ ${#scripts[@]} -eq 0 ]; then
     echo "No MATLAB scripts starting with 'n2d' found."
     exit 1
-else
-    # Output all found script names before execution
-    echo "Found MATLAB scripts to run:"
-    for script in "${scripts[@]}"; do
-        echo "  - ${script}.m"
-    done
 fi
 
+# Sort the scripts array to make sure spinup scripts are run first
+for script in "${scripts[@]}"; do
+    if [[ "$script" == *"spinup"* ]]; then
+        sorted_scripts+=("$script")
+    fi
+done
+for script in "${scripts[@]}"; do
+    if [[ "$script" != *"spinup"* ]]; then
+        sorted_scripts+=("$script")
+    fi
+done
+# print sorted scripts
+echo "Sorted MATLAB scripts to run:"
+for script in "${sorted_scripts[@]}"; do
+    echo "  - ${script}.m"
+done
 # Loop through and run each MATLAB script
-for script in "${scripts[@]}"
+for script in "${sorted_scripts[@]}"
 do
     echo "Launching ${script}"
     matlab -batch "${script}" > "./logs/temp_${script}.log" 2>&1
