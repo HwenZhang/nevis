@@ -1,16 +1,18 @@
 function [aa,vv] = nevis_initialize(b,s,gg,pp,oo)
     % Assign default prescribed fields and boundary conditions and initial
     % conditions [ probably need to change initial hs and phi ]
+
     % Inputs
     %   b bed elevation on nodes
     %   s surface elevation on nodes
     %   gg grid structure
     %   pp parameters
     %   oo options [optional]
+
     % Outputs
     %   aa structure containing prescribed fields and boundary conditions
     %   vv structure containing initial variables
-    %
+    
     % 21 August 2014
     if nargin<5, oo = struct; end
     if ~isfield(pp,'u_b'), pp.u_b = 1; end
@@ -52,8 +54,9 @@ function [aa,vv] = nevis_initialize(b,s,gg,pp,oo)
     Qb_in = 0*ones(gg.nIJ,1);
 
     %% Prewetted layer thickness
-    hb_reg1 = pp.hb_reg1*ones(gg.nIJ,1);
-    hb_reg1(gg.nout) = 0; % regularisation
+    hb_reg1 = pp.hb_reg1*tanh((5-gg.nx(:))/0.1).*ones(gg.nIJ,1);
+    % hb_reg1 = pp.hb_reg1*ones(gg.nIJ,1);
+    hb_reg1(gg.nout) = 0;        % regularisation
     
     %% variables
     phi = phi_a+0*(phi_0-phi_a); % potential
@@ -63,8 +66,8 @@ function [aa,vv] = nevis_initialize(b,s,gg,pp,oo)
     Ss = 0*ones(gg.cIJ,1);       % cross sectional area of diagonal s channels
     Sr = 0*ones(gg.cIJ,1);       % cross sectional area of diagonal r channels
     hb = 0*ones(gg.nIJ,1);       % blister thickness
-    % pb = phi;                    % blister pressure
-    pb = (phi_0-phi_a);        % blister pressure
+    % pb = phi;                  % blister pressure
+    pb = (phi_0-phi_a);          % blister pressure
     
     %% boundary conditions
     aa.phi = max(phi_a(gg.nbdy),pp.phi_s); % boundary values

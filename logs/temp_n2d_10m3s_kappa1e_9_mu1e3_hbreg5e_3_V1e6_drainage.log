@@ -1,0 +1,23 @@
+WARNING: package sun.awt.X11 not in java.desktop
+WARNING: package sun.awt.X11 not in java.desktop
+[Warning: Could not find appropriate function on path loading function handle
+/Users/hwenzhang/matlabprojects/nevis/n2d_10m3s_kappa1e_9_mu1e3_hbreg5e_3_spinup.m>@(t)(runoff_max/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t)))] 
+[> In n2d_10m3s_kappa1e_9_mu1e3_hbreg5e_3_V1e6_drainage (line 14)] 
+[Warning: Could not find appropriate function on path loading function handle
+/Users/hwenzhang/matlabprojects/nevis/n2d_10m3s_kappa1e_9_mu1e3_hbreg5e_3_spinup.m>@(t)moulin_input*(1-exp(-t/(30*pd.td/ps.t)))./(ps.m*ps.x^2)] 
+[> In n2d_10m3s_kappa1e_9_mu1e3_hbreg5e_3_V1e6_drainage (line 14)] 
+nevis_grid: Setting up grid ...
+  101-by-40 nodes
+  1 vertical layers
+  0<x<5, 0<y<2
+nevis_grid: Done
+{Unrecognized field name "hb_reg1".
+Error in nevis_backbone (line 108)
+    hb_reg1 = aa.hb_reg1;
+              ^^^^^^^^^^
+Error in nevis_timesteps (line 99)
+[vv2,~,~,~,~,~,~,~,~,~,~] = nevis_backbone(inf,vv,vv,aa,pp,gg,oo);
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Error in n2d_10m3s_kappa1e_9_mu1e3_hbreg5e_3_V1e6_drainage (line 77)
+[tt,vv,info] = nevis_timesteps(oo.t_span,vv,aa,pp,gg,oo);
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^} 
