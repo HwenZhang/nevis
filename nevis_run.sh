@@ -3,6 +3,10 @@
 # Create logs and parameter_sweep directories
 mkdir -p logs parameter_sweep
 
+# Move all the scripts from ./generated_scripts/ to the current directory
+mv ./generated_scripts/spinup/*.m ./
+mv ./generated_scripts/drainage/*.m ./
+
 # Automatically find all MATLAB scripts starting with "n2d"
 scripts=()
 for file in n2d*.m n1d*.m; do

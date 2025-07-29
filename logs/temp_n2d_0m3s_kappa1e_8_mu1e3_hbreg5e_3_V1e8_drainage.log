@@ -6,14 +6,16 @@ WARNING: package sun.awt.X11 not in java.desktop
 [Warning: Could not find appropriate function on path loading function handle
 /Users/hwenzhang/matlabprojects/nevis/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_spinup.m>@(t)moulin_input*(1-exp(-t/(30*pd.td/ps.t)))./(ps.m*ps.x^2)] 
 [> In n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_drainage (line 14)] 
+[Warning: Directory already exists.] 
+[> In n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_drainage (line 28)] 
 nevis_grid: Setting up grid ...
   101-by-40 nodes
   1 vertical layers
   0<x<5, 0<y<2
 nevis_grid: Done
-Volume of the blister is -2.0209e-07.
+Volume of the blister is -5.3187e-08.
 The most negative effective pressure is 0.080504.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4561e-07.
 Min thickness of the blister is -3.5515e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -21,32 +23,32 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0041667 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 1.4111 s, 1 iterations ]
+nevis_timesteps: Done [ 1.4767 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 0.0083333
 nevis_timesteps: t = 73.1042 [ / 109.5 ]
-Volume of the blister is -2.0209e-07.
+Volume of the blister is -5.3187e-08.
 The most negative effective pressure is 0.080504.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4561e-07.
 Min thickness of the blister is -3.5515e-07.
 Radius of the blister is 0.
 nevis_timesteps: dt = 0.0083333 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.76578 s, 1 iterations ]
+nevis_timesteps: Done [ 0.75425 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 0.016667
 nevis_timesteps: t = 73.1125 [ / 109.5 ]
-Volume of the blister is -2.0209e-07.
+Volume of the blister is -5.3187e-08.
 The most negative effective pressure is 0.080505.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4561e-07.
 Min thickness of the blister is -3.5514e-07.
 Radius of the blister is 0.
 nevis_timesteps: dt = 0.0075 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.70675 s, 1 iterations ]
+nevis_timesteps: Done [ 0.68502 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 0.033333
 nevis_timesteps: t = 73.12 [ / 109.5 ]
-Volume of the blister is -2.021e-07.
+Volume of the blister is -5.3187e-08.
 The most negative effective pressure is 0.080506.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4561e-07.
 Min thickness of the blister is -3.5514e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -54,12 +56,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.44212 s, 1 iterations ]
+nevis_timesteps: Done [ 0.34203 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 0.066667
 nevis_timesteps: t = 73.14 [ / 109.5 ]
-Volume of the blister is -2.021e-07.
+Volume of the blister is -5.3187e-08.
 The most negative effective pressure is 0.080508.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4562e-07.
 Min thickness of the blister is -3.5513e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -67,12 +69,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.46331 s, 1 iterations ]
+nevis_timesteps: Done [ 0.51172 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 0.13333
 nevis_timesteps: t = 73.16 [ / 109.5 ]
-Volume of the blister is -2.021e-07.
+Volume of the blister is -5.3187e-08.
 The most negative effective pressure is 0.08051.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4562e-07.
 Min thickness of the blister is -3.5513e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -80,12 +82,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.53096 s, 1 iterations ]
+nevis_timesteps: Done [ 0.4877 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 0.26667
 nevis_timesteps: t = 73.18 [ / 109.5 ]
-Volume of the blister is -2.021e-07.
+Volume of the blister is -5.3187e-08.
 The most negative effective pressure is 0.080512.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4562e-07.
 Min thickness of the blister is -3.5512e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -93,12 +95,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.36895 s, 1 iterations ]
+nevis_timesteps: Done [ 0.45448 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 0.53333
 nevis_timesteps: t = 73.2 [ / 109.5 ]
-Volume of the blister is -2.0211e-07.
+Volume of the blister is -5.3187e-08.
 The most negative effective pressure is 0.080515.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4563e-07.
 Min thickness of the blister is -3.5511e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -106,12 +108,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.39158 s, 1 iterations ]
+nevis_timesteps: Done [ 0.39573 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 1.0667
 nevis_timesteps: t = 73.22 [ / 109.5 ]
-Volume of the blister is -2.0211e-07.
+Volume of the blister is -5.3187e-08.
 The most negative effective pressure is 0.080517.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4563e-07.
 Min thickness of the blister is -3.5511e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -119,12 +121,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.5638 s, 1 iterations ]
+nevis_timesteps: Done [ 0.62261 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 2.1333
 nevis_timesteps: t = 73.24 [ / 109.5 ]
-Volume of the blister is -2.0211e-07.
+Volume of the blister is -5.3187e-08.
 The most negative effective pressure is 0.080519.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4563e-07.
 Min thickness of the blister is -3.551e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -132,12 +134,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.5878 s, 1 iterations ]
+nevis_timesteps: Done [ 0.41979 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 4.2667
 nevis_timesteps: t = 73.26 [ / 109.5 ]
-Volume of the blister is -2.0212e-07.
+Volume of the blister is -5.3187e-08.
 The most negative effective pressure is 0.080521.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4564e-07.
 Min thickness of the blister is -3.5509e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -145,12 +147,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.37934 s, 1 iterations ]
+nevis_timesteps: Done [ 0.52849 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 8.5333
 nevis_timesteps: t = 73.28 [ / 109.5 ]
-Volume of the blister is -2.0212e-07.
+Volume of the blister is -5.3187e-08.
 The most negative effective pressure is 0.080523.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4564e-07.
 Min thickness of the blister is -3.5508e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -158,12 +160,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.52412 s, 1 iterations ]
+nevis_timesteps: Done [ 0.44715 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 17.0667
 nevis_timesteps: t = 73.3 [ / 109.5 ]
-Volume of the blister is -2.0212e-07.
+Volume of the blister is -5.3187e-08.
 The most negative effective pressure is 0.080526.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4565e-07.
 Min thickness of the blister is -3.5508e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -171,12 +173,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.42288 s, 1 iterations ]
+nevis_timesteps: Done [ 0.51618 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 34.1333
 nevis_timesteps: t = 73.32 [ / 109.5 ]
-Volume of the blister is -2.0213e-07.
+Volume of the blister is -5.3187e-08.
 The most negative effective pressure is 0.080528.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4565e-07.
 Min thickness of the blister is -3.5507e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -184,12 +186,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.3539 s, 1 iterations ]
+nevis_timesteps: Done [ 0.3283 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 68.2667
 nevis_timesteps: t = 73.34 [ / 109.5 ]
-Volume of the blister is -2.0213e-07.
+Volume of the blister is -5.3186e-08.
 The most negative effective pressure is 0.08053.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4565e-07.
 Min thickness of the blister is -3.5506e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -197,12 +199,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.38394 s, 1 iterations ]
+nevis_timesteps: Done [ 0.36209 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 136.5333
 nevis_timesteps: t = 73.36 [ / 109.5 ]
-Volume of the blister is -2.0213e-07.
+Volume of the blister is -5.3186e-08.
 The most negative effective pressure is 0.080532.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4566e-07.
 Min thickness of the blister is -3.5506e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -210,12 +212,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.32705 s, 1 iterations ]
+nevis_timesteps: Done [ 0.42775 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 273.0667
 nevis_timesteps: t = 73.38 [ / 109.5 ]
-Volume of the blister is -2.0214e-07.
+Volume of the blister is -5.3186e-08.
 The most negative effective pressure is 0.080534.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4566e-07.
 Min thickness of the blister is -3.5505e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -223,12 +225,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.69359 s, 1 iterations ]
+nevis_timesteps: Done [ 0.5864 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 546.1333
 nevis_timesteps: t = 73.4 [ / 109.5 ]
-Volume of the blister is -2.0214e-07.
+Volume of the blister is -5.3186e-08.
 The most negative effective pressure is 0.080537.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4566e-07.
 Min thickness of the blister is -3.5504e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -236,12 +238,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.33231 s, 1 iterations ]
+nevis_timesteps: Done [ 0.39823 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 1092.2667
 nevis_timesteps: t = 73.42 [ / 109.5 ]
-Volume of the blister is -2.0214e-07.
+Volume of the blister is -5.3186e-08.
 The most negative effective pressure is 0.080539.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4567e-07.
 Min thickness of the blister is -3.5503e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -249,12 +251,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.75112 s, 1 iterations ]
+nevis_timesteps: Done [ 0.47888 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 2184.5333
 nevis_timesteps: t = 73.44 [ / 109.5 ]
-Volume of the blister is -2.0215e-07.
+Volume of the blister is -5.3186e-08.
 The most negative effective pressure is 0.080541.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4567e-07.
 Min thickness of the blister is -3.5503e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -262,12 +264,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.42295 s, 1 iterations ]
+nevis_timesteps: Done [ 0.44069 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 4369.0667
 nevis_timesteps: t = 73.46 [ / 109.5 ]
-Volume of the blister is -2.0215e-07.
+Volume of the blister is -5.3186e-08.
 The most negative effective pressure is 0.080543.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4567e-07.
 Min thickness of the blister is -3.5502e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -275,12 +277,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.51261 s, 1 iterations ]
+nevis_timesteps: Done [ 0.62023 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 8738.1333
 nevis_timesteps: t = 73.48 [ / 109.5 ]
-Volume of the blister is -2.0215e-07.
+Volume of the blister is -5.3186e-08.
 The most negative effective pressure is 0.080545.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4568e-07.
 Min thickness of the blister is -3.5501e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -288,12 +290,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.44132 s, 1 iterations ]
+nevis_timesteps: Done [ 0.42924 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 17476.2667
 nevis_timesteps: t = 73.5 [ / 109.5 ]
-Volume of the blister is -2.0216e-07.
+Volume of the blister is -5.3186e-08.
 The most negative effective pressure is 0.080548.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4568e-07.
 Min thickness of the blister is -3.55e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -301,12 +303,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.54157 s, 1 iterations ]
+nevis_timesteps: Done [ 0.65499 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 34952.5333
 nevis_timesteps: t = 73.52 [ / 109.5 ]
-Volume of the blister is -2.0216e-07.
+Volume of the blister is -5.3186e-08.
 The most negative effective pressure is 0.08055.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4569e-07.
 Min thickness of the blister is -3.55e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -314,12 +316,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.55632 s, 1 iterations ]
+nevis_timesteps: Done [ 0.59851 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 69905.0667
 nevis_timesteps: t = 73.54 [ / 109.5 ]
-Volume of the blister is -2.0216e-07.
+Volume of the blister is -5.3185e-08.
 The most negative effective pressure is 0.080552.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4569e-07.
 Min thickness of the blister is -3.5499e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -327,12 +329,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.38408 s, 1 iterations ]
+nevis_timesteps: Done [ 0.41153 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 139810.1333
 nevis_timesteps: t = 73.56 [ / 109.5 ]
-Volume of the blister is -2.0216e-07.
+Volume of the blister is -5.3185e-08.
 The most negative effective pressure is 0.080554.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4569e-07.
 Min thickness of the blister is -3.5498e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -340,12 +342,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.3597 s, 1 iterations ]
+nevis_timesteps: Done [ 0.35371 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 279620.2667
 nevis_timesteps: t = 73.58 [ / 109.5 ]
-Volume of the blister is -2.0217e-07.
+Volume of the blister is -5.3185e-08.
 The most negative effective pressure is 0.080557.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.457e-07.
 Min thickness of the blister is -3.5498e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -353,12 +355,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.61283 s, 1 iterations ]
+nevis_timesteps: Done [ 0.59057 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 559240.5333
 nevis_timesteps: t = 73.6 [ / 109.5 ]
-Volume of the blister is -2.0217e-07.
+Volume of the blister is -5.3185e-08.
 The most negative effective pressure is 0.080559.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.457e-07.
 Min thickness of the blister is -3.5497e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -366,12 +368,12 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.48195 s, 1 iterations ]
+nevis_timesteps: Done [ 0.54137 s, 1 iterations ]
 nevis_timesteps: Increase suggested timestep to 1000000
 nevis_timesteps: t = 73.62 [ / 109.5 ]
-Volume of the blister is -2.0217e-07.
+Volume of the blister is -5.3185e-08.
 The most negative effective pressure is 0.080561.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.457e-07.
 Min thickness of the blister is -3.5496e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -379,11 +381,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.61448 s, 1 iterations ]
+nevis_timesteps: Done [ 0.53462 s, 1 iterations ]
 nevis_timesteps: t = 73.64 [ / 109.5 ]
-Volume of the blister is -2.0218e-07.
+Volume of the blister is -5.3185e-08.
 The most negative effective pressure is 0.080563.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4571e-07.
 Min thickness of the blister is -3.5495e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -391,11 +393,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.62806 s, 1 iterations ]
+nevis_timesteps: Done [ 0.65437 s, 1 iterations ]
 nevis_timesteps: t = 73.66 [ / 109.5 ]
-Volume of the blister is -2.0218e-07.
+Volume of the blister is -5.3185e-08.
 The most negative effective pressure is 0.080565.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4571e-07.
 Min thickness of the blister is -3.5495e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -403,11 +405,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.54019 s, 1 iterations ]
+nevis_timesteps: Done [ 0.56972 s, 1 iterations ]
 nevis_timesteps: t = 73.68 [ / 109.5 ]
-Volume of the blister is -2.0218e-07.
+Volume of the blister is -5.3185e-08.
 The most negative effective pressure is 0.080567.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4572e-07.
 Min thickness of the blister is -3.5494e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -415,11 +417,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.41065 s, 1 iterations ]
+nevis_timesteps: Done [ 0.41216 s, 1 iterations ]
 nevis_timesteps: t = 73.7 [ / 109.5 ]
-Volume of the blister is -2.0219e-07.
+Volume of the blister is -5.3184e-08.
 The most negative effective pressure is 0.08057.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4572e-07.
 Min thickness of the blister is -3.5493e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -427,11 +429,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.60008 s, 1 iterations ]
+nevis_timesteps: Done [ 0.68671 s, 1 iterations ]
 nevis_timesteps: t = 73.72 [ / 109.5 ]
-Volume of the blister is -2.0219e-07.
+Volume of the blister is -5.3184e-08.
 The most negative effective pressure is 0.080572.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4572e-07.
 Min thickness of the blister is -3.5493e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -439,11 +441,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.56781 s, 1 iterations ]
+nevis_timesteps: Done [ 0.45869 s, 1 iterations ]
 nevis_timesteps: t = 73.74 [ / 109.5 ]
-Volume of the blister is -2.0219e-07.
+Volume of the blister is -5.3184e-08.
 The most negative effective pressure is 0.080574.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4573e-07.
 Min thickness of the blister is -3.5492e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -451,11 +453,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.39221 s, 1 iterations ]
+nevis_timesteps: Done [ 0.45707 s, 1 iterations ]
 nevis_timesteps: t = 73.76 [ / 109.5 ]
-Volume of the blister is -2.022e-07.
+Volume of the blister is -5.3184e-08.
 The most negative effective pressure is 0.080576.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4573e-07.
 Min thickness of the blister is -3.5491e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -463,11 +465,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.63762 s, 1 iterations ]
+nevis_timesteps: Done [ 0.60241 s, 1 iterations ]
 nevis_timesteps: t = 73.78 [ / 109.5 ]
-Volume of the blister is -2.022e-07.
+Volume of the blister is -5.3184e-08.
 The most negative effective pressure is 0.080578.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4574e-07.
 Min thickness of the blister is -3.549e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -475,11 +477,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.41191 s, 1 iterations ]
+nevis_timesteps: Done [ 0.54939 s, 1 iterations ]
 nevis_timesteps: t = 73.8 [ / 109.5 ]
-Volume of the blister is -2.022e-07.
+Volume of the blister is -5.3184e-08.
 The most negative effective pressure is 0.080581.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4574e-07.
 Min thickness of the blister is -3.549e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -487,11 +489,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.3511 s, 1 iterations ]
+nevis_timesteps: Done [ 0.35526 s, 1 iterations ]
 nevis_timesteps: t = 73.82 [ / 109.5 ]
-Volume of the blister is -2.0221e-07.
+Volume of the blister is -5.3184e-08.
 The most negative effective pressure is 0.080583.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4574e-07.
 Min thickness of the blister is -3.5489e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -499,11 +501,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.46026 s, 1 iterations ]
+nevis_timesteps: Done [ 0.53509 s, 1 iterations ]
 nevis_timesteps: t = 73.84 [ / 109.5 ]
-Volume of the blister is -2.0221e-07.
+Volume of the blister is -5.3183e-08.
 The most negative effective pressure is 0.080585.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4575e-07.
 Min thickness of the blister is -3.5488e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -511,11 +513,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.3962 s, 1 iterations ]
+nevis_timesteps: Done [ 0.32788 s, 1 iterations ]
 nevis_timesteps: t = 73.86 [ / 109.5 ]
-Volume of the blister is -2.0221e-07.
+Volume of the blister is -5.3183e-08.
 The most negative effective pressure is 0.080587.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4575e-07.
 Min thickness of the blister is -3.5488e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -523,11 +525,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.37413 s, 1 iterations ]
+nevis_timesteps: Done [ 0.37252 s, 1 iterations ]
 nevis_timesteps: t = 73.88 [ / 109.5 ]
-Volume of the blister is -2.0222e-07.
+Volume of the blister is -5.3183e-08.
 The most negative effective pressure is 0.080589.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4576e-07.
 Min thickness of the blister is -3.5487e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -535,11 +537,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.33389 s, 1 iterations ]
+nevis_timesteps: Done [ 0.38087 s, 1 iterations ]
 nevis_timesteps: t = 73.9 [ / 109.5 ]
-Volume of the blister is -2.0222e-07.
+Volume of the blister is -5.3183e-08.
 The most negative effective pressure is 0.080592.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4576e-07.
 Min thickness of the blister is -3.5486e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -547,11 +549,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.63098 s, 1 iterations ]
+nevis_timesteps: Done [ 0.55049 s, 1 iterations ]
 nevis_timesteps: t = 73.92 [ / 109.5 ]
-Volume of the blister is -2.0222e-07.
+Volume of the blister is -5.3183e-08.
 The most negative effective pressure is 0.080594.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4576e-07.
 Min thickness of the blister is -3.5485e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -559,11 +561,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.40564 s, 1 iterations ]
+nevis_timesteps: Done [ 0.49749 s, 1 iterations ]
 nevis_timesteps: t = 73.94 [ / 109.5 ]
-Volume of the blister is -2.0223e-07.
+Volume of the blister is -5.3183e-08.
 The most negative effective pressure is 0.080596.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4577e-07.
 Min thickness of the blister is -3.5485e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -571,11 +573,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.81639 s, 1 iterations ]
+nevis_timesteps: Done [ 0.64825 s, 1 iterations ]
 nevis_timesteps: t = 73.96 [ / 109.5 ]
-Volume of the blister is -2.0223e-07.
+Volume of the blister is -5.3183e-08.
 The most negative effective pressure is 0.080598.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4577e-07.
 Min thickness of the blister is -3.5484e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -583,11 +585,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.34323 s, 1 iterations ]
+nevis_timesteps: Done [ 0.39978 s, 1 iterations ]
 nevis_timesteps: t = 73.98 [ / 109.5 ]
-Volume of the blister is -2.0223e-07.
+Volume of the blister is -5.3182e-08.
 The most negative effective pressure is 0.0806.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4577e-07.
 Min thickness of the blister is -3.5483e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -595,11 +597,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.41455 s, 1 iterations ]
+nevis_timesteps: Done [ 0.51301 s, 1 iterations ]
 nevis_timesteps: t = 74 [ / 109.5 ]
-Volume of the blister is -2.0224e-07.
+Volume of the blister is -5.3182e-08.
 The most negative effective pressure is 0.080603.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4578e-07.
 Min thickness of the blister is -3.5483e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -607,11 +609,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.44484 s, 1 iterations ]
+nevis_timesteps: Done [ 0.43696 s, 1 iterations ]
 nevis_timesteps: t = 74.02 [ / 109.5 ]
-Volume of the blister is -2.0224e-07.
+Volume of the blister is -5.3182e-08.
 The most negative effective pressure is 0.080605.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4578e-07.
 Min thickness of the blister is -3.5482e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -619,11 +621,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.6577 s, 1 iterations ]
+nevis_timesteps: Done [ 0.63485 s, 1 iterations ]
 nevis_timesteps: t = 74.04 [ / 109.5 ]
-Volume of the blister is -2.0224e-07.
+Volume of the blister is -5.3182e-08.
 The most negative effective pressure is 0.080607.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4579e-07.
 Min thickness of the blister is -3.5481e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -631,11 +633,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.45657 s, 1 iterations ]
+nevis_timesteps: Done [ 0.45673 s, 1 iterations ]
 nevis_timesteps: t = 74.06 [ / 109.5 ]
-Volume of the blister is -2.0225e-07.
+Volume of the blister is -5.3182e-08.
 The most negative effective pressure is 0.080609.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4579e-07.
 Min thickness of the blister is -3.548e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -643,11 +645,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.42251 s, 1 iterations ]
+nevis_timesteps: Done [ 0.47257 s, 1 iterations ]
 nevis_timesteps: t = 74.08 [ / 109.5 ]
-Volume of the blister is -2.0225e-07.
+Volume of the blister is -5.3181e-08.
 The most negative effective pressure is 0.080611.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.458e-07.
 Min thickness of the blister is -3.548e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -655,11 +657,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.4652 s, 1 iterations ]
+nevis_timesteps: Done [ 0.47795 s, 1 iterations ]
 nevis_timesteps: t = 74.1 [ / 109.5 ]
-Volume of the blister is -2.0225e-07.
+Volume of the blister is -5.3181e-08.
 The most negative effective pressure is 0.080613.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.458e-07.
 Min thickness of the blister is -3.5479e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -667,11 +669,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.76502 s, 1 iterations ]
+nevis_timesteps: Done [ 0.68905 s, 1 iterations ]
 nevis_timesteps: t = 74.12 [ / 109.5 ]
-Volume of the blister is -2.0226e-07.
+Volume of the blister is -5.3181e-08.
 The most negative effective pressure is 0.080616.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.458e-07.
 Min thickness of the blister is -3.5478e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -679,11 +681,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.32671 s, 1 iterations ]
+nevis_timesteps: Done [ 0.36665 s, 1 iterations ]
 nevis_timesteps: t = 74.14 [ / 109.5 ]
-Volume of the blister is -2.0226e-07.
+Volume of the blister is -5.3181e-08.
 The most negative effective pressure is 0.080618.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4581e-07.
 Min thickness of the blister is -3.5478e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -691,11 +693,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.60007 s, 1 iterations ]
+nevis_timesteps: Done [ 0.60293 s, 1 iterations ]
 nevis_timesteps: t = 74.16 [ / 109.5 ]
-Volume of the blister is -2.0226e-07.
+Volume of the blister is -5.3181e-08.
 The most negative effective pressure is 0.08062.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4581e-07.
 Min thickness of the blister is -3.5477e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -703,11 +705,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.41657 s, 1 iterations ]
+nevis_timesteps: Done [ 0.57273 s, 1 iterations ]
 nevis_timesteps: t = 74.18 [ / 109.5 ]
-Volume of the blister is -2.0226e-07.
+Volume of the blister is -5.3181e-08.
 The most negative effective pressure is 0.080622.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4582e-07.
 Min thickness of the blister is -3.5476e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -715,11 +717,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.38531 s, 1 iterations ]
+nevis_timesteps: Done [ 0.39238 s, 1 iterations ]
 nevis_timesteps: t = 74.2 [ / 109.5 ]
-Volume of the blister is -2.0227e-07.
+Volume of the blister is -5.318e-08.
 The most negative effective pressure is 0.080624.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4582e-07.
 Min thickness of the blister is -3.5475e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -727,11 +729,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.38226 s, 1 iterations ]
+nevis_timesteps: Done [ 0.42998 s, 1 iterations ]
 nevis_timesteps: t = 74.22 [ / 109.5 ]
-Volume of the blister is -2.0227e-07.
+Volume of the blister is -5.318e-08.
 The most negative effective pressure is 0.080627.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4582e-07.
 Min thickness of the blister is -3.5475e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -739,11 +741,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.3941 s, 1 iterations ]
+nevis_timesteps: Done [ 0.41201 s, 1 iterations ]
 nevis_timesteps: t = 74.24 [ / 109.5 ]
-Volume of the blister is -2.0227e-07.
+Volume of the blister is -5.318e-08.
 The most negative effective pressure is 0.080629.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4583e-07.
 Min thickness of the blister is -3.5474e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -751,11 +753,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.43262 s, 1 iterations ]
+nevis_timesteps: Done [ 0.35149 s, 1 iterations ]
 nevis_timesteps: t = 74.26 [ / 109.5 ]
-Volume of the blister is -2.0228e-07.
+Volume of the blister is -5.318e-08.
 The most negative effective pressure is 0.080631.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4583e-07.
 Min thickness of the blister is -3.5473e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -763,11 +765,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.31844 s, 1 iterations ]
+nevis_timesteps: Done [ 0.40891 s, 1 iterations ]
 nevis_timesteps: t = 74.28 [ / 109.5 ]
-Volume of the blister is -2.0228e-07.
+Volume of the blister is -5.318e-08.
 The most negative effective pressure is 0.080633.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4584e-07.
 Min thickness of the blister is -3.5473e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -775,11 +777,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.47984 s, 1 iterations ]
+nevis_timesteps: Done [ 0.4059 s, 1 iterations ]
 nevis_timesteps: t = 74.3 [ / 109.5 ]
-Volume of the blister is -2.0228e-07.
+Volume of the blister is -5.3179e-08.
 The most negative effective pressure is 0.080635.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4584e-07.
 Min thickness of the blister is -3.5472e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -787,11 +789,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.35741 s, 1 iterations ]
+nevis_timesteps: Done [ 0.51028 s, 1 iterations ]
 nevis_timesteps: t = 74.32 [ / 109.5 ]
-Volume of the blister is -2.0229e-07.
+Volume of the blister is -5.3179e-08.
 The most negative effective pressure is 0.080637.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4584e-07.
 Min thickness of the blister is -3.5471e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -799,11 +801,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.55529 s, 1 iterations ]
+nevis_timesteps: Done [ 0.4106 s, 1 iterations ]
 nevis_timesteps: t = 74.34 [ / 109.5 ]
-Volume of the blister is -2.0229e-07.
+Volume of the blister is -5.3179e-08.
 The most negative effective pressure is 0.08064.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4585e-07.
 Min thickness of the blister is -3.547e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -811,11 +813,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.36166 s, 1 iterations ]
+nevis_timesteps: Done [ 0.46211 s, 1 iterations ]
 nevis_timesteps: t = 74.36 [ / 109.5 ]
-Volume of the blister is -2.0229e-07.
+Volume of the blister is -5.3179e-08.
 The most negative effective pressure is 0.080642.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4585e-07.
 Min thickness of the blister is -3.547e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -823,11 +825,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.46391 s, 1 iterations ]
+nevis_timesteps: Done [ 0.39934 s, 1 iterations ]
 nevis_timesteps: t = 74.38 [ / 109.5 ]
-Volume of the blister is -2.023e-07.
+Volume of the blister is -5.3178e-08.
 The most negative effective pressure is 0.080644.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4586e-07.
 Min thickness of the blister is -3.5469e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -835,11 +837,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.4778 s, 1 iterations ]
+nevis_timesteps: Done [ 0.61391 s, 1 iterations ]
 nevis_timesteps: t = 74.4 [ / 109.5 ]
-Volume of the blister is -2.023e-07.
+Volume of the blister is -5.3178e-08.
 The most negative effective pressure is 0.080646.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4586e-07.
 Min thickness of the blister is -3.5468e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -847,11 +849,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.56482 s, 1 iterations ]
+nevis_timesteps: Done [ 0.44945 s, 1 iterations ]
 nevis_timesteps: t = 74.42 [ / 109.5 ]
-Volume of the blister is -2.023e-07.
+Volume of the blister is -5.3178e-08.
 The most negative effective pressure is 0.080648.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4587e-07.
 Min thickness of the blister is -3.5468e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -859,11 +861,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.45649 s, 1 iterations ]
+nevis_timesteps: Done [ 0.53591 s, 1 iterations ]
 nevis_timesteps: t = 74.44 [ / 109.5 ]
-Volume of the blister is -2.0231e-07.
+Volume of the blister is -5.3178e-08.
 The most negative effective pressure is 0.080651.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4587e-07.
 Min thickness of the blister is -3.5467e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -871,11 +873,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.47075 s, 1 iterations ]
+nevis_timesteps: Done [ 0.39339 s, 1 iterations ]
 nevis_timesteps: t = 74.46 [ / 109.5 ]
-Volume of the blister is -2.0231e-07.
+Volume of the blister is -5.3178e-08.
 The most negative effective pressure is 0.080653.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4587e-07.
 Min thickness of the blister is -3.5466e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -883,11 +885,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.43912 s, 1 iterations ]
+nevis_timesteps: Done [ 0.42881 s, 1 iterations ]
 nevis_timesteps: t = 74.48 [ / 109.5 ]
-Volume of the blister is -2.0231e-07.
+Volume of the blister is -5.3177e-08.
 The most negative effective pressure is 0.080655.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4588e-07.
 Min thickness of the blister is -3.5465e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -895,11 +897,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.48769 s, 1 iterations ]
+nevis_timesteps: Done [ 0.46201 s, 1 iterations ]
 nevis_timesteps: t = 74.5 [ / 109.5 ]
-Volume of the blister is -2.0232e-07.
+Volume of the blister is -5.3177e-08.
 The most negative effective pressure is 0.080657.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4588e-07.
 Min thickness of the blister is -3.5465e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -907,11 +909,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.52847 s, 1 iterations ]
+nevis_timesteps: Done [ 0.61377 s, 1 iterations ]
 nevis_timesteps: t = 74.52 [ / 109.5 ]
-Volume of the blister is -2.0232e-07.
+Volume of the blister is -5.3177e-08.
 The most negative effective pressure is 0.080659.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4589e-07.
 Min thickness of the blister is -3.5464e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -919,11 +921,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.392 s, 1 iterations ]
+nevis_timesteps: Done [ 0.36963 s, 1 iterations ]
 nevis_timesteps: t = 74.54 [ / 109.5 ]
-Volume of the blister is -2.0232e-07.
+Volume of the blister is -5.3177e-08.
 The most negative effective pressure is 0.080661.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4589e-07.
 Min thickness of the blister is -3.5463e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -931,11 +933,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.52908 s, 1 iterations ]
+nevis_timesteps: Done [ 0.60477 s, 1 iterations ]
 nevis_timesteps: t = 74.56 [ / 109.5 ]
-Volume of the blister is -2.0233e-07.
+Volume of the blister is -5.3176e-08.
 The most negative effective pressure is 0.080664.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.459e-07.
 Min thickness of the blister is -3.5463e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -943,11 +945,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.48548 s, 1 iterations ]
+nevis_timesteps: Done [ 0.42253 s, 1 iterations ]
 nevis_timesteps: t = 74.58 [ / 109.5 ]
-Volume of the blister is -2.0233e-07.
+Volume of the blister is -5.3176e-08.
 The most negative effective pressure is 0.080666.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.459e-07.
 Min thickness of the blister is -3.5462e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -955,11 +957,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.50452 s, 1 iterations ]
+nevis_timesteps: Done [ 0.55416 s, 1 iterations ]
 nevis_timesteps: t = 74.6 [ / 109.5 ]
-Volume of the blister is -2.0233e-07.
+Volume of the blister is -5.3176e-08.
 The most negative effective pressure is 0.080668.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.459e-07.
 Min thickness of the blister is -3.5461e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -967,11 +969,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.52394 s, 1 iterations ]
+nevis_timesteps: Done [ 0.41106 s, 1 iterations ]
 nevis_timesteps: t = 74.62 [ / 109.5 ]
-Volume of the blister is -2.0234e-07.
+Volume of the blister is -5.3176e-08.
 The most negative effective pressure is 0.08067.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4591e-07.
 Min thickness of the blister is -3.546e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -979,11 +981,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.36873 s, 1 iterations ]
+nevis_timesteps: Done [ 0.46344 s, 1 iterations ]
 nevis_timesteps: t = 74.64 [ / 109.5 ]
-Volume of the blister is -2.0234e-07.
+Volume of the blister is -5.3175e-08.
 The most negative effective pressure is 0.080672.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4591e-07.
 Min thickness of the blister is -3.546e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -991,11 +993,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.3791 s, 1 iterations ]
+nevis_timesteps: Done [ 0.45906 s, 1 iterations ]
 nevis_timesteps: t = 74.66 [ / 109.5 ]
-Volume of the blister is -2.0234e-07.
+Volume of the blister is -5.3175e-08.
 The most negative effective pressure is 0.080674.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4592e-07.
 Min thickness of the blister is -3.5459e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -1003,11 +1005,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.6133 s, 1 iterations ]
+nevis_timesteps: Done [ 0.82178 s, 1 iterations ]
 nevis_timesteps: t = 74.68 [ / 109.5 ]
-Volume of the blister is -2.0235e-07.
+Volume of the blister is -5.3175e-08.
 The most negative effective pressure is 0.080677.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4592e-07.
 Min thickness of the blister is -3.5458e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -1015,11 +1017,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.51966 s, 1 iterations ]
+nevis_timesteps: Done [ 0.41495 s, 1 iterations ]
 nevis_timesteps: t = 74.7 [ / 109.5 ]
-Volume of the blister is -2.0235e-07.
+Volume of the blister is -5.3175e-08.
 The most negative effective pressure is 0.080679.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4593e-07.
 Min thickness of the blister is -3.5458e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -1027,11 +1029,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.62807 s, 1 iterations ]
+nevis_timesteps: Done [ 0.66305 s, 1 iterations ]
 nevis_timesteps: t = 74.72 [ / 109.5 ]
-Volume of the blister is -2.0235e-07.
+Volume of the blister is -5.3174e-08.
 The most negative effective pressure is 0.080681.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4593e-07.
 Min thickness of the blister is -3.5457e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -1039,11 +1041,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.4614 s, 1 iterations ]
+nevis_timesteps: Done [ 0.37259 s, 1 iterations ]
 nevis_timesteps: t = 74.74 [ / 109.5 ]
-Volume of the blister is -2.0236e-07.
+Volume of the blister is -5.3174e-08.
 The most negative effective pressure is 0.080683.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4593e-07.
 Min thickness of the blister is -3.5456e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -1051,11 +1053,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.43232 s, 1 iterations ]
+nevis_timesteps: Done [ 0.49681 s, 1 iterations ]
 nevis_timesteps: t = 74.76 [ / 109.5 ]
-Volume of the blister is -2.0236e-07.
+Volume of the blister is -5.3174e-08.
 The most negative effective pressure is 0.080685.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4594e-07.
 Min thickness of the blister is -3.5455e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -1063,11 +1065,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.52082 s, 1 iterations ]
+nevis_timesteps: Done [ 0.38318 s, 1 iterations ]
 nevis_timesteps: t = 74.78 [ / 109.5 ]
-Volume of the blister is -2.0236e-07.
+Volume of the blister is -5.3174e-08.
 The most negative effective pressure is 0.080687.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4594e-07.
 Min thickness of the blister is -3.5455e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -1075,11 +1077,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.50636 s, 1 iterations ]
+nevis_timesteps: Done [ 0.63689 s, 1 iterations ]
 nevis_timesteps: t = 74.8 [ / 109.5 ]
-Volume of the blister is -2.0237e-07.
+Volume of the blister is -5.3173e-08.
 The most negative effective pressure is 0.08069.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4595e-07.
 Min thickness of the blister is -3.5454e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -1087,11 +1089,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.60218 s, 1 iterations ]
+nevis_timesteps: Done [ 0.49705 s, 1 iterations ]
 nevis_timesteps: t = 74.82 [ / 109.5 ]
-Volume of the blister is -2.0237e-07.
+Volume of the blister is -5.3173e-08.
 The most negative effective pressure is 0.080692.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4595e-07.
 Min thickness of the blister is -3.5453e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -1099,11 +1101,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.40589 s, 1 iterations ]
+nevis_timesteps: Done [ 0.51023 s, 1 iterations ]
 nevis_timesteps: t = 74.84 [ / 109.5 ]
-Volume of the blister is -2.0237e-07.
+Volume of the blister is -5.3171e-08.
 The most negative effective pressure is 0.080694.
-Max thickness of the blister is 0.
+Max thickness of the blister is 2.4596e-07.
 Min thickness of the blister is -3.5453e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -1111,11 +1113,11 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.73117 s, 1 iterations ]
+nevis_timesteps: Done [ 0.65103 s, 1 iterations ]
 nevis_timesteps: t = 74.86 [ / 109.5 ]
-Volume of the blister is -2.0202e-07.
+Volume of the blister is -5.2811e-08.
 The most negative effective pressure is 0.080696.
-Max thickness of the blister is 1.4076e-07.
+Max thickness of the blister is 2.4596e-07.
 Min thickness of the blister is -3.5452e-07.
 Radius of the blister is 0.
 nevis_timesteps: Done
@@ -1123,9 +1125,9 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 1 Newton iterations
-nevis_timesteps: Done [ 0.39151 s, 1 iterations ]
+nevis_timesteps: Done [ 0.399 s, 1 iterations ]
 nevis_timesteps: t = 74.88 [ / 109.5 ]
-Volume of the blister is -1.5832e-07.
+Volume of the blister is -9.1078e-09.
 The most negative effective pressure is 0.080698.
 Max thickness of the blister is 1.7608e-05.
 Min thickness of the blister is -3.5451e-07.
@@ -1135,9 +1137,9 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 2 Newton iterations
-nevis_timesteps: Done [ 1.0002 s, 2 iterations ]
+nevis_timesteps: Done [ 1.0363 s, 2 iterations ]
 nevis_timesteps: t = 74.9 [ / 109.5 ]
-Volume of the blister is 2.5646e-06.
+Volume of the blister is 2.7138e-06.
 The most negative effective pressure is 0.07738.
 Max thickness of the blister is 0.0011055.
 Min thickness of the blister is -3.545e-07.
@@ -1147,9 +1149,9 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.02 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 1.8022 s, 4 iterations ]
+nevis_timesteps: Done [ 1.9301 s, 4 iterations ]
 nevis_timesteps: t = 74.92 [ / 109.5 ]
-Volume of the blister is 7.3648e-05.
+Volume of the blister is 7.3797e-05.
 The most negative effective pressure is -0.27947.
 Max thickness of the blister is 0.026676.
 Min thickness of the blister is -5.1875e-06.
@@ -1399,127 +1401,127 @@ In n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_drainage (line 77)
 nevis_timesteps: Decrease suggested timestep to 0.00093132
 nevis_timesteps: dt = 0.00093132 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 50.9354 s, 4 iterations ]
+nevis_timesteps: Done [ 54.6572 s, 4 iterations ]
 nevis_timesteps: t = 74.9209 [ / 109.5 ]
-Volume of the blister is 0.00015423.
+Volume of the blister is 0.00015438.
 The most negative effective pressure is -0.54357.
 Max thickness of the blister is 0.056791.
 Min thickness of the blister is -5.8e-06.
 Radius of the blister is 0.05.
 nevis_timesteps: dt = 0.00093132 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 5.7056 s, 4 iterations ]
+nevis_timesteps: Done [ 5.3639 s, 4 iterations ]
 nevis_timesteps: t = 74.9219 [ / 109.5 ]
-Volume of the blister is 0.0002367.
+Volume of the blister is 0.00023685.
 The most negative effective pressure is -0.69125.
 Max thickness of the blister is 0.081693.
 Min thickness of the blister is -7.2571e-06.
 Radius of the blister is 0.05.
 nevis_timesteps: dt = 0.00093132 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.5607 s, 3 iterations ]
+nevis_timesteps: Done [ 4.5489 s, 3 iterations ]
 nevis_timesteps: t = 74.9228 [ / 109.5 ]
-Volume of the blister is 0.00032352.
+Volume of the blister is 0.00032367.
 The most negative effective pressure is -0.75258.
 Max thickness of the blister is 0.10008.
 Min thickness of the blister is -1.1495e-05.
 Radius of the blister is 0.05.
 nevis_timesteps: dt = 0.00093132 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.541 s, 3 iterations ]
+nevis_timesteps: Done [ 4.2713 s, 3 iterations ]
 nevis_timesteps: t = 74.9237 [ / 109.5 ]
-Volume of the blister is 0.00041868.
+Volume of the blister is 0.00041883.
 The most negative effective pressure is -0.76275.
 Max thickness of the blister is 0.11395.
 Min thickness of the blister is -2.2625e-05.
 Radius of the blister is 0.05.
 nevis_timesteps: dt = 0.00093132 ...
   norm_F less than tolerance after 2 Newton iterations
-nevis_timesteps: Done [ 2.7535 s, 2 iterations ]
+nevis_timesteps: Done [ 2.3711 s, 2 iterations ]
 nevis_timesteps: Increase suggested timestep to 0.0018626
 nevis_timesteps: t = 74.9247 [ / 109.5 ]
-Volume of the blister is 0.00052583.
+Volume of the blister is 0.00052598.
 The most negative effective pressure is -0.74884.
 Max thickness of the blister is 0.1259.
 Min thickness of the blister is -4.3217e-05.
 Radius of the blister is 0.05.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 5.2409 s, 3 iterations ]
+nevis_timesteps: Done [ 5.142 s, 3 iterations ]
 nevis_timesteps: t = 74.9265 [ / 109.5 ]
-Volume of the blister is 0.00077178.
+Volume of the blister is 0.00077192.
 The most negative effective pressure is -0.68897.
 Max thickness of the blister is 0.14701.
 Min thickness of the blister is -2.1202e-05.
 Radius of the blister is 0.05.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.052 s, 3 iterations ]
+nevis_timesteps: Done [ 4.244 s, 3 iterations ]
 nevis_timesteps: t = 74.9284 [ / 109.5 ]
-Volume of the blister is 0.0010915.
+Volume of the blister is 0.0010917.
 The most negative effective pressure is -0.65044.
 Max thickness of the blister is 0.17567.
 Min thickness of the blister is -2.076e-06.
 Radius of the blister is 0.1.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.2335 s, 3 iterations ]
+nevis_timesteps: Done [ 4.3463 s, 3 iterations ]
 nevis_timesteps: t = 74.9302 [ / 109.5 ]
-Volume of the blister is 0.0014919.
+Volume of the blister is 0.0014921.
 The most negative effective pressure is -0.63467.
 Max thickness of the blister is 0.20845.
 Min thickness of the blister is -8.918e-06.
 Radius of the blister is 0.1.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.7801 s, 3 iterations ]
+nevis_timesteps: Done [ 4.6384 s, 3 iterations ]
 nevis_timesteps: t = 74.9321 [ / 109.5 ]
-Volume of the blister is 0.0019828.
+Volume of the blister is 0.001983.
 The most negative effective pressure is -0.62945.
 Max thickness of the blister is 0.23966.
 Min thickness of the blister is -5.6101e-05.
 Radius of the blister is 0.1.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.212 s, 3 iterations ]
+nevis_timesteps: Done [ 4.3716 s, 3 iterations ]
 nevis_timesteps: t = 74.934 [ / 109.5 ]
-Volume of the blister is 0.0026007.
+Volume of the blister is 0.0026009.
 The most negative effective pressure is -0.60884.
 Max thickness of the blister is 0.26793.
 Min thickness of the blister is -0.00026107.
 Radius of the blister is 0.1.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 5.1463 s, 3 iterations ]
+nevis_timesteps: Done [ 5.1924 s, 3 iterations ]
 nevis_timesteps: t = 74.9358 [ / 109.5 ]
-Volume of the blister is 0.0033859.
+Volume of the blister is 0.003386.
 The most negative effective pressure is -0.57523.
 Max thickness of the blister is 0.29703.
 Min thickness of the blister is -0.00043735.
 Radius of the blister is 0.1.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 5.2644 s, 3 iterations ]
+nevis_timesteps: Done [ 4.5678 s, 3 iterations ]
 nevis_timesteps: t = 74.9377 [ / 109.5 ]
-Volume of the blister is 0.004369.
+Volume of the blister is 0.0043692.
 The most negative effective pressure is -0.54455.
 Max thickness of the blister is 0.33266.
 Min thickness of the blister is -2.5626e-05.
 Radius of the blister is 0.1118.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.3628 s, 3 iterations ]
+nevis_timesteps: Done [ 4.2586 s, 3 iterations ]
 nevis_timesteps: t = 74.9396 [ / 109.5 ]
-Volume of the blister is 0.0055759.
+Volume of the blister is 0.005576.
 The most negative effective pressure is -0.5286.
 Max thickness of the blister is 0.37523.
 Min thickness of the blister is -1.6714e-05.
 Radius of the blister is 0.15.
 nevis_timesteps: dt = 0.00044223 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.3253 s, 3 iterations ]
+nevis_timesteps: Done [ 4.1922 s, 3 iterations ]
 nevis_timesteps: t = 74.94 [ / 109.5 ]
-Volume of the blister is 0.0059238.
+Volume of the blister is 0.005924.
 The most negative effective pressure is -0.53694.
 Max thickness of the blister is 0.39147.
 Min thickness of the blister is -2.205e-05.
@@ -1529,25 +1531,25 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 5.1193 s, 3 iterations ]
+nevis_timesteps: Done [ 4.445 s, 3 iterations ]
 nevis_timesteps: t = 74.9419 [ / 109.5 ]
-Volume of the blister is 0.0074589.
+Volume of the blister is 0.0074591.
 The most negative effective pressure is -0.51575.
 Max thickness of the blister is 0.43091.
 Min thickness of the blister is -0.00021109.
 Radius of the blister is 0.15.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.9107 s, 3 iterations ]
+nevis_timesteps: Done [ 4.7337 s, 3 iterations ]
 nevis_timesteps: t = 74.9437 [ / 109.5 ]
-Volume of the blister is 0.0093225.
+Volume of the blister is 0.0093227.
 The most negative effective pressure is -0.49138.
 Max thickness of the blister is 0.47164.
 Min thickness of the blister is -0.00052879.
 Radius of the blister is 0.15.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.257 s, 3 iterations ]
+nevis_timesteps: Done [ 4.2152 s, 3 iterations ]
 nevis_timesteps: t = 74.9456 [ / 109.5 ]
 Volume of the blister is 0.011569.
 The most negative effective pressure is -0.4617.
@@ -1556,7 +1558,7 @@ Min thickness of the blister is -0.00046239.
 Radius of the blister is 0.15.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.916 s, 3 iterations ]
+nevis_timesteps: Done [ 4.4913 s, 3 iterations ]
 nevis_timesteps: t = 74.9475 [ / 109.5 ]
 Volume of the blister is 0.014247.
 The most negative effective pressure is -0.43997.
@@ -1565,7 +1567,7 @@ Min thickness of the blister is -2.2688e-05.
 Radius of the blister is 0.15811.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 5.1295 s, 3 iterations ]
+nevis_timesteps: Done [ 4.3627 s, 3 iterations ]
 nevis_timesteps: t = 74.9493 [ / 109.5 ]
 Volume of the blister is 0.017409.
 The most negative effective pressure is -0.42666.
@@ -1574,16 +1576,16 @@ Min thickness of the blister is -0.00020893.
 Radius of the blister is 0.15811.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.1848 s, 3 iterations ]
+nevis_timesteps: Done [ 4.9613 s, 3 iterations ]
 nevis_timesteps: t = 74.9512 [ / 109.5 ]
-Volume of the blister is 0.021118.
+Volume of the blister is 0.021119.
 The most negative effective pressure is -0.41064.
 Max thickness of the blister is 0.69767.
 Min thickness of the blister is -0.00076363.
 Radius of the blister is 0.15811.
 nevis_timesteps: dt = 0.0018626 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.9087 s, 3 iterations ]
+nevis_timesteps: Done [ 5.3814 s, 3 iterations ]
 nevis_timesteps: t = 74.953 [ / 109.5 ]
 Volume of the blister is 0.025448.
 The most negative effective pressure is -0.38779.
@@ -1592,7 +1594,7 @@ Min thickness of the blister is -0.00041746.
 Radius of the blister is 0.2.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 6.9527 s, 4 iterations ]
+nevis_timesteps: Done [ 5.9141 s, 4 iterations ]
 nevis_timesteps: t = 74.9549 [ / 109.5 ]
 Volume of the blister is 0.030465.
 The most negative effective pressure is -0.36508.
@@ -1601,7 +1603,7 @@ Min thickness of the blister is -0.00050607.
 Radius of the blister is 0.2.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 5.3072 s, 3 iterations ]
+nevis_timesteps: Done [ 4.6023 s, 3 iterations ]
 nevis_timesteps: t = 74.9568 [ / 109.5 ]
 Volume of the blister is 0.036238.
 The most negative effective pressure is -0.34756.
@@ -1610,7 +1612,7 @@ Min thickness of the blister is -0.00021971.
 Radius of the blister is 0.20616.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 6.9171 s, 4 iterations ]
+nevis_timesteps: Done [ 7.2211 s, 4 iterations ]
 nevis_timesteps: t = 74.9586 [ / 109.5 ]
 Volume of the blister is 0.042839.
 The most negative effective pressure is -0.33198.
@@ -1619,7 +1621,7 @@ Min thickness of the blister is -0.00083619.
 Radius of the blister is 0.20616.
 nevis_timesteps: dt = 0.0013735 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.4918 s, 3 iterations ]
+nevis_timesteps: Done [ 4.8556 s, 3 iterations ]
 nevis_timesteps: t = 74.96 [ / 109.5 ]
 Volume of the blister is 0.048369.
 The most negative effective pressure is -0.32216.
@@ -1631,7 +1633,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0018626 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.6976 s, 3 iterations ]
+nevis_timesteps: Done [ 4.6574 s, 3 iterations ]
 nevis_timesteps: t = 74.9619 [ / 109.5 ]
 Volume of the blister is 0.056582.
 The most negative effective pressure is -0.30367.
@@ -1640,7 +1642,7 @@ Min thickness of the blister is -0.00070663.
 Radius of the blister is 0.22361.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.3325 s, 3 iterations ]
+nevis_timesteps: Done [ 4.995 s, 3 iterations ]
 nevis_timesteps: t = 74.9637 [ / 109.5 ]
 Volume of the blister is 0.06582.
 The most negative effective pressure is -0.29077.
@@ -1649,7 +1651,7 @@ Min thickness of the blister is -0.00051782.
 Radius of the blister is 0.25.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.2263 s, 3 iterations ]
+nevis_timesteps: Done [ 4.5501 s, 3 iterations ]
 nevis_timesteps: t = 74.9656 [ / 109.5 ]
 Volume of the blister is 0.07615.
 The most negative effective pressure is -0.27917.
@@ -1658,7 +1660,7 @@ Min thickness of the blister is -0.00090079.
 Radius of the blister is 0.25495.
 nevis_timesteps: dt = 0.0018626 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.3234 s, 3 iterations ]
+nevis_timesteps: Done [ 4.8771 s, 3 iterations ]
 nevis_timesteps: t = 74.9675 [ / 109.5 ]
 Volume of the blister is 0.087637.
 The most negative effective pressure is -0.26719.
@@ -1667,7 +1669,7 @@ Min thickness of the blister is -0.00090214.
 Radius of the blister is 0.25495.
 nevis_timesteps: dt = 0.0018626 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.1448 s, 3 iterations ]
+nevis_timesteps: Done [ 4.5604 s, 3 iterations ]
 nevis_timesteps: t = 74.9693 [ / 109.5 ]
 Volume of the blister is 0.10034.
 The most negative effective pressure is -0.25461.
@@ -1676,7 +1678,7 @@ Min thickness of the blister is -0.00073347.
 Radius of the blister is 0.25495.
 nevis_timesteps: dt = 0.0018626 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 5.6875 s, 3 iterations ]
+nevis_timesteps: Done [ 4.7488 s, 3 iterations ]
 nevis_timesteps: t = 74.9712 [ / 109.5 ]
 Volume of the blister is 0.1143.
 The most negative effective pressure is -0.24316.
@@ -1685,7 +1687,7 @@ Min thickness of the blister is -0.00087558.
 Radius of the blister is 0.26926.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 5.195 s, 3 iterations ]
+nevis_timesteps: Done [ 4.503 s, 3 iterations ]
 nevis_timesteps: t = 74.973 [ / 109.5 ]
 Volume of the blister is 0.12956.
 The most negative effective pressure is -0.2328.
@@ -1694,7 +1696,7 @@ Min thickness of the blister is -0.0010395.
 Radius of the blister is 0.3.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 5.5848 s, 4 iterations ]
+nevis_timesteps: Done [ 5.7827 s, 4 iterations ]
 nevis_timesteps: t = 74.9749 [ / 109.5 ]
 Volume of the blister is 0.14615.
 The most negative effective pressure is -0.22235.
@@ -1703,7 +1705,7 @@ Min thickness of the blister is -0.00059662.
 Radius of the blister is 0.30414.
 nevis_timesteps: dt = 0.0018626 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.7672 s, 3 iterations ]
+nevis_timesteps: Done [ 4.4822 s, 3 iterations ]
 nevis_timesteps: t = 74.9768 [ / 109.5 ]
 Volume of the blister is 0.16408.
 The most negative effective pressure is -0.21174.
@@ -1712,7 +1714,7 @@ Min thickness of the blister is -0.00092203.
 Radius of the blister is 0.30414.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 5.1158 s, 3 iterations ]
+nevis_timesteps: Done [ 4.5405 s, 3 iterations ]
 nevis_timesteps: t = 74.9786 [ / 109.5 ]
 Volume of the blister is 0.18336.
 The most negative effective pressure is -0.20155.
@@ -1721,7 +1723,7 @@ Min thickness of the blister is -0.00093687.
 Radius of the blister is 0.31623.
 nevis_timesteps: dt = 0.0013735 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.1926 s, 3 iterations ]
+nevis_timesteps: Done [ 4.7249 s, 3 iterations ]
 nevis_timesteps: t = 74.98 [ / 109.5 ]
 Volume of the blister is 0.19855.
 The most negative effective pressure is -0.19525.
@@ -1733,7 +1735,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 7.6031 s, 4 iterations ]
+nevis_timesteps: Done [ 5.4801 s, 4 iterations ]
 nevis_timesteps: t = 74.9819 [ / 109.5 ]
 Volume of the blister is 0.22012.
 The most negative effective pressure is -0.18477.
@@ -1742,7 +1744,7 @@ Min thickness of the blister is -0.0010016.
 Radius of the blister is 0.32016.
 nevis_timesteps: dt = 0.0018626 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 5.44 s, 3 iterations ]
+nevis_timesteps: Done [ 4.6259 s, 3 iterations ]
 nevis_timesteps: t = 74.9837 [ / 109.5 ]
 Volume of the blister is 0.24295.
 The most negative effective pressure is -0.17603.
@@ -1751,7 +1753,7 @@ Min thickness of the blister is -0.00084636.
 Radius of the blister is 0.35355.
 nevis_timesteps: dt = 0.0018626 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 5.3177 s, 3 iterations ]
+nevis_timesteps: Done [ 5.2207 s, 3 iterations ]
 nevis_timesteps: t = 74.9856 [ / 109.5 ]
 Volume of the blister is 0.26698.
 The most negative effective pressure is -0.16806.
@@ -1760,7 +1762,7 @@ Min thickness of the blister is -0.00088438.
 Radius of the blister is 0.35355.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 6.4494 s, 4 iterations ]
+nevis_timesteps: Done [ 6.7187 s, 4 iterations ]
 nevis_timesteps: t = 74.9875 [ / 109.5 ]
 Volume of the blister is 0.29214.
 The most negative effective pressure is -0.16009.
@@ -1769,7 +1771,7 @@ Min thickness of the blister is -0.0011546.
 Radius of the blister is 0.36401.
 nevis_timesteps: dt = 0.0018626 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.5831 s, 3 iterations ]
+nevis_timesteps: Done [ 4.7506 s, 3 iterations ]
 nevis_timesteps: t = 74.9893 [ / 109.5 ]
 Volume of the blister is 0.31833.
 The most negative effective pressure is -0.15209.
@@ -1778,7 +1780,7 @@ Min thickness of the blister is -0.00098346.
 Radius of the blister is 0.36401.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.3278 s, 3 iterations ]
+nevis_timesteps: Done [ 4.983 s, 3 iterations ]
 nevis_timesteps: t = 74.9912 [ / 109.5 ]
 Volume of the blister is 0.34544.
 The most negative effective pressure is -0.14474.
@@ -1787,7 +1789,7 @@ Min thickness of the blister is -0.00098303.
 Radius of the blister is 0.4.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.2034 s, 3 iterations ]
+nevis_timesteps: Done [ 4.6739 s, 3 iterations ]
 nevis_timesteps: t = 74.993 [ / 109.5 ]
 Volume of the blister is 0.37336.
 The most negative effective pressure is -0.13815.
@@ -1796,7 +1798,7 @@ Min thickness of the blister is -0.0010735.
 Radius of the blister is 0.40311.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 6.7508 s, 4 iterations ]
+nevis_timesteps: Done [ 5.2679 s, 4 iterations ]
 nevis_timesteps: t = 74.9949 [ / 109.5 ]
 Volume of the blister is 0.40194.
 The most negative effective pressure is -0.13189.
@@ -1805,7 +1807,7 @@ Min thickness of the blister is -0.00074637.
 Radius of the blister is 0.41231.
 nevis_timesteps: dt = 0.0018626 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.0984 s, 3 iterations ]
+nevis_timesteps: Done [ 4.2299 s, 3 iterations ]
 nevis_timesteps: t = 74.9968 [ / 109.5 ]
 Volume of the blister is 0.43104.
 The most negative effective pressure is -0.12583.
@@ -1814,7 +1816,7 @@ Min thickness of the blister is -0.0011945.
 Radius of the blister is 0.41231.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.8147 s, 3 iterations ]
+nevis_timesteps: Done [ 4.4489 s, 3 iterations ]
 nevis_timesteps: t = 74.9986 [ / 109.5 ]
 Volume of the blister is 0.4605.
 The most negative effective pressure is -0.12018.
@@ -1823,7 +1825,7 @@ Min thickness of the blister is -0.00086146.
 Radius of the blister is 0.4272.
 nevis_timesteps: dt = 0.0013735 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.4847 s, 3 iterations ]
+nevis_timesteps: Done [ 4.2846 s, 3 iterations ]
 nevis_timesteps: t = 75 [ / 109.5 ]
 Volume of the blister is 0.48238.
 The most negative effective pressure is -0.11621.
@@ -1835,7 +1837,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 5.7494 s, 4 iterations ]
+nevis_timesteps: Done [ 5.5986 s, 4 iterations ]
 nevis_timesteps: t = 75.0019 [ / 109.5 ]
 Volume of the blister is 0.51209.
 The most negative effective pressure is -0.11076.
@@ -1844,7 +1846,7 @@ Min thickness of the blister is -0.0011506.
 Radius of the blister is 0.45277.
 nevis_timesteps: dt = 0.0018626 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.6838 s, 3 iterations ]
+nevis_timesteps: Done [ 4.4591 s, 3 iterations ]
 nevis_timesteps: t = 75.0037 [ / 109.5 ]
 Volume of the blister is 0.54172.
 The most negative effective pressure is -0.10548.
@@ -1853,7 +1855,7 @@ Min thickness of the blister is -0.0009411.
 Radius of the blister is 0.46098.
 nevis_timesteps: dt = 0.0018626 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.5472 s, 3 iterations ]
+nevis_timesteps: Done [ 3.8215 s, 3 iterations ]
 nevis_timesteps: t = 75.0056 [ / 109.5 ]
 Volume of the blister is 0.5711.
 The most negative effective pressure is -0.10068.
@@ -1862,7 +1864,7 @@ Min thickness of the blister is -0.00086629.
 Radius of the blister is 0.46098.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.1212 s, 3 iterations ]
+nevis_timesteps: Done [ 4.0575 s, 3 iterations ]
 nevis_timesteps: t = 75.0075 [ / 109.5 ]
 Volume of the blister is 0.60008.
 The most negative effective pressure is -0.096389.
@@ -1871,7 +1873,7 @@ Min thickness of the blister is -0.0011334.
 Radius of the blister is 0.47434.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 5.7182 s, 4 iterations ]
+nevis_timesteps: Done [ 4.7887 s, 4 iterations ]
 nevis_timesteps: t = 75.0093 [ / 109.5 ]
 Volume of the blister is 0.6285.
 The most negative effective pressure is -0.092285.
@@ -1880,7 +1882,7 @@ Min thickness of the blister is -0.0012429.
 Radius of the blister is 0.50249.
 nevis_timesteps: dt = 0.0018626 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.46 s, 3 iterations ]
+nevis_timesteps: Done [ 4.0164 s, 3 iterations ]
 nevis_timesteps: t = 75.0112 [ / 109.5 ]
 Volume of the blister is 0.65622.
 The most negative effective pressure is -0.088242.
@@ -1889,7 +1891,7 @@ Min thickness of the blister is -0.00097984.
 Radius of the blister is 0.5099.
 nevis_timesteps: dt = 0.0018626 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 5.1933 s, 3 iterations ]
+nevis_timesteps: Done [ 3.9145 s, 3 iterations ]
 nevis_timesteps: t = 75.013 [ / 109.5 ]
 Volume of the blister is 0.68311.
 The most negative effective pressure is -0.084398.
@@ -1898,7 +1900,7 @@ Min thickness of the blister is -0.0011942.
 Radius of the blister is 0.5099.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.8872 s, 3 iterations ]
+nevis_timesteps: Done [ 4.6273 s, 3 iterations ]
 nevis_timesteps: t = 75.0149 [ / 109.5 ]
 Volume of the blister is 0.70904.
 The most negative effective pressure is -0.080815.
@@ -1907,7 +1909,7 @@ Min thickness of the blister is -0.0010495.
 Radius of the blister is 0.52202.
 nevis_timesteps: dt = 0.0018626 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.3037 s, 3 iterations ]
+nevis_timesteps: Done [ 4.1443 s, 3 iterations ]
 nevis_timesteps: t = 75.0168 [ / 109.5 ]
 Volume of the blister is 0.73392.
 The most negative effective pressure is -0.07732.
@@ -1916,7 +1918,7 @@ Min thickness of the blister is -0.00092496.
 Radius of the blister is 0.52202.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 6.006 s, 4 iterations ]
+nevis_timesteps: Done [ 6.6536 s, 4 iterations ]
 nevis_timesteps: t = 75.0186 [ / 109.5 ]
 Volume of the blister is 0.75765.
 The most negative effective pressure is -0.073792.
@@ -1925,7 +1927,7 @@ Min thickness of the blister is -0.001192.
 Radius of the blister is 0.55227.
 nevis_timesteps: dt = 0.0013735 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.2333 s, 3 iterations ]
+nevis_timesteps: Done [ 4.1209 s, 3 iterations ]
 nevis_timesteps: t = 75.02 [ / 109.5 ]
 Volume of the blister is 0.77424.
 The most negative effective pressure is -0.070832.
@@ -1937,7 +1939,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 5.1783 s, 3 iterations ]
+nevis_timesteps: Done [ 4.1601 s, 3 iterations ]
 nevis_timesteps: t = 75.0219 [ / 109.5 ]
 Volume of the blister is 0.79582.
 The most negative effective pressure is -0.067876.
@@ -1946,7 +1948,7 @@ Min thickness of the blister is -0.0011194.
 Radius of the blister is 0.55902.
 nevis_timesteps: dt = 0.0018626 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.2753 s, 3 iterations ]
+nevis_timesteps: Done [ 3.8534 s, 3 iterations ]
 nevis_timesteps: t = 75.0237 [ / 109.5 ]
 Volume of the blister is 0.81608.
 The most negative effective pressure is -0.064795.
@@ -1955,7 +1957,7 @@ Min thickness of the blister is -0.0010964.
 Radius of the blister is 0.55902.
 nevis_timesteps: dt = 0.0018626 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.3289 s, 3 iterations ]
+nevis_timesteps: Done [ 3.9577 s, 3 iterations ]
 nevis_timesteps: t = 75.0256 [ / 109.5 ]
 Volume of the blister is 0.83502.
 The most negative effective pressure is -0.061821.
@@ -1964,7 +1966,7 @@ Min thickness of the blister is -0.0011127.
 Radius of the blister is 0.57009.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.4064 s, 3 iterations ]
+nevis_timesteps: Done [ 5.1854 s, 3 iterations ]
 nevis_timesteps: t = 75.0275 [ / 109.5 ]
 Volume of the blister is 0.85261.
 The most negative effective pressure is -0.058893.
@@ -1973,7 +1975,7 @@ Min thickness of the blister is -0.0012112.
 Radius of the blister is 0.6.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.8499 s, 3 iterations ]
+nevis_timesteps: Done [ 4.6974 s, 3 iterations ]
 nevis_timesteps: t = 75.0293 [ / 109.5 ]
 Volume of the blister is 0.86886.
 The most negative effective pressure is -0.056044.
@@ -1982,7 +1984,7 @@ Min thickness of the blister is -0.00061183.
 Radius of the blister is 0.60208.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.98 s, 3 iterations ]
+nevis_timesteps: Done [ 4.4426 s, 3 iterations ]
 nevis_timesteps: t = 75.0312 [ / 109.5 ]
 Volume of the blister is 0.8838.
 The most negative effective pressure is -0.053396.
@@ -1991,7 +1993,7 @@ Min thickness of the blister is -0.0010439.
 Radius of the blister is 0.60828.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.9063 s, 3 iterations ]
+nevis_timesteps: Done [ 3.9825 s, 3 iterations ]
 nevis_timesteps: t = 75.033 [ / 109.5 ]
 Volume of the blister is 0.89744.
 The most negative effective pressure is -0.051012.
@@ -2000,7 +2002,7 @@ Min thickness of the blister is -0.0010664.
 Radius of the blister is 0.60828.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.6008 s, 3 iterations ]
+nevis_timesteps: Done [ 3.7997 s, 3 iterations ]
 nevis_timesteps: t = 75.0349 [ / 109.5 ]
 Volume of the blister is 0.90984.
 The most negative effective pressure is -0.048673.
@@ -2009,7 +2011,7 @@ Min thickness of the blister is -0.0010412.
 Radius of the blister is 0.61847.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 6.7025 s, 4 iterations ]
+nevis_timesteps: Done [ 6.7625 s, 4 iterations ]
 nevis_timesteps: t = 75.0368 [ / 109.5 ]
 Volume of the blister is 0.92105.
 The most negative effective pressure is -0.047338.
@@ -2018,16 +2020,16 @@ Min thickness of the blister is -0.001177.
 Radius of the blister is 0.61847.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.8729 s, 3 iterations ]
+nevis_timesteps: Done [ 4.8852 s, 3 iterations ]
 nevis_timesteps: t = 75.0386 [ / 109.5 ]
-Volume of the blister is 0.93111.
+Volume of the blister is 0.93112.
 The most negative effective pressure is -0.046597.
 Max thickness of the blister is 3.6361.
 Min thickness of the blister is -0.0010119.
 Radius of the blister is 0.65192.
 nevis_timesteps: dt = 0.0013735 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.8388 s, 3 iterations ]
+nevis_timesteps: Done [ 4.6608 s, 3 iterations ]
 nevis_timesteps: t = 75.04 [ / 109.5 ]
 Volume of the blister is 0.93775.
 The most negative effective pressure is -0.046376.
@@ -2039,7 +2041,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.9623 s, 3 iterations ]
+nevis_timesteps: Done [ 4.2059 s, 3 iterations ]
 nevis_timesteps: t = 75.0419 [ / 109.5 ]
 Volume of the blister is 0.946.
 The most negative effective pressure is -0.046535.
@@ -2048,7 +2050,7 @@ Min thickness of the blister is -0.0010106.
 Radius of the blister is 0.65765.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.5786 s, 3 iterations ]
+nevis_timesteps: Done [ 4.2447 s, 3 iterations ]
 nevis_timesteps: t = 75.0437 [ / 109.5 ]
 Volume of the blister is 0.9533.
 The most negative effective pressure is -0.046271.
@@ -2057,7 +2059,7 @@ Min thickness of the blister is -0.0010502.
 Radius of the blister is 0.65765.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.9979 s, 3 iterations ]
+nevis_timesteps: Done [ 4.1174 s, 3 iterations ]
 nevis_timesteps: t = 75.0456 [ / 109.5 ]
 Volume of the blister is 0.95973.
 The most negative effective pressure is -0.045591.
@@ -2066,7 +2068,7 @@ Min thickness of the blister is -0.00080671.
 Radius of the blister is 0.66708.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.1508 s, 3 iterations ]
+nevis_timesteps: Done [ 4.3319 s, 3 iterations ]
 nevis_timesteps: t = 75.0475 [ / 109.5 ]
 Volume of the blister is 0.96535.
 The most negative effective pressure is -0.04476.
@@ -2075,7 +2077,7 @@ Min thickness of the blister is -0.0010459.
 Radius of the blister is 0.66708.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.2909 s, 3 iterations ]
+nevis_timesteps: Done [ 4.344 s, 3 iterations ]
 nevis_timesteps: t = 75.0493 [ / 109.5 ]
 Volume of the blister is 0.97024.
 The most negative effective pressure is -0.044054.
@@ -2084,7 +2086,7 @@ Min thickness of the blister is -0.0010081.
 Radius of the blister is 0.70178.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.1745 s, 3 iterations ]
+nevis_timesteps: Done [ 3.5006 s, 3 iterations ]
 nevis_timesteps: t = 75.0512 [ / 109.5 ]
 Volume of the blister is 0.97447.
 The most negative effective pressure is -0.043988.
@@ -2093,7 +2095,7 @@ Min thickness of the blister is -0.0010261.
 Radius of the blister is 0.70178.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.326 s, 3 iterations ]
+nevis_timesteps: Done [ 4.4515 s, 3 iterations ]
 nevis_timesteps: t = 75.053 [ / 109.5 ]
 Volume of the blister is 0.97812.
 The most negative effective pressure is -0.044122.
@@ -2102,7 +2104,7 @@ Min thickness of the blister is -0.00092558.
 Radius of the blister is 0.70711.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.5842 s, 3 iterations ]
+nevis_timesteps: Done [ 4.0503 s, 3 iterations ]
 nevis_timesteps: t = 75.0549 [ / 109.5 ]
 Volume of the blister is 0.98123.
 The most negative effective pressure is -0.044007.
@@ -2111,7 +2113,7 @@ Min thickness of the blister is -0.0010714.
 Radius of the blister is 0.70711.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.8686 s, 3 iterations ]
+nevis_timesteps: Done [ 4.5083 s, 3 iterations ]
 nevis_timesteps: t = 75.0568 [ / 109.5 ]
 Volume of the blister is 0.98388.
 The most negative effective pressure is -0.043572.
@@ -2120,18 +2122,18 @@ Min thickness of the blister is -0.0010772.
 Radius of the blister is 0.71589.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 5.1876 s, 3 iterations ]
+nevis_timesteps: Done [ 3.5536 s, 3 iterations ]
 nevis_timesteps: t = 75.0586 [ / 109.5 ]
-Volume of the blister is 0.98612.
+Volume of the blister is 0.98613.
 The most negative effective pressure is -0.042914.
 Max thickness of the blister is 3.39.
 Min thickness of the blister is -0.00069305.
 Radius of the blister is 0.71589.
 nevis_timesteps: dt = 0.0013735 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 5.411 s, 3 iterations ]
+nevis_timesteps: Done [ 3.7611 s, 3 iterations ]
 nevis_timesteps: t = 75.06 [ / 109.5 ]
-Volume of the blister is 0.98751.
+Volume of the blister is 0.98752.
 The most negative effective pressure is -0.042418.
 Max thickness of the blister is 3.3778.
 Min thickness of the blister is -0.0010423.
@@ -2141,7 +2143,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.9085 s, 3 iterations ]
+nevis_timesteps: Done [ 4.4876 s, 3 iterations ]
 nevis_timesteps: t = 75.0619 [ / 109.5 ]
 Volume of the blister is 0.98917.
 The most negative effective pressure is -0.042003.
@@ -2150,7 +2152,7 @@ Min thickness of the blister is -0.0010433.
 Radius of the blister is 0.75.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.6477 s, 3 iterations ]
+nevis_timesteps: Done [ 3.7573 s, 3 iterations ]
 nevis_timesteps: t = 75.0637 [ / 109.5 ]
 Volume of the blister is 0.99054.
 The most negative effective pressure is -0.042139.
@@ -2159,7 +2161,7 @@ Min thickness of the blister is -0.00087414.
 Radius of the blister is 0.75166.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.4956 s, 3 iterations ]
+nevis_timesteps: Done [ 3.6523 s, 3 iterations ]
 nevis_timesteps: t = 75.0656 [ / 109.5 ]
 Volume of the blister is 0.99168.
 The most negative effective pressure is -0.042277.
@@ -2168,7 +2170,7 @@ Min thickness of the blister is -0.00084451.
 Radius of the blister is 0.75664.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.6518 s, 3 iterations ]
+nevis_timesteps: Done [ 3.8145 s, 3 iterations ]
 nevis_timesteps: t = 75.0675 [ / 109.5 ]
 Volume of the blister is 0.99262.
 The most negative effective pressure is -0.042251.
@@ -2177,7 +2179,7 @@ Min thickness of the blister is -0.0010293.
 Radius of the blister is 0.75664.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.0281 s, 3 iterations ]
+nevis_timesteps: Done [ 4.4309 s, 3 iterations ]
 nevis_timesteps: t = 75.0693 [ / 109.5 ]
 Volume of the blister is 0.99338.
 The most negative effective pressure is -0.041983.
@@ -2186,7 +2188,7 @@ Min thickness of the blister is -0.0010555.
 Radius of the blister is 0.75664.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.4879 s, 3 iterations ]
+nevis_timesteps: Done [ 4.6449 s, 3 iterations ]
 nevis_timesteps: t = 75.0712 [ / 109.5 ]
 Volume of the blister is 0.994.
 The most negative effective pressure is -0.041488.
@@ -2195,7 +2197,7 @@ Min thickness of the blister is -0.00075653.
 Radius of the blister is 0.76485.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.385 s, 3 iterations ]
+nevis_timesteps: Done [ 4.7081 s, 3 iterations ]
 nevis_timesteps: t = 75.073 [ / 109.5 ]
 Volume of the blister is 0.9945.
 The most negative effective pressure is -0.040881.
@@ -2204,7 +2206,7 @@ Min thickness of the blister is -0.00084804.
 Radius of the blister is 0.76485.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.5256 s, 3 iterations ]
+nevis_timesteps: Done [ 4.6451 s, 3 iterations ]
 nevis_timesteps: t = 75.0749 [ / 109.5 ]
 Volume of the blister is 0.9949.
 The most negative effective pressure is -0.040534.
@@ -2213,7 +2215,7 @@ Min thickness of the blister is -0.0011194.
 Radius of the blister is 0.76485.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 5.163 s, 3 iterations ]
+nevis_timesteps: Done [ 4.2752 s, 3 iterations ]
 nevis_timesteps: t = 75.0768 [ / 109.5 ]
 Volume of the blister is 0.99521.
 The most negative effective pressure is -0.040569.
@@ -2222,7 +2224,7 @@ Min thickness of the blister is -0.00090333.
 Radius of the blister is 0.80156.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.6925 s, 3 iterations ]
+nevis_timesteps: Done [ 4.477 s, 3 iterations ]
 nevis_timesteps: t = 75.0786 [ / 109.5 ]
 Volume of the blister is 0.99546.
 The most negative effective pressure is -0.04072.
@@ -2231,7 +2233,7 @@ Min thickness of the blister is -0.00078286.
 Radius of the blister is 0.80156.
 nevis_timesteps: dt = 0.0013735 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.8667 s, 3 iterations ]
+nevis_timesteps: Done [ 4.5722 s, 3 iterations ]
 nevis_timesteps: t = 75.08 [ / 109.5 ]
 Volume of the blister is 0.99561.
 The most negative effective pressure is -0.040837.
@@ -2243,7 +2245,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.6933 s, 3 iterations ]
+nevis_timesteps: Done [ 3.3064 s, 3 iterations ]
 nevis_timesteps: t = 75.0819 [ / 109.5 ]
 Volume of the blister is 0.99577.
 The most negative effective pressure is -0.040839.
@@ -2252,7 +2254,7 @@ Min thickness of the blister is -0.00097391.
 Radius of the blister is 0.80623.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.2213 s, 3 iterations ]
+nevis_timesteps: Done [ 4.029 s, 3 iterations ]
 nevis_timesteps: t = 75.0837 [ / 109.5 ]
 Volume of the blister is 0.99589.
 The most negative effective pressure is -0.040633.
@@ -2261,7 +2263,7 @@ Min thickness of the blister is -0.00095923.
 Radius of the blister is 0.80623.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.3983 s, 3 iterations ]
+nevis_timesteps: Done [ 4.5026 s, 3 iterations ]
 nevis_timesteps: t = 75.0856 [ / 109.5 ]
 Volume of the blister is 0.99598.
 The most negative effective pressure is -0.040219.
@@ -2270,7 +2272,7 @@ Min thickness of the blister is -0.00096476.
 Radius of the blister is 0.81394.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.2326 s, 3 iterations ]
+nevis_timesteps: Done [ 4.4405 s, 3 iterations ]
 nevis_timesteps: t = 75.0875 [ / 109.5 ]
 Volume of the blister is 0.99605.
 The most negative effective pressure is -0.03972.
@@ -2279,7 +2281,7 @@ Min thickness of the blister is -0.00074559.
 Radius of the blister is 0.81394.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.0549 s, 3 iterations ]
+nevis_timesteps: Done [ 4.187 s, 3 iterations ]
 nevis_timesteps: t = 75.0893 [ / 109.5 ]
 Volume of the blister is 0.99609.
 The most negative effective pressure is -0.039458.
@@ -2288,7 +2290,7 @@ Min thickness of the blister is -0.0010139.
 Radius of the blister is 0.81394.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.1061 s, 3 iterations ]
+nevis_timesteps: Done [ 4.1411 s, 3 iterations ]
 nevis_timesteps: t = 75.0912 [ / 109.5 ]
 Volume of the blister is 0.99613.
 The most negative effective pressure is -0.039375.
@@ -2297,7 +2299,7 @@ Min thickness of the blister is -0.0010227.
 Radius of the blister is 0.85.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.0623 s, 3 iterations ]
+nevis_timesteps: Done [ 4.3894 s, 3 iterations ]
 nevis_timesteps: t = 75.093 [ / 109.5 ]
 Volume of the blister is 0.99615.
 The most negative effective pressure is -0.039466.
@@ -2306,7 +2308,7 @@ Min thickness of the blister is -0.00086936.
 Radius of the blister is 0.85147.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.8602 s, 3 iterations ]
+nevis_timesteps: Done [ 4.1813 s, 3 iterations ]
 nevis_timesteps: t = 75.0949 [ / 109.5 ]
 Volume of the blister is 0.99616.
 The most negative effective pressure is -0.039605.
@@ -2315,7 +2317,7 @@ Min thickness of the blister is -0.00067656.
 Radius of the blister is 0.85147.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.6314 s, 3 iterations ]
+nevis_timesteps: Done [ 3.3171 s, 3 iterations ]
 nevis_timesteps: t = 75.0968 [ / 109.5 ]
 Volume of the blister is 0.99616.
 The most negative effective pressure is -0.039671.
@@ -2324,7 +2326,7 @@ Min thickness of the blister is -0.00088734.
 Radius of the blister is 0.85586.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.2821 s, 3 iterations ]
+nevis_timesteps: Done [ 4.0379 s, 3 iterations ]
 nevis_timesteps: t = 75.0986 [ / 109.5 ]
 Volume of the blister is 0.99616.
 The most negative effective pressure is -0.039588.
@@ -2333,7 +2335,7 @@ Min thickness of the blister is -0.0009999.
 Radius of the blister is 0.85586.
 nevis_timesteps: dt = 0.0013735 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.3684 s, 3 iterations ]
+nevis_timesteps: Done [ 4.9022 s, 3 iterations ]
 nevis_timesteps: t = 75.1 [ / 109.5 ]
 Volume of the blister is 0.99615.
 The most negative effective pressure is -0.039431.
@@ -2345,7 +2347,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.6757 s, 3 iterations ]
+nevis_timesteps: Done [ 4.6031 s, 3 iterations ]
 nevis_timesteps: t = 75.1019 [ / 109.5 ]
 Volume of the blister is 0.99614.
 The most negative effective pressure is -0.039133.
@@ -2354,7 +2356,7 @@ Min thickness of the blister is -0.00097068.
 Radius of the blister is 0.86313.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.9995 s, 3 iterations ]
+nevis_timesteps: Done [ 4.769 s, 3 iterations ]
 nevis_timesteps: t = 75.1037 [ / 109.5 ]
 Volume of the blister is 0.99613.
 The most negative effective pressure is -0.038848.
@@ -2363,7 +2365,7 @@ Min thickness of the blister is -0.00068484.
 Radius of the blister is 0.86313.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.9222 s, 3 iterations ]
+nevis_timesteps: Done [ 4.4131 s, 3 iterations ]
 nevis_timesteps: t = 75.1056 [ / 109.5 ]
 Volume of the blister is 0.99612.
 The most negative effective pressure is -0.038557.
@@ -2372,7 +2374,7 @@ Min thickness of the blister is -0.0009626.
 Radius of the blister is 0.86313.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.9336 s, 3 iterations ]
+nevis_timesteps: Done [ 4.1614 s, 3 iterations ]
 nevis_timesteps: t = 75.1075 [ / 109.5 ]
 Volume of the blister is 0.9961.
 The most negative effective pressure is -0.038428.
@@ -2381,7 +2383,7 @@ Min thickness of the blister is -0.0010499.
 Radius of the blister is 0.9.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.2605 s, 3 iterations ]
+nevis_timesteps: Done [ 4.2239 s, 3 iterations ]
 nevis_timesteps: t = 75.1093 [ / 109.5 ]
 Volume of the blister is 0.99609.
 The most negative effective pressure is -0.038476.
@@ -2390,7 +2392,7 @@ Min thickness of the blister is -0.00087476.
 Radius of the blister is 0.90139.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.9224 s, 3 iterations ]
+nevis_timesteps: Done [ 3.9694 s, 3 iterations ]
 nevis_timesteps: t = 75.1112 [ / 109.5 ]
 Volume of the blister is 0.99607.
 The most negative effective pressure is -0.038603.
@@ -2399,7 +2401,7 @@ Min thickness of the blister is -0.00079784.
 Radius of the blister is 0.90139.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.8365 s, 3 iterations ]
+nevis_timesteps: Done [ 3.8331 s, 3 iterations ]
 nevis_timesteps: t = 75.113 [ / 109.5 ]
 Volume of the blister is 0.99605.
 The most negative effective pressure is -0.0387.
@@ -2408,7 +2410,7 @@ Min thickness of the blister is -0.00075443.
 Radius of the blister is 0.90554.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.8462 s, 3 iterations ]
+nevis_timesteps: Done [ 3.8765 s, 3 iterations ]
 nevis_timesteps: t = 75.1149 [ / 109.5 ]
 Volume of the blister is 0.99603.
 The most negative effective pressure is -0.03869.
@@ -2417,7 +2419,7 @@ Min thickness of the blister is -0.00096443.
 Radius of the blister is 0.90554.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.6667 s, 3 iterations ]
+nevis_timesteps: Done [ 4.1396 s, 3 iterations ]
 nevis_timesteps: t = 75.1168 [ / 109.5 ]
 Volume of the blister is 0.99601.
 The most negative effective pressure is -0.03852.
@@ -2426,7 +2428,7 @@ Min thickness of the blister is -0.00087104.
 Radius of the blister is 0.90554.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.0694 s, 3 iterations ]
+nevis_timesteps: Done [ 3.5411 s, 3 iterations ]
 nevis_timesteps: t = 75.1186 [ / 109.5 ]
 Volume of the blister is 0.99599.
 The most negative effective pressure is -0.03848.
@@ -2435,7 +2437,7 @@ Min thickness of the blister is -0.0010277.
 Radius of the blister is 0.91241.
 nevis_timesteps: dt = 0.0013735 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.8372 s, 3 iterations ]
+nevis_timesteps: Done [ 3.5312 s, 3 iterations ]
 nevis_timesteps: t = 75.12 [ / 109.5 ]
 Volume of the blister is 0.99598.
 The most negative effective pressure is -0.038323.
@@ -2447,7 +2449,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.9745 s, 3 iterations ]
+nevis_timesteps: Done [ 4.8514 s, 3 iterations ]
 nevis_timesteps: t = 75.1219 [ / 109.5 ]
 Volume of the blister is 0.99596.
 The most negative effective pressure is -0.037987.
@@ -2456,7 +2458,7 @@ Min thickness of the blister is -0.00072965.
 Radius of the blister is 0.91241.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.5247 s, 3 iterations ]
+nevis_timesteps: Done [ 4.769 s, 3 iterations ]
 nevis_timesteps: t = 75.1237 [ / 109.5 ]
 Volume of the blister is 0.99594.
 The most negative effective pressure is -0.037719.
@@ -2465,7 +2467,7 @@ Min thickness of the blister is -0.001017.
 Radius of the blister is 0.91241.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.2857 s, 3 iterations ]
+nevis_timesteps: Done [ 3.7384 s, 3 iterations ]
 nevis_timesteps: t = 75.1256 [ / 109.5 ]
 Volume of the blister is 0.99592.
 The most negative effective pressure is -0.037626.
@@ -2474,7 +2476,7 @@ Min thickness of the blister is -0.00096677.
 Radius of the blister is 0.95131.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.1603 s, 3 iterations ]
+nevis_timesteps: Done [ 3.7771 s, 3 iterations ]
 nevis_timesteps: t = 75.1275 [ / 109.5 ]
 Volume of the blister is 0.9959.
 The most negative effective pressure is -0.037684.
@@ -2483,7 +2485,7 @@ Min thickness of the blister is -0.00087691.
 Radius of the blister is 0.95131.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.5449 s, 3 iterations ]
+nevis_timesteps: Done [ 4.7275 s, 3 iterations ]
 nevis_timesteps: t = 75.1293 [ / 109.5 ]
 Volume of the blister is 0.99587.
 The most negative effective pressure is -0.037799.
@@ -2492,7 +2494,7 @@ Min thickness of the blister is -0.00084204.
 Radius of the blister is 0.95131.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.4123 s, 3 iterations ]
+nevis_timesteps: Done [ 4.4602 s, 3 iterations ]
 nevis_timesteps: t = 75.1312 [ / 109.5 ]
 Volume of the blister is 0.99585.
 The most negative effective pressure is -0.037884.
@@ -2501,7 +2503,7 @@ Min thickness of the blister is -0.00077268.
 Radius of the blister is 0.95525.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.7852 s, 3 iterations ]
+nevis_timesteps: Done [ 4.8356 s, 3 iterations ]
 nevis_timesteps: t = 75.133 [ / 109.5 ]
 Volume of the blister is 0.99583.
 The most negative effective pressure is -0.037872.
@@ -2510,7 +2512,7 @@ Min thickness of the blister is -0.0009609.
 Radius of the blister is 0.95525.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.1032 s, 3 iterations ]
+nevis_timesteps: Done [ 4.2248 s, 3 iterations ]
 nevis_timesteps: t = 75.1349 [ / 109.5 ]
 Volume of the blister is 0.99581.
 The most negative effective pressure is -0.037966.
@@ -2519,7 +2521,7 @@ Min thickness of the blister is -0.00080774.
 Radius of the blister is 0.95525.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.8893 s, 3 iterations ]
+nevis_timesteps: Done [ 3.6333 s, 3 iterations ]
 nevis_timesteps: t = 75.1368 [ / 109.5 ]
 Volume of the blister is 0.99579.
 The most negative effective pressure is -0.03795.
@@ -2528,7 +2530,7 @@ Min thickness of the blister is -0.0010179.
 Radius of the blister is 0.96177.
 nevis_timesteps: dt = 0.0018626 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.8463 s, 3 iterations ]
+nevis_timesteps: Done [ 3.621 s, 3 iterations ]
 nevis_timesteps: t = 75.1386 [ / 109.5 ]
 Volume of the blister is 0.99577.
 The most negative effective pressure is -0.037673.
@@ -2537,7 +2539,7 @@ Min thickness of the blister is -0.00073268.
 Radius of the blister is 0.96177.
 nevis_timesteps: dt = 0.0013735 ...
   norm_F less than tolerance after 2 Newton iterations
-nevis_timesteps: Done [ 3.033 s, 2 iterations ]
+nevis_timesteps: Done [ 1.7555 s, 2 iterations ]
 nevis_timesteps: Increase suggested timestep to 0.0037253
 nevis_timesteps: t = 75.14 [ / 109.5 ]
 Volume of the blister is 0.99575.
@@ -2550,7 +2552,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0037253 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.3317 s, 3 iterations ]
+nevis_timesteps: Done [ 2.6087 s, 3 iterations ]
 nevis_timesteps: t = 75.1437 [ / 109.5 ]
 Volume of the blister is 0.99571.
 The most negative effective pressure is -0.036872.
@@ -2559,7 +2561,7 @@ Min thickness of the blister is -0.00076315.
 Radius of the blister is 1.0012.
 nevis_timesteps: dt = 0.0037253 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.9209 s, 3 iterations ]
+nevis_timesteps: Done [ 3.3618 s, 3 iterations ]
 nevis_timesteps: t = 75.1475 [ / 109.5 ]
 Volume of the blister is 0.99567.
 The most negative effective pressure is -0.03676.
@@ -2568,7 +2570,7 @@ Min thickness of the blister is -0.00079844.
 Radius of the blister is 1.005.
 nevis_timesteps: dt = 0.0037253 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.9793 s, 3 iterations ]
+nevis_timesteps: Done [ 2.7756 s, 3 iterations ]
 nevis_timesteps: t = 75.1512 [ / 109.5 ]
 Volume of the blister is 0.99562.
 The most negative effective pressure is -0.036664.
@@ -2577,7 +2579,7 @@ Min thickness of the blister is -0.0009503.
 Radius of the blister is 1.005.
 nevis_timesteps: dt = 0.0037253 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.2605 s, 3 iterations ]
+nevis_timesteps: Done [ 2.8977 s, 3 iterations ]
 nevis_timesteps: t = 75.1549 [ / 109.5 ]
 Volume of the blister is 0.99558.
 The most negative effective pressure is -0.036668.
@@ -2586,7 +2588,7 @@ Min thickness of the blister is -0.0009751.
 Radius of the blister is 1.0112.
 nevis_timesteps: dt = 0.0037253 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.8872 s, 3 iterations ]
+nevis_timesteps: Done [ 3.0286 s, 3 iterations ]
 nevis_timesteps: t = 75.1586 [ / 109.5 ]
 Volume of the blister is 0.99553.
 The most negative effective pressure is -0.036265.
@@ -2595,7 +2597,7 @@ Min thickness of the blister is -0.00081598.
 Radius of the blister is 1.0112.
 nevis_timesteps: dt = 0.0013735 ...
   norm_F less than tolerance after 2 Newton iterations
-nevis_timesteps: Done [ 3.2041 s, 2 iterations ]
+nevis_timesteps: Done [ 2.5263 s, 2 iterations ]
 nevis_timesteps: Increase suggested timestep to 0.0074506
 nevis_timesteps: t = 75.16 [ / 109.5 ]
 Volume of the blister is 0.99552.
@@ -2608,7 +2610,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 5 Newton iterations
-nevis_timesteps: Done [ 4.7074 s, 5 iterations ]
+nevis_timesteps: Done [ 2.6478 s, 5 iterations ]
 nevis_timesteps: t = 75.1675 [ / 109.5 ]
 Volume of the blister is 0.99543.
 The most negative effective pressure is -0.035358.
@@ -2617,7 +2619,7 @@ Min thickness of the blister is -0.0010027.
 Radius of the blister is 1.0548.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 5 Newton iterations
-nevis_timesteps: Done [ 3.9768 s, 5 iterations ]
+nevis_timesteps: Done [ 2.6702 s, 5 iterations ]
 nevis_timesteps: t = 75.1749 [ / 109.5 ]
 Volume of the blister is 0.99533.
 The most negative effective pressure is -0.03474.
@@ -2626,7 +2628,7 @@ Min thickness of the blister is -0.00088087.
 Radius of the blister is 1.0607.
 nevis_timesteps: dt = 0.0050988 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.0689 s, 3 iterations ]
+nevis_timesteps: Done [ 2.6293 s, 3 iterations ]
 nevis_timesteps: t = 75.18 [ / 109.5 ]
 Volume of the blister is 0.99527.
 The most negative effective pressure is -0.034645.
@@ -2638,7 +2640,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.441 s, 4 iterations ]
+nevis_timesteps: Done [ 2.1626 s, 4 iterations ]
 nevis_timesteps: t = 75.1875 [ / 109.5 ]
 Volume of the blister is 0.99518.
 The most negative effective pressure is -0.034344.
@@ -2647,7 +2649,7 @@ Min thickness of the blister is -0.00086094.
 Radius of the blister is 1.1045.
 nevis_timesteps: dt = 0.0074506 ...
   norm_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 4.0739 s, 4 iterations ]
+nevis_timesteps: Done [ 2.5783 s, 4 iterations ]
 nevis_timesteps: t = 75.1949 [ / 109.5 ]
 Volume of the blister is 0.99508.
 The most negative effective pressure is -0.0342.
@@ -2656,7 +2658,7 @@ Min thickness of the blister is -0.00086677.
 Radius of the blister is 1.15.
 nevis_timesteps: dt = 0.0050988 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.7914 s, 3 iterations ]
+nevis_timesteps: Done [ 2.5839 s, 3 iterations ]
 nevis_timesteps: t = 75.2 [ / 109.5 ]
 Volume of the blister is 0.99501.
 The most negative effective pressure is -0.034037.
@@ -2668,7 +2670,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.0652 s, 4 iterations ]
+nevis_timesteps: Done [ 2.0319 s, 4 iterations ]
 nevis_timesteps: t = 75.2075 [ / 109.5 ]
 Volume of the blister is 0.99492.
 The most negative effective pressure is -0.033761.
@@ -2677,7 +2679,7 @@ Min thickness of the blister is -0.00075608.
 Radius of the blister is 1.1543.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.1833 s, 4 iterations ]
+nevis_timesteps: Done [ 2.665 s, 4 iterations ]
 nevis_timesteps: t = 75.2149 [ / 109.5 ]
 Volume of the blister is 0.99482.
 The most negative effective pressure is -0.033807.
@@ -2686,7 +2688,7 @@ Min thickness of the blister is -0.00079693.
 Radius of the blister is 1.2.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 2.6794 s, 3 iterations ]
+nevis_timesteps: Done [ 2.5961 s, 3 iterations ]
 nevis_timesteps: t = 75.22 [ / 109.5 ]
 Volume of the blister is 0.99475.
 The most negative effective pressure is -0.033541.
@@ -2698,7 +2700,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.063 s, 4 iterations ]
+nevis_timesteps: Done [ 2.3242 s, 4 iterations ]
 nevis_timesteps: t = 75.2275 [ / 109.5 ]
 Volume of the blister is 0.99465.
 The most negative effective pressure is -0.033462.
@@ -2707,7 +2709,7 @@ Min thickness of the blister is -0.00076535.
 Radius of the blister is 1.2042.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 5 Newton iterations
-nevis_timesteps: Done [ 3.9644 s, 5 iterations ]
+nevis_timesteps: Done [ 3.3636 s, 5 iterations ]
 nevis_timesteps: t = 75.2349 [ / 109.5 ]
 Volume of the blister is 0.99454.
 The most negative effective pressure is -0.033465.
@@ -2716,7 +2718,7 @@ Min thickness of the blister is -0.00080878.
 Radius of the blister is 1.25.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.3385 s, 3 iterations ]
+nevis_timesteps: Done [ 3.2333 s, 3 iterations ]
 nevis_timesteps: t = 75.24 [ / 109.5 ]
 Volume of the blister is 0.99447.
 The most negative effective pressure is -0.033108.
@@ -2728,7 +2730,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 2.7467 s, 4 iterations ]
+nevis_timesteps: Done [ 2.1621 s, 4 iterations ]
 nevis_timesteps: t = 75.2475 [ / 109.5 ]
 Volume of the blister is 0.99437.
 The most negative effective pressure is -0.033076.
@@ -2737,7 +2739,7 @@ Min thickness of the blister is -0.00085594.
 Radius of the blister is 1.254.
 nevis_timesteps: dt = 0.0074506 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 2.1039 s, 3 iterations ]
+nevis_timesteps: Done [ 1.3136 s, 3 iterations ]
 nevis_timesteps: t = 75.2549 [ / 109.5 ]
 Volume of the blister is 0.99426.
 The most negative effective pressure is -0.033152.
@@ -2746,7 +2748,7 @@ Min thickness of the blister is -0.00088318.
 Radius of the blister is 1.3.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.0095 s, 3 iterations ]
+nevis_timesteps: Done [ 2.2393 s, 3 iterations ]
 nevis_timesteps: t = 75.26 [ / 109.5 ]
 Volume of the blister is 0.99419.
 The most negative effective pressure is -0.032746.
@@ -2758,7 +2760,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.3741 s, 4 iterations ]
+nevis_timesteps: Done [ 2.6114 s, 4 iterations ]
 nevis_timesteps: t = 75.2675 [ / 109.5 ]
 Volume of the blister is 0.99408.
 The most negative effective pressure is -0.032623.
@@ -2767,7 +2769,7 @@ Min thickness of the blister is -0.0008998.
 Radius of the blister is 1.3038.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.1851 s, 4 iterations ]
+nevis_timesteps: Done [ 2.4759 s, 4 iterations ]
 nevis_timesteps: t = 75.2749 [ / 109.5 ]
 Volume of the blister is 0.99397.
 The most negative effective pressure is -0.032836.
@@ -2776,7 +2778,7 @@ Min thickness of the blister is -0.00090505.
 Radius of the blister is 1.3086.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 4.6871 s, 3 iterations ]
+nevis_timesteps: Done [ 2.2841 s, 3 iterations ]
 nevis_timesteps: t = 75.28 [ / 109.5 ]
 Volume of the blister is 0.9939.
 The most negative effective pressure is -0.032455.
@@ -2788,16 +2790,16 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 5 Newton iterations
-nevis_timesteps: Done [ 4.3142 s, 5 iterations ]
+nevis_timesteps: Done [ 2.5705 s, 5 iterations ]
 nevis_timesteps: t = 75.2875 [ / 109.5 ]
-Volume of the blister is 0.99378.
+Volume of the blister is 0.99379.
 The most negative effective pressure is -0.032137.
 Max thickness of the blister is 2.3015.
 Min thickness of the blister is -0.00082042.
 Radius of the blister is 1.3537.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.5841 s, 4 iterations ]
+nevis_timesteps: Done [ 2.3235 s, 4 iterations ]
 nevis_timesteps: t = 75.2949 [ / 109.5 ]
 Volume of the blister is 0.99367.
 The most negative effective pressure is -0.032483.
@@ -2806,7 +2808,7 @@ Min thickness of the blister is -0.00075262.
 Radius of the blister is 1.3583.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.7183 s, 3 iterations ]
+nevis_timesteps: Done [ 1.9798 s, 3 iterations ]
 nevis_timesteps: t = 75.3 [ / 109.5 ]
 Volume of the blister is 0.9936.
 The most negative effective pressure is -0.032214.
@@ -2818,7 +2820,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 5 Newton iterations
-nevis_timesteps: Done [ 4.1691 s, 5 iterations ]
+nevis_timesteps: Done [ 2.8238 s, 5 iterations ]
 nevis_timesteps: t = 75.3075 [ / 109.5 ]
 Volume of the blister is 0.99348.
 The most negative effective pressure is -0.031658.
@@ -2827,7 +2829,7 @@ Min thickness of the blister is -0.0006126.
 Radius of the blister is 1.4036.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 5 Newton iterations
-nevis_timesteps: Done [ 4.1974 s, 5 iterations ]
+nevis_timesteps: Done [ 3.5484 s, 5 iterations ]
 nevis_timesteps: t = 75.3149 [ / 109.5 ]
 Volume of the blister is 0.99337.
 The most negative effective pressure is -0.03207.
@@ -2836,7 +2838,7 @@ Min thickness of the blister is -0.00085109.
 Radius of the blister is 1.408.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 2.7155 s, 3 iterations ]
+nevis_timesteps: Done [ 2.355 s, 3 iterations ]
 nevis_timesteps: t = 75.32 [ / 109.5 ]
 Volume of the blister is 0.99329.
 The most negative effective pressure is -0.031966.
@@ -2848,7 +2850,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.284 s, 4 iterations ]
+nevis_timesteps: Done [ 2.0337 s, 4 iterations ]
 nevis_timesteps: t = 75.3275 [ / 109.5 ]
 Volume of the blister is 0.99317.
 The most negative effective pressure is -0.031213.
@@ -2857,7 +2859,7 @@ Min thickness of the blister is -0.00074313.
 Radius of the blister is 1.4534.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 2.8369 s, 4 iterations ]
+nevis_timesteps: Done [ 3.0344 s, 4 iterations ]
 nevis_timesteps: t = 75.3349 [ / 109.5 ]
 Volume of the blister is 0.99305.
 The most negative effective pressure is -0.031606.
@@ -2866,7 +2868,7 @@ Min thickness of the blister is -0.0006684.
 Radius of the blister is 1.4534.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.5015 s, 3 iterations ]
+nevis_timesteps: Done [ 2.4161 s, 3 iterations ]
 nevis_timesteps: t = 75.34 [ / 109.5 ]
 Volume of the blister is 0.99297.
 The most negative effective pressure is -0.031642.
@@ -2878,7 +2880,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.0512 s, 4 iterations ]
+nevis_timesteps: Done [ 2.8558 s, 4 iterations ]
 nevis_timesteps: t = 75.3475 [ / 109.5 ]
 Volume of the blister is 0.99285.
 The most negative effective pressure is -0.030774.
@@ -2887,7 +2889,7 @@ Min thickness of the blister is -0.0009309.
 Radius of the blister is 1.5008.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.8834 s, 4 iterations ]
+nevis_timesteps: Done [ 2.9537 s, 4 iterations ]
 nevis_timesteps: t = 75.3549 [ / 109.5 ]
 Volume of the blister is 0.99273.
 The most negative effective pressure is -0.03114.
@@ -2896,7 +2898,7 @@ Min thickness of the blister is -0.00090486.
 Radius of the blister is 1.5033.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.7088 s, 3 iterations ]
+nevis_timesteps: Done [ 2.4441 s, 3 iterations ]
 nevis_timesteps: t = 75.36 [ / 109.5 ]
 Volume of the blister is 0.99264.
 The most negative effective pressure is -0.031221.
@@ -2908,7 +2910,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.3422 s, 4 iterations ]
+nevis_timesteps: Done [ 2.2797 s, 4 iterations ]
 nevis_timesteps: t = 75.3675 [ / 109.5 ]
 Volume of the blister is 0.99252.
 The most negative effective pressure is -0.030433.
@@ -2917,7 +2919,7 @@ Min thickness of the blister is -0.00089961.
 Radius of the blister is 1.5508.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 5 Newton iterations
-nevis_timesteps: Done [ 3.4939 s, 5 iterations ]
+nevis_timesteps: Done [ 3.3774 s, 5 iterations ]
 nevis_timesteps: t = 75.3749 [ / 109.5 ]
 Volume of the blister is 0.99239.
 The most negative effective pressure is -0.030712.
@@ -2926,7 +2928,7 @@ Min thickness of the blister is -0.00088918.
 Radius of the blister is 1.5532.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 4.2461 s, 4 iterations ]
+nevis_timesteps: Done [ 3.0582 s, 4 iterations ]
 nevis_timesteps: t = 75.38 [ / 109.5 ]
 Volume of the blister is 0.99231.
 The most negative effective pressure is -0.030769.
@@ -2938,7 +2940,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 2.9801 s, 3 iterations ]
+nevis_timesteps: Done [ 1.514 s, 3 iterations ]
 nevis_timesteps: t = 75.3875 [ / 109.5 ]
 Volume of the blister is 0.99218.
 The most negative effective pressure is -0.030119.
@@ -2947,7 +2949,7 @@ Min thickness of the blister is -0.00064342.
 Radius of the blister is 1.6008.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 2.8738 s, 4 iterations ]
+nevis_timesteps: Done [ 1.8456 s, 4 iterations ]
 nevis_timesteps: t = 75.3949 [ / 109.5 ]
 Volume of the blister is 0.99205.
 The most negative effective pressure is -0.030293.
@@ -2956,7 +2958,7 @@ Min thickness of the blister is -0.00087357.
 Radius of the blister is 1.6031.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 4.3839 s, 4 iterations ]
+nevis_timesteps: Done [ 4.0933 s, 4 iterations ]
 nevis_timesteps: t = 75.4 [ / 109.5 ]
 Volume of the blister is 0.99197.
 The most negative effective pressure is -0.030389.
@@ -2968,7 +2970,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 1.7509 s, 3 iterations ]
+nevis_timesteps: Done [ 2.4017 s, 3 iterations ]
 nevis_timesteps: t = 75.4075 [ / 109.5 ]
 Volume of the blister is 0.99184.
 The most negative effective pressure is -0.029731.
@@ -2977,7 +2979,7 @@ Min thickness of the blister is -0.00043726.
 Radius of the blister is 1.65.
 nevis_timesteps: dt = 0.0074506 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 2.1983 s, 3 iterations ]
+nevis_timesteps: Done [ 2.5756 s, 3 iterations ]
 nevis_timesteps: t = 75.4149 [ / 109.5 ]
 Volume of the blister is 0.99171.
 The most negative effective pressure is -0.029766.
@@ -2986,7 +2988,7 @@ Min thickness of the blister is -0.000926.
 Radius of the blister is 1.6508.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.2179 s, 3 iterations ]
+nevis_timesteps: Done [ 4.2871 s, 3 iterations ]
 nevis_timesteps: t = 75.42 [ / 109.5 ]
 Volume of the blister is 0.99162.
 The most negative effective pressure is -0.030082.
@@ -2998,7 +3000,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.3555 s, 4 iterations ]
+nevis_timesteps: Done [ 3.4045 s, 4 iterations ]
 nevis_timesteps: t = 75.4275 [ / 109.5 ]
 Volume of the blister is 0.99148.
 The most negative effective pressure is -0.029378.
@@ -3007,7 +3009,7 @@ Min thickness of the blister is -0.00087582.
 Radius of the blister is 1.653.
 nevis_timesteps: dt = 0.0074506 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 2.5084 s, 3 iterations ]
+nevis_timesteps: Done [ 2.3171 s, 3 iterations ]
 nevis_timesteps: t = 75.4349 [ / 109.5 ]
 Volume of the blister is 0.99135.
 The most negative effective pressure is -0.029072.
@@ -3016,7 +3018,7 @@ Min thickness of the blister is -0.00071968.
 Radius of the blister is 1.7007.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.4671 s, 3 iterations ]
+nevis_timesteps: Done [ 3.195 s, 3 iterations ]
 nevis_timesteps: t = 75.44 [ / 109.5 ]
 Volume of the blister is 0.99126.
 The most negative effective pressure is -0.029665.
@@ -3028,7 +3030,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.9207 s, 4 iterations ]
+nevis_timesteps: Done [ 3.3717 s, 4 iterations ]
 nevis_timesteps: t = 75.4475 [ / 109.5 ]
 Volume of the blister is 0.99112.
 The most negative effective pressure is -0.029136.
@@ -3037,7 +3039,7 @@ Min thickness of the blister is -0.00088022.
 Radius of the blister is 1.7029.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.3668 s, 4 iterations ]
+nevis_timesteps: Done [ 2.8475 s, 4 iterations ]
 nevis_timesteps: t = 75.4549 [ / 109.5 ]
 Volume of the blister is 0.99099.
 The most negative effective pressure is -0.028338.
@@ -3046,7 +3048,7 @@ Min thickness of the blister is -0.00087947.
 Radius of the blister is 1.7507.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.1881 s, 3 iterations ]
+nevis_timesteps: Done [ 3.5043 s, 3 iterations ]
 nevis_timesteps: t = 75.46 [ / 109.5 ]
 Volume of the blister is 0.99089.
 The most negative effective pressure is -0.028968.
@@ -3058,7 +3060,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 2.5528 s, 4 iterations ]
+nevis_timesteps: Done [ 2.2565 s, 4 iterations ]
 nevis_timesteps: t = 75.4675 [ / 109.5 ]
 Volume of the blister is 0.99076.
 The most negative effective pressure is -0.0289.
@@ -3067,7 +3069,7 @@ Min thickness of the blister is -0.00089369.
 Radius of the blister is 1.7529.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.141 s, 4 iterations ]
+nevis_timesteps: Done [ 2.7061 s, 4 iterations ]
 nevis_timesteps: t = 75.4749 [ / 109.5 ]
 Volume of the blister is 0.99062.
 The most negative effective pressure is -0.027763.
@@ -3076,7 +3078,7 @@ Min thickness of the blister is -0.0005786.
 Radius of the blister is 1.8.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 4.836 s, 4 iterations ]
+nevis_timesteps: Done [ 5.3335 s, 4 iterations ]
 nevis_timesteps: t = 75.48 [ / 109.5 ]
 Volume of the blister is 0.99052.
 The most negative effective pressure is -0.028144.
@@ -3088,7 +3090,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 2.0479 s, 3 iterations ]
+nevis_timesteps: Done [ 2.3846 s, 3 iterations ]
 nevis_timesteps: t = 75.4875 [ / 109.5 ]
 Volume of the blister is 0.99038.
 The most negative effective pressure is -0.028439.
@@ -3097,7 +3099,7 @@ Min thickness of the blister is -0.00087877.
 Radius of the blister is 1.8028.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.3594 s, 4 iterations ]
+nevis_timesteps: Done [ 3.2929 s, 4 iterations ]
 nevis_timesteps: t = 75.4949 [ / 109.5 ]
 Volume of the blister is 0.99024.
 The most negative effective pressure is -0.027557.
@@ -3106,7 +3108,7 @@ Min thickness of the blister is -0.00089732.
 Radius of the blister is 1.8028.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 2.587 s, 3 iterations ]
+nevis_timesteps: Done [ 3.0172 s, 3 iterations ]
 nevis_timesteps: t = 75.5 [ / 109.5 ]
 Volume of the blister is 0.99014.
 The most negative effective pressure is -0.02752.
@@ -3118,7 +3120,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 2.5393 s, 4 iterations ]
+nevis_timesteps: Done [ 3.4814 s, 4 iterations ]
 nevis_timesteps: t = 75.5075 [ / 109.5 ]
 Volume of the blister is 0.99.
 The most negative effective pressure is -0.027683.
@@ -3127,7 +3129,7 @@ Min thickness of the blister is -0.00072902.
 Radius of the blister is 1.8507.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.5003 s, 4 iterations ]
+nevis_timesteps: Done [ 2.8472 s, 4 iterations ]
 nevis_timesteps: t = 75.5149 [ / 109.5 ]
 Volume of the blister is 0.98985.
 The most negative effective pressure is -0.027329.
@@ -3136,7 +3138,7 @@ Min thickness of the blister is -0.00088224.
 Radius of the blister is 1.8527.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 3.9665 s, 3 iterations ]
+nevis_timesteps: Done [ 3.2097 s, 3 iterations ]
 nevis_timesteps: t = 75.52 [ / 109.5 ]
 Volume of the blister is 0.98976.
 The most negative effective pressure is -0.027207.
@@ -3148,7 +3150,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 2.6962 s, 4 iterations ]
+nevis_timesteps: Done [ 2.7943 s, 4 iterations ]
 nevis_timesteps: t = 75.5275 [ / 109.5 ]
 Volume of the blister is 0.98961.
 The most negative effective pressure is -0.026897.
@@ -3157,7 +3159,7 @@ Min thickness of the blister is -0.00067721.
 Radius of the blister is 1.9007.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 2.0013 s, 4 iterations ]
+nevis_timesteps: Done [ 2.4288 s, 4 iterations ]
 nevis_timesteps: t = 75.5349 [ / 109.5 ]
 Volume of the blister is 0.98946.
 The most negative effective pressure is -0.026794.
@@ -3166,19 +3168,19 @@ Min thickness of the blister is -0.00062427.
 Radius of the blister is 1.9026.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 2.6952 s, 3 iterations ]
+nevis_timesteps: Done [ 2.5179 s, 3 iterations ]
 nevis_timesteps: t = 75.54 [ / 109.5 ]
 Volume of the blister is 0.98936.
 The most negative effective pressure is -0.026916.
 Max thickness of the blister is 1.7781.
-Min thickness of the blister is -0.0010246.
+Min thickness of the blister is -0.0010245.
 Radius of the blister is 1.9026.
 nevis_timesteps: Done
 nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_drainage/0123 ...
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.1702 s, 4 iterations ]
+nevis_timesteps: Done [ 2.3648 s, 4 iterations ]
 nevis_timesteps: t = 75.5475 [ / 109.5 ]
 Volume of the blister is 0.98921.
 The most negative effective pressure is -0.026419.
@@ -3187,7 +3189,7 @@ Min thickness of the blister is -0.00092448.
 Radius of the blister is 1.9506.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.1551 s, 4 iterations ]
+nevis_timesteps: Done [ 3.4118 s, 4 iterations ]
 nevis_timesteps: t = 75.5549 [ / 109.5 ]
 Volume of the blister is 0.98906.
 The most negative effective pressure is -0.025991.
@@ -3196,7 +3198,7 @@ Min thickness of the blister is -0.00040202.
 Radius of the blister is 1.9526.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 5.0682 s, 4 iterations ]
+nevis_timesteps: Done [ 4.2397 s, 4 iterations ]
 nevis_timesteps: t = 75.56 [ / 109.5 ]
 Volume of the blister is 0.98896.
 The most negative effective pressure is -0.026091.
@@ -3208,7 +3210,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norm_F less than tolerance after 3 Newton iterations
-nevis_timesteps: Done [ 1.8447 s, 3 iterations ]
+nevis_timesteps: Done [ 2.2085 s, 3 iterations ]
 nevis_timesteps: t = 75.5675 [ / 109.5 ]
 Volume of the blister is 0.98881.
 The most negative effective pressure is -0.026181.
@@ -3217,7 +3219,7 @@ Min thickness of the blister is -0.00081173.
 Radius of the blister is 2.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 2.6099 s, 4 iterations ]
+nevis_timesteps: Done [ 2.8545 s, 4 iterations ]
 nevis_timesteps: t = 75.5749 [ / 109.5 ]
 Volume of the blister is 0.98866.
 The most negative effective pressure is -0.025288.
@@ -3226,7 +3228,7 @@ Min thickness of the blister is -0.00093391.
 Radius of the blister is 2.0006.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 4.2001 s, 4 iterations ]
+nevis_timesteps: Done [ 3.9191 s, 4 iterations ]
 nevis_timesteps: t = 75.58 [ / 109.5 ]
 Volume of the blister is 0.98855.
 The most negative effective pressure is -0.025022.
@@ -3238,7 +3240,7 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 5 Newton iterations
-nevis_timesteps: Done [ 3.1137 s, 5 iterations ]
+nevis_timesteps: Done [ 3.6789 s, 5 iterations ]
 nevis_timesteps: t = 75.5875 [ / 109.5 ]
 Volume of the blister is 0.9884.
 The most negative effective pressure is -0.025716.
@@ -3247,7 +3249,7 @@ Min thickness of the blister is -0.00090462.
 Radius of the blister is 2.05.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.0112 s, 4 iterations ]
+nevis_timesteps: Done [ 2.8892 s, 4 iterations ]
 nevis_timesteps: t = 75.5949 [ / 109.5 ]
 Volume of the blister is 0.98824.
 The most negative effective pressure is -0.024869.
@@ -3256,7 +3258,7 @@ Min thickness of the blister is -0.00048927.
 Radius of the blister is 2.0506.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 4.0751 s, 4 iterations ]
+nevis_timesteps: Done [ 3.9631 s, 4 iterations ]
 nevis_timesteps: t = 75.6 [ / 109.5 ]
 Volume of the blister is 0.98814.
 The most negative effective pressure is -0.024212.
@@ -3268,25 +3270,25 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.104 s, 4 iterations ]
+nevis_timesteps: Done [ 3.746 s, 4 iterations ]
 nevis_timesteps: t = 75.6075 [ / 109.5 ]
 Volume of the blister is 0.98798.
 The most negative effective pressure is -0.024737.
 Max thickness of the blister is 1.6454.
-Min thickness of the blister is -0.00087502.
+Min thickness of the blister is -0.00087501.
 Radius of the blister is 2.0524.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 2.9469 s, 4 iterations ]
+nevis_timesteps: Done [ 2.6433 s, 4 iterations ]
 nevis_timesteps: t = 75.6149 [ / 109.5 ]
 Volume of the blister is 0.98782.
 The most negative effective pressure is -0.024484.
 Max thickness of the blister is 1.6265.
-Min thickness of the blister is -0.00092317.
+Min thickness of the blister is -0.00092316.
 Radius of the blister is 2.1006.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.7382 s, 4 iterations ]
+nevis_timesteps: Done [ 4.2194 s, 4 iterations ]
 nevis_timesteps: t = 75.62 [ / 109.5 ]
 Volume of the blister is 0.98771.
 The most negative effective pressure is -0.023725.
@@ -3298,16 +3300,16 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 2.7719 s, 4 iterations ]
+nevis_timesteps: Done [ 2.9624 s, 4 iterations ]
 nevis_timesteps: t = 75.6275 [ / 109.5 ]
-Volume of the blister is 0.98755.
+Volume of the blister is 0.98756.
 The most negative effective pressure is -0.023481.
 Max thickness of the blister is 1.6001.
 Min thickness of the blister is -0.00062739.
 Radius of the blister is 2.1024.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 5 Newton iterations
-nevis_timesteps: Done [ 3.6188 s, 5 iterations ]
+nevis_timesteps: Done [ 2.9129 s, 5 iterations ]
 nevis_timesteps: t = 75.6349 [ / 109.5 ]
 Volume of the blister is 0.9874.
 The most negative effective pressure is -0.023755.
@@ -3316,7 +3318,7 @@ Min thickness of the blister is -0.00086952.
 Radius of the blister is 2.15.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.6538 s, 4 iterations ]
+nevis_timesteps: Done [ 4.0727 s, 4 iterations ]
 nevis_timesteps: t = 75.64 [ / 109.5 ]
 Volume of the blister is 0.98729.
 The most negative effective pressure is -0.023296.
@@ -3328,16 +3330,16 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 2.5078 s, 4 iterations ]
+nevis_timesteps: Done [ 2.6842 s, 4 iterations ]
 nevis_timesteps: t = 75.6475 [ / 109.5 ]
 Volume of the blister is 0.98712.
 The most negative effective pressure is -0.022395.
 Max thickness of the blister is 1.5552.
-Min thickness of the blister is -0.00075251.
+Min thickness of the blister is -0.0007525.
 Radius of the blister is 2.1506.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 5 Newton iterations
-nevis_timesteps: Done [ 3.8929 s, 5 iterations ]
+nevis_timesteps: Done [ 3.3158 s, 5 iterations ]
 nevis_timesteps: t = 75.6549 [ / 109.5 ]
 Volume of the blister is 0.98696.
 The most negative effective pressure is -0.022633.
@@ -3346,37 +3348,37 @@ Min thickness of the blister is -0.00053246.
 Radius of the blister is 2.2.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 4.1564 s, 4 iterations ]
+nevis_timesteps: Done [ 4.4581 s, 4 iterations ]
 nevis_timesteps: t = 75.66 [ / 109.5 ]
 Volume of the blister is 0.98685.
 The most negative effective pressure is -0.022461.
 Max thickness of the blister is 1.5248.
-Min thickness of the blister is -0.00061956.
+Min thickness of the blister is -0.00061946.
 Radius of the blister is 2.2006.
 nevis_timesteps: Done
 nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_drainage/0129 ...
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 5 Newton iterations
-nevis_timesteps: Done [ 3.5689 s, 5 iterations ]
+nevis_timesteps: Done [ 4.1501 s, 5 iterations ]
 nevis_timesteps: t = 75.6675 [ / 109.5 ]
 Volume of the blister is 0.98669.
-The most negative effective pressure is -0.021533.
+The most negative effective pressure is -0.021534.
 Max thickness of the blister is 1.5106.
-Min thickness of the blister is -0.00082303.
+Min thickness of the blister is -0.00082299.
 Radius of the blister is 2.2006.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 5 Newton iterations
-nevis_timesteps: Done [ 2.4583 s, 5 iterations ]
+nevis_timesteps: Done [ 4.4441 s, 5 iterations ]
 nevis_timesteps: t = 75.6749 [ / 109.5 ]
 Volume of the blister is 0.98652.
-The most negative effective pressure is -0.021403.
+The most negative effective pressure is -0.021404.
 Max thickness of the blister is 1.4793.
-Min thickness of the blister is -0.00086437.
+Min thickness of the blister is -0.00086435.
 Radius of the blister is 2.25.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 4 Newton iterations
-nevis_timesteps: Done [ 3.2811 s, 4 iterations ]
+nevis_timesteps: Done [ 3.8803 s, 4 iterations ]
 nevis_timesteps: t = 75.68 [ / 109.5 ]
 Volume of the blister is 0.98641.
 The most negative effective pressure is -0.021139.
@@ -3388,76 +3390,76 @@ nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_draina
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 5 Newton iterations
-nevis_timesteps: Done [ 3.646 s, 5 iterations ]
+nevis_timesteps: Done [ 3.5669 s, 5 iterations ]
 nevis_timesteps: t = 75.6875 [ / 109.5 ]
 Volume of the blister is 0.98624.
-The most negative effective pressure is -0.020516.
+The most negative effective pressure is -0.020517.
 Max thickness of the blister is 1.462.
-Min thickness of the blister is -0.00099805.
+Min thickness of the blister is -0.00099781.
 Radius of the blister is 2.2506.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 5 Newton iterations
-nevis_timesteps: Done [ 3.1246 s, 5 iterations ]
+nevis_timesteps: Done [ 3.256 s, 5 iterations ]
 nevis_timesteps: t = 75.6949 [ / 109.5 ]
 Volume of the blister is 0.98607.
-The most negative effective pressure is -0.020231.
+The most negative effective pressure is -0.020232.
 Max thickness of the blister is 1.4299.
-Min thickness of the blister is -0.00077788.
+Min thickness of the blister is -0.00077779.
 Radius of the blister is 2.3.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 5 Newton iterations
-nevis_timesteps: Done [ 4.4627 s, 5 iterations ]
+nevis_timesteps: Done [ 6.1541 s, 5 iterations ]
 nevis_timesteps: t = 75.7 [ / 109.5 ]
 Volume of the blister is 0.98596.
-The most negative effective pressure is -0.01959.
+The most negative effective pressure is -0.019591.
 Max thickness of the blister is 1.4276.
-Min thickness of the blister is -0.0010455.
+Min thickness of the blister is -0.0010454.
 Radius of the blister is 2.3.
 nevis_timesteps: Done
 nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_drainage/0131 ...
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 5 Newton iterations
-nevis_timesteps: Done [ 4.3112 s, 5 iterations ]
+nevis_timesteps: Done [ 4.4921 s, 5 iterations ]
 nevis_timesteps: t = 75.7075 [ / 109.5 ]
 Volume of the blister is 0.98579.
-The most negative effective pressure is -0.019083.
+The most negative effective pressure is -0.019085.
 Max thickness of the blister is 1.4046.
-Min thickness of the blister is -0.00067714.
+Min thickness of the blister is -0.00067713.
 Radius of the blister is 2.3005.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 5 Newton iterations
-nevis_timesteps: Done [ 4.1395 s, 5 iterations ]
+nevis_timesteps: Done [ 3.5265 s, 5 iterations ]
 nevis_timesteps: t = 75.7149 [ / 109.5 ]
 Volume of the blister is 0.98562.
-The most negative effective pressure is -0.018902.
+The most negative effective pressure is -0.018904.
 Max thickness of the blister is 1.3839.
-Min thickness of the blister is -0.0011232.
+Min thickness of the blister is -0.0011227.
 Radius of the blister is 2.35.
 nevis_timesteps: dt = 0.0050988 ...
   norms_F less than tolerance after 5 Newton iterations
-nevis_timesteps: Done [ 5.8151 s, 5 iterations ]
+nevis_timesteps: Done [ 4.5239 s, 5 iterations ]
 nevis_timesteps: t = 75.72 [ / 109.5 ]
 Volume of the blister is 0.9855.
-The most negative effective pressure is -0.017899.
-Max thickness of the blister is 1.3719.
-Min thickness of the blister is -0.00058622.
+The most negative effective pressure is -0.017902.
+Max thickness of the blister is 1.372.
+Min thickness of the blister is -0.00058357.
 Radius of the blister is 2.35.
 nevis_timesteps: Done
 nevis_timesteps: Saving ./results/n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_drainage/0132 ...
 nevis_timesteps: Done
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 6 Newton iterations
-nevis_timesteps: Done [ 4.8805 s, 6 iterations ]
+nevis_timesteps: Done [ 4.7754 s, 6 iterations ]
 nevis_timesteps: t = 75.7275 [ / 109.5 ]
 Volume of the blister is 0.98527.
-The most negative effective pressure is -0.01725.
+The most negative effective pressure is -0.017253.
 Max thickness of the blister is 1.3375.
-Min thickness of the blister is -0.0087799.
+Min thickness of the blister is -0.0087638.
 Radius of the blister is 2.3505.
 nevis_timesteps: dt = 0.0074506 ...
   norms_F less than tolerance after 6 Newton iterations
-nevis_timesteps: Done [ 3.9504 s, 6 iterations ]
+nevis_timesteps: Done [ 3.7772 s, 6 iterations ]
 nevis_timesteps: Removing Dirichlet indices ...
         1716
         1817
@@ -3470,20 +3472,15 @@ nevis_timesteps: Removing Dirichlet indices ...
         2524
 nevis_timesteps: t = 75.7349 [ / 109.5 ]
 Volume of the blister is 0.98488.
-The most negative effective pressure is -0.016974.
-Max thickness of the blister is 1.3273.
-Min thickness of the blister is -0.037041.
+The most negative effective pressure is -0.016979.
+Max thickness of the blister is 1.3274.
+Min thickness of the blister is -0.037011.
 Radius of the blister is 2.4.
 nevis_timesteps: dt = 0.0050988 ...
-**norm_F = 2.7476 exceeds tolerance after 20 Newton iterations
+**norm_F = 2.8391 exceeds tolerance after 20 Newton iterations
 nevis_timesteps: Decrease suggested timestep to 0.0037253
 nevis_timesteps: dt = 0.0037253 ...
-[Warning: Matrix is singular to working precision.] 
-[> In nevis_timestep (line 157)
-In nevis_timesteps (line 245)
-In n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_drainage (line 77)
-] 
- Aborting Newton step : NaN returned
+**norm_F = 0.69603 exceeds tolerance after 20 Newton iterations
 nevis_timesteps: Decrease suggested timestep to 0.0018626
 nevis_timesteps: dt = 0.0018626 ...
 [Warning: Matrix is singular to working precision.] 
@@ -3494,7 +3491,12 @@ In n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_drainage (line 77)
  Aborting Newton step : NaN returned
 nevis_timesteps: Decrease suggested timestep to 0.00093132
 nevis_timesteps: dt = 0.00093132 ...
-**norm_F = 1.792 exceeds tolerance after 20 Newton iterations
+[Warning: Matrix is singular to working precision.] 
+[> In nevis_timestep (line 157)
+In nevis_timesteps (line 245)
+In n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_drainage (line 77)
+] 
+ Aborting Newton step : NaN returned
 nevis_timesteps: Decrease suggested timestep to 0.00046566
 nevis_timesteps: dt = 0.00046566 ...
 [Warning: Matrix is singular to working precision.] 
@@ -3575,4 +3577,4 @@ In nevis_timesteps (line 245)
 In n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e8_drainage (line 77)
 ] 
  Aborting Newton step : NaN returned
-nevis_timesteps: Failed [ 212.04 s, 10 iterations, dt = 1e-06 ]
+nevis_timesteps: Failed [ 201.198 s, 10 iterations, dt = 1e-06 ]

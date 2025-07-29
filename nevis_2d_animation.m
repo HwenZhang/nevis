@@ -1,6 +1,6 @@
 %% Import necessary libraries
 % casename = oo.casename;
-casename = 'n2d_100m3s_kappa1e_10_mu1e1_hbreg5e_3_V1e7_drainage';  % specify the case name
+casename = 'n2d_0m3s_kappa1e_8_mu1e3_hbreg5e_3_V1e7_drainage';  % specify the case name
 
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -44,7 +44,7 @@ yy(gg.nout) = NaN;
 t = (ps.t/(24*60*60))*[tt.t];               % dimensional time series (days)
 tspan = (ps.t/pd.td)*oo.t_span;
 tmin = 2.0*365*pd.td/ps.t;
-tmax = 2.2*365*pd.td/ps.t;
+tmax = 3.0*365*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
 [~,t_init] = min(abs(tspan-365*2.05));             % initial time step
