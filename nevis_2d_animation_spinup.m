@@ -32,24 +32,23 @@ xx(gg.nout) = NaN;
 yy(gg.nout) = NaN;
 
 %% read in the time series
-
-% steady state outflux
-% casename0 = 'n2d_100m3s_alpha1e_5_kappa1e_10_mu1e1_V0e7_test';
-% tt0 = load(['./results/' casename0 '/' casename0],'tt');
-% tt0 = tt0.tt; % load the initial time step data
-% Q_out_Q0 = 1*ps.Q*[tt0.Q_outQ];     % dimensional channel outflux (m^3/s)
-% Q_out_q0 = 1*ps.Q*[tt0.Q_outq];     % dimensional sheet outflux (m^3/s)
-% t0 = (ps.t/(24*60*60))*[tt0.t];
-
 t = (ps.t/(24*60*60))*[tt.t];               % dimensional time series (days)
 tspan = (ps.t/pd.td)*oo.t_span;
-tmin = 0*365*pd.td/ps.t;
+tmin = 1.5*365*pd.td/ps.t;
 tmax = 2.0*365*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
-[~,t_init] = min(abs(tspan-365*1.5));             % initial time step
-[~,t_end] = min(abs(tspan-2.0*365));              % final time step
-% t_end = 1200;
+
+dt_plot = 1.0; % 每隔1.0天绘制一帧
+t_plot = tmin_d:dt_plot:tmax_d;
+
+% 找到每个t_plot最近的模拟步编号
+frame_indices = zeros(size(t_plot));
+for k = 1:length(t_plot)
+    [~, idx] = min(abs(tspan - t_plot(k)));
+    frame_indices(k) = idx;
+end
+frame_indices = unique(frame_indices); % 去重，避免重复帧
 
 % extrpolate Q_out_Q0
 % Q_out_Q0_interp = interp1(t0, Q_out_Q0, t, 'spline', 'extrap');
@@ -71,7 +70,7 @@ E = (ps.m*ps.x^2)*[tt.E];      % dimensional source terms  (m^3/s)
 h_b = ps.hb*[tt.pts_hb];       %
 p_b = ps.phi*[tt.pts_pb];      %
 V_b = ps.x^2*ps.hb*[tt.Vb];
-% R_b = ps.x*[tt.Rb];
+R_b = ps.x*[tt.Rb];
 
 % phi = (ps.phi)*[tt.phi];     % dimensional hydrulic potential (MPa)
 N = (ps.phi)*[tt.N];           % dimensional effective stress (MPa)
@@ -137,7 +136,7 @@ x1 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
 xlabel('t [ d ]');
 ylabel('Q [ m^3/s ]');
 h=legend('Q_{b,in}','Q_{b,relax}','Q_{outb}','\Delta Q_{outQ}','\Delta Q_{outq}','Q_{in}','NumColumns',2);
-h.Location='southwest';
+h.Location='southeast';
 text(0.025,0.8,'(a) flux','Units','normalized','FontSize',14)
 
 xlim([tmin_d tmax_d])
@@ -304,7 +303,7 @@ cx = colorbar();
 cx.Label.String = 'h_b [ m ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-clim([0 0.1]);
+clim([0 0.01]);
 hold on
 
 zpb = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ); 
@@ -352,17 +351,17 @@ cx.Label.Position = [2.2 0.5];
 clim([-3 3]); 
 
 % add moulins
-if ~isfield(pp,'ni_m'), pp.ni_m = []; end
-x = (ps.x/10^3)*gg.nx(pp.ni_m);
-y = (ps.x/10^3)*gg.ny(pp.ni_m);
-mscale = 100;
-for i_m = 1:length(pp.ni_m)
-    if aa.E(pp.ni_m(i_m))>0
-        plot(x(i_m),y(i_m),'ko','Markersize',4+aa.E(pp.ni_m(i_m))/mscale,'MarkerFaceColor',1*[1 1 1]); % mark moulins   
-    else
-        plot(x(i_m),y(i_m),'ko','Markersize',4,'MarkerFaceColor',0.8*[1 1 1]); % mark moulins  
-    end
-end
+% if ~isfield(pp,'ni_m'), pp.ni_m = []; end
+% x = (ps.x/10^3)*gg.nx(pp.ni_m);
+% y = (ps.x/10^3)*gg.ny(pp.ni_m);
+% mscale = 100;
+% for i_m = 1:length(pp.ni_m)
+%     if aa.E(pp.ni_m(i_m))>0
+%         plot(x(i_m),y(i_m),'ko','Markersize',4+aa.E(pp.ni_m(i_m))/mscale,'MarkerFaceColor',1*[1 1 1]); % mark moulins   
+%     else
+%         plot(x(i_m),y(i_m),'ko','Markersize',4,'MarkerFaceColor',0.8*[1 1 1]); % mark moulins  
+%     end
+% end
 
 title('effective pressure','FontSize',14);
 ylabel('y (km)')
@@ -398,8 +397,14 @@ v = VideoWriter(['./results/videos/' casename],'MPEG-4');
 % v = VideoWriter(['./results/' oo.casename],'MPEG-4');
 v.FrameRate = 3;
 open(v)
-for i_t = t_init:t_end
-    disp(['Frame ',num2str(i_t-t_init),' / ',num2str(t_end-t_init),' ...']);
+
+for i_idx = 1:length(frame_indices)
+    if ~isvalid(f)
+        disp('Figure closed by user. Animation stopped.');
+        break
+    end
+    i_t = frame_indices(i_idx);
+    disp(['Frame ',num2str(i_idx),' / ',num2str(length(frame_indices)),' ...']);
     %% load timestep
     vva = load([path num2str(i_t,formatSpec)], 'vv');
     vva = vva.vv;
@@ -432,8 +437,7 @@ for i_t = t_init:t_end
     x4.Value = vva.t*ps.t/pd.td;
     x5.Value = vva.t*ps.t/pd.td;
     x6.Value = vva.t*ps.t/pd.td;
-    disp(max(vva.hb));
-    disp(min(vva.hb));
+    disp(vva.t*ps.t/pd.td);
     refreshdata
     drawnow
     % pause(0.2)
@@ -441,8 +445,12 @@ for i_t = t_init:t_end
     writeVideo(v,frame)
 end
 
-close(v)
-% end
+% close VideoWriter if still open
+try
+    close(v);
+catch
+    % video writer already closed or not open
+end
 
 % img = getframe(gcf);
 % imwrite(img.cdata, ['./results/figures/' oo.casename, '_2dplot.png']);

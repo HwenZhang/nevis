@@ -172,13 +172,14 @@ while t<t_stop+oo.dt_min
     maxIdx = pp.ni_l(1); % the location of the lake/hydrofracture
     disp(['Max thickness of the blister is ' num2str(max(vv.hb)) '.']);
     disp(['Min thickness of the blister is ' num2str(min(vv.hb)) '.']);
-    nonzeroIdx = find(vv.hb > 1e-4); % find non-zero thicknesses
-    [~, localIdx] = max((gg.nx(nonzeroIdx)-gg.nx(maxIdx)).^2+(gg.ny(nonzeroIdx)-gg.ny(maxIdx)).^2);
+    nonzeroIdx = find(vv.hb > 1e-4 & (gg.nx(:) > gg.nx(maxIdx))); % find non-zero thicknesses
+    % [~, localIdx] = max((gg.nx(nonzeroIdx)-gg.nx(maxIdx)).^2+(gg.ny(nonzeroIdx)-gg.ny(maxIdx)).^2);
+    [~, localIdx] = max((gg.nx(nonzeroIdx)-gg.nx(maxIdx)));
     minidx = nonzeroIdx(localIdx);
     if isempty(minidx)
         tt(ti).Rb = 0;
     else
-        tt(ti).Rb = ((gg.nx(maxIdx)-gg.nx(minidx)).^2 + (gg.ny(maxIdx)-gg.ny(minidx)).^2).^(1/2);
+        tt(ti).Rb = (gg.nx(minidx) - gg.nx(maxIdx));
     end
     disp(['Radius of the blister is ' num2str(tt(ti).Rb) '.']);
    tt(ti).hb_max = vv.hb(maxIdx); % maximum blister thickness
@@ -202,6 +203,7 @@ while t<t_stop+oo.dt_min
          end
     end
     
+    disp("Stop here");
     %% saving    
     if t >= t_save
         if oo.save_phi_av
@@ -232,7 +234,6 @@ while t<t_stop+oo.dt_min
     elseif t > t_stop-oo.dt_min
         break; 
     end
-
     %% timestep hydrology
     tic;
     accept = 0;
@@ -315,7 +316,9 @@ while t<t_stop+oo.dt_min
         ni1 = gg.nbdy(vv2.R_bdy<0); % Dirichlet nodes with inflow
         if ~isfield(gg,'n1m'), gg.n1m = gg.n1; end % boundary nodes adjacent to margin
         % ni2 = gg.n1m(vv.phi(gg.n1m)-aa.phi_b(gg.n1m)>pp.p_a_reg); % boundary nodes with too high pressure
-        ni2 = gg.n1m((vv.phi(gg.n1m)-vv.pb(gg.n1m)-aa.phi_a(gg.n1m)+aa.phi_0(gg.n1m))>pp.p_a_reg); % boundary nodes with too high pressure
+        ni2 = gg.n1m(vv.phi(gg.n1m)>pp.p_a_reg); % boundary nodes with too high pressure
+        ni2 = union(ni2, gg.n1m((vv.pb(gg.n1m)+aa.phi_a(gg.n1m)-aa.phi_0(gg.n1m))>pp.p_a_reg));
+        % ni2 = gg.n1m((vv.phi(gg.n1m)-vv.pb(gg.n1m)-aa.phi_a(gg.n1m)+aa.phi_0(gg.n1m))>pp.p_a_reg); % boundary nodes with too high pressure
         % ni2 = gg.n1m((vv.phi(gg.n1m)-vv.pb(gg.n1m)-aa.phi_a(gg.n1m)+vv.phi(gg.n1m))>pp.p_a_reg); % boundary nodes with too high pressure
         if ~isempty(ni1) || ~isempty(ni2)
             if ~isempty(ni1)

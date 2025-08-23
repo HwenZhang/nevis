@@ -106,12 +106,10 @@ pp.c50 = pd.alpha_b*ps.hb*ps.t/ps.h;
 if oo.relaxation_term == 0
     pp.c51 = pd.alpha_b*ps.hb*ps.t/ps.hb;
     pp.c52 = pd.alpha_b*ps.hb*ps.t/ps.h;
-    pp.m_l = pd.m_l;
     pp.c0 = 1;
 elseif oo.relaxation_term == 1
     pp.c51 = pd.kappa_b*ps.hb*ps.t*ps.phi/ps.hb/pd.mu;
     pp.c52 = pd.kappa_b*ps.hb*ps.t*ps.phi/ps.h/pd.mu;
-    pp.m_l = pd.m_l;
     pp.c0 = 0;
 else
     error("Invalid relaxation term!")

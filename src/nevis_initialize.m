@@ -54,8 +54,10 @@ function [aa,vv] = nevis_initialize(b,s,gg,pp,oo)
     Qb_in = 0*ones(gg.nIJ,1);
 
     %% Prewetted layer thickness
-    hb_reg1 = pp.hb_reg1*tanh((5-gg.nx(:))/0.1).*ones(gg.nIJ,1);
-    % hb_reg1 = pp.hb_reg1*ones(gg.nIJ,1);
+    % hb_reg1 = pp.hb_reg1*tanh((5-gg.nx(:))/0.1).*tanh((gg.nx(:))/0.1).*ones(gg.nIJ,1);
+    % hb_reg1 = pp.hb_reg1*(gg.nx(:)>0.1 & gg.nx(:)<4.9).*ones(gg.nIJ,1);
+    % pp.hb_reg1*tanh((5-gg.nx(:,1))/0.1).*tanh((gg.nx(:,1))/0.1).*ones(101,1);
+    hb_reg1 = pp.hb_reg1*ones(gg.nIJ,1);
     hb_reg1(gg.nout) = 0;        % regularisation
     
     %% variables

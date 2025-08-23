@@ -8,8 +8,8 @@
 format compact
 
 %% read in the initial condition
-casename = 'n2d_0m3s_kappa1e_10_mu1e1_hbreg5e_3_V1e7_drainage_test'; % drainage system filename
-initname = 'n2d_0m3s_kappa1e_10_mu1e1_hbreg5e_3_spinup'; % initial condition filename
+casename = 'n2d_100m3s_kappa1e_10_mu1e1_hbreg5e_3_V1e7_drainage'; % drainage system filename
+initname = strrep(casename, '_V1e7_drainage', '_spinup'); % initial condition filename
 
 data = load(['./results/' initname '/' initname]);
 pd = data.pd;                                % load parameters from the initial condition
@@ -31,8 +31,8 @@ pp.c0 = 0;
 %% grid and geometry
 L = 5e4;                                     % length of the domain [m]
 W = 0.4*L;                                   % width of the domain [m]
-x = linspace(0,(L/ps.x),101); 
-y = linspace(0,(W/ps.x),40);        
+x = linspace(0,(L/ps.x),201); 
+y = linspace(0,(W/ps.x),80);        
 oo.yperiodic = 1;                            % oo.yperiodic = 1 necessary for a 1-d grid
 oo.xperiodic = 0;
 gg = nevis_grid(x,y,oo); 
@@ -62,19 +62,17 @@ pp.x_l = [0.5*L/ps.x];
 pp.y_l = [0.5*W/ps.x];                                          
 pp.V_l = [1e7/(ps.Q0*ps.t)];                                      % 不同 V_l
 pp.t_drainage = vv.t+ [20*pd.td/ps.t];                            % time of lake drainages
-pp.t_duration = [0.25*pd.td/ps.t];                                % duration of lake drainages
+pp.t_duration = [0.025*pd.td/ps.t];                                % duration of lake drainages
 [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo);            % calculate lake catchments 
 
 %% timestep 
 oo.dt = 1/24*pd.td/ps.t; 
 oo.save_timesteps = 1; 
-oo.save_pts_all = 1;
-% Set up GPS arrays around the lake
-xg = [24 25 30 35 40 45]*1e3/ps.x;
-yg = [8 10 12]*1e3/ps.x;
-pp.ni_g = nevis_gps_array(xg,yg,gg,oo);
-oo.pts_ni = [pp.ni_l pp.ni_m pp.ni_g];                                              
-oo.t_span = vv.t + [(1:0.2:36)*pd.td/ps.t (37:1:365)*pd.td/ps.t];            
+oo.save_pts_all = 1; 
+% Add GPS station points downstream of the moulin every 5km
+pp.ni_gps = nevis_gps_array((pp.x_l:5e3/ps.x:L/ps.x), pp.y_l, gg, oo); % GPS station points
+oo.pts_ni = [pp.ni_l pp.ni_m pp.ni_gps];                                                
+oo.t_span = vv.t + [(1:1:19)*pd.td/ps.t (19.9:0.001:20.1)*pd.td/ps.t (21:1:1.5*365)*pd.td/ps.t];            
 
 %% save initial parameters
 save([oo.rn, oo.fn],'pp','pd','ps','gg','aa','vv','oo');

@@ -1,54 +1,66 @@
 #!/bin/bash
 
+mv ./generated_scripts/spinup/* ./generated_scripts/output
+mv ./generated_scripts/drainage/* ./generated_scripts/output
+mv ./generated_scripts/output/* ./
+
+# count the number of spinup cases
+num_spinup=$(ls n2d*spinup*.m 2>/dev/null | wc -l)
+echo "Number of spinup cases: $num_spinup"
+# set the number of parallel jobs to the number of spinup cases, if less than 16
+parallel_jobs=${parallel_jobs:-$num_spinup}
+parallel_jobs=$(( parallel_jobs < 12 ? parallel_jobs : 12 ))
+    
+cleanup() {
+    echo -e "\nInterrupt received. Killing all processes in this group (PGID: $$)..."
+    # send SIGTERM to every process in our process group
+    kill 0
+    echo "Cleanup complete."
+    exit 1
+}
+
+trap cleanup INT TERM
+
+echo "Running up to $parallel_jobs cases in parallel ..."
 # Create logs and parameter_sweep directories
 mkdir -p logs parameter_sweep
 
-# Move all the scripts from ./generated_scripts/ to the current directory
-mv ./generated_scripts/spinup/*.m ./
-mv ./generated_scripts/drainage/*.m ./
-
-# Automatically find all MATLAB scripts starting with "n2d"
+# Find all MATLAB scripts starting with "n2d" or "n1d"
 scripts=()
 for file in n2d*.m n1d*.m; do
-    if [ -e "$file" ]; then
-        scripts+=("${file%.m}")
-    fi
+    [ -e "$file" ] && scripts+=("${file%.m}")
 done
+[ ${#scripts[@]} -ne 0 ] || { echo "No MATLAB scripts found."; exit 1; }
 
-# Check if any scripts were found
-if [ ${#scripts[@]} -eq 0 ]; then
-    echo "No MATLAB scripts starting with 'n2d' found."
-    exit 1
-fi
+# Sort spinup first, then drainage
+sorted_scripts=()
+for s in "${scripts[@]}"; do [[ "$s" == *spinup* ]] && sorted_scripts+=("$s"); done
+for s in "${scripts[@]}"; do [[ "$s" != *spinup* ]] && sorted_scripts+=("$s"); done
 
-# Sort the scripts array to make sure spinup scripts are run first
-for script in "${scripts[@]}"; do
-    if [[ "$script" == *"spinup"* ]]; then
-        sorted_scripts+=("$script")
-    fi
-done
-for script in "${scripts[@]}"; do
-    if [[ "$script" != *"spinup"* ]]; then
-        sorted_scripts+=("$script")
-    fi
-done
-# print sorted scripts
-echo "Sorted MATLAB scripts to run:"
+echo "Running up to $parallel_jobs cases in parallel ..."
+echo "Scripts to run:"
+printf '  - %s.m\n' "${sorted_scripts[@]}"
+
+# Loop and launch jobs in background, throttled by $parallel_jobs
 for script in "${sorted_scripts[@]}"; do
-    echo "  - ${script}.m"
-done
-# Loop through and run each MATLAB script
-for script in "${sorted_scripts[@]}"
-do
-    echo "Launching ${script}"
-    matlab -batch "${script}" > "./logs/temp_${script}.log" 2>&1
+    echo "Launching ${script}.m"
+    (
+        start_time=$(date +%s)
+        matlab -batch "${script}" > "logs/temp_${script}.log" 2>&1
+        end_time=$(date +%s)
+        elapsed=$(( end_time - start_time ))
+        echo "Case ${script} completed in ${elapsed} seconds"
+        echo "Case ${script} completed in ${elapsed} seconds" >> "logs/temp_${script}.log"
+        # move .m file to parameter_sweep
+        # [ -f "${script}.m" ] && mv "${script}.m" parameter_sweep/
+    ) &
 
-    # After the script finishes, move its .m file to the parameter_sweep directory
-    if [ -f "${script}.m" ]; then
-        mv "${script}.m" parameter_sweep/
-    else
-        echo "Warning: ${script}.m file not found, skipping move."
-    fi
+    # if we’ve reached the parallel_jobs limit, wait for at least one to finish
+    while [ "$(jobs -rp | wc -l)" -ge "$parallel_jobs" ]; do
+        sleep 1
+    done
 done
 
+# wait for all background jobs to finish
+wait
 echo "All MATLAB scripts completed."
