@@ -1,6 +1,6 @@
 %% Import necessary libraries
 % casename = oo.casename;
-casename = 'n2d_100m3s_kappa1e_10_mu1e1_hbreg5e_3_V1e7_drainage';  % specify the case name
+casename = 'n2d_10m3s_kappa1e_10_mu1e1_hbreg5e_3_V1e7_drainage';  % specify the case name
 
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
