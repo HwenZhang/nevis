@@ -1,13 +1,15 @@
 #!/bin/bash
 
 # Move generated scripts to the root directory
-mv ./generated_scripts/spinup/* ./generated_scripts/output
-mv ./generated_scripts/drainage/* ./generated_scripts/output
-mv ./generated_scripts/output/* ./
+# mv ./generated_scripts/spinup/* ./generated_scripts/output
+# mv ./generated_scripts/drainage/* ./generated_scripts/output
+# mv ./generated_scripts/output/* ./
+
+mv ./generated_scripts/case_studys/* ./
 
 # --- Configuration ---
 # Set the maximum number of parallel jobs. Default is 12.
-MAX_PARALLEL_JOBS=${MAX_PARALLEL_JOBS:-8}
+MAX_PARALLEL_JOBS=${MAX_PARALLEL_JOBS:-9}
 
 # --- Global Variables ---
 # This variable will hold the PIDs of the running subshells and must be accessible by cleanup

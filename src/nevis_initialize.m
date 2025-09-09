@@ -59,6 +59,7 @@ function [aa,vv] = nevis_initialize(b,s,gg,pp,oo)
     % pp.hb_reg1*tanh((5-gg.nx(:,1))/0.1).*tanh((gg.nx(:,1))/0.1).*ones(101,1);
     hb_reg1 = pp.hb_reg1*ones(gg.nIJ,1);
     hb_reg1(gg.nout) = 0;        % regularisation
+    if oo.mean_perms==1, hb_reg1(gg.nbdy) = 0; end      % no prewetted layer on boundaries
     
     %% variables
     phi = phi_a+0*(phi_0-phi_a); % potential

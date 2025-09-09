@@ -202,8 +202,6 @@ while t<t_stop+oo.dt_min
             tt(ti).pts_us = vv.us(oo.pts_ni);
          end
     end
-    
-    disp("Stop here");
     %% saving    
     if t >= t_save
         if oo.save_phi_av
@@ -322,10 +320,10 @@ while t<t_stop+oo.dt_min
         % ni2 = gg.n1m((vv.phi(gg.n1m)-vv.pb(gg.n1m)-aa.phi_a(gg.n1m)+vv.phi(gg.n1m))>pp.p_a_reg); % boundary nodes with too high pressure
         if ~isempty(ni1) || ~isempty(ni2)
             if ~isempty(ni1)
-                if oo.verb, disp('nevis_timesteps: Removing Dirichlet indices ...'); disp(ni1); end
+                if oo.verb, disp('nevis_timesteps: Removing Dirichlet indices ...'); end
             end
             if ~isempty(ni2)
-                if oo.verb, disp('nevis_timesteps: Adding Dirichlet indices ...'); disp(ni2); end
+                if oo.verb, disp('nevis_timesteps: Adding Dirichlet indices ...'); end
             end
             vv.nbdy = union(setdiff(gg.nbdy,ni1),ni2);
             gg = nevis_label(gg,vv.nbdy,oo);               % redefine boundary labels

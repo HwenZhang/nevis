@@ -535,7 +535,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         R5 = - pp.c12*(Ss-Ss_old).*dt^(-1) + Ss_t;
         R6 = - pp.c12*(Sr-Sr_old).*dt^(-1) + Sr_t;
         % R7 = - pb + pp.c46*hb + phi + pp.c49*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(H.^3.*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*hb); % blister pressure
-        R7 = - pb + pp.c46*hb + (aa.phi_0-aa.phi_a) + pp.c49*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(H.^3.*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*hb); % blister pressure
+        R7 = - pb + pp.c46*hb + (aa.phi_0-aa.phi_a) + pp.c49*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(max(H.^3,pp.B_reg).*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*hb); % blister pressure
         R8 = - (hb-hb_old).*dt^(-1) + hb_t;        % mass conservation of the blister
         
  
@@ -654,6 +654,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         hb_reg1 = pp.hb_reg1;
         hb_reg2 = pp.hb_reg2;
         deltap_reg = pp.deltap_reg;
+        B_reg = pp.B_reg;
+
         %% extract old variables
         % hb_old = vv0.hb;
         % pb_old = vv0.pb;
@@ -946,7 +948,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         DF6_hs = c13*DXir_hs(:,ns);
 
         % DF7 (ns eqns)
-        biharmonic = (gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(H.^3.*(gg.nddx*gg.eddx + gg.nddy*gg.fddy));
+        biharmonic = (gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(max(H.^3,B_reg).*(gg.nddx*gg.eddx + gg.nddy*gg.fddy));
         DF7_hb = sparse(1:length(ns),1:length(ns),c46*ones(length(ns),1),length(ns),length(ns)) + c49 * biharmonic(ns,ns);
         temp = sparse(nin, 1:length(nin), -ones(length(nin),1), nIJ, length(nin));
         DF7_pb = temp(ns,:);

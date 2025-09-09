@@ -15,6 +15,9 @@ for i = 1:length(python_data.filenames)
     vv = vva.vv;
     aa = nevis_inputs(vv.t,aa,vv,pp,gg,oo);
     % extend the field for the current filename
+    if ~isfield(pp,'B_reg'), pp.B_reg = 0; end
+    if ~isfield(pd,'B_reg'), pd.B_reg = 0; end
+        
     [vv2] = nevis_backbone(inf,vv,vv,aa,pp,gg,oo);     % expand solution variables
     vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo);          % calculate node discharge
     save(filename,'vv2','-append');  % save the extended field back to the file

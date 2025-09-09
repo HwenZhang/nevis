@@ -143,6 +143,7 @@ pp.p_a_reg = pd.p_a_reg/ps.phi;
 pp.hb_reg1 = pd.hb_reg1/ps.hb;
 pp.hb_reg2 = pd.hb_reg2/ps.hb;
 pp.deltap_reg = pd.deltap_reg/ps.phi;
+pp.B_reg = pd.B_reg/ps.B;
 
 pp.E_lapse = pd.E_lapse/ps.m*ps.z;
 pp.E_amp = pd.E_amp; 

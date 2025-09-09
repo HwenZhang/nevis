@@ -1,6 +1,6 @@
 %% Import necessary libraries
 % casename = oo.casename;
-casename = 'n2d_10m3s_kappa1e_10_mu1e1_hbreg5e_3_V1e7_drainage';  % specify the case name
+casename = 'n2d_region_test_meanperms1_Hreg1000_kappa1e_10_mu1e2_td30_V1e9_drainage';  % specify the case name
 
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -22,6 +22,7 @@ vva = load([path num2str(nframe,formatSpec)], 'vv');
 vva = vva.vv;
 aa = nevis_inputs(vva.t,aa,vva,pp,gg,oo);
 pp.deltap_reg = 5.0e7/ps.phi; % regularization parameter pressure difference (Pa)
+pp.B_reg = 0;
 [vv2] = nevis_backbone(inf,vva,vva,aa,pp,gg,oo);     % expand solution variables
 vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo);          % calculate node discharge
 qnet = ps.qs*(vv2.qs + vv2.qe + vv2.qQ + 0*vv2.Q);
@@ -34,8 +35,8 @@ yy(gg.nout) = NaN;
 %% read in the time series
 t = (ps.t/(24*60*60))*[tt.t];               % dimensional time series (days)
 tspan = (ps.t/pd.td)*oo.t_span;
-tmin = 2.04*365*pd.td/ps.t;
-tmax = 2.4*365*pd.td/ps.t;
+tmin = 0.0*365*pd.td/ps.t;
+tmax = 1.0*365*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
 
@@ -77,7 +78,7 @@ N = (ps.phi)*[tt.N];           % dimensional effective stress (MPa)
 hs = ps.x^2*ps.h*[tt.hs];      % integrated hs (m^3)
 hs_b = ps.h*[tt.hs_b];         % integrated hs (m^3)
 he = ps.x^2*ps.h*[tt.he];      % integrated he (m^3)
-p_w = ps.phi*[tt.pwb];     % dimensional hydraulic potential at the lake (MPa)
+p_w = ps.phi*[tt.pwb];         % dimensional hydraulic potential at the lake (MPa)
 
 Sx_b = ps.S*[tt.Sx_b];
 Sy_b = ps.S*[tt.Sy_b];
@@ -118,7 +119,7 @@ rightLayout.Layout.TileSpan = [1, 3];
 rightLayout.TileSpacing = 'compact';
 rightLayout.Padding = 'compact';
 
-%% 左侧子 layout：6 行 1 列（垂直）
+%% Left layout：6 rows and 1 column
 % panel (a)
 ax = nexttile(leftLayout);
 plot(ax,t,Q_b_in,'b-',t,Q_b_dec,'r-',LineWidth=1.5);
@@ -149,7 +150,7 @@ grid minor
 % panel (b)
 ax = nexttile(leftLayout);
 if isfield(tt,'pts_phi') && ~isempty([tt.pts_phi])  
-    plot(ax,t,pts_N(1,:),'-',LineWidth=1.5);
+    plot(ax,t,pts_N(end,:),'-',LineWidth=1.5);
 end
 hold on
 plot(ax,t,N/1e6,'-',LineWidth=1.5);
@@ -210,7 +211,7 @@ yyaxis right
 ax = nexttile(leftLayout);
 % hb_analytical = 3*V_b./(pi*R_b.^2);
 yyaxis left
-    plot(ax,t,h_b(1,:),'b-',LineWidth=1.5);
+    plot(ax,t,h_b(end,:),'b-',LineWidth=1.5);
     hold on
     % plot(ax,t,hb_analytical,'b--',LineWidth=1.5);
     xlabel('t [ d ]');
@@ -300,10 +301,11 @@ zhe = (ps.hb)*reshape(vva.hb,gg.nI,gg.nJ);
 pblister = pcolor(ax,xx,yy,zhe); 
 set(pblister,'linestyle','none'); % shading interp
 cx = colorbar();
+colormap(ax,cmap)
 cx.Label.String = 'h_b [ m ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-clim([0 0.01]);
+clim([-1.0 1.0]);
 hold on
 
 zpb = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ); 
@@ -424,6 +426,11 @@ for i_idx = 1:length(frame_indices)
 
     pblister.CData = (ps.hb)*reshape(vva.hb,gg.nI,gg.nJ); 
     pblister_contour.ZData = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ);
+
+    % display the min hb on interior points, boundary points and out points
+    disp(['Minimum hb at interior points: ', num2str(ps.hb*min(vva.hb(gg.nin)))]);
+    disp(['Minimum hb at bound points: ', num2str(ps.hb*min(vva.hb(gg.nbdy)))]);
+    disp(['Minimum hb at out points: ', num2str(ps.hb*min(vva.hb(gg.nout)))]);
 
     pS.CData = (ps.S)*reshape(0.25*(gg.nmeanx*vva.Sx + gg.nmeany*vva.Sy + gg.nmeans*vva.Ss + gg.nmeanr*vva.Sr),gg.nI,gg.nJ);
     peff.CData = reshape(N,gg.nI,gg.nJ); 

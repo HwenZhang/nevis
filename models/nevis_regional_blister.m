@@ -6,8 +6,8 @@ clc,clear
 oo.root = './';                                % filename root
 oo.code = '../nevis';                          % code directory  
 oo.results = 'results';                        % path to the results folders
-% oo.casename = 'nevis_2009_140km_alpha0_2';         % casename
-oo.casename = 'nevis_region_test';     % casename
+oo.dataset = './data/nevis_regional';          % dataset name
+oo.casename = 'nevis_region_test';             % casename
 
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
@@ -55,7 +55,7 @@ ps = struct;
 [ps,pp] = nevis_nondimension(pd,ps,oo);   
 
 %% grid and geometry
-load('data/morlighem_for_nevis_140km'); % load Morlighem bedmap (previously collated)
+load([oo.dataset '/' 'morlighem_for_nevis_140km']); % load Morlighem bedmap (previously collated)
 dd = morlighem_for_nevis_140km; dd.skip = 6;
 gg = nevis_grid(dd.X_km(1:dd.skip:end,1)/ps.x,dd.Y_km(1,1:dd.skip:end)/ps.x,oo); 
 b = reshape(dd.B_km(1:dd.skip:end,1:dd.skip:end)/ps.z,gg.nIJ,1);
@@ -95,7 +95,8 @@ oo.keep_all_moulins = 0;
 % create new moulin locations:
 % [pp.ni_m,pp.sum_m] = nevis_moulins_density_joughin([],[],gg,oo,aa,ps);
 % load consistent location moulins for all runs:
-load('nevis/nevis_170207a.mat','pp');
+tmp = load([oo.dataset '/' '/nevis_170207a.mat'],'pp');
+pp.ni_m = tmp.pp.ni_m; pp.sum_m = tmp.pp.sum_m; clear tmp;
 %% lakes
  % a single-point lake
  pp.x_l = [0.5*(x(1)+x(end))];                                   % x-coord of lakes
