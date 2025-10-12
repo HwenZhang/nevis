@@ -54,3 +54,4 @@ octave-workspace
 *.mat
 
 *.json
+./git.bfg-report
