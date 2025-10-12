@@ -34,7 +34,6 @@ octave-workspace
 *.mat
 *.jpg
 *.jpeg
-*.png
 *.avi
 *.mp4
 *.pdf

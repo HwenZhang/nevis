@@ -21,6 +21,3 @@ The repository contains the essential files for running the model and visualisin
 3. The bash script `nevis_run.sh` can be modified to run the generated matlab scripts. Otherwise, you can run the matlab scripts directly in MATLAB.
 4. The results will be saved in the `results/{casename}` folder.
 5. Use the scripts in the `srcplot` folder to visualise the results. You can modify the scripts as needed.
-
-# Reference
-Details of the model can be found in the following manuscript
