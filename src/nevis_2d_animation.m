@@ -32,15 +32,6 @@ xx(gg.nout) = NaN;
 yy(gg.nout) = NaN;
 
 %% read in the time series
-
-% steady state outflux
-% casename0 = 'n2d_100m3s_alpha1e_5_kappa1e_10_mu1e1_V0e7_test';
-% tt0 = load(['./results/' casename0 '/' casename0],'tt');
-% tt0 = tt0.tt; % load the initial time step data
-% Q_out_Q0 = 1*ps.Q*[tt0.Q_outQ];     % dimensional channel outflux (m^3/s)
-% Q_out_q0 = 1*ps.Q*[tt0.Q_outq];     % dimensional sheet outflux (m^3/s)
-% t0 = (ps.t/(24*60*60))*[tt0.t];
-
 t = (ps.t/(24*60*60))*[tt.t];               % dimensional time series (days)
 tspan = (ps.t/pd.td)*oo.t_span;
 tmin = 2.0*365*pd.td/ps.t;
@@ -98,9 +89,7 @@ if isfield(tt,'pts_phi') && ~isempty([tt.pts_phi])
                (aa.phi_0(oo.pts_ni)*[tt.t].^0-aa.phi_a(oo.pts_ni)*[tt.t].^0);
 end
 
-%% 创建主 figure
 f = figure('Position', [100, 100, 1600, 800]);
-% 创建主 tiledlayout：1 行 2 列（左侧一列、右侧一列）
 mainLayout = tiledlayout(f, 1, 5);
 mainLayout.TileSpacing = 'compact';
 mainLayout.Padding = 'compact';
@@ -119,7 +108,6 @@ rightLayout.Layout.TileSpan = [1, 3];
 rightLayout.TileSpacing = 'compact';
 rightLayout.Padding = 'compact';
 
-%% 左侧子 layout：6 行 1 列（垂直）
 % panel (a)
 ax = nexttile(leftLayout);
 plot(ax,t,Q_b_in,'b-',t,Q_b_dec,'r-',LineWidth=1.5);
@@ -254,8 +242,6 @@ yyaxis right
     legend('p_b','p_w','V_b','NumColumns',2,location='southeast')
 
     x6 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
-
-%% right sublayout：3 行 2 列
 
 % total flux
 ax = nexttile(rightLayout);

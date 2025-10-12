@@ -40,16 +40,15 @@ tmax = 1.0*365*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
 
-dt_plot = 0.1; % 每隔0.1天绘制一帧
+dt_plot = 0.1;
 t_plot = tmin_d:dt_plot:tmax_d;
 
-% 找到每个t_plot最近的模拟步编号
 frame_indices = zeros(size(t_plot));
 for k = 1:length(t_plot)
     [~, idx] = min(abs(tspan - t_plot(k)));
     frame_indices(k) = idx;
 end
-frame_indices = unique(frame_indices); % 去重，避免重复帧
+frame_indices = unique(frame_indices);
 
 % extrpolate Q_out_Q0
 % Q_out_Q0_interp = interp1(t0, Q_out_Q0, t, 'spline', 'extrap');
@@ -98,9 +97,7 @@ if isfield(tt,'pts_phi') && ~isempty([tt.pts_phi])
                (aa.phi_0(oo.pts_ni)*[tt.t].^0-aa.phi_a(oo.pts_ni)*[tt.t].^0);
 end
 
-%% 创建主 figure
 f = figure('Position', [100, 100, 1600, 800]);
-% 创建主 tiledlayout：1 行 2 列（左侧一列、右侧一列）
 mainLayout = tiledlayout(f, 1, 5);
 mainLayout.TileSpacing = 'compact';
 mainLayout.Padding = 'compact';
@@ -255,7 +252,7 @@ yyaxis right
 
     x6 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
 
-%% right sublayout：3 行 2 列
+%% right sublayout
 
 % total flux
 ax = nexttile(rightLayout);

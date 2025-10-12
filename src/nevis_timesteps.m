@@ -254,33 +254,6 @@ while t<t_stop+oo.dt_min
             vv.t = t;
             comp_time = toc;
             disp(['nevis_timesteps: Done [ ',num2str(comp_time),' s, ',num2str(info.iter_new-1),' iterations ]']);
-            
-            % add code
-            % if max(vv.hb) > 1e-2
-            %     figure(2);                    % 或者任何你喜欢的 figure 编号
-            %     subplot(2,1,1);
-            %     plot(gg.nx, vv.hb, 'o-','LineWidth',1); 
-            %     xlabel('x');
-            %     ylabel('h_b');
-            %     xlim([4.5 5.5]);
-            %     title(sprintf('t = %.3g', t));
-            %     grid on;
-
-            %     subplot(2,1,2);
-            %     kappa = (gg.nddx*gg.eddx + gg.nddy*gg.fddy)*vv.hb;
-            %     % dRdt = 1.15*pd.B*1000/(144*pd.mu) * kappa.^3;
-
-            %     plot(gg.nx, kappa, 'o-','LineWidth',1);
-            %     xlabel('x');
-            %     xlim([4.5 5.5]);
-            %     ylabel('dR/dt (m/s)');
-            %     grid on;
-
-            %     drawnow;                       % 强制立即刷新
-            %     pause(1.0);                    % 暂停 1 秒以便查看图形
-            % end
-            % end here
-
         end
         if oo.change_timestep && info.iter_new-1 <= oo.small_iter && ~info.failed && dt1 < oo.dt_max && ~decreased
             % too few iterations

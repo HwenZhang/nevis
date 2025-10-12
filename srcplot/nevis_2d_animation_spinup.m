@@ -39,10 +39,9 @@ tmax = 2.0*365*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
 
-dt_plot = 1.0; % 每隔1.0天绘制一帧
+dt_plot = 1.0;
 t_plot = tmin_d:dt_plot:tmax_d;
 
-% 找到每个t_plot最近的模拟步编号
 frame_indices = zeros(size(t_plot));
 for k = 1:length(t_plot)
     [~, idx] = min(abs(tspan - t_plot(k)));
@@ -97,9 +96,7 @@ if isfield(tt,'pts_phi') && ~isempty([tt.pts_phi])
                (aa.phi_0(oo.pts_ni)*[tt.t].^0-aa.phi_a(oo.pts_ni)*[tt.t].^0);
 end
 
-%% 创建主 figure
 f = figure('Position', [100, 100, 1600, 800]);
-% 创建主 tiledlayout：1 行 2 列（左侧一列、右侧一列）
 mainLayout = tiledlayout(f, 1, 5);
 mainLayout.TileSpacing = 'compact';
 mainLayout.Padding = 'compact';
@@ -118,7 +115,6 @@ rightLayout.Layout.TileSpan = [1, 3];
 rightLayout.TileSpacing = 'compact';
 rightLayout.Padding = 'compact';
 
-%% 左侧子 layout：6 行 1 列（垂直）
 % panel (a)
 ax = nexttile(leftLayout);
 plot(ax,t,Q_b_in,'b-',t,Q_b_dec,'r-',LineWidth=1.5);
@@ -254,7 +250,7 @@ yyaxis right
 
     x6 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
 
-%% right sublayout：3 行 2 列
+%% right sublayout
 
 % total flux
 ax = nexttile(rightLayout);

@@ -119,7 +119,6 @@ rightLayout.Layout.TileSpan = [1, 3];
 rightLayout.TileSpacing = 'compact';
 rightLayout.Padding = 'compact';
 
-%% 左侧子 layout：6 行 1 列（垂直）
 % panel (a)
 ax = nexttile(leftLayout);
 plot(ax,t,Q_b_in,'b-',t,Q_b_dec,'r-',LineWidth=1.5);
