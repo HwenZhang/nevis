@@ -1,6 +1,8 @@
 The repository contains the MATLAB/Python code for simulating the subglacial hydrology with blisters followed by rapid supraglacial lake drainage events.
 
-![Image text](./figures/Figure_1_schematic.png)
+<p align="center">
+  <img src="./figures/Fig1_schematic.png" alt="Model Schematic" width="300">
+</p>
 
 # Contents
 The repository contains the essential files for running the model and visualising the results. The directory structure is as follows:
