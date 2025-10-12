@@ -103,7 +103,7 @@ pp.x_l = [0.5*L/ps.x];                                          % x-coord of lak
 pp.y_l = [0.5*W/ps.x];                                          % y-coord of lakes
 pp.V_l = [0e7/(ps.Q0*ps.t)];                                    % volume of lakes         
 pp.t_drainage = [0.5*365*pd.td/ps.t];                           % time of lake drainages
-pp.t_duration = [0.025*pd.td/ps.t];                              % duration of lake drainages
+pp.t_duration = [0.025*pd.td/ps.t];                             % duration of lake drainages
 [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo);          % calculate lake catchments 
 
 %% surface input

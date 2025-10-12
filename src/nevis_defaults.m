@@ -89,6 +89,7 @@ if ~isfield(pd,'kappa_b'), pd.kappa_b = 1e-9; end                  % relaxation 
 if ~isfield(pd,'S_crit'), pd.S_crit = 0.1; end                     % critical cross section (m^2), below which there is no leakage to the drainage system
 if ~isfield(pd,'c0'), pd.c0 = 0.0; end
 if ~isfield(pd,'deltap_reg'), pd.deltap_reg = 1.0e6; end           % regularization parameter pressure difference (Pa)
+if ~isfield(pd,'B_reg'), pd.B_reg = pd.Ye*(1000)^3/(12*(1-0.33)^2); end
 
 if ~isfield(pd,'alpha_b'), pd.alpha_b = 1/(10*pd.td); end          % relaxation rate of the blister (s^-1)
 if ~isfield(pd,'alpha_dh'), pd.alpha_dh = 0; end                   % d (relaxation rate) / d h (m^-1 s^-1)

@@ -1,5 +1,5 @@
 %% Import necessary libraries
-casename = 'n1d_Vconst_cg0_00_a0_kh0_ks0_mu1e1_c1_V1e8';
+casename = oo.casename;
 load(['./results/' casename '/' casename])
 path = [oo.rn,'/'];
 addpath(oo.code);                               % add path to code
@@ -163,3 +163,5 @@ exponent_hb = p(1);
 text(0.02, 0.5, sprintf('Power law exponent: %.2f', exponent_hb), 'Units', 'normalized', 'FontSize', 14, 'Color', 'r');
 % Save the figure
 % saveas(gcf, ['./blister_power_law.png']);
+
+nevis_1d_animation

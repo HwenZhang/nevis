@@ -71,7 +71,7 @@ pd.E_lapse = 40/1000/pd.td/10^3;
 pd.kl_s = 0.0;                                  % leakage dependence on S
 pd.kl_h = 0.0;                                  % leakage dependence on h
 pd.c0 = 1.0;                                    % constant for leakage dependence on S and h, default is 1.0
-pd.hb_reg1 = 0;                                 % regularizing thickness of blister [m]
+pd.hb_reg1 = 1e-3;                                 % regularizing thickness of blister [m]
 pd.hb_reg2 = 1e-3;                              % regularizing thickness of blister [m]
 
 % non-dimensionalise

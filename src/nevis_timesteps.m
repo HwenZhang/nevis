@@ -172,7 +172,7 @@ while t<t_stop+oo.dt_min
     maxIdx = pp.ni_l(1); % the location of the lake/hydrofracture
     disp(['Max thickness of the blister is ' num2str(max(vv.hb)) '.']);
     disp(['Min thickness of the blister is ' num2str(min(vv.hb)) '.']);
-    nonzeroIdx = find(vv.hb > 1e-4 & (gg.nx(:) > gg.nx(maxIdx))); % find non-zero thicknesses
+    nonzeroIdx = find(vv.hb > 2.5*pp.hb_reg1 & (gg.nx(:) > gg.nx(maxIdx))); % find non-zero thicknesses
     % [~, localIdx] = max((gg.nx(nonzeroIdx)-gg.nx(maxIdx)).^2+(gg.ny(nonzeroIdx)-gg.ny(maxIdx)).^2);
     [~, localIdx] = max((gg.nx(nonzeroIdx)-gg.nx(maxIdx)));
     minidx = nonzeroIdx(localIdx);
