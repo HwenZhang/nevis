@@ -40,6 +40,8 @@ octave-workspace
 *.pdf
 
 # result files
+./results
+./figures
 ./nevis_1d_example
 ./nevis_example
 ./nevis_example2
