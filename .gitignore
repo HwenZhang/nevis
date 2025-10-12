@@ -39,6 +39,9 @@ octave-workspace
 *.mp4
 *.pdf
 
+# data
+./data
+
 # result files
 ./results
 ./figures
