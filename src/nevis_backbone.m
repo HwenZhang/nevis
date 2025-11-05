@@ -1207,8 +1207,5 @@ function out = DReg_deltaphi_Dphib(deltaphi,dp0)
 end
 
 function out = Reg_H(H)
-    % out = tanh(H/0.4);
-    % out = (H>0.2);
     out = 1;
-    % out = 1; % if no regularisation, use linear function
 end

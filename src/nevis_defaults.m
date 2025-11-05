@@ -69,8 +69,8 @@ if ~isfield(pd,'V_m_reg'), pd.V_m_reg = 0; end                     % regularizin
 if ~isfield(pd,'p_w_reg'), pd.p_w_reg = 1*pd.rho_w*pd.g; end       % pressure range for regularization on top of moulins [Pa] [ obsolete ]
 if ~isfield(pd,'sigma_log'), pd.sigma_log = 0; end                 % regularizing storage [ obsolete ]
 if ~isfield(pd,'N_sigma'), pd.N_sigma = pd.N_reg; end              % effective pressure below which regularizing storage hits in [Pa] [ obsolete ]
-if ~isfield(pd,'hb_reg1'), pd.hb_reg1 = 1e-5; end                  % regularizing thickness of blister [m] [ obsolete ]
-if ~isfield(pd,'hb_reg2'), pd.hb_reg2 = 1e-2; end                  % regularizing thickness of blister [m] [ obsolete ]
+if ~isfield(pd,'hb_reg1'), pd.hb_reg1 = 1e-3; end                  % regularizing thickness of blister [m] [ obsolete ]
+if ~isfield(pd,'hb_reg2'), pd.hb_reg2 = 1e-3; end                  % regularizing thickness of blister [m] [ obsolete ]
 
 if ~isfield(pd,'p_a_reg'), pd.p_a_reg = 1*pd.rho_w*pd.g; end       % pressure range for regularization of ? 
 if ~isfield(pd,'E_lapse'), pd.E_lapse = 60/1000/pd.td/10^3; end    % surface melt lapse rate [m/s/m]
@@ -83,10 +83,10 @@ if ~isfield(pd,'r_m'), pd.r_m = 25/1000/pd.td; end                 % base precip
 
 % blister
 if ~isfield(pd,'Q0'), pd.Q_0 = 1e3; end
-if ~isfield(pd,'mu'), pd.mu = 1.0e+3; end                          % water viscosity (Pa s)
+if ~isfield(pd,'mu'), pd.mu = 1.0e+1; end                          % water viscosity (Pa s)
 if ~isfield(pd,'mu0'), pd.mu0 = 1.0e0; end                         % reference water viscosity (Pa s)
 if ~isfield(pd,'Ye'), pd.Ye = 8.8e+9; end                          % Young's modulus (Pa)
-if ~isfield(pd,'kappa_b'), pd.kappa_b = 1e-9; end                  % relaxation coeff ()
+if ~isfield(pd,'kappa_b'), pd.kappa_b = 1e-10; end                  % relaxation coeff ()
 if ~isfield(pd,'S_crit'), pd.S_crit = 0.1; end                     % critical cross section (m^2), below which there is no leakage to the drainage system
 if ~isfield(pd,'c0'), pd.c0 = 0.0; end
 if ~isfield(pd,'deltap_reg'), pd.deltap_reg = 1.0e6; end           % regularization parameter pressure difference (Pa)
