@@ -167,8 +167,7 @@ while t<t_stop+oo.dt_min
     disp(['Volume of the blister is ' num2str(tt(ti).Vb) '.']);
     disp(['The most negative effective pressure is ' num2str(min(aa.phi_0(gg.ns)-vv.phi(gg.ns))) '.']);
 
-    % blister radius (only works for a single blister)
-    % [~, maxIdx] = max(vv.hb);
+    %% blister radius (for the reference case with a rectangular domain)
     maxIdx = pp.ni_l(1); % the location of the lake/hydrofracture
     disp(['Max thickness of the blister is ' num2str(max(vv.hb)) '.']);
     disp(['Min thickness of the blister is ' num2str(min(vv.hb)) '.']);
@@ -182,7 +181,20 @@ while t<t_stop+oo.dt_min
         tt(ti).Rb = (gg.nx(minidx) - gg.nx(maxIdx));
     end
     disp(['Radius of the blister is ' num2str(tt(ti).Rb) '.']);
-   tt(ti).hb_max = vv.hb(maxIdx); % maximum blister thickness
+
+    %% blister front position (for the regional study case with an irregular domain)
+    nonzeroIdx = find(vv.hb > 1e-1); % find non-zero thicknesses
+    leftmostIdx = nonzeroIdx(gg.nx(nonzeroIdx) == min(gg.nx(nonzeroIdx)));
+    if isempty(leftmostIdx)
+        tt(ti).Lb_idx = pp.ni_l(1);
+        tt(ti).Lbx = gg.nx(pp.ni_l(1));
+        tt(ti).Lby = gg.ny(pp.ni_l(1));
+    else
+        tt(ti).Lb_idx = leftmostIdx(1);
+        tt(ti).Lbx = gg.nx(leftmostIdx(1));
+        tt(ti).Lby = gg.ny(leftmostIdx(1));
+    end
+    disp(['Leftmost position of the blister is ' num2str(tt(ti).Lbx) '.']);
 
     % total channel volume, scaled with ps.S*ps.x
     tt(ti).S = sum(vv.Sx(gg.ein).*(gg.emean(gg.ein,:)*gg.Dx))+...

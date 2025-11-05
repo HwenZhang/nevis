@@ -1,6 +1,6 @@
 %% Import necessary libraries
-casename = oo.casename;
-% casename = 'n1d_E0_mu1e0_kappa1e_99_V1e7_theta1e_02_DX1e2_convergence';
+% casename = oo.casename;
+casename = 'n1d_E0_mu1e1_kappa1e_99_V1e7_theta1e_02_DX6e1_convergence';
 % casename = 'n1d_E0_mu1e_02_kappa1e_99_V1e7_theta0e00_DX6e1_convergence';
 load(['./results/' casename '/' casename])
 % oo.fn = ['/',casename];                         % filename (same as casename)
@@ -219,11 +219,11 @@ yyaxis left
     text(0.025,0.8,'(e) h_b and p_b at the lake','Units','normalized','FontSize',14)
 
 yyaxis right
-    plot(ax,t,R_b,'r-',LineWidth=1.5);
+    plot(ax,t,R_b/1e3,'r-',LineWidth=1.5);
     hold on
     x5 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
     xlabel('t [ d ]');
-    ylabel('R_b [ m ]');
+    ylabel('R_b [ km ]');
     xlim([tmin_d tmax_d])
     grid on
     grid minor
@@ -297,7 +297,6 @@ L = 5e4; % length of the domain [m]
 b = 4e3 - 0.01*xx*1e3;   % bed slope angle = 0.01
 s = (1060)*(1-1e3*xx/L).^0.5; % ice surface topography 
 s = b+1000*ones(size(s)); % constant ice surface
-
 H = max(s-b,0); % ice thickness
 plot(ax,xx(gg.nin),s(gg.nin),'b-','LineWidth',1.5);
 hold on

@@ -113,7 +113,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         pb(gg.nbdy) = aa.phi_0(gg.nbdy)-aa.phi_a(gg.nbdy);                              % boundary pb = ice overburden
         % pb(gg.nbdy) = 0;
         % phi(gg.nbdy) = pb(gg.nbdy) + aa.phi_a(gg.nbdy) - aa.phi_0(gg.nbdy);           % boundary condition
-        % phi(gg.nbdy) = aa.phi_b(gg.nbdy);                                               % ensure phi is not less than atmospheric pressure
+        % phi(gg.nbdy) = aa.phi_b(gg.nbdy);                                             % ensure phi is not less than atmospheric pressure
         phi(gg.nbdy) = 0;
     end
     

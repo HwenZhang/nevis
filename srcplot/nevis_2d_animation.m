@@ -1,6 +1,6 @@
 %% Import necessary libraries
 % casename = oo.casename;
-casename = 'n2d_region_test_meanperms1_Hreg1000_kappa1e_99_mu1e1_spinup_test';  % specify the case name
+casename = 'n2d_region_test_meanperms1_Hreg1000_kappa1e_10_mu1e1_spinup';  % specify the case name
 
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -35,8 +35,8 @@ yy(gg.nout) = NaN;
 %% read in the time series
 t = (ps.t/(24*60*60))*[tt.t];               % dimensional time series (days)
 tspan = (ps.t/pd.td)*oo.t_span;
-tmin = 0.0*365*pd.td/ps.t;
-tmax = 1.0*365*pd.td/ps.t;
+tmin = 2.0*365*pd.td/ps.t;
+tmax = 3.0*365*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
 
@@ -302,7 +302,7 @@ colormap(ax,cmap)
 cx.Label.String = 'h_b [ m ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-clim([-1.0 1.0]);
+clim([-0.02 0.02]);
 hold on
 
 zpb = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ); 

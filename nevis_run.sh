@@ -1,15 +1,16 @@
 #!/bin/bash
 
 # Move generated scripts to the root directory
-# mv ./generated_scripts/spinup/* ./generated_scripts/output
-# mv ./generated_scripts/drainage/* ./generated_scripts/output
+# mv ./generated_scripts/spinup/* ./
+mv ./generated_scripts/drainage/* ./
 # mv ./generated_scripts/output/* ./
 # mv ./generated_scripts/convergence_tests/* ./
-mv ./generated_scripts/case_studys/* ./
+# mv ./generated_scripts/case_studys/* ./
 
 # --- Configuration ---
 # Set the maximum number of parallel jobs. Default is 12.
 MAX_PARALLEL_JOBS=${MAX_PARALLEL_JOBS:-9}
+SKIP_SPINUP=${SKIP_SPINUP:-true} 
 
 # --- Global Variables ---
 # This variable will hold the PIDs of the running subshells and must be accessible by cleanup
@@ -73,12 +74,22 @@ echo "Starting NEVIS job runner..."
 mkdir -p logs
 
 # --- Task Queue Preparation ---
-all_spinup_scripts=$(ls n[12]d*spinup.m 2>/dev/null | sed 's/\.m$//')
-all_drainage_scripts=$(ls n[12]d*drainage.m 2>/dev/null | sed 's/\.m$//')
-all_standalone_scripts=$(ls n[12]d*.m 2>/dev/null | grep -v -e "_spinup.m" -e "_drainage.m" | sed 's/\.m$//')
-
-initial_queue="$all_standalone_scripts $all_spinup_scripts"
-total_jobs=$(echo $initial_queue $all_drainage_scripts | wc -w)
+if [ "$SKIP_SPINUP" = "true" ]; then
+    all_spinup_scripts=""
+    all_drainage_scripts=$(ls n[12]d*drainage.m 2>/dev/null | sed 's/\.m$//')
+    all_standalone_scripts=$(ls n[12]d*.m 2>/dev/null | grep -v -e "_spinup.m" -e "_drainage.m" | sed 's/\.m$//')
+    
+    initial_queue="$all_standalone_scripts $all_drainage_scripts"
+    total_jobs=$(echo $initial_queue | wc -w)
+    echo "Skipping spinup. Running drainage directly."
+else
+    all_spinup_scripts=$(ls n[12]d*spinup.m 2>/dev/null | sed 's/\.m$//')
+    all_drainage_scripts=$(ls n[12]d*drainage.m 2>/dev/null | sed 's/\.m$//')
+    all_standalone_scripts=$(ls n[12]d*.m 2>/dev/null | grep -v -e "_spinup.m" -e "_drainage.m" | sed 's/\.m$//')
+    
+    initial_queue="$all_standalone_scripts $all_spinup_scripts"
+    total_jobs=$(echo $initial_queue $all_drainage_scripts | wc -w)
+fi
 
 if [ $total_jobs -eq 0 ]; then
     echo "No MATLAB scripts found. Exiting."
@@ -112,7 +123,7 @@ while [ $completed_jobs -lt $total_jobs ]; do
         if [ $completed_jobs -lt $total_jobs ]; then
              echo "Warning: Job execution stalled. Check for pending drainage cases whose spinups may have failed."
         fi
-        break
+        # break
     fi
     
     sleep 5
@@ -131,7 +142,7 @@ while [ $completed_jobs -lt $total_jobs ]; do
             ((completed_jobs++))
             echo "Job finished: $job_name (Completed: $completed_jobs/$total_jobs)"
             # move the finished .m scripts to ./parameter_sweep
-            # mv "n[12]d*${job_name}.m" "parameter_sweep/"
+            mv n[12]d*${job_name}.m "parameter_sweep/" 2>/dev/null || true
 
             if [[ "$job_name" == *spinup ]] && [ $exit_code -eq 0 ]; then
                 base_name=${job_name%_spinup}
@@ -143,7 +154,11 @@ while [ $completed_jobs -lt $total_jobs ]; do
                     pending_queue="$matching_drainage_cases $pending_queue"
                 fi
             elif [ $exit_code -ne 0 ]; then
-                echo "Job $job_name failed with exit code $exit_code. Corresponding drainage case(s) will be skipped."
+                if [ "$SKIP_SPINUP" = "false" ]; then
+                    echo "Job $job_name failed with exit code $exit_code. Corresponding drainage case(s) will be skipped."
+                else
+                    echo "Job $job_name failed with exit code $exit_code."
+                fi
             fi
         fi
     done

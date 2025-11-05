@@ -1,6 +1,6 @@
 %% Import necessary libraries
 % casename = oo.casename;
-casename = 'n2d_100m3s_kappa1e_10_mu1e1_hbreg5e_3_spinup';  % specify the case name
+casename = 'n2d_0m3s_kappa1e_10_mu1e1_hbreg5e_3_spinup';  % specify the case name
 
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
@@ -34,8 +34,8 @@ yy(gg.nout) = NaN;
 %% read in the time series
 t = (ps.t/(24*60*60))*[tt.t];               % dimensional time series (days)
 tspan = (ps.t/pd.td)*oo.t_span;
-tmin = 1.5*365*pd.td/ps.t;
-tmax = 2.0*365*pd.td/ps.t;
+tmin = 0.0*365*pd.td/ps.t;
+tmax = 5.0*365*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
 
@@ -299,8 +299,10 @@ cx = colorbar();
 cx.Label.String = 'h_b [ m ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-clim([0 0.01]);
+clim([-0.005 0.005]);
+% highlight all the nodes where hb<-0.005
 hold on
+[C_neg, h_neg] = contour(ax, xx, yy, zhe, [-0.005 -0.005], 'r-', 'LineWidth', 2);
 
 zpb = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ); 
 [Cb,pblister_contour] = contour(ax,xx,yy,zpb,'linecolor','k','linewidth',0.5);
@@ -418,6 +420,8 @@ for i_idx = 1:length(frame_indices)
     phs.CData = (ps.hs)*reshape(vva.hs,gg.nI,gg.nJ);
     phs_contour.ZData = (ps.phi)*reshape(vva.phi,gg.nI,gg.nJ);
 
+    h_neg.ZData = (ps.hb)*reshape(vva.hb,gg.nI,gg.nJ);
+    
     pblister.CData = (ps.hb)*reshape(vva.hb,gg.nI,gg.nJ); 
     pblister_contour.ZData = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ);
 

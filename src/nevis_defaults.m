@@ -84,6 +84,7 @@ if ~isfield(pd,'r_m'), pd.r_m = 25/1000/pd.td; end                 % base precip
 % blister
 if ~isfield(pd,'Q0'), pd.Q_0 = 1e3; end
 if ~isfield(pd,'mu'), pd.mu = 1.0e+3; end                          % water viscosity (Pa s)
+if ~isfield(pd,'mu0'), pd.mu0 = 1.0e0; end                         % reference water viscosity (Pa s)
 if ~isfield(pd,'Ye'), pd.Ye = 8.8e+9; end                          % Young's modulus (Pa)
 if ~isfield(pd,'kappa_b'), pd.kappa_b = 1e-9; end                  % relaxation coeff ()
 if ~isfield(pd,'S_crit'), pd.S_crit = 0.1; end                     % critical cross section (m^2), below which there is no leakage to the drainage system
