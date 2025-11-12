@@ -39,14 +39,17 @@ octave-workspace
 *.pdf
 
 # data
-./data
+/data/
 
 # result files
-./results
-./nevis_1d_example
-./nevis_example
-./nevis_example2
-./nevis_run
+/results/
+/presentation/
+/generated_scripts/
+/nevis_1d_example/
+/nevis_example/
+/nevis_example2/
+/nevis_run/
+/.git.bfg-report/
 *.pptx
 *.webp
 *.mat
