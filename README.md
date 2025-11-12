@@ -39,6 +39,9 @@ Note that all cases consist of two stages: spinup and drainage. The spinup stage
 
 5. Detailed implementation of the model is in `./src` folder. Users can refer to the attached documentation `./docs/nevis.pdf` for more information about the model.
 
+# License
+This repository is licensed under the CC BY-NC 4.0 License. See the [LICENSE](./LICENSE) file for more information.
+
 # References
 Please cite the following paper when using this code.
 
