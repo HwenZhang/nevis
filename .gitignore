@@ -56,3 +56,6 @@ octave-workspace
 
 *.json
 ./.git.bfg-report
+/figures/
+/logs/
+/presentation/

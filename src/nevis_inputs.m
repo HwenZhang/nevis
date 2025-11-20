@@ -38,7 +38,12 @@ if oo.surface_runoff
     end
 else
     % Alternatively, prescribe moulin input with a function 
-    aa.E(pp.ni_m) = (pp.input_function(t))./gg.Dx(pp.ni_m)./gg.Dy(pp.ni_m);
+    if isfield(pp,'input_function')
+        aa.E(pp.ni_m) = (pp.input_function(t))./gg.Dx(pp.ni_m)./gg.Dy(pp.ni_m);
+    else
+        aa.E(pp.ni_m) = 0./gg.Dx(pp.ni_m)./gg.Dy(pp.ni_m);
+    end
+
 end
 
 %% Prescribe blister input

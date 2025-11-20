@@ -107,7 +107,7 @@ if ~isfield(oo,'combine_sheet'), oo.combine_sheet = 1; end
 if ~isfield(oo,'mean_perms'), oo.mean_perms = 1; end
 if ~isfield(oo,'modified_mean_perms'), oo.modified_mean_perms = 0; end % whether to use modified mean permeability
 if ~isfield(oo,'input_gaussian'), oo.input_gaussian = 0; end
-if ~isfield(oo,'relaxation_term'), oo.relaxation_term = 0; end      % 0 is alpha hb, 1 is alpha deltap hb
+if ~isfield(oo,'relaxation_term'), oo.relaxation_term = 1; end      % 0 is alpha hb, 1 is alpha deltap hb
 if ~isfield(oo,'initial_condition'), oo.initial_condition = 0; end  % 0 is using default file 0365.mat, 1 is using steady-state drainage system
 if ~isfield(oo,'include_ice'), oo.include_ice = 0; end              % couple to ice flow
 if ~isfield(oo,'include_blister'), oo.include_blister = 1; end      % couple to blister
@@ -129,6 +129,7 @@ if ~isfield(oo,'save_pts_all'), oo.save_pts_all = 0; end
 if ~isfield(oo,'code'), oo.root = ''; end
 if ~isfield(oo,'root'), oo.root = ''; end
 if ~isfield(oo,'fn'), oo.fn = 'var'; end
+if ~isfield(oo,'results'), oo.results = 'results'; end
 
 % plotting options
 if ~isfield(oo,'reversey'), oo.reversey = 0; end
@@ -137,7 +138,7 @@ if ~isfield(oo,'halfcmap'), oo.halfcmap = 1; end
 % timestepping options
 if ~isfield(oo,'change_timestep'), oo.change_timestep = 1; end
 if ~isfield(oo,'adjust_boundaries'), oo.adjust_boundaries = 0; end
-if ~isfield(oo,'Tol_F'), oo.Tol_F = 1e-5; end
+if ~isfield(oo,'Tol_F'), oo.Tol_F = 1e-8; end
 if ~isfield(oo,'dt_max'), oo.dt_max = 1e6; end
 if ~isfield(oo,'dt_min'), oo.dt_min = 1e-8; end
 if ~isfield(oo,'dt_factor'), oo.dt_factor = 10; end

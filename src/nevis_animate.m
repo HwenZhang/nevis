@@ -25,7 +25,7 @@ end
 fps = 4;   
 
 %% load initial timestep
-if exist([fn,'/0000']), load([fn,'/0000']); else load(fn); end
+% if exist([fn,'/0000']), load([fn,'/0000']); else load(fn); end
 load([fn,'/0001']);
 if isfield(oo,'reversey'), reversey = oo.reversey; else reversey = 0; end
 

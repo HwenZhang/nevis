@@ -1,0 +1,243 @@
+\documentclass[a4paper,11pt,fleqn]{article}
+\title{}
+\author{I J Hewitt}
+\date{\today}
+\addtolength{\voffset}{-2cm}
+\addtolength{\textheight}{4.2cm}
+\addtolength{\hoffset}{-2cm}
+\addtolength{\textwidth}{4cm}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{epsfig}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{verbatim}
+\usepackage{fancyhdr}
+\usepackage{natbib}
+\usepackage{parskip}
+%\usepackage{hyperref}
+\usepackage{url}
+
+\setlength{\headheight}{10pt}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancyhf{}
+\cfoot{\thepage}
+
+\fancypagestyle{first}{
+\setlength{\headheight}{20pt}
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancyhf{}
+\rhead{{\small I J Hewitt, October 2025}}
+%\rfoot{{Corrections: ian.hewitt@maths.ox.ac.uk}}
+\cfoot{\thepage}
+}
+
+\newcommand{\pvint}{\makebox[0pt][l]{$\:-$}\int}
+\newcommand{\un}[1]{\ \textrm{#1}}
+\newcommand{\ve}[1]{\bm{#1}}
+\newcommand{\be}{\begin{equation} }
+\newcommand{\ee}{\end{equation}}
+\newcommand{\bmath}{\begin{displaymath} }
+\newcommand{\emath}{\end{displaymath} }
+\newcommand{\lab}[1]{\label{#1}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\bm}[1]{\mbox{\boldmath$ #1 $}}
+\newcommand{\bo}[1]{\mbox{\bf #1}}
+\newcommand{\quadtext}[1]{\quad\textrm{#1}\quad}
+\newcommand{\ian}[1]{{\bf [#1]}}
+\newcommand{\half}{\mbox{$\frac{1}{2}$}}
+\newcommand{\dd}{\textrm{d}}
+
+
+
+\begin{document}
+
+\thispagestyle{first}
+
+{\setlength{\parskip}{-5pt}
+{\Large \bf \flushleft{ {\verb|nevis_velocity|} }: Documentation
+} \setlength{\parskip}{5pt}
+
+{This describes an add-on to the {\verb|nevis|} subglacial drainage model to solve for ice velocity using the shallow stream approximation (SSA) for ice flow.}
+
+\subsection*{Equations}
+
+The horizontal force balance for the (depth-independent) velocity components $u(x,y,t)$ and $v(x,y,t)$ is given by,
+\be
+\pd{}{x} \left[ \eta H \left( 4 \pd{u}{x} + 2 \pd{v}{y} \right)  \right]+ \pd{}{y} \left[ \eta H \left( \pd{u}{x} + \pd{v}{y} \right)\right] - \tau_b(U,N) \frac{u}{U} - \rho_i g H \pd{Z_s}{x} = 0,
+\ee
+\be
+\pd{}{x} \left[ \eta H \left( \pd{u}{x} + \pd{v}{y} \right)  \right]+ \pd{}{y} \left[ \eta H \left( 2 \pd{u}{x} + 4 \pd{v}{y} \right) \right] - \tau_b(U,N) \frac{v}{U} - \rho_i g H \pd{Z_s}{y} = 0.
+\ee
+Here $H(x,y) = Z_s(x,y)-Z_b(x,y)$ is the ice thickness, $U(x,y,t) = (u^2+v^2)^{1/2}$ is the sliding speed, $\eta(x,y,t)$ is the effective depth-averaged viscosity, and $N(x,y,t)$ is the effective pressure.
+
+The effective viscosity is given by
+\be
+\eta = \frac{1}{2A^{1/n}} \dot{\eps}^{1/n-1},
+\ee
+where $A$ is a depth-averaged flow-law parameter, $n$ is the flow-law exponent, and $\dot{\eps}$ is the second invariant of the strain-rate tensor, which is approximated (ignoring $\dot{\eps}_{xz}$ and $\dot{\eps}_{yz}$ components) by
+\be
+\begin{split}
+\dot{\eps} = \left( \half \dot{\eps}_{ij} \dot{\eps}_{ij} \right)^{1/2} & = \left( \dot{\eps}_{xx}^2 + \dot{\eps}_{xx}\dot{\eps}_{yy} + \dot{\eps}_{yy}^2 + \dot{\eps}_{xy}^2  \right)^{1/2}  \\ & =  \left[ \left(\pd{u}{x}\right)^2 + \left(\pd{u}{x}\right)\left(\pd{v}{y}\right) +\left(\pd{v}{y}\right)^2 + \frac{1}{4}\left(\pd{u}{y}+\pd{v}{x}\right)^2  \right]^{1/2}.
+\end{split}
+\ee
+
+The effective pressure is the difference between the hydrostatic normal stress in the ice $p_i = \rho_i g H$ and the water pressure $p_w$, or, in terms of the overburden potential $\phi_0 = \rho_i g H + \rho_w g Z_b$, and hydraulic potential $\phi$, 
+\be
+N(x,y,t) = \phi_0(x,y) - \phi(x,y,t).
+\ee
+(Note that despite the notation $p_i$ is the normal stress at the bed rather than the ice pressure; in the shallow shelf approximation the normal stress ($\approx -\sigma_{zz}$) is approximately cryostatic, while the actual ice pressure $-\mbox{$\frac{1}{3}$}(\sigma_{xx}+\sigma_{yy}+\sigma_{zz})$ might not be.)
+
+The basal shear stress $\tau_b(U,N)$ is expressed as a function of the sliding speed $U$ and effective pressure $N$, 
+\be
+\tau_b = \mu N_+ \left( \frac{U}{U + \frac{\mu^{n_s} N_+^{n_s}}{C^{n_s}}}\right)^{1/n_s}.
+\ee
+Here $N_+ = {\rm max}(N,0)$, which prevents unphysical behaviour when the effective pressure goes negative (giving zero basal shear stress in that case).  
+%(In fact numerically we take $N_+ = {\rm max}(N,N_{\eps})$ where $N_{\eps}$ is a very small regularising pressure, to avoid potential issues with dividing by zero.)
+This friction law has limiting Coulomb and power-law behaviour,
+\be
+\tau_b \sim \begin{cases}
+\mu N_+ & C U^{1/n_s} \gg \mu N_+ \\
+C U^{1/n_s} & C U^{1/n_s} \ll \mu N_+. 
+\end{cases}
+\ee
+It can also be written as
+\be
+\frac{1}{\tau_b^{n_s}} = \frac{1}{\mu^{n_s}N_+^{n_s}} + \frac{1}{C^{n_s}U}.
+\ee
+Taking $\mu \to \infty$ gives a power-law (Weertman) friction law, and taking $C \to \infty$ gives a Coulomb plastic friction law.  
+
+In fact the model allows for a second additive component to the friction law, $\tau_b = C_2 U^{1/n_s}$, although $C_2 = 0$ by default.  This could be used to represent the effect of form drag (due to unresolved topography), or the effect of disconnected regions of the bed.   It may be necessary to incorporate such a component if widespread regions of zero (or negative) effective pressure occur, to prevent the ice velocity becoming unrealistically large in such cases.
+
+Within the SSA, the vertical stress in the ice is approximately cryostatic, $\sigma_{zz} = -\rho_i g (s-z)$, and the $x$ and $y$ components of the stress tensor can therefore be written as
+\be
+\sigma_{xx} = -\rho_i g (s-z) + 2\tau_{xx}+\tau_{yy}, \quad
+\sigma_{yy} = -\rho_i g (s-z) + \tau_{xx}+2\tau_{yy}, \quad
+\sigma_{xy} = \tau_{xy},
+\ee
+where $\tau_{ij} = 2 \eta \dot{\eps}_{ij}$ is the deviatoric stress tensor, $\eta$ is the effective viscosity, and $\dot{\eps}_{ij}$ is the strain-rate tensor,
+\be \label{strainratetensor}
+\dot{\eps}_{ij} = \frac{1}{2} \left( \pd{u_i}{x_j} + \pd{u_j}{x_i} \right).
+\ee
+
+Boundary conditions might be imposed on the velocity or stress components. Typically and most easily we prescribe both horizontal velocity components around the whole boundary of the domain. 
+
+\begin{table}[!h]
+\centering
+{\small 
+\begin{tabular}{l l}
+\hline
+& \\[-10pt]
+\hline
+Parameters [\verb|pd|]&
+\begin{tabular}[t]{l l l}
+$\rho_i$ 		&\verb|rho_i| &  Density of ice [$910\un{kg}\un{m}^{-3}$]\\ 
+$g$			&\verb|g| &  Gravitational acceleration [$9.81\un{m}\un{s}^{-2}$]\\
+$n$			&\verb|n_glen| &  Ice flow-law exponent [$3$]\\
+$A$         		&\verb|A_glen| &  Ice flow-law coefficient [$6.8 \times 10^{-24} \un{Pa}^{-3} \un{s}^{-1}$]\\
+$n_s$		&\verb|n_slide| &  Sliding law exponent [$1$]\\
+$C$         		&\verb|C| &  Sliding law coefficient [$[\tau]/[u]$]\\
+$\mu$         	&\verb|mu| &  Friction coefficient [$0.3$]\\
+%$N_{\eps}$	&\verb|N_slide_reg| & Regularizing effective pressure [$10^{-16}[N]$]\\
+\end{tabular}  \\
+\hline
+\end{tabular}
+}
+\caption{\label{tab1}{\small Ice-flow parameters with default values. The default sliding coefficient is defined using typical stress scale $[\tau] = \rho_i g [z]^2/[x]$ and velocity scale $[u]$. The default value used for the velocity scale $[u]$ is the parameter $U_b$ from the hydrology model.}  }
+\end{table}
+
+% (\verb|pd.u_b|)  \verb|ps.u|
+
+The equations are non-dimensionalised by scaling horizontal lengths with $[x]$, vertical lengths with $[z]$, velocity with $[u]$, effective pressure with $\rho_i g [z]$, basal shear stress with $[\tau] = \rho_i g [z]^2 /[x]$, and effective ice viscosity with $[\eta] = \half [A]^{-1/n} ([u]/[x])^{1/n-1}$.   We define the parameter $\eps = ([\eta][u]/[x])/\rho_i g [z]$, which measure the relative size of membrane (in-plane) and cryostatic stresses.  This results in 
+\be
+\eps \pd{}{\hat{x}} \left[ \hat{\eta} \hat{H} \left( 4 \pd{\hat{u}}{\hat{x}} + 2 \pd{\hat{v}}{\hat{y}} \right)  \right]+ \eps \pd{}{\hat{y}} \left[ \hat{\eta} \hat{H} \left( \pd{\hat{u}}{\hat{x}} + \pd{\hat{v}}{\hat{y}} \right)\right] - \hat{\tau}_b(\hat{U},\hat{N}) \frac{\hat{u}}{\hat{U}} - \hat{H} \pd{\hat{Z}_s}{\hat{x}} = 0,
+\ee
+\be
+\eps \pd{}{\hat{x}} \left[ \hat{\eta} \hat{H} \left( \pd{\hat{u}}{\hat{x}} + \pd{\hat{v}}{\hat{y}} \right)  \right]+ \eps \pd{}{\hat{y}} \left[ \hat{\eta} \hat{H} \left( 2 \pd{\hat{u}}{\hat{x}} + 4 \pd{\hat{v}}{\hat{y}} \right) \right] - \hat{\tau}_b(\hat{U},\hat{N}) \frac{\hat{v}}{\hat{U}} - \hat{H} \pd{\hat{Z}_s}{\hat{y}} = 0,
+\ee
+where 
+\be
+\hat{\eta} = \frac{1}{\hat{A}^{1/n}} \hat{\dot{\eps}}^{1/n-1},
+\ee
+and
+\be
+\hat{\tau}_b = \hat{N}_+\left( \frac{\hat{U}}{\frac{\hat{U}}{\hat{\mu}^{n_s}} + \frac{ \hat{N}_+^{n_s}}{\hat{C}^{n_s}}}\right)^{1/n_s},
+\ee
+in which $\hat{A} = A/[A]$, $\hat{C} = C [u]^{1/n_s} /[\tau]$, and $\hat{\mu} = \mu \rho_i g [z]/[\tau] = \mu [x]/[z]$.
+
+The velocity components $u$ and $v$ are discretised on the `edges' of the numerical grid, labelled \verb|gg.es| and \verb|gg.fs| respectively.  The speed $U$ is defined on the nodes (\verb|gg.ns|) by averaging over neighbouring edges (see below).  The stress components $\tau_{xx}$ and $\tau_{yy}$ also naturally live on the nodes (as does the effective pressure $N$), and the horizontal shear stress $\tau_{xy}$ lives on the `corners' (\verb|gg.cs|).
+
+The assignment of the nodes, edges and corners of the mesh as inside, outside, and on the boundary of the domain may be different from the corresponding assignment for the hydrology model because of the different boundary conditions required.   These are denoted in the grid structure \verb|gg| with a suffix \verb|2|.  Typically, we prescribe the velocity around the boundary of the domain.  We assign the corresponding edges as \verb|gg.ebdy2| and \verb|gg.fbdy2|, and then assign interior/exterior nodes, edges and corners as \verb|gg.nin2|, \verb|gg.ein2|, \verb|gg.fin2|, and \verb|gg.cin2|, and \verb|gg.nout2|, \verb|gg.eout2|, \verb|gg.fout2|, and \verb|gg.cout2|.  It is also possible to assign stress components instead of velocity components, in which case some nodes and/or corners may be included as \verb|gg.nbdy2| etc, and nearby boundary edges not included in \verb|gg.ebdy2| etc.  (The principal is that the \verb|bdy2| assignment is for nodes, edges or corners at which a boundary condition is to be applied, \verb|out2| is for points that are outside of the domain, and \verb|in2| is the interior points at which quantities are to be solved for).
+
+\subsection*{Running the model}
+
+Having defined parameters and grid as for a standard nevis run, we need to add some new parameters and grid labelling for the ice velocity solve, which is done using
+\begin{verbatim}
+>[pd,ps,pp,oo] = nevis_add_parameters_ice(pd,ps,pp,oo);
+>gg = nevis_label_ice(gg,oo);
+\end{verbatim}
+This will assign default values of the new parameters (see table \ref{tab1}); if other values are desired they should be added before calling \verb|nevis_add_parameters_ice|.  By default, the sliding exponent $n_s$ is taken to be $1$ (linear sliding), and the coefficient $C$ is chosen so that the shear stress scale $[\tau]$ (\verb|ps.tau|) would give rise to sliding velocity $U_b$ (\verb|pd.u_b|) in the large-effective-pressure (Weertman) limit.  
+The function \verb|nevis_label_ice| adds the inside/outside/boundary labels (with suffix \verb|2|) required to solve for the ice flow.
+
+We can then solve for the (non-dimensional) ice velocity using
+\begin{verbatim}
+>H = aa.H; N = ones(gg.nIJ,1); u = zeros(gg.eIJ,1); v = zeros(gg.fIJ);
+>[u,v] = nevis_velocity(H,u,v,N,aa,pp,gg,oo);
+\end{verbatim}
+The input values of \verb|u| and \verb|v| are used both to provide the boundary conditions and as an initial guess.  
+
+The corresponding stresses $\tau_{xx}$, $\tau_{yy}$ and $\tau_{xy}$ can be calculated using 
+\begin{verbatim}
+>[tauxx,tauyy,tauxy,Txx,Tyy,Txy,tau_b] = nevis_stresses(H,u,v,N,aa,pp,gg,oo);
+\end{verbatim}
+which also calculates the `membrane stress' components $T_{xx}$, $T_{yy}$ and $T_{xy}$, and the magnitude of the basal shear stress $\tau_b$.   (Note that $\tau_{xx}$, $\tau_{yy}$ and $\tau_{xy}$ are non-dimensionalised with $[\eta][u]/[x]$, whereas $\tau_b$ is non-dimensionalised with $[\tau] = \rho_i g [z]^2/[x]$.). The membrane stresses are the non-hydrostatic parts of the stress tensor, $T_{xx} = 2\tau_{xx} + \tau_{yy}$, $T_{yy} = \tau_{xx}+2\tau_{yy}$, $T_{xy} = \tau_{xy}$. 
+
+We can plot the velocity using, for example, 
+\begin{verbatim}
+>U = ((gg.emean(:,gg.es2)*u(gg.es2)).^2 + (gg.fmean(:,gg.fs2)*v(gg.fs2)).^2)^(1/2);
+>imagesc(ps.x*gg.nx,ps.x*gg.nx,(ps.u*pd.ty)*reshape(U,gg.nI,gg.nJ)');
+\end{verbatim}
+to plot the speed in meters per year, or to plot the stress (in MPa),
+\begin{verbatim}
+>imagesc(ps.x*gg.nx,ps.x*gg.nx,(ps.eta*ps.u/ps.x/1e6)*reshape(tauxx,gg.nI,gg.nJ)');
+\end{verbatim}
+
+To solve for ice velocity together with the hydrology, we set the option
+\begin{verbatim}
+>oo.include_ice = 1;
+\end{verbatim}
+before running {\verb|nevis_timesteps_ice|} in place of {\verb|nevis_timesteps|}.  Each timestep will begin by solving for the ice velocity with the current effective pressure field, and the corresponding velocity components \verb|u| and \verb|v| are added to the solution structure \verb|vv| (to which they should also be added initially to provide the boundary conditions and initial guess).
+
+By default the problem for the ice velocity is effectively decoupled from the hydrology model (although it is solved for at the same time).  To include full coupling with the hydrology model, the sliding speed $U_b$ in the cavity opening term, and the frictional heating term $\bm{\tau}_b \cdot \bo{u}_b$, should be continually updated.  This can be done (although it has not yet been tested properly) by setting the options
+\begin{verbatim}
+>oo.cavity_coupling = 1;
+>oo.melt_coupling = 1;
+\end{verbatim}
+before running {\verb|nevis_timesteps_ice|}.  
+
+\end{document}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{untitled}
+\caption{}
+\end{figure}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|}
+\hline
+Parameter & Value \\
+\hline
+$$ & $$\\ 
+
+\hline
+\end{tabular}
+\caption{\lab{parametervalues}Values of model constants}
+\end{table}
