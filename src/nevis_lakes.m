@@ -69,7 +69,7 @@ if ~oo.keep_all_lakes
     ni_l = unique(ni_l,'stable'); 
 end
 
-n_l = length(ni_l);
+% n_l = length(ni_l);
 x_l = gg.nx(ni_l); 
 y_l = gg.ny(ni_l);
 

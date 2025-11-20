@@ -133,7 +133,7 @@ title('Effective pressure (MPa)','FontSize',10);
 axis equal;
 
 subplot(3,2,6);
-pphi_delta = pcolor(xx,yy,(vphi0-vphi)/1e6); 
+% pphi_delta = pcolor(xx,yy,(vphi0-vphi)/1e6); 
 pphi_delta = pcolor(xx,yy,ps.hb*reshape(vva.hb,gg.nI,gg.nJ)); 
 shading interp; 
 colorbar;colormap(cmap);

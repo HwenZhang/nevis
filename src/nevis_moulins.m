@@ -62,7 +62,7 @@ end
 if ~oo.keep_all_moulins
     ni_m = unique(ni_m,'stable'); 
 end % [ 26 August 2014: changed from above line, option 'stable' doesn't work on older versions of matlab ]
-n_m = length(ni_m);
+% n_m = length(ni_m);
 x_m = gg.nx(ni_m); 
 y_m = gg.ny(ni_m);
 
@@ -76,8 +76,8 @@ y = reshape(gg.ny,gg.nIJ,1);
 % coordinates of corners that are far away [to prevent any voronoi cells that matter being unbounded]
 
 % an extension to the computational domain
-big = 0.5*(max(x)-min(x) + max(y)-min(y));
-big = 0.2*(max(x)-min(x) + max(y)-min(y)); % change 7 Nov
+% big = 0.5*(max(x)-min(x) + max(y)-min(y));
+% big = 0.2*(max(x)-min(x) + max(y)-min(y)); % change 7 Nov
 big = 0.05*max(max(x)-min(x),max(y)-min(y)); % change 6 Feb 2016
 
 % corners of the voronoi grid
