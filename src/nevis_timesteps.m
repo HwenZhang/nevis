@@ -162,8 +162,8 @@ while t<t_stop+oo.dt_min
     tt(ti).phi = mean(vv.phi(gg.ns));                         % mean potential, scaled with ps.phi
     tt(ti).N = mean(aa.phi_0(gg.ns)-vv.phi(gg.ns));           % mean effective pressure, scaled with ps.phi
     tt(ti).hs = sum(vv.hs(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));% total cavity sheet volume, scaled with ps.h*ps.x^2
-    tt(ti).Vb = sum(vv.hb(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));% total blister volume, scaled with ps.hb*ps.x^2
 
+    tt(ti).Vb = sum(vv.hb(gg.ns_blister).*gg.Dx(gg.ns_blister).*gg.Dy(gg.ns_blister));% total blister volume, scaled with ps.hb*ps.x^2
     disp(['Volume of the blister is ' num2str(tt(ti).Vb) '.']);
     disp(['The most negative effective pressure is ' num2str(min(aa.phi_0(gg.ns)-vv.phi(gg.ns))) '.']);
 
@@ -296,11 +296,13 @@ while t<t_stop+oo.dt_min
     %% check and adjust boundary nodes
     if oo.adjust_boundaries && ti>=ti_boundaries
         ti_boundaries = ti+oo.dti_boundaries;
+
+        % update boundary nodes for hydrology
         ni1 = gg.nbdy(vv2.R_bdy<0); % Dirichlet nodes with inflow
         if ~isfield(gg,'n1m'), gg.n1m = gg.n1; end % boundary nodes adjacent to margin
-        % ni2 = gg.n1m(vv.phi(gg.n1m)-aa.phi_b(gg.n1m)>pp.p_a_reg); % boundary nodes with too high pressure
-        ni2 = gg.n1m(vv.phi(gg.n1m)>pp.p_a_reg); % boundary nodes with too high pressure
-        ni2 = union(ni2, gg.n1m((vv.pb(gg.n1m)+aa.phi_a(gg.n1m)-aa.phi_0(gg.n1m))>pp.p_a_reg));
+        ni2 = gg.n1m(vv.phi(gg.n1m)-aa.phi_b(gg.n1m)>pp.p_a_reg); % boundary nodes with too high pressure
+        % ni2 = gg.n1m(vv.phi(gg.n1m)>pp.p_a_reg); % boundary nodes with too high pressure
+        % ni2 = union(ni2, gg.n1m((vv.pb(gg.n1m)+aa.phi_a(gg.n1m)-aa.phi_0(gg.n1m))>pp.p_a_reg));
         % ni2 = gg.n1m((vv.phi(gg.n1m)-vv.pb(gg.n1m)-aa.phi_a(gg.n1m)+aa.phi_0(gg.n1m))>pp.p_a_reg); % boundary nodes with too high pressure
         % ni2 = gg.n1m((vv.phi(gg.n1m)-vv.pb(gg.n1m)-aa.phi_a(gg.n1m)+vv.phi(gg.n1m))>pp.p_a_reg); % boundary nodes with too high pressure
         if ~isempty(ni1) || ~isempty(ni2)
@@ -315,6 +317,21 @@ while t<t_stop+oo.dt_min
             aa.phi = aa.phi_b(gg.nbdy);                    % boundary conditions
             % nevis_plot_grid(gg,gg.nbdy);  % for maintenance
         end
+
+        % update boundary nodes for blister
+        ni1 = gg.nbdy(vva.R_bdy_blister<0); % Dirichlet nodes with inflow
+        ni2 = gg.n1m((vv.pb(gg.n1m)+aa.phi_a(gg.n1m)-aa.phi_0(gg.n1m))>pp.p_a_reg); % boundary nodes with too high pressure
+        if ~isempty(ni1) || ~isempty(ni2)
+            if ~isempty(ni1)
+                if oo.verb, disp('nevis_timesteps: Removing Dirichlet indices for blister...'); end
+            end
+            if ~isempty(ni2)
+                if oo.verb, disp('nevis_timesteps: Adding Dirichlet indices for blister...'); end
+            end
+            vv.nbdy_blister = union(setdiff(gg.nbdy_blister,ni1),ni2);
+            gg = nevis_label_blister(gg,vv.nbdy_blister,oo);
+        end
+
     end 
     
     disp(['nevis_timesteps: t = ',num2str(t),' [ / ',num2str(t_stop),' ]']);

@@ -62,8 +62,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     if ~isfield(aa,'Qs'), aa.Qs = 0*ones(length(gg.cbdy),1); end
     if ~isfield(aa,'Qr'), aa.Qr = 0*ones(length(gg.cbdy),1); end
 
-    if ~isfield(aa,'qbx'), aa.qbx = 0*ones(length(gg.ebdy),1); end   % flow within blister
-    if ~isfield(aa,'qby'), aa.qby = 0*ones(length(gg.fbdy),1); end   % flow within blister
+    if ~isfield(aa,'qbx'), aa.qbx = 0*ones(length(gg.ebdy_blister),1); end   % flow within blister
+    if ~isfield(aa,'qby'), aa.qby = 0*ones(length(gg.fbdy_blister),1); end   % flow within blister
     
     %% restrict mean operators 
     % [ to take means over active points must take care to only 
@@ -83,6 +83,19 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     temp = gg.nmeanr(:,gg.cin)*ones(length(gg.cin),1); temp(temp==0) = inf; 
     gg.nmeanrin = sparse(1:length(temp),1:length(temp),temp.^(-1),...
                          length(temp),length(temp))*gg.nmeanr;
+
+    temp = gg.nmeanx(:,gg.ein_blister)*ones(length(gg.ein_blister),1); temp(temp==0) = inf;
+    gg.nmeanxin_blister = sparse(1:length(temp),1:length(temp),temp.^(-1),...
+                         length(temp),length(temp))*gg.nmeanx;
+    temp = gg.nmeany(:,gg.fin_blister)*ones(length(gg.fin_blister),1); temp(temp==0) = inf;
+    gg.nmeanyin_blister = sparse(1:length(temp),1:length(temp),temp.^(-1),...
+                         length(temp),length(temp))*gg.nmeany;
+    temp = gg.nmeans(:,gg.cin_blister)*ones(length(gg.cin_blister),1); temp(temp==0) = inf;
+    gg.nmeansin_blister = sparse(1:length(temp),1:length(temp),temp.^(-1),...
+                         length(temp),length(temp))*gg.nmeans;
+    temp = gg.nmeanr(:,gg.cin_blister)*ones(length(gg.cin_blister),1); temp(temp==0) = inf;
+    gg.nmeanrin_blister = sparse(1:length(temp),1:length(temp),temp.^(-1),...
+                         length(temp),length(temp))*gg.nmeanr;  
 
     %% primary variables
     phi = vv.phi;
@@ -109,12 +122,14 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
 
     % boundary potential
     if ~isempty(gg.nbdy)
-        % hb(gg.nbdy) = 0.0;
-        pb(gg.nbdy) = aa.phi_0(gg.nbdy)-aa.phi_a(gg.nbdy);                              % boundary pb = ice overburden
-        % pb(gg.nbdy) = 0;
         % phi(gg.nbdy) = pb(gg.nbdy) + aa.phi_a(gg.nbdy) - aa.phi_0(gg.nbdy);           % boundary condition
         % phi(gg.nbdy) = aa.phi_b(gg.nbdy);                                             % ensure phi is not less than atmospheric pressure
         phi(gg.nbdy) = 0;
+    end
+
+    if ~isempty(gg.nbdy_blister)
+        % pb(gg.nbdy) = 0;
+        pb(gg.nbdy_blister) = aa.phi_0(gg.nbdy_blister)-aa.phi_a(gg.nbdy_blister);      % boundary pb = ice overburden
     end
     
     % potential gradients
@@ -291,6 +306,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     Qb_h = pp.c52*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*Reg_deltaphi(pb-phi+aa.phi_a,pp.deltap_reg).*Reg_hb(hb,pp.hb_reg2).*Reg_H(aa.H); % pp.kl_h*hs/ps.hs
     Qb_s = pp.c51*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*Reg_deltaphi(pb-phi+aa.phi_a,pp.deltap_reg).*Reg_hb(hb,pp.hb_reg2).*Reg_H(aa.H); % pp.kl_h*hs/ps.hs
 
+    % Start from here...
     % boundary edge fluxes
     if ~isempty(gg.ebdy)
         qsx(gg.ebdy) = aa.qsx;

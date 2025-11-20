@@ -98,6 +98,7 @@ else
 end
 
 %% define active and interior labels
+% 20 Nov 2025: The template below is for hydrology models
 ns = setdiff(ns,nout);  %  
 es = setdiff(es,eout);   
 fs = setdiff(fs,fout);   
