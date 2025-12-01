@@ -33,11 +33,11 @@ c3 = gg.c3;
 %% prescribe pressure at nodes specified by d_inds [ eliminate connected boundary edges ]
 nbdy = intersect(n1,d_inds);    % only include d_inds that are on the boundary
 
-ed1 = find(gg.emean*sparse(nbdy_blister,1,1,gg.nIJ,1)==0.5); ed1 = intersect(ed1,e1); % connected boundary edges
-ed2 = find(gg.emean*sparse(nbdy_blister,1,1,gg.nIJ,1)==1); ed2 = intersect(ed2,e2); % connected along-boundary edges
+ed1 = find(gg.emean*sparse(nbdy,1,1,gg.nIJ,1)==0.5); ed1 = intersect(ed1,e1); % connected boundary edges
+ed2 = find(gg.emean*sparse(nbdy,1,1,gg.nIJ,1)==1); ed2 = intersect(ed2,e2); % connected along-boundary edges
 ed = union(ed1,ed2);
-fd1 = find(gg.fmean*sparse(nbdy_blister,1,1,gg.nIJ,1)==0.5); fd1 = intersect(fd1,f1);
-fd2 = find(gg.fmean*sparse(nbdy_blister,1,1,gg.nIJ,1)==1); fd2 = intersect(fd2,f2); % connected along-boundary edges
+fd1 = find(gg.fmean*sparse(nbdy,1,1,gg.nIJ,1)==0.5); fd1 = intersect(fd1,f1);
+fd2 = find(gg.fmean*sparse(nbdy,1,1,gg.nIJ,1)==1); fd2 = intersect(fd2,f2); % connected along-boundary edges
 fd = union(fd1,fd2);
 
 ebdy = setdiff(e1,ed); eout = union(e0,ed); 

@@ -306,20 +306,27 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     Qb_h = pp.c52*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*Reg_deltaphi(pb-phi+aa.phi_a,pp.deltap_reg).*Reg_hb(hb,pp.hb_reg2).*Reg_H(aa.H); % pp.kl_h*hs/ps.hs
     Qb_s = pp.c51*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*Reg_deltaphi(pb-phi+aa.phi_a,pp.deltap_reg).*Reg_hb(hb,pp.hb_reg2).*Reg_H(aa.H); % pp.kl_h*hs/ps.hs
 
-    % Start from here...
     % boundary edge fluxes
     if ~isempty(gg.ebdy)
         qsx(gg.ebdy) = aa.qsx;
         qex(gg.ebdy) = aa.qex;
-        qbx(gg.ebdy) = aa.qbx;
+        % qbx(gg.ebdy) = aa.qbx;
         Qx(gg.ebdy) = aa.Qx;
+    end
+
+    if~isempty(gg.ebdy_blister)
+        qbx(gg.ebdy_blister) = aa.qbx;
     end
 
     if ~isempty(gg.fbdy)
         qsy(gg.fbdy) = aa.qsy;
         qey(gg.fbdy) = aa.qey;
-        qby(gg.fbdy) = aa.qby;
+        % qby(gg.fbdy) = aa.qby;
         Qy(gg.fbdy) = aa.Qy;
+    end
+
+    if ~isempty(gg.fbdy_blister)
+        qby(gg.fbdy_blister) = aa.qby;
     end
 
     if ~isempty(gg.cbdy)
@@ -328,8 +335,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     end
     
     % outside edge fluxes
-    qsx(gg.eout) = 0; qex(gg.eout) = 0; qbx(gg.eout) = 0; Qx(gg.eout) = 0; % x-edge
-    qsy(gg.fout) = 0; qey(gg.fout) = 0; qby(gg.fout) = 0; Qy(gg.fout) = 0; % y-edge  
+    qsx(gg.eout) = 0; qex(gg.eout) = 0; qbx(gg.eout_blister) = 0; Qx(gg.eout) = 0; % x-edge
+    qsy(gg.fout) = 0; qey(gg.fout) = 0; qby(gg.fout_blister) = 0; Qy(gg.fout) = 0; % y-edge  
     Qs(gg.cout) = 0; Qr(gg.cout) = 0; % corners
     
     % Xi = rho_w * L * M
@@ -411,6 +418,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         [R1,R2,R3,R4,R5,R6,R7,R8] = residuals();
         
         vv2.R_bdy = R2(gg.nbdy);
+        vv2.R_bdy_blister = R8(gg.nbdy_blister);
         vv2.Qb_in = Qb_in.*gg.Dx.*gg.Dy;
         vv2.Qb_dec = sum(Qb_h.*gg.Dx.*gg.Dy,"omitnan");
         vv2.Q_out = 1/pp.c9*sum( R2(gg.nbdy).*gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy) ); 

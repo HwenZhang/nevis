@@ -2,7 +2,7 @@
 
 # Move generated scripts to the root directory
 # mv ./generated_scripts/spinup/* ./
-mv ./generated_scripts/drainage/* ./
+# mv ./generated_scripts/drainage/* ./
 # mv ./generated_scripts/output/* ./
 # mv ./generated_scripts/convergence_tests/* ./
 # mv ./generated_scripts/case_studys/* ./
@@ -10,7 +10,7 @@ mv ./generated_scripts/drainage/* ./
 # --- Configuration ---
 # Set the maximum number of parallel jobs. Default is 12.
 MAX_PARALLEL_JOBS=${MAX_PARALLEL_JOBS:-9}
-SKIP_SPINUP=${SKIP_SPINUP:-true} 
+SKIP_SPINUP=${SKIP_SPINUP:-false} 
 
 # --- Global Variables ---
 # This variable will hold the PIDs of the running subshells and must be accessible by cleanup

@@ -319,18 +319,18 @@ while t<t_stop+oo.dt_min
         end
 
         % update boundary nodes for blister
-        ni1 = gg.nbdy(vva.R_bdy_blister<0); % Dirichlet nodes with inflow
-        ni2 = gg.n1m((vv.pb(gg.n1m)+aa.phi_a(gg.n1m)-aa.phi_0(gg.n1m))>pp.p_a_reg); % boundary nodes with too high pressure
-        if ~isempty(ni1) || ~isempty(ni2)
-            if ~isempty(ni1)
-                if oo.verb, disp('nevis_timesteps: Removing Dirichlet indices for blister...'); end
-            end
-            if ~isempty(ni2)
-                if oo.verb, disp('nevis_timesteps: Adding Dirichlet indices for blister...'); end
-            end
-            vv.nbdy_blister = union(setdiff(gg.nbdy_blister,ni1),ni2);
-            gg = nevis_label_blister(gg,vv.nbdy_blister,oo);
-        end
+        % ni1 = gg.nbdy(vv2.R_bdy_blister<0); % Dirichlet nodes with inflow
+        % ni2 = gg.n1m((vv.pb(gg.n1m)+aa.phi_a(gg.n1m)-aa.phi_0(gg.n1m))>pp.p_a_reg); % boundary nodes with too high pressure
+        % if ~isempty(ni1) || ~isempty(ni2)
+        %     if ~isempty(ni1)
+        %         if oo.verb, disp('nevis_timesteps: Removing Dirichlet indices for blister...'); end
+        %     end
+        %     if ~isempty(ni2)
+        %         if oo.verb, disp('nevis_timesteps: Adding Dirichlet indices for blister...'); end
+        %     end
+        %     vv.nbdy_blister = union(setdiff(gg.nbdy_blister,ni1),ni2);
+        %     gg = nevis_label_blister(gg,vv.nbdy_blister,oo);
+        % end
 
     end 
     
