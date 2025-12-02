@@ -89,7 +89,7 @@ oo.adjust_boundaries = 1;                         % enable option of changing co
 
 %% plot grid
 nevis_plot_grid(gg);                              % check to see what grid looks like
-return;
+% return;
 %% initialize variables
 [aa,vv] = nevis_initialize(b,s,gg,pp,oo);         % default initialisation
 pd.k_f = 1.00;                                    % percent overburden (k-factor) 
