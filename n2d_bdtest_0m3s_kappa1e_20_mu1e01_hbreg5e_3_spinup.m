@@ -65,7 +65,7 @@ ps = struct;
 %% grid and geometry
 L = 5e4;                                     % length of the domain [m]
 W = 0.4*L;                                   % width of the domain [m]
-A = 100;                                     % surface undulation amplitude [m]
+A = 400;                                     % surface undulation amplitude [m]
 lambda = W/5;                                % surface undulation wavelength [m]
 x = linspace(0,(L/ps.x),101); 
 y = linspace(0,(W/ps.x),40);        
@@ -73,18 +73,20 @@ oo.yperiodic = 1;                        % oo.yperiodic = 1 necessary for a 1-d 
 oo.xperiodic = 0;
 gg = nevis_grid(x,y,oo); 
 b = (0/ps.z)*gg.nx;                      % flat bed
-s = (1060/ps.z)*(1-ps.x*gg.nx/L).^0.5 + (A/ps.z)*sin(2*pi*gg.ny*ps.x/lambda);   % ice surface topography 
+s = (1060/ps.z)*(1-ps.x*gg.nx/L).^0.5 + (A/ps.z)*sin(2*pi*gg.ny*ps.x/lambda) + 100/ps.z;   % ice surface topography 
 
 %% mask with minimum ice thickness
 H = max(s-b,0);
 Hmin = 0/ps.z; 
 nout = find(H<=Hmin);
+noutb = [];
 gg = nevis_mask(gg,nout); 
+gg = nevis_mask_blister(gg,noutb);
 gg.n1m = gg.n1;                                   % label all edge nodes as boundary nodes for pressure
 
 %% label boundary nodes
 gg = nevis_label(gg,gg.n1m);
-gg = nevis_label_blister(gg,gg.n1m,oo);        % label blister boundary nodes
+gg = nevis_label_blister(gg,[],oo);               % label blister boundary nodes
 oo.adjust_boundaries = 1;                         % enable option of changing conditions
 
 %% plot grid

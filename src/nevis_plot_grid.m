@@ -28,12 +28,19 @@ ein = gg.ein;
 fin = gg.fin;
 cin = gg.cin;
 
+nbdy_blister = gg.nbdy_blister;
+nin_blister = gg.nin_blister;
+ebdy_blister = gg.ebdy_blister;
+fbdy_blister = gg.fbdy_blister;
+cbdy_blister = gg.cbdy_blister;
+
 figure;
     % external
     plot(nx(nout),ny(nout),'.','color',.9*[1 1 1],'markersize',8); hold on;
     plot(ex(eout),ey(eout),'+','color',.9*[1 1 1]);
     plot(fx(fout),fy(fout),'+','color',.9*[1 1 1]);
     plot(cx(cout),cy(cout),'x','color',.9*[1 1 1]);
+    
     % bound and internal
     plot(nx(nbdy),ny(nbdy),'r.','markersize',8); 
     plot(nx(nin),ny(nin),'k.','markersize',8);
@@ -43,6 +50,13 @@ figure;
     plot(fx(fin),fy(fin),'k+');
     plot(cx(cbdy),cy(cbdy),'rx');
     plot(cx(cin),cy(cin),'kx');
+
+    plot(nx(nbdy_blister),ny(nbdy_blister),'ro','markersize',8); 
+    plot(nx(nin_blister),ny(nin_blister),'bo','markersize',4);
+    plot(ex(ebdy_blister),ey(ebdy_blister),'r+');
+    plot(fx(fbdy_blister),fy(fbdy_blister),'r+');
+    plot(cx(cbdy_blister),cy(cbdy_blister),'rx');
+    plot(cx(cbdy_blister),cy(cbdy_blister),'rx');
     
     plot(nx(ni),ny(ni),'go');
     grid on

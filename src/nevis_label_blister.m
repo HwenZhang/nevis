@@ -17,19 +17,18 @@ fs = (1:gg.fIJ)';
 cs = (1:gg.cIJ)';
 
 %% labels of boundary nodes, edges, corners
-nout = gg.nout;
-n1 = gg.n1;
-e0 = gg.e0;
-e1 = gg.e1;
-e2 = gg.e2;
-f0 = gg.f0;
-f1 = gg.f1;
-f2 = gg.f2;
-c0 = gg.c0;
-c1 = gg.c1;
-c2 = gg.c2;
-c3 = gg.c3;
-
+nout = gg.nout_blister;
+n1 = gg.n1_blister;
+e0 = gg.e0_blister;
+e1 = gg.e1_blister;
+e2 = gg.e2_blister;
+f0 = gg.f0_blister;
+f1 = gg.f1_blister;
+f2 = gg.f2_blister;
+c0 = gg.c0_blister;
+c1 = gg.c1_blister;
+c2 = gg.c2_blister;
+c3 = gg.c3_blister;
 %% prescribe pressure at nodes specified by d_inds [ eliminate connected boundary edges ]
 nbdy = intersect(n1,d_inds);    % only include d_inds that are on the boundary
 
