@@ -305,7 +305,6 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     % blister to subglacial drainage system term defined on the nodes
     Qb_h = pp.c52*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*Reg_deltaphi(pb-phi+aa.phi_a,pp.deltap_reg).*Reg_hb(hb,pp.hb_reg2).*Reg_H(aa.H); % pp.kl_h*hs/ps.hs
     Qb_s = pp.c51*(pp.ct+pp.kl_h*hs+pp.kl_s*Smean).*Reg_deltaphi(pb-phi+aa.phi_a,pp.deltap_reg).*Reg_hb(hb,pp.hb_reg2).*Reg_H(aa.H); % pp.kl_h*hs/ps.hs
-
     % boundary edge fluxes
     if ~isempty(gg.ebdy)
         qsx(gg.ebdy) = aa.qsx;
@@ -314,9 +313,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         Qx(gg.ebdy) = aa.Qx;
     end
 
-    if~isempty(gg.ebdy_blister)
-        qbx(gg.ebdy_blister) = aa.qbx;
-    end
+    % if~isempty(gg.ebdy_blister)
+    %     qbx(gg.ebdy_blister) = aa.qbx;
+    % end
 
     if ~isempty(gg.fbdy)
         qsy(gg.fbdy) = aa.qsy;
@@ -325,9 +324,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         Qy(gg.fbdy) = aa.Qy;
     end
 
-    if ~isempty(gg.fbdy_blister)
-        qby(gg.fbdy_blister) = aa.qby;
-    end
+    % if ~isempty(gg.fbdy_blister)
+    %     qby(gg.fbdy_blister) = aa.qby;
+    % end
 
     if ~isempty(gg.cbdy)
         Qs(gg.cbdy) = aa.Qs;
@@ -335,8 +334,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     end
     
     % outside edge fluxes
-    qsx(gg.eout) = 0; qex(gg.eout) = 0; qbx(gg.eout_blister) = 0; Qx(gg.eout) = 0; % x-edge
-    qsy(gg.fout) = 0; qey(gg.fout) = 0; qby(gg.fout_blister) = 0; Qy(gg.fout) = 0; % y-edge  
+    % qbx(gg.eout_blister) = 0; qby(gg.fout_blister) = 0;
+    qsx(gg.eout) = 0; qex(gg.eout) = 0; Qx(gg.eout) = 0; % x-edge
+    qsy(gg.fout) = 0; qey(gg.fout) = 0; Qy(gg.fout) = 0; % y-edge  
     Qs(gg.cout) = 0; Qr(gg.cout) = 0; % corners
     
     % Xi = rho_w * L * M
@@ -914,7 +914,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
                 + sparse(1:length(nin),1:length(nin),Dr(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin))*( + c11*nmeanr(nin,cin)*(DXicr_phi(:,nin)+DXir_phi(:,nin)) ) ...
                 + sparse(1:length(nin), 1:length(nin), c52*(1+kl_h*hs(nin)+kl_s*Smean(nin)).*DReg_deltaphi_Dphi(pb(nin)-phi(nin)+phi_a(nin),deltap_reg).*Reg_hb(hb(nin),hb_reg2).*Reg_H(aa.H(nin)), length(nin), length(nin));
 
-        DF2_pb = sparse(1:length(nin), 1:length(nin), c52*(1+kl_h*hs(nin)+kl_s*Smean(nin)).*DReg_deltaphi_Dphib(pb(nin)-phi(nin)+phi_a(nin),deltap_reg).*Reg_hb(hb(nin),hb_reg2).*Reg_H(aa.H(nin)), length(nin), length(nin_blister));
+        temp = sparse(1:length(nin), nin, c52*(1+kl_h*hs(nin)+kl_s*Smean(nin)).*DReg_deltaphi_Dphib(pb(nin)-phi(nin)+phi_a(nin),deltap_reg).*Reg_hb(hb(nin),hb_reg2).*Reg_H(aa.H(nin)), length(nin), nIJ);
+        DF2_pb = temp(:,nin_blister);
+
         temp   = sparse(1:length(nin), nin, c52*(1+kl_h*hs(nin)+kl_s*Smean(nin)).*(Reg_deltaphi(pb(nin)-phi(nin)+phi_a(nin),deltap_reg)).*DReg_hb_Dhb(hb(nin),hb_reg2).*Reg_H(aa.H(nin)), length(nin), nIJ);
         DF2_hb = temp(:,ns_blister);
 
@@ -983,7 +985,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         biharmonic = (gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(max(H.^3,B_reg).*(gg.nddx*gg.eddx + gg.nddy*gg.fddy));
         DF7_hb = sparse(1:length(ns_blister),1:length(ns_blister),c46*ones(length(ns_blister),1),length(ns_blister),length(ns_blister)) + c49 * biharmonic(ns_blister,ns_blister);
         temp = sparse(nin_blister, 1:length(nin_blister), -ones(length(nin_blister),1), nIJ, length(nin_blister));
-        DF7_pb = temp(ns_blister,:);
+        DF7_pb = temp(ns_blister,:); 
         temp = sparse(nin, 1:length(nin), zeros(length(nin),1), nIJ, length(nin));
         DF7_phi = temp(ns_blister,:);
 
@@ -992,7 +994,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
                  + sparse(1:length(nin_blister), 1:length(nin_blister), - c51*(1+kl_h*hs(nin_blister)+kl_s*Smean(nin_blister)).*DReg_deltaphi_Dphib(pb(nin_blister)-phi(nin_blister)+phi_a(nin_blister),deltap_reg).*Reg_hb(hb(nin_blister),hb_reg2).*Reg_H(aa.H(nin_blister)), length(nin_blister), length(nin_blister));
         temp = sparse(1:length(nin), 1:length(nin), - c51*(1+kl_h*hs(nin)+kl_s*Smean(nin)).*DReg_deltaphi_Dphi(pb(nin)-phi(nin)+phi_a(nin),deltap_reg).*Reg_hb(hb(nin),hb_reg2).*Reg_H(aa.H(nin))...
                                                        + c7*DReg_N_Dphi(N(nin),N_reg1).*E(nin), nIJ, length(nin));
-        DF8_phi = temp(ns_blister, :);
+        DF8_phi = temp(nin_blister, :);
         temp = sparse(1:length(nin_blister), nin_blister, - ones(length(nin_blister),1).*dt.^(-1)...
                                           - c51*(1+kl_h*hs(nin_blister)+kl_s*Smean(nin_blister)).*(Reg_deltaphi(pb(nin_blister)-phi(nin_blister)+phi_a(nin_blister),deltap_reg)).*DReg_hb_Dhb(hb(nin_blister),hb_reg2).*Reg_H(aa.H(nin_blister)), length(nin_blister), nIJ);
         DF8_hb = temp(:,ns_blister) - c45*(gg.nddx(nin_blister,ein_blister)*Dqbx_hb(:,ns_blister) + gg.nddy(nin_blister,fin_blister)*Dqby_hb(:,ns_blister));
@@ -1000,10 +1002,10 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         DF8_hs = temp(:,ns);
 
         % nin_blister could be larger than nin
-        DF8_Sx = sparse(1:length(nin_blister), 1:length(nin_blister), -0.25*c51*kl_s*(Reg_deltaphi(pb(nin_blister)-phi(nin_blister)+phi_a(nin_blister),deltap_reg)).*Reg_hb(hb(nin_blister),hb_reg2).*Reg_H(aa.H(nin_blister)), length(nin_blister), length(nin_blister))*nmeanx(nin_blister,ein);
-        DF8_Sy = sparse(1:length(nin_blister), 1:length(nin_blister), -0.25*c51*kl_s*(Reg_deltaphi(pb(nin_blister)-phi(nin_blister)+phi_a(nin_blister),deltap_reg)).*Reg_hb(hb(nin_blister),hb_reg2).*Reg_H(aa.H(nin_blister)), length(nin_blister), length(nin_blister))*nmeany(nin_blister,fin);
-        DF8_Ss = sparse(1:length(nin_blister), 1:length(nin_blister), -0.25*c51*kl_s*(Reg_deltaphi(pb(nin_blister)-phi(nin_blister)+phi_a(nin_blister),deltap_reg)).*Reg_hb(hb(nin_blister),hb_reg2).*Reg_H(aa.H(nin_blister)), length(nin_blister), length(nin_blister))*nmeans(nin_blister,cin);
-        DF8_Sr = sparse(1:length(nin_blister), 1:length(nin_blister), -0.25*c51*kl_s*(Reg_deltaphi(pb(nin_blister)-phi(nin_blister)+phi_a(nin_blister),deltap_reg)).*Reg_hb(hb(nin_blister),hb_reg2).*Reg_H(aa.H(nin_blister)), length(nin_blister), length(nin_blister))*nmeanr(nin_blister,cin);
+        DF8_Sx = 0*sparse(1:length(nin_blister), 1:length(nin_blister), -0.25*c51*kl_s*(Reg_deltaphi(pb(nin_blister)-phi(nin_blister)+phi_a(nin_blister),deltap_reg)).*Reg_hb(hb(nin_blister),hb_reg2).*Reg_H(aa.H(nin_blister)), length(nin_blister), length(nin_blister))*nmeanx(nin_blister,ein);
+        DF8_Sy = 0*sparse(1:length(nin_blister), 1:length(nin_blister), -0.25*c51*kl_s*(Reg_deltaphi(pb(nin_blister)-phi(nin_blister)+phi_a(nin_blister),deltap_reg)).*Reg_hb(hb(nin_blister),hb_reg2).*Reg_H(aa.H(nin_blister)), length(nin_blister), length(nin_blister))*nmeany(nin_blister,fin);
+        DF8_Ss = 0*sparse(1:length(nin_blister), 1:length(nin_blister), -0.25*c51*kl_s*(Reg_deltaphi(pb(nin_blister)-phi(nin_blister)+phi_a(nin_blister),deltap_reg)).*Reg_hb(hb(nin_blister),hb_reg2).*Reg_H(aa.H(nin_blister)), length(nin_blister), length(nin_blister))*nmeans(nin_blister,cin);
+        DF8_Sr = 0*sparse(1:length(nin_blister), 1:length(nin_blister), -0.25*c51*kl_s*(Reg_deltaphi(pb(nin_blister)-phi(nin_blister)+phi_a(nin_blister),deltap_reg)).*Reg_hb(hb(nin_blister),hb_reg2).*Reg_H(aa.H(nin_blister)), length(nin_blister), length(nin_blister))*nmeanr(nin_blister,cin);
 
         %% construct Jacobian matrix
         % % [ original way of calculating ]
@@ -1241,5 +1243,5 @@ function out = DReg_deltaphi_Dphib(deltaphi,dp0)
 end
 
 function out = Reg_H(H)
-    out = 1;
+    out = H>0;
 end

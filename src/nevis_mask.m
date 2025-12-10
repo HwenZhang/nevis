@@ -20,7 +20,7 @@ fs = (1:gg.fIJ)';
 cs = (1:gg.cIJ)';
 
 %% identify boundary nodes and edges
-temp = ones(gg.nIJ,1); temp(nout) = 0;
+temp = ones(gg.nIJ,1); temp(nout) = 0; % here nout is the outer layer of the domain where H<=0,
 e0 = find(gg.emean*temp==0); % edges connected to all outside nodes
 e1 = find(gg.emean*temp==0.5); % edges connected to one outside node : boundary edges
 f0 = find(gg.fmean*temp==0); % edges connected to all outside nodes

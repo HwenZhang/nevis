@@ -87,6 +87,17 @@ for iter_new = 1:max_iter_new+1
         plot(F8,'r-');
         shg;
     end
+
+    if oo.plot_residual
+        figure(2);clf
+        scatter(gg.nx(gg.ns_blister),gg.ny(gg.ns_blister),20,abs(F7),'filled'); colorbar; title('Residual F7 on sheet nodes');shg
+    end
+    % figure(2);clf
+    % scatter(gg.nx(gg.ns_blister),gg.ny(gg.ns_blister),20,abs(F7),'filled'); colorbar; title('Residual F7 on sheet nodes');shg
+    % 
+    % figure(3);clf
+    % scatter(gg.nx(gg.nin_blister),gg.ny(gg.nin_blister),20,abs(F8),'filled'); colorbar; title('Residual F8 on sheet nodes');shg
+
     if oo.display_residual
         [m1,i1] = max(abs(F1)); 
         [m2,i2] = max(abs(F2)); 
@@ -144,9 +155,9 @@ for iter_new = 1:max_iter_new+1
         % check if include volume and radius
         if oo.include_blister
             if oo.include_pressure
-                X = [vv.hs(gg.ns); vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin); vv.hb(gg.ns); vv.pb(gg.nin)];
+                X = [vv.hs(gg.ns); vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin); vv.hb(gg.ns_blister); vv.pb(gg.nin_blister)];
             else
-                X = [vv.hs(gg.ns); vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin); vv.hb(gg.ns)];
+                X = [vv.hs(gg.ns); vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin); vv.hb(gg.ns_blister)];
             end
         else
             X = [vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin)];
@@ -156,6 +167,8 @@ for iter_new = 1:max_iter_new+1
     % if condest(J) >=1e20, disp(' Aborting Newton step : J is nearly singular'); info.failed = 1; break; end
     dX = -J\F;
 
+    % fprintf('  norm_F = %.6e, norm_dv = %.6e, cond(J) = %.2e, rank = %d/%d\n', ...
+    % norm(F), norm(dX), condest(J), sprank(J), size(J,1));
     % ILU 预处理（ILUTP）
     % iluOpts = struct('type','ilutp','droptol',1e-3);
     % [M1, M2] = ilu(J, iluOpts);
@@ -189,9 +202,9 @@ for iter_new = 1:max_iter_new+1
     end
     % update the blister volume and radius
     if oo.include_blister
-        temp2 = length(gg.ns); vv.hb(gg.ns) = X(temp1+(1:temp2)); temp1=temp1+temp2; % vv.hb=max(vv.hb,0);
+        temp2 = length(gg.ns_blister); vv.hb(gg.ns_blister) = X(temp1+(1:temp2)); temp1=temp1+temp2; % vv.hb=max(vv.hb,0);
         if oo.include_pressure
-            temp2 = length(gg.nin); vv.pb(gg.nin) = X(temp1+(1:temp2)); % temp1=temp1+temp2;
+            temp2 = length(gg.nin_blister); vv.pb(gg.nin_blister) = X(temp1+(1:temp2)); % temp1=temp1+temp2;
         end
     end
 end

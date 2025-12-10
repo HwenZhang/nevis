@@ -29,14 +29,15 @@ qnet = ps.qs*(vv2.qs + vv2.qe + vv2.qQ + 0*vv2.Q);
 
 xx = (ps.x/10^3)*gg.nx; % x grid in km
 yy = (ps.x/10^3)*gg.ny;  
-xx(gg.nout) = NaN;
-yy(gg.nout) = NaN;
+
+% xx(gg.nout) = NaN;
+% yy(gg.nout) = NaN;
 
 %% read in the time series
 t = (ps.t/(24*60*60))*[tt.t];               % dimensional time series (days)
 tspan = (ps.t/pd.td)*oo.t_span;
-tmin = 1.0*365*pd.td/ps.t;
-tmax = 2.0*365*pd.td/ps.t;
+tmin = 2.0*365*pd.td/ps.t;
+tmax = 3.0*365*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
 
@@ -302,7 +303,7 @@ colormap(ax,cmap)
 cx.Label.String = 'h_b [ m ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-clim([-0.02 0.02]);
+clim([-0.2 0.2]);
 hold on
 
 zpb = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ); 

@@ -23,13 +23,13 @@ mkdir(oo.rn);                                  % create directory for results
 %% parameters
 % default parameters 
 [pd,oo] = nevis_defaults([],oo);  
-
+oo.plot_residual = 1;
 oo.evaluate_variables = 1;
 oo.input_gaussian = 1;
 oo.relaxation_term = 1;                         % 0 is alpha hb, 1 is alpha deltap hb
 oo.initial_condition = 1;                       % 1 is default condition from 0365.mat, 0 is using steady-state drainage system, winter or summertime
 oo.mean_perm = 1;
-oo.display_residual =0;
+oo.display_residual = 0;
 % leakage term
 if oo.relaxation_term == 0                      % 0: exponential decay: -\alpha_0(1+h/hc+S/Sc) h_b         
     pd.alpha_b = 1.0/(10*pd.td);                % relaxation rate (s^-1)
@@ -37,13 +37,13 @@ if oo.relaxation_term == 0                      % 0: exponential decay: -\alpha_
     pd.c0 = 1;
 elseif oo.relaxation_term == 1                  % 1: proportional to pressure diff and thickness: -\kappa/\mu(p_b-p_w)h_b
     pd.alpha_b = 0;                             % relaxation rate (s^-1)
-    pd.kappa_b = 1e-20;                      % relaxation coeff
+    pd.kappa_b = 0;                         % relaxation coeff
     pd.c0 = 1;
 end
 
 % alter default parmaeters 
 runoff_max = 30;                                % prescribed runoff (mm/day)
-moulin_input = 0;                  % prescribed moulin input (m^3/s)
+moulin_input = 0;                               % prescribed moulin input (m^3/s)
 pd.mu = 10.0;                                   % water viscosity (Pa s)
 pd.Ye = 8.8e9;                                  % Young's modulus (Pa)
 pd.B = pd.Ye*(1e3)^3/(12*(1-0.33^2));           % bending stiffness (Pa m^3)
@@ -64,33 +64,46 @@ ps = struct;
 
 %% grid and geometry
 L = 5e4;                                     % length of the domain [m]
-W = 0.4*L;                                   % width of the domain [m]
-A = 400;                                     % surface undulation amplitude [m]
-lambda = W/5;                                % surface undulation wavelength [m]
-x = linspace(0,(L/ps.x),101); 
-y = linspace(0,(W/ps.x),40);        
-oo.yperiodic = 1;                        % oo.yperiodic = 1 necessary for a 1-d grid
+W = 0.2*L;                                       % width of the domain [m]
+A = 0;                                       % surface undulation amplitude [m]
+lambda = W/2;                                % surface undulation wavelength [m]
+x = linspace(0,(L/ps.x),201); 
+y = linspace(0,1.05*(W/ps.x),41);        
+oo.yperiodic = 0;                        % oo.yperiodic = 1 necessary for a 1-d grid
 oo.xperiodic = 0;
 gg = nevis_grid(x,y,oo); 
-b = (0/ps.z)*gg.nx;                      % flat bed
-s = (1060/ps.z)*(1-ps.x*gg.nx/L).^0.5 + (A/ps.z)*sin(2*pi*gg.ny*ps.x/lambda) + 100/ps.z;   % ice surface topography 
+b = (0/ps.z)*gg.nx;                               % flat bed
+s = (1060/ps.z)*(1-ps.x*gg.nx/L).^0.5.*(1-0.5*ps.x*gg.ny/W)-400/ps.z;   % ice surface topography 
 
 %% mask with minimum ice thickness
 H = max(s-b,0);
+H(H>0) = H(H>0); % ensure no zero thickness inside domain
 Hmin = 0/ps.z; 
-nout = find(H<=Hmin);
+y_max = max(max(gg.ny'));
+nout = union(find(H<=Hmin),find(abs(gg.ny - y_max) < 1e-10));
+if isempty(nout)
+    x_max = max(gg.nx);
+    y_max = max(gg.ny);
+    nout = find(abs(gg.nx - x_max) < 1e-10);
+end
 noutb = [];
+if isempty(noutb)
+    x_max = max(max(gg.nx));
+    y_max = max(max(gg.ny'));
+    noutb = union(find(abs(gg.ny - y_max) < 1e-10), find(abs(gg.nx - x_max) < 1e-10));
+end
 gg = nevis_mask(gg,nout); 
 gg = nevis_mask_blister(gg,noutb);
 gg.n1m = gg.n1;                                   % label all edge nodes as boundary nodes for pressure
 
 %% label boundary nodes
 gg = nevis_label(gg,gg.n1m);
-gg = nevis_label_blister(gg,[],oo);               % label blister boundary nodes
+gg = nevis_label_blister(gg,gg.n1_blister,oo);    % label blister boundary nodes
 oo.adjust_boundaries = 1;                         % enable option of changing conditions
 
 %% plot grid
 nevis_plot_grid(gg);                              % check to see what grid looks like
+nevis_plot_grid_blister(gg);
 % return;
 %% initialize variables
 [aa,vv] = nevis_initialize(b,s,gg,pp,oo);         % default initialisation
@@ -98,7 +111,7 @@ pd.k_f = 1.00;                                    % percent overburden (k-factor
 vv.phi = aa.phi_a+pd.k_f*(aa.phi_0-aa.phi_a);     % initial pressure  k_f*phi_0
 N = aa.phi_0-vv.phi;                              % N for initial cavity sheet size 
 vv.hs = ((((pd.u_b*pd.h_r/pd.l_r)./((pd.u_b/pd.l_r)+(pd.K_c.*((ps.phi*N).^3)))))./ps.h); % initial cavity sheet size as f(N)
-
+vv.hs(gg.nout) = 0;                               % set cavity sheet size to zero at external nodes
 %% boundary conditions
 aa.phi_b = max(aa.phi_0,aa.phi_a);                % prescribed boundary pressure at overburden or atmospheric
 
@@ -127,7 +140,7 @@ oo.dt = 1/24*pd.td/ps.t;
 oo.save_timesteps = 1; 
 oo.save_pts_all = 1; 
 oo.pts_ni = [pp.ni_l pp.ni_m];                      
-oo.t_span = (1:1:1*365)*pd.td/ps.t;                 
+oo.t_span = (1:1:2*365)*pd.td/ps.t;                 
 
 %% save initial parameters
 save([oo.rn, oo.fn],'pp','pd','ps','gg','aa','vv','oo');

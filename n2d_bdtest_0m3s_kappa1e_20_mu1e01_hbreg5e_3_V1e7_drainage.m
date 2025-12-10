@@ -30,34 +30,48 @@ pp.c0 = 0;
 
 %% grid and geometry
 L = 5e4;                                     % length of the domain [m]
-W = 0.4*L;                                   % width of the domain [m]
-A = 100;                                     % surface undulation amplitude [m]
-lambda = W/5;                                % surface undulation wavelength [m]
-x = linspace(0,(L/ps.x),101); 
-y = linspace(0,(W/ps.x),40);        
-oo.yperiodic = 1;                            % oo.yperiodic = 1 necessary for a 1-d grid
+W = 0.2*L;                                       % width of the domain [m]
+A = 0;                                       % surface undulation amplitude [m]
+lambda = W/2;                                % surface undulation wavelength [m]
+x = linspace(0,(L/ps.x),201); 
+y = linspace(0,1.05*(W/ps.x),41);        
+oo.yperiodic = 0;                        % oo.yperiodic = 1 necessary for a 1-d grid
 oo.xperiodic = 0;
 gg = nevis_grid(x,y,oo); 
-b = (0/ps.z)*gg.nx;                          % flat bed
-s = (1060/ps.z)*(1-ps.x*gg.nx/L).^0.5 + (A/ps.z)*sin(2*pi*gg.ny*ps.x/lambda);   % ice surface topography 
+b = (0/ps.z)*gg.nx;                               % flat bed
+s = (1060/ps.z)*(1-ps.x*gg.nx/L).^0.5.*(1-0.5*ps.x*gg.ny/W)-400/ps.z;   % ice surface topography 
 
 %% mask with minimum ice thickness
 H = max(s-b,0);
+H(H>0) = H(H>0); % ensure no zero thickness inside domain
 Hmin = 0/ps.z; 
-nout = find(H<=Hmin);
+y_max = max(max(gg.ny'));
+nout = union(find(H<=Hmin),find(abs(gg.ny - y_max) < 1e-10));
+if isempty(nout)
+    x_max = max(gg.nx);
+    y_max = max(gg.ny);
+    nout = find(abs(gg.nx - x_max) < 1e-10);
+end
+noutb = [];
+if isempty(noutb)
+    x_max = max(max(gg.nx));
+    y_max = max(max(gg.ny'));
+    noutb = union(find(abs(gg.ny - y_max) < 1e-10), find(abs(gg.nx - x_max) < 1e-10));
+end
 gg = nevis_mask(gg,nout); 
+gg = nevis_mask_blister(gg,noutb);
 gg.n1m = gg.n1;                                   % label all edge nodes as boundary nodes for pressure
 
 %% label boundary nodes
 gg = nevis_label(gg,gg.n1m);
-gg = nevis_label_blister(gg,gg.n1m,oo);           % label blister boundary nodes
+gg = nevis_label_blister(gg,gg.n1_blister,oo);    % label blister boundary nodes
 oo.adjust_boundaries = 1;                         % enable option of changing conditions
 
 %% plot grid
 nevis_plot_grid(gg);                              % check to see what grid looks like
 
 %% initialize variables
-init_cond = load(['./results/' oo.initname '/' '0365.mat']); % load initial condition
+init_cond = load(['./results/' oo.initname '/' '0730.mat']); % load initial condition
 vv = init_cond.vv;                                % load state variables from the initial condition
 
 %% supraglacial lakes
