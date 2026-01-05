@@ -39,8 +39,8 @@ oo.yperiodic = 0;                        % oo.yperiodic = 1 necessary for a 1-d 
 oo.xperiodic = 0;
 gg = nevis_grid(x,y,oo); 
 b = (0/ps.z)*gg.nx;                               % flat bed
-s = (1060/ps.z)*(1-ps.x*gg.nx/L).^0.5.*(1-0.5*ps.x*gg.ny/W)-400/ps.z;   % ice surface topography 
-
+% s = (1060/ps.z)*(1-ps.x*gg.nx/L).^0.5.*(1-0.5*ps.x*gg.ny/W)-400/ps.z;   % ice surface topography 
+s = (1060/ps.z)*(1-ps.x*gg.nx/L).^0.5.*(1-0.25*sin(10*ps.x*gg.ny/W))-400/ps.z;   % ice surface 
 %% mask with minimum ice thickness
 H = max(s-b,0);
 H(H>0) = H(H>0); % ensure no zero thickness inside domain

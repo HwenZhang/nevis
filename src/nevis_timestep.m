@@ -169,7 +169,7 @@ for iter_new = 1:max_iter_new+1
 
     % fprintf('  norm_F = %.6e, norm_dv = %.6e, cond(J) = %.2e, rank = %d/%d\n', ...
     % norm(F), norm(dX), condest(J), sprank(J), size(J,1));
-    % ILU 预处理（ILUTP）
+    % ILU (ILUTP）
     % iluOpts = struct('type','ilutp','droptol',1e-3);
     % [M1, M2] = ilu(J, iluOpts);
     % % GMRES

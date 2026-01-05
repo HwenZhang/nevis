@@ -30,8 +30,8 @@ xx = (ps.x/10^3)*gg.nx; % x grid in km
 yy = (ps.x/10^3)*gg.ny;  
 xx0 = xx;
 yy0 = yy;
-% xx(gg.nout) = NaN;
-% yy(gg.nout) = NaN;
+xx(gg.nout) = NaN;
+yy(gg.nout) = NaN;
 
 %% read in the time series
 t = (ps.t/(24*60*60))*[tt.t];               % dimensional time series (days)

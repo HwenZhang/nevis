@@ -28,7 +28,7 @@ oo.evaluate_variables = 1;
 oo.input_gaussian = 1;
 oo.relaxation_term = 1;                         % 0 is alpha hb, 1 is alpha deltap hb
 oo.initial_condition = 1;                       % 1 is default condition from 0365.mat, 0 is using steady-state drainage system, winter or summertime
-oo.mean_perm = 1;
+oo.mean_perm = 0;
 oo.display_residual = 0;
 % leakage term
 if oo.relaxation_term == 0                      % 0: exponential decay: -\alpha_0(1+h/hc+S/Sc) h_b         
@@ -53,7 +53,7 @@ pd.hb_reg1 = 5e-3;                              % Regularisation parameter for h
 pd.hb_reg2 = 1e-3;                              % Regularisation parameter for hb
 pd.N_reg1 = 1e4;                                % Regularisation parameter for N
 pd.deltap_reg = 1e4;                            % Regularisation parameter for deltap
-pd.B_reg = pd.Ye*(1e2)^3/(12*(1-0.33^2));       % Regularisation parameter for B
+pd.B_reg = pd.Ye*(5e2)^3/(12*(1-0.33^2));       % Regularisation parameter for B
 
 pd.G = 0.01;                                    % geothermal heat flux [J/s/m^2]
 pd.melt = pd.G/pd.rho_w/pd.L;                   % geothermal heat derived basal melt [m/s]
@@ -73,8 +73,8 @@ oo.yperiodic = 0;                        % oo.yperiodic = 1 necessary for a 1-d 
 oo.xperiodic = 0;
 gg = nevis_grid(x,y,oo); 
 b = (0/ps.z)*gg.nx;                               % flat bed
-s = (1060/ps.z)*(1-ps.x*gg.nx/L).^0.5.*(1-0.5*ps.x*gg.ny/W)-400/ps.z;   % ice surface topography 
-
+% s = (1060/ps.z)*(1-ps.x*gg.nx/L).^0.5.*(1-0.5*ps.x*gg.ny/W)-400/ps.z;   % ice surface topography 
+s = (1060/ps.z)*(1-ps.x*gg.nx/L).^0.5.*(1-0.25*sin(10*ps.x*gg.ny/W))-400/ps.z;   % ice surface topography
 %% mask with minimum ice thickness
 H = max(s-b,0);
 H(H>0) = H(H>0); % ensure no zero thickness inside domain
@@ -103,7 +103,7 @@ oo.adjust_boundaries = 1;                         % enable option of changing co
 
 %% plot grid
 nevis_plot_grid(gg);                              % check to see what grid looks like
-nevis_plot_grid_blister(gg);
+nevis_plot_grid_blister(gg);;
 % return;
 %% initialize variables
 [aa,vv] = nevis_initialize(b,s,gg,pp,oo);         % default initialisation
