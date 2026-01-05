@@ -37,7 +37,7 @@ yy = (ps.x/10^3)*gg.ny;
 t = (ps.t/(24*60*60))*[tt.t];               % dimensional time series (days)
 tspan = (ps.t/pd.td)*oo.t_span;
 tmin = 2.0*365*pd.td/ps.t;
-tmax = 3.0*365*pd.td/ps.t;
+tmax = 2.5*365*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
 

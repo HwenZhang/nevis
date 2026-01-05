@@ -66,7 +66,7 @@ gg.n1m = gg.n1;                                   % label all edge nodes as boun
 gg = nevis_label(gg,gg.n1m);
 gg = nevis_label_blister(gg,gg.n1_blister,oo);    % label blister boundary nodes
 oo.adjust_boundaries = 1;                         % enable option of changing conditions
-
+oo.mean_perm = 1;
 %% plot grid
 nevis_plot_grid(gg);                              % check to see what grid looks like
 
