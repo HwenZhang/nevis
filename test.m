@@ -1,22 +1,37 @@
 figure();clf;
 
-% casename = 'n2d_moulin1e1_eps1e_02_kappa1e_10_mu1e1_V1e7_drainage';
+casename = 'n1d_example_drainage_mu1e1_kappa1e_10_eps0_1';
+% casename = 'n1d_example_spinup_mu1e1_kappa1e_10_eps0_1';
 load(['./results/' casename '/' casename])
-tdrain = 365*10+0.2*365;
+tdrain = 365*20+0.2*365;
+path = ['./results/' casename '/'];
+formatSpec = '%04d';
+
+vva = load([path '0001'], 'vv');
+vva = vva.vv;
+uxn = gg.nmeanx(:,gg.es2)*vva.u(gg.es2); % x-component of ice velocity at nodes
+vyn = gg.nmeany(:,gg.fs2)*vva.v(gg.fs2); % y-component of ice velocity at nodes
+Un = ((uxn).^2+(vyn).^2).^(1/2); % ice speed at nodes
+Un(gg.nout) = NaN;  
+vux = ps.u_b*pd.ty*reshape(uxn,gg.nI,gg.nJ); % x-component of ice velocity at nodes in m/yr
+vuy = ps.u_b*pd.ty*reshape(vyn,gg.nI,gg.nJ); % y-component of ice velocity at nodes in m/yr
 
 subplot(2,1,1)
 centerline_j = round(gg.nJ/2);
+xx = gg.nx(:,1)*ps.x/10^3; % x grid in km
 vel_centerline = plot(xx(:,1),vux(:,centerline_j), 'r-', 'LineWidth', 2); 
 hold on;
+txt = text(0.02, 0.95, ['Time = ' num2str(vva.t*ps.t/pd.td,'%.1f') ' days'], 'Units', 'normalized', 'FontSize', 14, 'Color', 'k');
 xlabel('x (km)','FontSize',10);
 ylabel('Ice velocity u (m/yr)','FontSize',10);
 title('Ice velocity profile along centerline','FontSize',10);
 set(gca,'FontSize',10);
 grid on;
-ylim([0 50]);
+xlim([0 100])
+ylim([0 100]);
 
-tmin = 10*365 + 0.19*365;
-tmax = tmin+1.0*365;
+tmin = 20*365 + 0.1*365;
+tmax = tmin+10.0*365;
 index = find(oo.t_span>=tmin*pd.td/ps.t & oo.t_span<=tmax*pd.td/ps.t);
 
 subplot(2,1,2)
@@ -31,7 +46,7 @@ xlabel('Time (d)', 'FontSize', 10)
 title('Averaged ice velocity ','FontSize',10);
 set(gca,'FontSize',10);
 grid on;
-ylim([5 20]);
+% ylim([5 20]);
 
 v = VideoWriter(['./presentation/animation/' casename '_timeseries'],'MPEG-4');
 v.FrameRate = 1;
@@ -44,13 +59,16 @@ for nframe = index(1:8:end)
     Un = ((uxn).^2+(vyn).^2).^(1/2); % ice speed at nodes
     Un(gg.nout) = NaN;  
 
+    disp(ps.u_b*pd.ty*mean(((gg.nmeanx(:,gg.es2)*vva.u(gg.es2)).^2+0*(gg.nmeany(:,gg.fs2)*vva.v(gg.fs2)).^2).^(1/2)));
     vux = ps.u_b*pd.ty*reshape(uxn,gg.nI,gg.nJ); % x-component of ice velocity at nodes in m/yr
     vuy = ps.u_b*pd.ty*reshape(vyn,gg.nI,gg.nJ); % y-component of ice velocity at nodes in m/yr
 
-    vel_centerline.YData = vux(:,centerline_j);
+    vel_centerline.YData = (vux(:,centerline_j).^2 + vuy(:,centerline_j).^2).^(1/2);
 
     time.XData = t(nframe);
     time.YData = U(nframe);
+
+    txt.String = ['Time = ' num2str(t(nframe),'%.1f') ' days'];
 
     refreshdata
     drawnow

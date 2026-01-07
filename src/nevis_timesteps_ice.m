@@ -72,13 +72,15 @@ end
 [vv2,~,~,~,~,~,~,~,~] = nevis_backbone(inf,vv,vv,aa,pp,gg,oo); % initial expanded variables vv2
 while t<t_stop+oo.dt_min
 
+    vv.u(gg.ebdy2) = 50/31536000/(1.9026e-06); % set boundary ice velocities
+    % vv.v(gg.fbdy2) = 10/31536000/(1.9026e-06);
     %% solve for ice velocity
     if oo.include_ice
         N = max(0,aa.phi_0-vv.phi); 
         [u,v] = nevis_velocity(aa.H,vv.u,vv.v,N,aa,pp,gg,oo);
         vv.u = u; 
         vv.v = v; 
-        vv.U = ((gg.nmeanx(:,gg.es2)*vv.u(gg.es2)).^2+(gg.nmeany(:,gg.fs2)*vv.v(gg.fs2)).^2).^(1/2);
+        vv.U = ((gg.nmeanx(:,gg.es2)*vv.u(gg.es2)).^2+0*(gg.nmeany(:,gg.fs2)*vv.v(gg.fs2)).^2).^(1/2);
         if oo.cavity_coupling
             % update sliding speed for cavity opening term (including Ub
             % in vv will cause this to be used in place of aa.Ub)
@@ -115,6 +117,7 @@ while t<t_stop+oo.dt_min
     tt(ti).he = sum(vv2.he(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));% total elastic sheet volume, scaled with ps.h*ps.x^2
     if oo.include_ice
          tt(ti).U = mean(vv.U);                                % mean ice velocity, scaled with ps.u
+         disp([[t*10,60*tt(ti).U]]);
     end
     if oo.save_pts_all
          tt(ti).pts_phi = vv.phi(oo.pts_ni);
@@ -122,7 +125,7 @@ while t<t_stop+oo.dt_min
          tt(ti).pts_he = vv2.he(oo.pts_ni);
          if oo.include_ice
             tt(ti).pts_u = vv.U(oo.pts_ni);
-         end
+         end 
     end
 
     
