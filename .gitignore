@@ -44,12 +44,14 @@ octave-workspace
 # result files
 /results/
 /presentation/
+/figures/
 /generated_scripts/
 /nevis_1d_example/
 /nevis_example/
 /nevis_example2/
 /nevis_run/
 /.git.bfg-report/
+/logs/
 *.pptx
 *.webp
 *.mat

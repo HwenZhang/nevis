@@ -1,0 +1,106 @@
+%% Script to run NEVIS regional model 
+% This script is designed to run the NEVIS 1-dimensional model for an idealised ice sheet
+% The surface runoff is set up by a prescribed function
+% The surface and bed profiles are the same as in Hewitt 2013
+
+% Author: Hanwen Zhang  
+% Date: 2025-05
+format compact
+
+%% read in the initial condition
+casename = 'n2d_bdtest_0m3s_kappa1e_20_mu1e01_hbreg5e_3_V1e7_drainage'; % drainage system filename
+initname = strrep(casename, '_V1e7_drainage', '_spinup'); % initial condition filename
+
+data = load(['./results/' initname '/' initname]);
+pd = data.pd;                                % load parameters from the initial condition
+ps = data.ps;                                % load state variables from the initial condition
+pp = data.pp;                                % load scaled parameters from the initial condition
+aa = data.aa;                                % load state variables from the initial condition
+oo = data.oo;                                % load options from the initial condition
+
+oo.casename = casename;                      % drainage system filename
+oo.initname = initname;                      % initial condition filename, for spinup
+
+oo.fn = ['/',oo.casename];                     % filename (same as casename)
+oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
+oo.dn = [oo.root, 'data/', oo.dataset, '/'];   % path to the data
+addpath(oo.code);                              % add path to code
+mkdir(oo.rn);                                  % create directory for results    
+pp.c0 = 0;
+
+%% grid and geometry
+L = 5e4;                                     % length of the domain [m]
+W = 0.2*L;                                       % width of the domain [m]
+A = 0;                                       % surface undulation amplitude [m]
+lambda = W/2;                                % surface undulation wavelength [m]
+x = linspace(0,(L/ps.x),201); 
+y = linspace(0,1.05*(W/ps.x),41);        
+oo.yperiodic = 0;                        % oo.yperiodic = 1 necessary for a 1-d grid
+oo.xperiodic = 0;
+gg = nevis_grid(x,y,oo); 
+b = (0/ps.z)*gg.nx;                               % flat bed
+% s = (1060/ps.z)*(1-ps.x*gg.nx/L).^0.5.*(1-0.5*ps.x*gg.ny/W)-400/ps.z;   % ice surface topography 
+s = (1060/ps.z)*(1-ps.x*gg.nx/L).^0.5.*(1-0.25*sin(10*ps.x*gg.ny/W))-400/ps.z;   % ice surface 
+%% mask with minimum ice thickness
+H = max(s-b,0);
+H(H>0) = H(H>0); % ensure no zero thickness inside domain
+Hmin = 0/ps.z; 
+y_max = max(max(gg.ny'));
+nout = union(find(H<=Hmin),find(abs(gg.ny - y_max) < 1e-10));
+if isempty(nout)
+    x_max = max(gg.nx);
+    y_max = max(gg.ny);
+    nout = find(abs(gg.nx - x_max) < 1e-10);
+end
+noutb = [];
+if isempty(noutb)
+    x_max = max(max(gg.nx));
+    y_max = max(max(gg.ny'));
+    noutb = union(find(abs(gg.ny - y_max) < 1e-10), find(abs(gg.nx - x_max) < 1e-10));
+end
+gg = nevis_mask(gg,nout); 
+gg = nevis_mask_blister(gg,noutb);
+gg.n1m = gg.n1;                                   % label all edge nodes as boundary nodes for pressure
+
+%% label boundary nodes
+gg = nevis_label(gg,gg.n1m);
+gg = nevis_label_blister(gg,gg.n1_blister,oo);    % label blister boundary nodes
+oo.adjust_boundaries = 1;                         % enable option of changing conditions
+oo.mean_perm = 1;
+%% plot grid
+nevis_plot_grid(gg);                              % check to see what grid looks like
+
+%% initialize variables
+init_cond = load(['./results/' oo.initname '/' '0730.mat']); % load initial condition
+vv = init_cond.vv;                                % load state variables from the initial condition
+
+%% supraglacial lakes
+pp.x_l = [0.5*L/ps.x];                                          
+pp.y_l = [0.5*W/ps.x];                                          
+pp.V_l = [1e7/(ps.Q0*ps.t)];                           % different V_l values
+pp.t_drainage = vv.t+ [20*pd.td/ps.t];                 % time of lake drainages
+pp.t_duration = [0.025*pd.td/ps.t];                    % duration of lake drainages
+[pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo); % calculate lake catchments 
+
+%% timestep 
+oo.dt = 1/24*pd.td/ps.t; 
+oo.save_timesteps = 1; 
+oo.save_pts_all = 1; 
+% Add GPS station points downstream of the moulin every 5km
+pp.ni_gps = nevis_gps_array((pp.x_l:5e3/ps.x:L/ps.x), pp.y_l*ones(size((pp.x_l:5e3/ps.x:L/ps.x))), gg, oo); % GPS station points
+oo.pts_ni = [pp.ni_l pp.ni_m pp.ni_gps];                                                
+oo.t_span = vv.t + [(1:1:19)*pd.td/ps.t (19.9:0.001:20.1)*pd.td/ps.t (21:1:1.0*365)*pd.td/ps.t];            
+
+%% save initial parameters
+save([oo.rn, oo.fn],'pp','pd','ps','gg','aa','vv','oo');
+[tt,vv,info] = nevis_timesteps(oo.t_span,vv,aa,pp,gg,oo);
+
+%% expand/update variables
+aa = nevis_inputs(vv.t,aa,vv,pp,gg,oo);
+oo.evaluate_variables = 1; 
+[vv2] = nevis_backbone(inf,vv,vv,aa,pp,gg,oo); 
+vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo); 
+save([oo.rn, oo.fn],'pp','pd','ps','gg','aa','oo','tt');
+
+%% Simple animate
+% nevis_regional_animation

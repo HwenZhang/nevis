@@ -1,4 +1,4 @@
-function [gg] = nevis_mask(gg,nout,oo)
+function [gg] = nevis_mask_blister(gg,nout,oo)
 % mask to identify boundaries based on outside node indices nout
 % combine with label to label boundary nodes and edges
 % 
@@ -20,7 +20,7 @@ fs = (1:gg.fIJ)';
 cs = (1:gg.cIJ)';
 
 %% identify boundary nodes and edges
-temp = ones(gg.nIJ,1); temp(nout) = 0; % here nout is the outer layer of the domain where H<=0,
+temp = ones(gg.nIJ,1); temp(nout) = 0;
 e0 = find(gg.emean*temp==0); % edges connected to all outside nodes
 e1 = find(gg.emean*temp==0.5); % edges connected to one outside node : boundary edges
 f0 = find(gg.fmean*temp==0); % edges connected to all outside nodes
@@ -63,33 +63,34 @@ ein = setdiff(es,ebdy);
 fin = setdiff(fs,fbdy);  
 cin = setdiff(cs,cbdy);  
 
-gg.ns = ns;
-gg.es = es;
-gg.fs = fs;
-gg.cs = cs;
-gg.nbdy = nbdy;
-gg.ebdy = ebdy;
-gg.cbdy = cbdy;
-gg.fbdy = fbdy;
-gg.nin = nin;
-gg.ein = ein;
-gg.fin = fin;
-gg.cin = cin;
-gg.nout = nout;
-gg.eout = eout;
-gg.fout = fout;
-gg.cout = cout;
-gg.n1 = n1;
-gg.e0 = e0;
-gg.e1 = e1;
-gg.e2 = e2;
-gg.f0 = f0;
-gg.f1 = f1;
-gg.f2 = f2;
-gg.c0 = c0;
-gg.c1 = c1;
-gg.c2 = c2;
-gg.c3 = c3;
+gg.ns_blister = ns;
+gg.es_blister = es;
+gg.fs_blister = fs;
+gg.cs_blister = cs;
+gg.nbdy_blister = nbdy;
+gg.ebdy_blister = ebdy;
+gg.cbdy_blister = cbdy;
+gg.fbdy_blister = fbdy;
+gg.nin_blister = nin;
+gg.ein_blister = ein;
+gg.fin_blister = fin;
+gg.cin_blister = cin;
+gg.nout_blister = nout;
+gg.eout_blister = eout;
+gg.fout_blister = fout;
+gg.cout_blister = cout;
+
+gg.n1_blister = n1;
+gg.e0_blister = e0;
+gg.e1_blister = e1;
+gg.e2_blister = e2;
+gg.f0_blister = f0;
+gg.f1_blister = f1;
+gg.f2_blister = f2;
+gg.c0_blister = c0;
+gg.c1_blister = c1;
+gg.c2_blister = c2;
+gg.c3_blister = c3;
 
 % %% boundary labels [ may not really be needed ? ]
 % gg.bb.ns = n1;

@@ -14,7 +14,6 @@ if nargin<5, oo = struct; end
 if ~isfield(oo,'surface_runoff'), oo.surface_runoff = 1; end 
 if ~isfield(oo,'RACMO_runoff'), oo.RACMO_runoff = 0; end
 if ~isfield(oo,'distributed_input'), oo.distributed_input = 0; end
-
 % if include blister and radius
 if ~isfield(oo,'include_lake'), oo.include_lake = 1; end
 
