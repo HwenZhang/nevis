@@ -71,8 +71,10 @@ if oo.save_phi_av
 end
 [vv2,~,~,~,~,~,~,~,~] = nevis_backbone(inf,vv,vv,aa,pp,gg,oo); % initial expanded variables vv2
 while t<t_stop+oo.dt_min
-
-    vv.u(gg.ebdy2) = 50/31536000/(1.9026e-06); % set boundary ice velocities
+    % A manual boudary cond for vel
+    in_idx = gg.ebdy2(gg.ex(gg.ebdy2)<0);
+    vv.u(in_idx) = 50/31536000/(1.9026e-06); % set inflow boundary ice velocities
+   
     % vv.v(gg.fbdy2) = 10/31536000/(1.9026e-06);
     %% solve for ice velocity
     if oo.include_ice

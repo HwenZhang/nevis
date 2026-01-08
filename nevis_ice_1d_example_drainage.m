@@ -20,29 +20,29 @@ oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
 addpath(oo.code);                              % add path to code
 mkdir(oo.rn);                                  % create directory for results    
-oo.Tol_F = 1e-8;
+oo.Tol_F = 1e-6;
 oo.cavity_coupling = 0;                        % couple to ice velocity
 
 %% grid and geometry, linear bedslope
 L = 100000; % length in m
 W = 50000; % width in m
-x = linspace(0,(L/ps.x),201); 
+x = linspace(0,(L/ps.x),401); 
 y = linspace(0,(W/ps.x),1);
 oo.xperiodic = 0;
 oo.yperiodic = 1;
 gg = nevis_grid(x,y,oo);
-b = (0/ps.z)*gg.nx - (0.001*ps.x/ps.z)*(gg.nx);  % linear bedslope
-% s = (1000/ps.z)*max(1-gg.nx/max(max(gg.nx)),0).^(1/2);
-s = b + (2000/ps.z) - (3000/ps.z).*(gg.nx>0.95*L/ps.x);
+b = (0/ps.z)*gg.nx;  % linear bedslope
+s = (1000/ps.z)*max(1-gg.nx/max(max(gg.nx)),0).^(1/2);
 
 %% mask grid
 % gg = nevis_mask(gg,[]); 
 gg = nevis_mask(gg,find(s-b<=0)); 
+gg = nevis_mask_blister(gg,find(s-b<=0));
 % gg = nevis_mask(gg,find(((gg.nx-0.5).^2+(gg.ny-0.5).^2).^(1/2)<0.2)); 
 % gg = nevis_mask(gg,unique([gg.bdy.nlbdy; gg.bdy.nrbdy; gg.bdy.ntopbdy; gg.bdy.nbotbdy])); % mask out nodes around boundary
 gg.n1m = gg.n1;                 % margin boundary nodes
 gg = nevis_label(gg,gg.n1m);    % label pressure boundary nodes
-
+gg = nevis_label_blister(gg,gg.n1_blister,oo);    % label blister boundary nodes
 %% plot grid
 nevis_plot_grid(gg);
 
@@ -67,8 +67,8 @@ oo.random_moulins = 20;
 %% supraglacial lakes
 pp.x_l = [0.5*L/ps.x];                                          % x-coord of lakes
 pp.y_l = [0.0*W/ps.x];                                          % y-coord of lakes
-pp.V_l = [1e7/(ps.Q0*ps.t)];                                    % volume of lakes         
-pp.t_drainage = vv.t + 0.2*365*pd.td/ps.t;                      % time of lake drainages
+pp.V_l = [1e8/(ps.Q0*ps.t)];                                    % volume of lakes         
+pp.t_drainage = vv.t + 20*pd.td/ps.t;                           % time of lake drainages
 pp.t_duration = [0.025*pd.td/ps.t];                             % duration of lake drainages
 [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo);          % calculate lake catchments 
 oo.pts_ni = [pp.ni_l; pp.ni_m];  
@@ -84,7 +84,8 @@ save([oo.rn,oo.fn],'pp','pd','ps','gg','aa','vv','oo');
 oo.dt = 1/24*pd.td/ps.t; 
 oo.save_timesteps = 1; 
 oo.save_pts_all = 1; 
-oo.t_span = vv.t + (0:0.25:365*1.5)*pd.td/ps.t;         
+% oo.t_span = vv.t + (0:0.25:365*1.5)*pd.td/ps.t;    
+oo.t_span = vv.t + [(1:1:19)*pd.td/ps.t (19.9:0.001:20.1)*pd.td/ps.t (21:1:1.5*365)*pd.td/ps.t];  
 [tt,vv] = nevis_timesteps_ice(oo.t_span,vv,aa,pp,gg,oo);     % save at daily timesteps
 
 %% plot discharge
@@ -92,6 +93,7 @@ oo.t_span = vv.t + (0:0.25:365*1.5)*pd.td/ps.t;
 save([oo.rn,oo.fn],'pp','pd','ps','gg','aa','vv','oo','tt');
 
 %% animate
+test
 % nevis_2d_animation_ice_drainage;
 % 
 % return;

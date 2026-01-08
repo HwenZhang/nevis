@@ -18,7 +18,8 @@ oo.evaluate_variables = 1;
 oo.input_gaussian = 1;
 oo.relaxation_term = 1;                         % 0 is alpha hb, 1 is alpha deltap hb
 oo.initial_condition = 0;                       
-oo.cavity_coupling = 1;                         % couple to ice velocity
+oo.cavity_coupling = 0;                         % couple to ice velocity
+oo.melt_coupling = 0;                           % couple to basal melt
 
 moulin_input = 0;                               % prescribed moulin input (m^3/s)
 pd.mu = 1e1;                                    % water viscosity (Pa s)
@@ -26,7 +27,7 @@ pd.Ye = 8.8e9;                                  % Young's modulus (Pa)
 pd.B = pd.Ye*(1e3)^3/(12*(1-0.33^2));           % bending stiffness (Pa m^3)
 pd.E_lapse = 30/1000/pd.td/10^3;
 
-pd.k_s = 1e-3;                                  % sheet roughness parameter
+pd.k_s = 1e-1;                                  % sheet roughness parameter
 
 pd.hb_reg1 = 5e-3;                              % Regularisation parameter for hb
 pd.hb_reg2 = 1e-3;                              % Regularisation parameter for hb
@@ -40,7 +41,7 @@ pd.alpha_b = 0;                                 % relaxation rate (s^-1)
 pd.kappa_b = 1e-10;                             % relaxation coeff
 pd.c0 = 1;
 
-% pd.C = 1e99;;
+% pd.C = 1e99;
 % pd.mu = 0.01;
 
 [ps,pp] = nevis_nondimension(pd,[],oo);
@@ -48,22 +49,25 @@ pd.c0 = 1;
 %% grid and geometry, linear bedslope
 L = 100000; % length in m
 W = 50000; % width in m
-x = linspace(0,(L/ps.x),201); 
+x = linspace(0,(L/ps.x),401); 
 y = linspace(0,(W/ps.x),1);
 oo.xperiodic = 0;
 oo.yperiodic = 1;
 gg = nevis_grid(x,y,oo);
-b = (0/ps.z)*gg.nx - (0.001*ps.x/ps.z)*(gg.nx);  % linear bedslope
-% s = (1000/ps.z)*max(1-gg.nx/max(max(gg.nx)),0).^(1/2);
-s = b + (2000/ps.z) - (3000/ps.z).*(gg.nx>0.95*L/ps.x);
+b = (0/ps.z)*gg.nx;  % linear bedslope
+s = (1000/ps.z)*max(1-gg.nx/max(max(gg.nx)),0).^(1/2);
+% s = b + (2000/ps.z) - (3000/ps.z).*(gg.nx>0.95*L/ps.x);
 
 %% mask grid
 % gg = nevis_mask(gg,[]); 
+% H0 = union(find(s-b<=0),);
 gg = nevis_mask(gg,find(s-b<=0)); 
+gg = nevis_mask_blister(gg,find(s-b<=0));
 % gg = nevis_mask(gg,find(((gg.nx-0.5).^2+(gg.ny-0.5).^2).^(1/2)<0.2)); 
 % gg = nevis_mask(gg,unique([gg.bdy.nlbdy; gg.bdy.nrbdy; gg.bdy.ntopbdy; gg.bdy.nbotbdy])); % mask out nodes around boundary
 gg.n1m = gg.n1;                 % margin boundary nodes
 gg = nevis_label(gg,gg.n1m);    % label pressure boundary nodes
+gg = nevis_label_blister(gg,gg.n1_blister,oo);    % label blister boundary nodes
 
 %% plot grid
 nevis_plot_grid(gg);
@@ -81,6 +85,7 @@ pd.A_glen = 1/2/((eps)*pd.rho_i*pd.g*ps.z*ps.x/pd.u_b); % to make membrane stres
 [pd,ps,pp,oo] = nevis_add_parameters_ice(pd,ps,pp,oo); % add parameters etc needed to solve for ice velocity
 
 gg = nevis_label_ice(gg); % add boundary labels needed for ice velocity
+
 figure(1); clf; 
 nevis_plot_grid_ice(gg); 
 
