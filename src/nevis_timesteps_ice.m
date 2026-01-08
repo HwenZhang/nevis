@@ -25,9 +25,11 @@ if ~isfield(pp,'phi_s'), pp.phi_s = -inf; end
 if ~isfield(oo,'include_ice'), oo.include_ice = 0; end          % update ice velocity
 if ~isfield(oo,'cavity_coupling'), oo.cavity_coupling = 0; end  % update sliding speed in cavity opening term
 if ~isfield(oo,'melt_coupling'), oo.melt_coupling = 0; end      % update sliding speed in basal melt term
+
 if ~isfield(oo,'change_timestep'), oo.change_timestep = 1; end  % change timestep based on previous iterations/convergence
 if ~isfield(oo,'dt_max'), oo.dt_max = 1e0; end                  % maximum allowable timestep
 if ~isfield(oo,'dt_min'), oo.dt_min = 1e-6; end                 % mimimum allowable timestep
+
 if ~isfield(oo,'dt_factor'), oo.dt_factor = 2; end              % factor to change timestep by
 if ~isfield(oo,'small_iter'), oo.small_iter = 2; end            % increase timestep for this number of iterations or less
 if ~isfield(oo,'large_iter'), oo.large_iter = 20; end           % decrease timestep for this number of iterations or more 
@@ -48,6 +50,7 @@ if ~isfield(oo,'save_phi_av'), oo.save_phi_av = 0; end          % save average p
 % UPDATE BOUNDARIES
 if oo.adjust_boundaries && isfield(vv,'nbdy')         
     gg = nevis_label(gg,vv.nbdy,oo);               % redefine boundary labels
+    gg = nevis_label_blister(gg,gg.n1_blister,oo);    % label blister boundary nodes
     if ~isfield(aa,'phi_b'), aa.phi_b = max(aa.phi_a,pp.phi_s); end % fill in missin phi_b for older versions
     aa.phi = aa.phi_b(gg.nbdy);                    % boundary conditions
 end
@@ -70,6 +73,8 @@ if oo.save_phi_av
     phi_max = vv.phi;
 end
 [vv2,~,~,~,~,~,~,~,~] = nevis_backbone(inf,vv,vv,aa,pp,gg,oo); % initial expanded variables vv2
+disp(['Initial residual: ', num2str(norm(F0))]);
+
 while t<t_stop+oo.dt_min
     % A manual boudary cond for vel
     in_idx = gg.ebdy2(gg.ex(gg.ebdy2)<0);
@@ -77,25 +82,27 @@ while t<t_stop+oo.dt_min
    
     % vv.v(gg.fbdy2) = 10/31536000/(1.9026e-06);
     %% solve for ice velocity
-    if oo.include_ice
-        N = max(0,aa.phi_0-vv.phi); 
-        [u,v] = nevis_velocity(aa.H,vv.u,vv.v,N,aa,pp,gg,oo);
-        vv.u = u; 
-        vv.v = v; 
-        vv.U = ((gg.nmeanx(:,gg.es2)*vv.u(gg.es2)).^2+0*(gg.nmeany(:,gg.fs2)*vv.v(gg.fs2)).^2).^(1/2);
-        if oo.cavity_coupling
-            % update sliding speed for cavity opening term (including Ub
-            % in vv will cause this to be used in place of aa.Ub)
-            vv.Ub = pp.c65*vv.U;  
-        end
-        if oo.melt_coupling
-            % update frictional heating term (including m in vv will cause
-            % this to be used ni place of aa.m)
-            [~,~,~,~,~,~,tau_b] = nevis_stresses(aa.H,u,v,N,aa,pp,gg,oo);
-            vv.m = pp.c63 + pp.c64*( tau_b.*vv.U );
-        end
+    N = max(0,aa.phi_0-vv.phi);
+    % 08/01/2025: remove ice velocity solve, ice-sheet dynamics is being incorporated into the Newton solve for the subglacial hydrology
     
-    end
+    % if oo.include_ice
+    %     N = max(0,aa.phi_0-vv.phi); 
+    %     [u,v] = nevis_velocity(aa.H,vv.u,vv.v,N,aa,pp,gg,oo);
+    %     vv.u = u; 
+    %     vv.v = v; 
+    %     vv.U = ((gg.nmeanx(:,gg.es2)*vv.u(gg.es2)).^2+0*(gg.nmeany(:,gg.fs2)*vv.v(gg.fs2)).^2).^(1/2);
+    %     if oo.cavity_coupling
+    %         % update sliding speed for cavity opening term (including Ub
+    %         % in vv will cause this to be used in place of aa.Ub)
+    %         vv.Ub = pp.c65*vv.U;  
+    %     end
+    %     if oo.melt_coupling
+    %         % update frictional heating term (including m in vv will cause
+    %         % this to be used ni place of aa.m)
+    %         [~,~,~,~,~,~,tau_b] = nevis_stresses(aa.H,u,v,N,aa,pp,gg,oo);
+    %         vv.m = pp.c63 + pp.c64*( tau_b.*vv.U );
+    %     end
+    % end
 
     %% update input
     aa = nevis_inputs(t,aa,vv,pp,gg,oo);

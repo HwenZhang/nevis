@@ -22,7 +22,10 @@ if ~isfield(pp,'phi_s'), pp.phi_s = -inf; end
 % ================= TIMESTEPPING OPTIONS =================
 % update ice velocity
 if ~isfield(oo,'include_ice'), oo.include_ice = 0; end
-
+if ~isfield(oo,'include_ice'), oo.include_ice = 0; end          % update ice velocity
+if ~isfield(oo,'cavity_coupling'), oo.cavity_coupling = 0; end  % update sliding speed in cavity opening term
+if ~isfield(oo,'melt_coupling'), oo.melt_coupling = 0; end      % update sliding speed in basal melt term
+    
 % ----------------- adaptive timestepping -----------------
 % change timestep based on previous iterations/convergence
 if ~isfield(oo,'change_timestep'), oo.change_timestep = 1; end

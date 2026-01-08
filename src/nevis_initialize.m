@@ -76,6 +76,16 @@ function [aa,vv] = nevis_initialize(b,s,gg,pp,oo)
     aa.phi = max(phi_a(gg.nbdy),pp.phi_s); % boundary values
     aa.phi_b = max(phi_a,pp.phi_s);        % bed potential
     
+    %% ice sheet dynamics variables(velocities)
+    N = ones(gg.nIJ,1); 
+    u = zeros(gg.eIJ,1); 
+    v = zeros(gg.fIJ,1); 
+    u(gg.eout2) = NaN; 
+    v(gg.fout2) = NaN;
+    [u,v] = nevis_velocity(aa.H,u,v,N,aa,pp,gg,oo);
+    % [tauxx,tauyy,tauxy,Txx,Tyy,Txy,tau_b] = nevis_stresses(aa.H,u,v,N,aa,pp,gg,oo);
+    % [tau1,tau2,theta] = nevis_principal_stress(Txx,Tyy,gg.nmeanc*Txy);
+
     %% put fields and variables in structs
     % precribed field with bound conditions
     aa.phi_0 = phi_0; 
@@ -103,5 +113,7 @@ function [aa,vv] = nevis_initialize(b,s,gg,pp,oo)
     vv.Sr = Sr;
     vv.hb = hb;
     vv.pb = pb;
+    vv.u = u; 
+    vv.v = v;
 
 end
