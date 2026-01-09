@@ -25,7 +25,7 @@ if ~isfield(oo,'include_ice'), oo.include_ice = 0; end
 if ~isfield(oo,'include_ice'), oo.include_ice = 0; end          % update ice velocity
 if ~isfield(oo,'cavity_coupling'), oo.cavity_coupling = 0; end  % update sliding speed in cavity opening term
 if ~isfield(oo,'melt_coupling'), oo.melt_coupling = 0; end      % update sliding speed in basal melt term
-    
+
 % ----------------- adaptive timestepping -----------------
 % change timestep based on previous iterations/convergence
 if ~isfield(oo,'change_timestep'), oo.change_timestep = 1; end
@@ -72,6 +72,7 @@ if ~isfield(oo,'save_phi_av'), oo.save_phi_av = 0; end
 if oo.adjust_boundaries && isfield(vv,'nbdy')         
     % redefine boundary labels
     gg = nevis_label(gg,vv.nbdy,oo);          
+    gg = nevis_label_blister(gg,gg.n1_blister,oo);    % label blister boundary nodes
     % fill in missin phi_b for older versions
     if ~isfield(aa,'phi_b'), aa.phi_b = max(aa.phi_a,pp.phi_s); end 
     % boundary conditions
@@ -208,6 +209,10 @@ while t<t_stop+oo.dt_min
                sum(vv.Sr(gg.cin).*(gg.cmean(gg.cin,:)*gg.Dr)); 
     % total elastic sheet volume, scaled with ps.h*ps.x^2
     tt(ti).he = sum(vv2.he(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns)); 
+    if oo.include_ice
+         tt(ti).U = mean(vv.U);                                % mean ice velocity, scaled with ps.u
+        %  disp([[t*10,60*tt(ti).U]]);
+    end
     if oo.save_pts_all
          tt(ti).pts_phi = vv.phi(oo.pts_ni);
          tt(ti).pts_hs = vv.hs(oo.pts_ni);
@@ -216,7 +221,7 @@ while t<t_stop+oo.dt_min
          tt(ti).pts_pb = vv.pb(oo.pts_ni);
          tt(ti).pts_hc = vv2.hc(oo.pts_ni);
          if oo.include_ice
-            tt(ti).pts_us = vv.us(oo.pts_ni);
+            tt(ti).pts_u = vv.U(oo.pts_ni);
          end
     end
     %% saving    
@@ -249,7 +254,7 @@ while t<t_stop+oo.dt_min
     elseif t > t_stop-oo.dt_min
         break; 
     end
-    %% timestep hydrology
+    %% timestep hydrology & ice sheet dynamics
     tic;
     accept = 0;
     decreased = 0;

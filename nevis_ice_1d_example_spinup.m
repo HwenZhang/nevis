@@ -6,7 +6,7 @@ oo.root = './';             % filename root
 oo.code = '../nevis/src';   % code directory
 oo.results = 'results';     % path to the results folders
 addpath(oo.code);           % add path to code
-oo.casename = 'n1d_example_spinup_mu1e1_kappa1e_10_eps0_1';
+oo.casename = 'n1d_example_spinup_mu1e1_kappa1e_10_eps0_1_test';
 oo.fn = ['/',oo.casename];               % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];      % path to the case results
 mkdir(oo.rn);
@@ -72,22 +72,21 @@ gg = nevis_label_blister(gg,gg.n1_blister,oo);    % label blister boundary nodes
 %% plot grid
 nevis_plot_grid(gg);
 
-%% initialize
-[aa,vv] = nevis_initialize(b,s,gg,pp,oo);
-vv.phi = aa.phi_a+0.9*(aa.phi_0-aa.phi_a);  % 90% overburden 
-vv.hs = (0.1/ps.hs)*ones(gg.nIJ,1);         % 10cm thick sheet
-vv.hb = (0.1/ps.hb)*ones(gg.nIJ,1);         % 10cm thick bed
-
 %% add parameters and boundary labels for ice velocity
 pd.n_glen = 1;
 eps = 0.1; 
 pd.A_glen = 1/2/((eps)*pd.rho_i*pd.g*ps.z*ps.x/pd.u_b); % to make membrane stress terms of dimensionless size eps in momentum equation
 [pd,ps,pp,oo] = nevis_add_parameters_ice(pd,ps,pp,oo); % add parameters etc needed to solve for ice velocity
-
 gg = nevis_label_ice(gg); % add boundary labels needed for ice velocity
 
 figure(1); clf; 
 nevis_plot_grid_ice(gg); 
+
+%% initialize
+[aa,vv] = nevis_initialize(b,s,gg,pp,oo);
+vv.phi = aa.phi_a+0.9*(aa.phi_0-aa.phi_a);  % 90% overburden 
+vv.hs = (0.1/ps.hs)*ones(gg.nIJ,1);         % 10cm thick sheet
+vv.hb = (0.1/ps.hb)*ones(gg.nIJ,1);         % 10cm thick bed
 
 %% initial ice velocity
 N = ones(gg.nIJ,1); 
@@ -137,7 +136,7 @@ oo.dt = 1/24*pd.td/ps.t;
 oo.save_timesteps = 1; 
 oo.save_pts_all = 1; 
 oo.t_span = (0:1:365*20)*pd.td/ps.t;         
-[tt,vv] = nevis_timesteps_ice(oo.t_span,vv,aa,pp,gg,oo);     % save at daily timesteps
+[tt,vv] = nevis_timesteps(oo.t_span,vv,aa,pp,gg,oo);     % save at daily timesteps
 
 %% plot discharge
 % nevis_plot;

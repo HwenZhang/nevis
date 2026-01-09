@@ -80,9 +80,9 @@ function [aa,vv] = nevis_initialize(b,s,gg,pp,oo)
     N = ones(gg.nIJ,1); 
     u = zeros(gg.eIJ,1); 
     v = zeros(gg.fIJ,1); 
-    u(gg.eout2) = NaN; 
-    v(gg.fout2) = NaN;
-    [u,v] = nevis_velocity(aa.H,u,v,N,aa,pp,gg,oo);
+    % u(gg.eout2) = NaN; 
+    % v(gg.fout2) = NaN;
+    % [u,v] = nevis_velocity(H,u,v,N,aa,pp,gg,oo);
     % [tauxx,tauyy,tauxy,Txx,Tyy,Txy,tau_b] = nevis_stresses(aa.H,u,v,N,aa,pp,gg,oo);
     % [tau1,tau2,theta] = nevis_principal_stress(Txx,Tyy,gg.nmeanc*Txy);
 

@@ -13,6 +13,7 @@ function [vv1,vv2,info] = nevis_timestep(dt,vv,aa,pp,gg,oo)
 %   info    information about computation
 %
 % IJH 13 August 2014 : largely taken from hydro_timestep_diag
+% HZ 06 June 2024 : adding ice sheet dynamics
 num = 8;
 % ITERATION OPTIONS
 if ~isfield(oo,'Tol_F'), oo.Tol_F = 1e-8; end                       % tolerance on Newton iteration
@@ -56,7 +57,7 @@ for iter_new = 1:max_iter_new+1
     oo.evaluate_variables = 0; 
     oo.evaluate_residual = 1; 
     oo.evaluate_jacobian = 0; 
-    [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,~] = nevis_backbone(dt,vv,vv0,aa,pp,gg,oo);
+    [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,~] = nevis_backbone(dt,vv,vv0,aa,pp,gg,oo);
     info.residual_time = info.residual_time + toc(tstart);
 
     %% update Xi if not including Xi in iterations
@@ -66,14 +67,19 @@ for iter_new = 1:max_iter_new+1
     norm_F = norm(F,inf);
     norm_Fs(iter_new) = norm_F;
     norm_F1 = norm(F1,inf); 
-    norm_F2 = norm(F2,inf); norm_F2 = norm(F2,2)/length(F2);
+    % norm_F2 = norm(F2,inf); 
+    norm_F2 = norm(F2,2)/length(F2);
     norm_F3 = norm(F3,inf); 
     norm_F4 = norm(F4,inf);
     norm_F5 = norm(F5,inf);
     norm_F6 = norm(F6,inf);
     norm_F7 = norm(F7,inf);
     norm_F8 = norm(F8,inf);
-    norms_F = [norm_F1 norm_F2 norm_F3 norm_F4 norm_F5 norm_F6 norm_F7 norm_F8];
+    norm_F9 = norm(F9,inf);
+    norm_F10 = norm(F10,inf);
+
+    norms_F = [norm_F1 norm_F2 norm_F3 norm_F4 norm_F5 norm_F6 norm_F7 norm_F8 norm_F9 norm_F10];
+
     norms_Fs(iter_new,:) = norms_F;
     if oo.plot_residual
         figure(1); clf;
@@ -85,13 +91,15 @@ for iter_new = 1:max_iter_new+1
         plot(F6,'y.');
         plot(F7,'b-');
         plot(F8,'r-');
+        plot(F9,'g-');
+        plot(F10,'m-');
         shg;
     end
 
-    if oo.plot_residual
-        figure(2);clf
-        scatter(gg.nx(gg.ns_blister),gg.ny(gg.ns_blister),20,abs(F7),'filled'); colorbar; title('Residual F7 on sheet nodes');shg
-    end
+    % if oo.plot_residual
+    %     figure(2);clf
+    %     scatter(gg.nx(gg.ns_blister),gg.ny(gg.ns_blister),20,abs(F7),'filled'); colorbar; title('Residual F7 on sheet nodes');shg
+    % end
     % figure(2);clf
     % scatter(gg.nx(gg.ns_blister),gg.ny(gg.ns_blister),20,abs(F7),'filled'); colorbar; title('Residual F7 on sheet nodes');shg
     % 
@@ -107,8 +115,10 @@ for iter_new = 1:max_iter_new+1
         [m6,i6] = max(abs(F6));
         [m7,i7] = max(abs(F7));
         [m8,i8] = max(abs(F8));
-        disp([ iter_new m1 m2 m3 m4 m5 m6 m7 m8]);
-        disp([ 0 i1 i2 i3 i4 i5 i6 i7 i8]); 
+        [m9,i9] = max(abs(F9));
+        [m10,i10] = max(abs(F10));
+        disp([ iter_new m1 m2 m3 m4 m5 m6 m7 m8 m9 m10]);
+        disp([ 0 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10]); 
     end
     if oo.no_channels && oo.no_sheet, iFs = 2; 
     elseif oo.no_channels, iFs = [1 2]; 
@@ -120,6 +130,9 @@ for iter_new = 1:max_iter_new+1
                 iFs = [1 2 3 4 5 6 7 8];  
             else
                 iFs = [1 2 3 4 5 6 7];  
+            end
+            if oo.include_ice
+                iFs = [1 2 3 4 5 6 7 8 9 10];
             end
         end        
     end

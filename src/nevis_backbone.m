@@ -48,6 +48,36 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     if ~isfield(oo,'sheet_k'), oo.sheet_k = 0; end 
     if ~isfield(oo,'channel_k'), oo.channel_k = 0; end 
     
+    %% OPTIONS FOR ICE
+    % ITERATION OPTIONS
+    if ~isfield(oo,'iter_max'), oo.iter_max = 20; end
+    if ~isfield(oo,'tol_vel'), oo.tol_vel = 1e-4; end
+    if ~isfield(oo,'tol_eta'), oo.tol_eta = 1e-6; end
+
+    % DIAGNOSTIC OPTIONS
+    if ~isfield(oo,'display_norms'), oo.display_norms = 0; end          % display norms at each iteration
+    if ~isfield(oo,'verb'), oo.verb = 0; end                            % verbose screen output
+    % [could add other diagnostic options here]  
+
+    % REQUIRED
+    if ~isfield(pp,'C'), pp.C = 1; end % dimensionless sliding coefficient (won't be used if aa contains field C)
+    if ~isfield(pp,'mu'), pp.mu = inf; end % dimensionless Coulomb friction coefficient (won't be used if aa contains field mu)
+    if ~isfield(pp,'A_glen'), pp.A_glen = 1; end % dimensionless Glen's-law coefficient
+    if ~isfield(pp,'n_glen'), pp.n_glen = pp.n_Glen; end % power-law in ice rheology
+    if ~isfield(pp,'n_slide'), pp.n_slide = pp.n_glen; end % power-law exponent in sliding law
+    if ~isfield(pp,'c60'), pp.c60 = 1; end % dimensionless coefficient in front of gravity term in force balance
+    if ~isfield(pp,'c61'), pp.c61 = 1; end % dimensionless coefficient in front of sliding law in force balance
+    if ~isfield(pp,'c62'), pp.c62 = 1; end % dimensionless coefficient in front of longitudinal stress in force balance
+    if ~isfield(pp,'eps_reg'), pp.eps_reg = 1e-16; end % regularisation on strain rates
+    if ~isfield(pp,'Ub_reg'), pp.Ub_reg = 1e-16; end % regularisation on sliding speed
+    if ~isfield(pp,'N_slide_reg'), pp.N_slide_reg = 1e-16; end % regularisation on effective pressure in sliding law
+    if ~isfield(pp,'taud_reg'), pp.taud_reg = 1e-16; end % regularisation on basal shear stress [ may not be needed ? ]
+    if ~isfield(pp,'C2'), pp.C2 = 0; end % added power-law coefficient in sliding law
+
+    % REQRUIED FIELDS
+    if ~isfield(aa,'C'), aa.C = pp.C*ones(gg.nIJ,1); end % dimensionless sliding coefficient 
+    if ~isfield(aa,'mu'), aa.mu = pp.mu*ones(gg.nIJ,1); end % dimensionless Coulomb friction coefficient
+
     %% fill in missing boundary fluxes
     if ~isfield(aa,'phi'), aa.phi = aa.phi_a(gg.nbdy); end
 
@@ -97,6 +127,27 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     gg.nmeanrin_blister = sparse(1:length(temp),1:length(temp),temp.^(-1),...
                          length(temp),length(temp))*gg.nmeanr;  
 
+    % mean operators for ice dynamics
+    temp = gg.nmeanx(:,gg.es)*ones(length(gg.es),1); temp(temp==0) = inf;
+    nmeanxice = sparse(1:length(temp),1:length(temp),temp.^(-1),length(temp),length(temp))*gg.nmeanx;
+
+    temp = gg.nmeany(:,gg.fs)*ones(length(gg.fs),1); temp(temp==0) = inf; 
+    nmeanyice = sparse(1:length(temp),1:length(temp),temp.^(-1),length(temp),length(temp))*gg.nmeany;
+
+    temp = gg.nmeanc(:,gg.cs)*ones(length(gg.cs),1); temp(temp==0) = inf; 
+    nmeancice = sparse(1:length(temp),1:length(temp),temp.^(-1),length(temp),length(temp))*gg.nmeanc;
+
+    temp = gg.emean(:,gg.ns)*ones(length(gg.ns),1); temp(temp==0) = inf; 
+    emeanice = sparse(1:length(temp),1:length(temp),temp.^(-1),length(temp),length(temp))*gg.emean;
+
+    temp = gg.fmean(:,gg.ns)*ones(length(gg.ns),1); temp(temp==0) = inf; 
+    fmeanice = sparse(1:length(temp),1:length(temp),temp.^(-1),length(temp),length(temp))*gg.fmean;
+
+    temp = gg.cmean(:,gg.ns)*ones(length(gg.ns),1); temp(temp==0) = inf; 
+    cmeanice = sparse(1:length(temp),1:length(temp),temp.^(-1),length(temp),length(temp))*gg.cmean;
+
+    % gg.nmeanc = nmeanc; % ? for use in calculate_viscosity 
+    
     %% primary variables
     phi = vv.phi;
     hs = vv.hs;
@@ -106,6 +157,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     Sr = vv.Sr;
     hb = vv.hb;  % blister thickness
     pb = vv.pb;  % blister pressure
+    u = vv.u;    % x-velocity
+    v = vv.v;    % y-velocity
     
     % channel cross sectional area interpolated at nodes
     Smean = 0.25*(gg.nmeanx*Sx+ gg.nmeany*Sy + gg.nmeans*Ss + gg.nmeanr*Sr);
@@ -119,6 +172,13 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     sigma = aa.sigma;
     % prewetted layer thickness
     hb_reg1 = aa.hb_reg1;
+    b = aa.b; % bed elevation on nodes [nIJ-by-1]
+    C = aa.C; % basal friction coefficient on nodes [nIJ-by-1]
+    mu = aa.mu; % basal friction coefficient on nodes [nIJ-by-1]
+    Txx = 0*ones(gg.nIJ,1); % membrane stress [only used on nbdyx] [nIJ-by-1]
+    Tyy = 0*ones(gg.nIJ,1); % membrane stress [only used on nbdyy] [nIJ-by-1]
+    Txy = 0*ones(gg.cIJ,1); % membrane stress [only used on cbdy] [cIJ-by-1]
+    s = b+H;      % surface elevation [nIJ-by-1]
 
     % boundary potential
     if ~isempty(gg.nbdy)
@@ -167,6 +227,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
 
     % effective pressure
     N = aa.phi_0 - phi;
+    Ni = max(N,0); % effective pressure non-negative
 
     % elastic sheet
     he = he_fun(aa.phi_0-phi,aa.phi_0-aa.phi_a,pp,oo);
@@ -177,6 +238,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     % moulin sheet
     hm = hm_fun(phi-aa.phi_a,aa.phi_0-aa.phi_a,pp.c25*sigma_m,pp,oo);
     
+    % ice stresses
+    [~,~,~,~,~,~,tau_b] = nevis_stresses(aa.H,u,v,Ni,aa,pp,gg,oo);
+
     % % upwind directions
     % eup = gg.econnect(:,1).*(Psi_x<=0) + gg.econnect(:,2).*(Psi_x>0);
     % fup = gg.fconnect(:,1).*(Psi_y<=0) + gg.fconnect(:,2).*(Psi_y>0);
@@ -191,6 +255,10 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     % he(nbdy) = nmeann(nbdy,nin)*he(nin);
     % hv(nbdy) = nmeann(nbdy,nin)*hv(nin); 
     % hm(nbdy) = nmeann(nbdy,nin)*hm(nin); 
+
+    % speed and viscosity
+    U = ((nmeanxice(:,gg.es)*u(gg.es)).^2+(nmeanyice(:,gg.fs)*v(gg.fs)).^2 ).^(1/2); % speed [n_IJ-by-1]
+    etabar = calculate_viscosity(u,v,pp,gg,oo); % viscosity [nIJ-by-1]
 
     % channel fluxes
     Qx = -pp.c23*max(Sx,0).^(pp.alpha_c).*(Psi_x.^2+pp.Psi_reg^2).^((pp.beta_c-1)/2).*Psi_x;
@@ -375,6 +443,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         vv2.hm = hm;
         vv2.hb = hb;
         vv2.pb = pb;
+        vv2.u = u;
+        vv2.v = v;
         vv2.hc = pp.c8*(gg.nmeanx*Sx.*gg.Dx+gg.nmeany*Sy.*gg.Dy+gg.nmeans*Ss.*gg.Ds+gg.nmeanr*Sr.*gg.Dr)./(gg.Dx.*gg.Dy);
 
         % fluxes and potential gradient
@@ -415,14 +485,14 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
 
     %% Residual
     if oo.evaluate_residual
-        [R1,R2,R3,R4,R5,R6,R7,R8] = residuals();
+        [R1,R2,R3,R4,R5,R6,R7,R8,R9,R10] = residuals();
         
         vv2.R_bdy = R2(gg.nbdy);
         vv2.R_bdy_blister = R8(gg.nbdy_blister);
         vv2.Qb_in = Qb_in.*gg.Dx.*gg.Dy;
         vv2.Qb_dec = sum(Qb_h.*gg.Dx.*gg.Dy,"omitnan");
-        vv2.Q_out = 1/pp.c9*sum( R2(gg.nbdy).*gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy) ); 
-        vv2.Qb_out = 1/pp.c43*sum( R8(gg.nbdy).*gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy) ); 
+        vv2.Q_out = 1/pp.c9*sum(R2(gg.nbdy).*gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy)); 
+        vv2.Qb_out = 1/pp.c43*sum(R8(gg.nbdy).*gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy)); 
         vv2.Xi = Xi;
         vv2.he = he;
         vv2.hc = pp.c8*(gg.nmeanx*Sx.*gg.Dx+gg.nmeany*Sy.*gg.Dy+gg.nmeans*Ss.*gg.Ds+gg.nmeanr*Sr.*gg.Dr)./(gg.Dx.*gg.Dy);
@@ -430,7 +500,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
                  + pp.c4/pp.c9*(sum(qsx(gg.ebdy).*(gg.emean(gg.ebdy,:)*gg.Dy))+...
                                 sum(qsy(gg.fbdy).*(gg.fmean(gg.fbdy,:)*gg.Dx))) ...
                  + pp.c5/pp.c9*(sum(qex(gg.ebdy).*(gg.emean(gg.ebdy,:)*gg.Dy))+...
-                                sum(qey(gg.fbdy).*(gg.fmean(gg.fbdy,:)*gg.Dx)));% inflow
+                                sum(qey(gg.fbdy).*(gg.fmean(gg.fbdy,:)*gg.Dx))); % inflow
 
         vv2.Q_outQ = -1/pp.c9*sum(pp.c9*((gg.nddx(gg.nbdy,:)*Qx).*gg.Dy(gg.nbdy).^(-1) + ...
                                  (gg.nddy(gg.nbdy,:)*Qy).*gg.Dx(gg.nbdy).^(-1) + ...
@@ -452,6 +522,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         F6 = R6(gg.cin);
         F7 = R7(gg.ns_blister);  % blister thickness
         F8 = R8(gg.nin_blister); % blister mass conservation
+        F9 = R9(gg.ns);  % ice velocity u
+        F10 = R10(gg.ns); % ice velocity v
         
         if oo.no_channels && oo.no_sheet 
             F =  F2;
@@ -466,12 +538,15 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
                 else
                     F = [ F1; F2; F3; F4; F5; F6; F7];
                 end
+                if oo.include_ice
+                    F = [ F1; F2; F3; F4; F5; F6; F7; F8; F9; F10];
+                end
             else
                 F = [ F1; F2; F3; F4; F5; F6];
             end
         end
     else
-        F = []; F1 = []; F2 = []; F3 = []; F4 = []; F5 = []; F6 = []; F7 = []; F8 = [];
+        F = []; F1 = []; F2 = []; F3 = []; F4 = []; F5 = []; F6 = []; F7 = []; F8 = []; F9 = []; F10 = [];
     end
 
     %% Jacobian
@@ -482,7 +557,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
     end
 
     %% nested functions
-    function [R1,R2,R3,R4,R5,R6,R7,R8] = residuals()    
+    function [R1,R2,R3,R4,R5,R6,R7,R8,R9,R10] = residuals()    
         %% time derivatives [ for use in residuals below ]
 
         hs_t = pp.c26*m ...
@@ -624,10 +699,12 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         nmeany = gg.nmeanyin;
         nmeans = gg.nmeansin;
         nmeanr = gg.nmeanrin;
+
         nmeanxb = gg.nmeanxin_blister;
         nmeanyb = gg.nmeanyin_blister;
         nmeansb = gg.nmeansin_blister;
         nmeanrb = gg.nmeanrin_blister;
+
         nmeany2 = nmeany;
     
         %% extract parameters
@@ -1244,4 +1321,22 @@ end
 
 function out = Reg_H(H)
     out = H>0;
+end
+
+%% visocity
+function eta = calculate_viscosity(u,v,pp,gg,oo)
+% calculate viscosity for given depth-averaged velocities u and v
+% [ the dimensional factor at the front of eta should be 1/2A^(1/n), after
+% scaling with 1/2[A]^(1/n) it becomes A^(-1/n) in terms of dimensionless A
+    epsxx = gg.nddx(:,gg.es2)*u(gg.es2);
+    epsyy = gg.nddy(:,gg.fs2)*v(gg.fs2);
+    epsxy = 1/2*(gg.cddy(:,gg.es2)*u(gg.es2)+gg.cddx(:,gg.fs2)*v(gg.fs2));
+    eta = pp.A_glen.^(-1/pp.n_glen).*( pp.eps_reg^2+epsxx.^2+epsyy.^2+epsxx.*epsyy+(gg.nmeanc(:,gg.cs2)*epsxy(gg.cs2)).^2 ).^((1/pp.n_glen-1)/2);
+end
+
+%% sliding law
+function tau_b_over_Ub = slide_fun(Ub,N,C,mu,pp,gg,oo)
+% cavity-based sliding law
+% tau_b ~ mu*N for large Ub, tau_b ~ C*Ub^(1/n) for small Ub 
+    tau_b_over_Ub = max(N,pp.N_slide_reg).*max(Ub,pp.Ub_reg).^(1/pp.n_slide-1).*(mu.^(-pp.n_slide).*max(Ub,pp.Ub_reg)+C.^(-pp.n_slide).*max(N,pp.N_slide_reg).^pp.n_slide).^(-1/pp.n_slide) + pp.C2*max(Ub,pp.Ub_reg).^(1/pp.n_slide-1);
 end
