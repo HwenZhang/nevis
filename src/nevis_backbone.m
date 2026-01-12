@@ -258,7 +258,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
 
     % speed and viscosity
     U = ((nmeanxice(:,gg.es)*u(gg.es)).^2+(nmeanyice(:,gg.fs)*v(gg.fs)).^2 ).^(1/2); % speed [n_IJ-by-1]
-    etabar = calculate_viscosity(u,v,pp,gg,oo); % viscosity [nIJ-by-1]
+    etabar = etabar(u,v,pp,gg,oo); % viscosity [nIJ-by-1]
 
     % channel fluxes
     Qx = -pp.c23*max(Sx,0).^(pp.alpha_c).*(Psi_x.^2+pp.Psi_reg^2).^((pp.beta_c-1)/2).*Psi_x;
@@ -434,6 +434,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         Xis = pp.c20*aa.lcs.*(gg.cmean(:,:)*Xi);
         Xir = pp.c20*aa.lcr.*(gg.cmean(:,:)*Xi);
     end
+
     %% Variables
     if oo.evaluate_variables
         vv2 = vv;
@@ -604,6 +605,65 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
                + pp.c43*Qb_in...              % lake influx;
                - Qb_s...                      % leakage to subglacial drainage system
                + pp.c7*Reg_N(N,pp.N_reg1).*E; % moulin influx to the blister if the subglacial drainage system is overwhelmed, 
+        
+        % Save H*etabar matrices for velocity residuals
+        H_times_etabar_matrix = sparse(nin,nin,H(nin).*etabar(nin),nIJ,nIJ); % [nIJ-by-nIJ]
+        H_times_etabar_matrix_c = sparse(cin,cin,gg.cmean(cin,ns).*(H(ns).*etabar(ns)),cIJ,cIJ); % [cIJ-by-cIJ]
+
+        % ice sheet velocities
+        Fx_res = -pp.c60*(emean(ein,ns)*H(ns)).*(eddx(ein,ns)*s(ns));
+        % prescribed boundary velocity
+        if ~isempty(ebdy)
+            Fx_res = Fx_res + pp.c62*(eddx(ein,nin)*(4*H_times_etabar_matrix(nin,nin)*nddx(nin,ebdy)) +...
+                                      eddy(ein,cin)*(H_times_etabar_matrix_c(cin,cin)*cddy(cin,ebdy)))*u(ebdy); 
+        end 
+        % prescribed boundary velocity
+        if ~isempty(fbdy)
+            Fx_res = Fx_res + pp.c62*(eddx(ein,nin)*(2*H_times_etabar_matrix(nin,nin)*nddy(nin,fbdy)) + eddy(ein,cin)*(H_times_etabar_matrix_c(cin,cin)*cddx(cin,fbdy)) )*v(fbdy); 
+        end
+        % prescribed boundary stress
+        if ~isempty(nbdyx)
+            Fx_res = Fx_res + pp.c62*(eddx(ein,nbdyx)*( H(nbdyx).*Txx(nbdyx))); 
+        end
+        % prescribed boundary stress
+        if ~isempty(cbdy)
+            Fx_res = Fx_res + pp.c62*(eddy(ein,cbdy)*((cmean(cbdy,ns)*H(ns)).*Txy(cbdy)));
+        end 
+        
+        Fx_ub = pp.c61*sparse(1:length(ein),1:length(ein),...
+                -emean(ein,ns)*(taub(U(ns),N(ns),C(ns),mu(ns),pp,gg,oo)),length(ein),length(ein)) + ...
+                pp.c62*(eddx(ein,nin)*(4*H_times_etabar_matrix(nin,nin)*nddx(nin,ein)) +...
+                        eddy(ein,cin)*(H_times_etabar_matrix_c(cin,cin)*cddy(cin,ein)));
+
+        Fx_vb = pp.c62*(eddx(ein,nin)*(2*H_times_etabar_matrix(nin,nin)*nddy(nin,fin)) +...
+                        eddy(ein,cin)*(H_times_etabar_matrix_c(cin,cin)*cddx(cin,fin)));
+        
+        Fy_res = -pp.c60*(fmean(fin,ns)*H(ns)).*(fddy(fin,ns)*s(ns));
+        % prescribed boundary velocity
+        if ~isempty(ebdy)
+            Fy_res = Fy_res + pp.c62*(fddy(fin,nin)*(2*H_times_etabar_matrix(nin,nin)*nddx(nin,ebdy)) + ...
+                                      fddx(fin,cin)*(H_times_etabar_matrix_c(cin,cin)*cddy(cin,ebdy)))*u(ebdy); 
+        end
+        % prescribed boundary velocity
+        if ~isempty(fbdy)
+            Fy_res = Fy_res + pp.c62*(fddy(fin,nin)*(4*H_times_etabar_matrix(nin,nin)*nddy(nin,fbdy)) + ...
+                                      fddx(fin,cin)*(H_times_etabar_matrix_c(cin,cin)*cddx(cin,fbdy)))*v(fbdy);
+        end
+        % prescribed boundary stress
+        if ~isempty(nbdyy)
+            Fy_res = Fy_res + pp.c62*(fddy(fin,nbdyy)*(H(nbdyy).*Tyy(nbdyy))); 
+        end
+        % prescribed boundary stress
+        if ~isempty(cbdy) 
+            Fy_res = Fy_res + pp.c62*(fddx(fin,cbdy)*((cmean(cbdy,ns)*H(ns)).*Txy(cbdy))); 
+        end 
+
+        Fy_ub = pp.c62*(fddy(fin,nin)*(2*H_times_etabar_matrix(nin,nin)*nddx(nin,ein)) + ...
+                        fddx(fin,cin)*(H_times_etabar_matrix_c(cin,cin)*cddy(cin,ein)));
+        Fy_vb = pp.c61*sparse(1:length(fin),1:length(fin),-fmean(fin,ns)*(taub(U(ns),N(ns),C(ns),mu(ns),pp,gg,oo)),...  
+                              length(fin),length(fin)) + ...
+                pp.c62*(fddy(fin,nin)*(4*H_times_etabar_matrix(nin,nin)*nddy(nin,fin)) + ...
+                        fddx(fin,cin)*(H_times_etabar_matrix_c(cin,cin)*cddx(cin,fin)));
         
         %% old variables
         hs_old = vv0.hs;
@@ -1323,20 +1383,102 @@ function out = Reg_H(H)
     out = H>0;
 end
 
+% Regularised effective pressure for the sliding law
+function out = Reg_Ni(N,beta)
+    if nargin < 2, beta = 1; end
+    out = log(1 + exp(beta*N)) / beta;
+end
+
+function out = DReg_Ni_DN(N,beta)
+    if nargin < 2, beta = 1; end
+    out = exp(beta*N) ./ (1 + exp(beta*N));
+end
+
+
+% velocity magnitude and derivatives
+function out = Ub(u,v)
+    out = sqrt(u.^2 + v.^2);
+end
+
+function out = DUb_Du(u,v)
+    U = sqrt(u.^2 + v.^2) + eps;
+    out = u./U;
+end
+
+function out = DUb_Dv(u,v)
+    U = sqrt(u.^2 + v.^2) + eps;
+    out = v./U;
+end
+
 %% visocity
-function eta = calculate_viscosity(u,v,pp,gg,oo)
+function eta = etabar(u,v,pp,gg,oo)
 % calculate viscosity for given depth-averaged velocities u and v
 % [ the dimensional factor at the front of eta should be 1/2A^(1/n), after
 % scaling with 1/2[A]^(1/n) it becomes A^(-1/n) in terms of dimensionless A
     epsxx = gg.nddx(:,gg.es2)*u(gg.es2);
     epsyy = gg.nddy(:,gg.fs2)*v(gg.fs2);
     epsxy = 1/2*(gg.cddy(:,gg.es2)*u(gg.es2)+gg.cddx(:,gg.fs2)*v(gg.fs2));
-    eta = pp.A_glen.^(-1/pp.n_glen).*( pp.eps_reg^2+epsxx.^2+epsyy.^2+epsxx.*epsyy+(gg.nmeanc(:,gg.cs2)*epsxy(gg.cs2)).^2 ).^((1/pp.n_glen-1)/2);
+    eta = pp.A_glen.^(-1/pp.n_glen).*(pp.eps_reg^2+epsxx.^2+epsyy.^2+epsxx.*epsyy+(gg.nmeanc(:,gg.cs2)*epsxy(gg.cs2)).^2 ).^((1/pp.n_glen-1)/2);
+end
+
+function Deta_Du = Deta_Du(u,v,pp,gg,oo)
+    epsxx = gg.nddx(:,gg.es2)*u(gg.es2);
+    epsyy = gg.nddy(:,gg.fs2)*v(gg.fs2);
+    epsxy = 1/2*(gg.cddy(:,gg.es2)*u(gg.es2)+gg.cddx(:,gg.fs2)*v(gg.fs2));
+    % derivative of viscosity wrt u
+    Deta_Du = sparse(1:nIJ,1:nIJ,...
+           ((1/pp.n_glen-1)/2)*pp.A_glen.^(-1/pp.n_glen).*(pp.eps_reg^2+epsxx.^2+epsyy.^2+epsxx.*epsyy+(gg.nmeanc(:,gg.cs2)*epsxy(gg.cs2)).^2 ).^((1/pp.n_glen-1)/2-1),nIJ,nIJ)*...
+           (2*sparse(1:nIJ,1:nIJ,epsxx,nIJ,nIJ)*gg.nddx(:,gg.es2)+...
+            sparse(1:nIJ,1:nIJ,epsyy,nIJ,nIJ)*gg.nddx(:,gg.es2)+...
+            0.5*sparse(1:nIJ,1:nIJ,2*(gg.nmeanc(:,gg.cs2)*epsxy(gg.cs2)),nIJ,nIJ)*gg.nmeanc(:,gg.cs2)*gg.cddy(gg.cs2,gg.es2));
+end
+% (2*sparse(length(gg.es2),length(gg.es2),epsxx,1:length(gg.es2),1:length(gg.es2))*gg.nddx(:,gg.es2)+...
+%             sparse(length(gg.es2),length(gg.es2),epsyy,1:length(gg.es2),1:length(gg.es2))*gg.nddx(:,gg.es2)+...
+%             (gg.nmeanc(:,gg.cs2)*epsxy(gg.cs2)).^2)
+
+function Deta_Dv = Deta_Dv(u,v,pp,gg,oo)
+    epsxx = gg.nddx(:,gg.es2)*u(gg.es2);
+    epsyy = gg.nddy(:,gg.fs2)*v(gg.fs2);
+    epsxy = 1/2*(gg.cddy(:,gg.es2)*u(gg.es2)+gg.cddx(:,gg.fs2)*v(gg.fs2));
+    % derivative of viscosity wrt u
+    Deta_Dv = sparse(1:nIJ,1:nIJ,...
+           ((1/pp.n_glen-1)/2)*pp.A_glen.^(-1/pp.n_glen).*(pp.eps_reg^2+epsxx.^2+epsyy.^2+epsxx.*epsyy+(gg.nmeanc(:,gg.cs2)*epsxy(gg.cs2)).^2 ).^((1/pp.n_glen-1)/2-1),nIJ,nIJ)*...
+           (sparse(1:nIJ,1:nIJ,epsxx,nIJ,nIJ)*gg.nddy(:,gg.fs2)+...
+            2*sparse(1:nIJ,1:nIJ,epsyy,nIJ,nIJ)*gg.nddy(:,gg.fs2)+...
+            0.5*sparse(1:nIJ,1:nIJ,2*(gg.nmeanc(:,gg.cs2)*epsxy(gg.cs2)),nIJ,nIJ)*gg.nmeanc(:,gg.cs2)*gg.cddx(gg.cs2,gg.fs2));
 end
 
 %% sliding law
-function tau_b_over_Ub = slide_fun(Ub,N,C,mu,pp,gg,oo)
+function tau_b_over_Ub = taub(Ub,N,C,mu,pp,gg,oo)
 % cavity-based sliding law
 % tau_b ~ mu*N for large Ub, tau_b ~ C*Ub^(1/n) for small Ub 
-    tau_b_over_Ub = max(N,pp.N_slide_reg).*max(Ub,pp.Ub_reg).^(1/pp.n_slide-1).*(mu.^(-pp.n_slide).*max(Ub,pp.Ub_reg)+C.^(-pp.n_slide).*max(N,pp.N_slide_reg).^pp.n_slide).^(-1/pp.n_slide) + pp.C2*max(Ub,pp.Ub_reg).^(1/pp.n_slide-1);
+    tau_b_over_Ub = N.*Ub.^(1/pp.n_slide).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide) + pp.C2*Ub.^(1/pp.n_slide);
+end
+
+function Dtaub_DUb = Dtaub_DUb(Ub,N,C,mu,pp,gg,oo)
+% derivative of cavity-based sliding law wrt Ub
+    term1 = (1/pp.n_slide)*Ub.^(1/pp.n_slide-1).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide);
+    term2 = (1/pp.n_slide)*N.*Ub.^(1/pp.n_slide).*(mu.^(-pp.n_slide)).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide-1);
+    Dtaub_DUb = term1 + term2 + pp.C2*(1/pp.n_slide)*Ub.^(1/pp.n_slide-1);
+end
+
+function Dtaub_DN = Dtaub_DN(Ub,N,C,mu,pp,gg,oo)
+% derivative of cavity-based sliding law wrt N
+    % tau_b_over_Ub = taub(Ub,N,C,mu,pp,gg,oo);
+    term1 = Ub.^(1/pp.n_slide).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide);
+    term2 = C.^(-pp.n_slide)*N.^(pp.n_slide).*Ub.^(1/pp.n_slide).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide-1);
+    Dtaub_DN = term1 + term2;
+end
+
+function Dtaub_Du = Dtaub_Du(u,v,N,C,mu,pp,gg,oo)
+% derivative of cavity-based sliding law wrt u
+    Dtaub_Du = Dtaub_DUb(Ub(u,v),N,C,mu,pp,gg,oo).*DUb_Du(u,v);
+end
+function Dtaub_Dv = Dtaub_Dv(u,v,N,C,mu,pp,gg,oo)
+% derivative of cavity-based sliding law wrt v
+    Dtaub_Dv = Dtaub_DUb(Ub(u,v),N,C,mu,pp,gg,oo).*DUb_Dv(u,v);
+end 
+function Dtaub_Dphi = Dtaub_Dphi(u,v,N,C,mu,pp,gg,oo,beta)
+% derivative of cavity-based sliding law wrt phi
+    Dtaub_Dphi = -Dtaub_DN(Ub(u,v),N,C,mu,pp,gg,oo).*DReg_Ni_DN(N,beta);
 end
