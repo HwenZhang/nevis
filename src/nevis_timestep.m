@@ -128,11 +128,14 @@ for iter_new = 1:max_iter_new+1
         if oo.include_blister
             if oo.include_pressure
                 iFs = [1 2 3 4 5 6 7 8];  
+                if oo.include_ice
+                    iFs = [1 2 3 4 5 6 7 8 9 10];
+                end
             else
-                iFs = [1 2 3 4 5 6 7];  
-            end
-            if oo.include_ice
-                iFs = [1 2 3 4 5 6 7 8 9 10];
+                iFs = [1 2 3 4 5 6 7]; 
+                if oo.include_ice
+                    iFs = [1 2 3 4 5 6 7 9 10];
+                end 
             end
         end        
     end
@@ -169,8 +172,14 @@ for iter_new = 1:max_iter_new+1
         if oo.include_blister
             if oo.include_pressure
                 X = [vv.hs(gg.ns); vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin); vv.hb(gg.ns_blister); vv.pb(gg.nin_blister)];
+                if oo.include_ice
+                    X = [vv.hs(gg.ns); vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin); vv.hb(gg.ns_blister); vv.pb(gg.nin_blister); vv.u(gg.ein2); vv.v(gg.fin2)];
+                end
             else
                 X = [vv.hs(gg.ns); vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin); vv.hb(gg.ns_blister)];
+                if oo.include_ice
+                    X = [vv.hs(gg.ns); vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin); vv.hb(gg.ns_blister); vv.u(gg.ein2); vv.v(gg.fin2)];
+                end
             end
         else
             X = [vv.phi(gg.nin); vv.Sx(gg.ein); vv.Sy(gg.fin); vv.Ss(gg.cin); vv.Sr(gg.cin)];
@@ -217,8 +226,13 @@ for iter_new = 1:max_iter_new+1
     if oo.include_blister
         temp2 = length(gg.ns_blister); vv.hb(gg.ns_blister) = X(temp1+(1:temp2)); temp1=temp1+temp2; % vv.hb=max(vv.hb,0);
         if oo.include_pressure
-            temp2 = length(gg.nin_blister); vv.pb(gg.nin_blister) = X(temp1+(1:temp2)); % temp1=temp1+temp2;
+            temp2 = length(gg.nin_blister); vv.pb(gg.nin_blister) = X(temp1+(1:temp2)); temp1=temp1+temp2;
         end
+    end
+    % update ice sheet velocity
+    if oo.include_ice
+        temp2 = length(gg.ein2); vv.u(gg.ein2) = X(temp1+(1:temp2)); temp1=temp1+temp2;
+        temp2 = length(gg.fin2); vv.v(gg.fin2) = X(temp1+(1:temp2));
     end
 end
 

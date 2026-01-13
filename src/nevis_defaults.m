@@ -99,8 +99,6 @@ if ~isfield(pd,'alpha_ds'), pd.alpha_ds = 0; end                   % d (relaxati
 % if ~isfield(pd,'alpha_ds'), pd.alpha_ds = 1.5595e-5; end           % d (relaxation rate) / d S (m^-2 s^-1)
 % ice sheet
 if ~isfield(pd,'n_glen'), pd.n_glen = 1; end
-eps = 0.1; 
-if ~isfield(pd,'A_glen'), pd.A_glen = 1/2/((eps)*pd.rho_i*pd.g*ps.z*ps.x/pd.u_b); % to make membrane stress terms of dimensionless size eps in momentum equation
 
 %% Default options
 % method options

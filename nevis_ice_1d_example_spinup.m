@@ -6,7 +6,7 @@ oo.root = './';             % filename root
 oo.code = '../nevis/src';   % code directory
 oo.results = 'results';     % path to the results folders
 addpath(oo.code);           % add path to code
-oo.casename = 'n1d_example_spinup_mu1e1_kappa1e_10_eps0_1_test';
+oo.casename = 'test';
 oo.fn = ['/',oo.casename];               % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];      % path to the case results
 mkdir(oo.rn);
