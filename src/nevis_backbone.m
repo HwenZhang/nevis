@@ -610,16 +610,21 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         H_times_etabar_matrix = sparse(nin,nin,H(nin).*etabar(nin),nIJ,nIJ); % [nIJ-by-nIJ]
         H_times_etabar_matrix_c = sparse(cin,cin,gg.cmean(cin,ns).*(H(ns).*etabar(ns)),cIJ,cIJ); % [cIJ-by-cIJ]
 
-        % ice sheet velocities
-        Fx_res = -pp.c60*(emean(ein,ns)*H(ns)).*(eddx(ein,ns)*s(ns));
+        Fx_res = - pp.c61*emean(ein,ns)*(taub(U(ns),N(ns),C(ns),mu(ns),pp,gg,oo)) + ...
+            pp.c62*(eddx(ein,nin)*(4*H(nin).*etabar(nin).*(nddx(nin,ein)*u(ein))) + ...
+                    eddy(ein,cin)*(H(cin).*etabar(cin).*(cddy(cin,ein)*u(ein)))) - ...
+            pp.c60*(emean(ein,ns)*H(ns)).*(eddx(ein,ns)*s(ns));
         % prescribed boundary velocity
         if ~isempty(ebdy)
-            Fx_res = Fx_res + pp.c62*(eddx(ein,nin)*(4*H_times_etabar_matrix(nin,nin)*nddx(nin,ebdy)) +...
-                                      eddy(ein,cin)*(H_times_etabar_matrix_c(cin,cin)*cddy(cin,ebdy)))*u(ebdy); 
+            Fx_res = Fx_res + ...
+            pp.c62*(eddx(ein,nin)*(4*H(nin).*etabar(nin).*(nddx(nin,ebdy)*u(ebdy))) + ...
+                    eddy(ein,cin)*(H(cin).*etabar(cin).*(cddy(cin,ebdy)*u(ebdy)))) ; 
         end 
         % prescribed boundary velocity
         if ~isempty(fbdy)
-            Fx_res = Fx_res + pp.c62*(eddx(ein,nin)*(2*H_times_etabar_matrix(nin,nin)*nddy(nin,fbdy)) + eddy(ein,cin)*(H_times_etabar_matrix_c(cin,cin)*cddx(cin,fbdy)) )*v(fbdy); 
+            Fx_res = Fx_res + ... 
+            pp.c62*(eddx(ein,nin)*(2*H(nin).*etabar(nin).*(nddy(nin,fbdy)*v(fbdy))) + ...
+                    eddy(ein,cin)*(H(cin).*etabar(cin).*(cddx(cin,fbdy)*v(fbdy)))) ; 
         end
         % prescribed boundary stress
         if ~isempty(nbdyx)
@@ -630,24 +635,26 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
             Fx_res = Fx_res + pp.c62*(eddy(ein,cbdy)*((cmean(cbdy,ns)*H(ns)).*Txy(cbdy)));
         end 
         
-        Fx_ub = pp.c61*sparse(1:length(ein),1:length(ein),...
-                -emean(ein,ns)*(taub(U(ns),N(ns),C(ns),mu(ns),pp,gg,oo)),length(ein),length(ein)) + ...
-                pp.c62*(eddx(ein,nin)*(4*H_times_etabar_matrix(nin,nin)*nddx(nin,ein)) +...
-                        eddy(ein,cin)*(H_times_etabar_matrix_c(cin,cin)*cddy(cin,ein)));
+        % Fx_ub = pp.c61*sparse(1:length(ein),1:length(ein),...
+        %         -emean(ein,ns)*(taub(U(ns),N(ns),C(ns),mu(ns),pp,gg,oo)),length(ein),length(ein)) + ...
+        %         pp.c62*(eddx(ein,nin)*(4*H_times_etabar_matrix(nin,nin)*nddx(nin,ein)) +...
+        %                 eddy(ein,cin)*(H_times_etabar_matrix_c(cin,cin)*cddy(cin,ein)));
+        Fy_res = - fmean(fin,ns)*(taub(U(ns),N(ns),C(ns),mu(ns),pp,gg,oo)) + ...
+                pp.c62*(fddy(fin,nin)*(4*H(nin).*etabar(nin)*(nddy(nin,fin)*v(fin))) + ...
+                        fddx(fin,cin)*(H(cin).*etabar(cin)*(cddx(cin,fin)*v(fin)))) - ...
+                pp.c60*(fmean(fin,ns)*H(ns)).*(fddy(fin,ns)*s(ns));       
 
-        Fx_vb = pp.c62*(eddx(ein,nin)*(2*H_times_etabar_matrix(nin,nin)*nddy(nin,fin)) +...
-                        eddy(ein,cin)*(H_times_etabar_matrix_c(cin,cin)*cddx(cin,fin)));
-        
-        Fy_res = -pp.c60*(fmean(fin,ns)*H(ns)).*(fddy(fin,ns)*s(ns));
         % prescribed boundary velocity
         if ~isempty(ebdy)
-            Fy_res = Fy_res + pp.c62*(fddy(fin,nin)*(2*H_times_etabar_matrix(nin,nin)*nddx(nin,ebdy)) + ...
-                                      fddx(fin,cin)*(H_times_etabar_matrix_c(cin,cin)*cddy(cin,ebdy)))*u(ebdy); 
+            Fy_res = Fy_res + ...
+            pp.c62*(fddy(fin,nin)*(2*H(nin).*etabar(nin)*(nddx(nin,ebdy)*u(ebdy))) + ...
+                    fddx(fin,cin)*(H(cin).*etabar(cin)*(cddy(cin,ebdy)*u(ebdy)))); 
         end
         % prescribed boundary velocity
         if ~isempty(fbdy)
-            Fy_res = Fy_res + pp.c62*(fddy(fin,nin)*(4*H_times_etabar_matrix(nin,nin)*nddy(nin,fbdy)) + ...
-                                      fddx(fin,cin)*(H_times_etabar_matrix_c(cin,cin)*cddx(cin,fbdy)))*v(fbdy);
+            Fy_res = Fy_res + ...
+            pp.c62*(fddy(fin,nin)*(4*H(nin).*etabar(nin)*(nddy(nin,fbdy)*v(fbdy))) + ...
+                    fddx(fin,cin)*(H(cin).*etabar(cin)*(cddx(cin,fbdy)*v(fbdy)))); 
         end
         % prescribed boundary stress
         if ~isempty(nbdyy)
@@ -657,13 +664,11 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         if ~isempty(cbdy) 
             Fy_res = Fy_res + pp.c62*(fddx(fin,cbdy)*((cmean(cbdy,ns)*H(ns)).*Txy(cbdy))); 
         end 
-
-        Fy_ub = pp.c62*(fddy(fin,nin)*(2*H_times_etabar_matrix(nin,nin)*nddx(nin,ein)) + ...
-                        fddx(fin,cin)*(H_times_etabar_matrix_c(cin,cin)*cddy(cin,ein)));
-        Fy_vb = pp.c61*sparse(1:length(fin),1:length(fin),-fmean(fin,ns)*(taub(U(ns),N(ns),C(ns),mu(ns),pp,gg,oo)),...  
-                              length(fin),length(fin)) + ...
-                pp.c62*(fddy(fin,nin)*(4*H_times_etabar_matrix(nin,nin)*nddy(nin,fin)) + ...
-                        fddx(fin,cin)*(H_times_etabar_matrix_c(cin,cin)*cddx(cin,fin)));
+        % Fy_ub = pp.c62*(fddy(fin,nin)*(2*H_times_etabar_matrix(nin,nin)*nddx(nin,ein)) + ...
+        %                 fddx(fin,cin)*(H_times_etabar_matrix_c(cin,cin)*cddy(cin,ein)));
+        % Fy_vb = pp.c61*sparse(1:length(fin),1:length(fin),-fmean(fin,ns)*(taub(U(ns),N(ns),C(ns),mu(ns),pp,gg,oo)),length(fin),length(fin)) + ...
+        %         pp.c62*(fddy(fin,nin)*(4*H_times_etabar_matrix(nin,nin)*nddy(nin,fin)) + ...
+        %                 fddx(fin,cin)*(H_times_etabar_matrix_c(cin,cin)*cddx(cin,fin)));
         
         %% old variables
         hs_old = vv0.hs;
@@ -696,6 +701,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         % R7 = - pb + pp.c46*hb + phi + pp.c49*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(H.^3.*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*hb); % blister pressure
         R7 = - pb + pp.c46*hb + (aa.phi_0-aa.phi_a) + pp.c49*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(max(H.^3,pp.B_reg).*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*hb); % blister pressure
         R8 = - (hb-hb_old).*dt^(-1) + hb_t;        % mass conservation of the blister
+        R9 = Fx_res;                       % ice velocity u (ein)
+        R10 = Fy_res;                      % ice velocity v (fin)
         
  
     end
@@ -739,6 +746,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         nddy = gg.nddy;
         eddx = gg.eddx;
         fddy = gg.fddy;
+        cddx = gg.cddx;
+        cddy = gg.cddy;
 
         emean = gg.emean;
         fmean = gg.fmean;
@@ -808,6 +817,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         % c50 = pp.c50;
         c51 = pp.c51;
         c52 = pp.c52;
+        c60 = pp.c60;
+        c61 = pp.c61;
+        c62 = pp.c62;
 
         n_Glen = pp.n_Glen;
         alpha_c = pp.alpha_c;
@@ -1143,6 +1155,19 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,o
         DF8_Sy = 0*sparse(1:length(nin_blister), 1:length(nin_blister), -0.25*c51*kl_s*(Reg_deltaphi(pb(nin_blister)-phi(nin_blister)+phi_a(nin_blister),deltap_reg)).*Reg_hb(hb(nin_blister),hb_reg2).*Reg_H(aa.H(nin_blister)), length(nin_blister), length(nin_blister))*nmeany(nin_blister,fin);
         DF8_Ss = 0*sparse(1:length(nin_blister), 1:length(nin_blister), -0.25*c51*kl_s*(Reg_deltaphi(pb(nin_blister)-phi(nin_blister)+phi_a(nin_blister),deltap_reg)).*Reg_hb(hb(nin_blister),hb_reg2).*Reg_H(aa.H(nin_blister)), length(nin_blister), length(nin_blister))*nmeans(nin_blister,cin);
         DF8_Sr = 0*sparse(1:length(nin_blister), 1:length(nin_blister), -0.25*c51*kl_s*(Reg_deltaphi(pb(nin_blister)-phi(nin_blister)+phi_a(nin_blister),deltap_reg)).*Reg_hb(hb(nin_blister),hb_reg2).*Reg_H(aa.H(nin_blister)), length(nin_blister), length(nin_blister))*nmeanr(nin_blister,cin);
+
+        % DF9 (ice sheet velocity u)
+        Fx_res = - c61*emean(ein,ns)*(taub(U(ns),N(ns),C(ns),mu(ns),pp,gg,oo)) + ...
+            c62*(eddx(ein,nin)*(4*H(nin).*etabar(nin).*(nddx(nin,ein)*u(ein))) + ...
+                    eddy(ein,cin)*(H(cin).*etabar(cin).*(cddy(cin,ein)*u(ein)))) - ...
+            c60*(emean(ein,ns)*H(ns)).*(eddx(ein,ns)*s(ns));
+
+        % DF10 (ice sheet velocity v)
+        Fy_res = - fmean(fin,ns)*(taub(U(ns),N(ns),C(ns),mu(ns),pp,gg,oo)) + ...
+                c62*(fddy(fin,nin)*(4*H(nin).*etabar(nin)*(nddy(nin,fin)*v(fin))) + ...
+                        fddx(fin,cin)*(H(cin).*etabar(cin)*(cddx(cin,fin)*v(fin)))) - ...
+                c60*(fmean(fin,ns)*H(ns)).*(fddy(fin,ns)*s(ns)); 
+
 
         %% construct Jacobian matrix
         % % [ original way of calculating ]
