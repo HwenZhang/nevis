@@ -84,4 +84,34 @@ gg.eout_blister = eout;
 gg.fout_blister = fout;
 gg.cout_blister = cout;
 
+%% redefine mean operators to only include active nodes
+temp = gg.nmeanx(:,gg.ein)*ones(length(gg.ein),1); temp(temp==0) = inf; 
+% sparse(1:length(temp),1:length(temp),temp.^(-1),...
+% length(temp),length(temp)) (nIxnJ,nIxnJ) diagonal maxtrix
+gg.nmeanxin = sparse(1:length(temp),1:length(temp),temp.^(-1),...
+                        length(temp),length(temp))*gg.nmeanx;
+temp = gg.nmeany(:,gg.fin)*ones(length(gg.fin),1); temp(temp==0) = inf; 
+gg.nmeanyin = sparse(1:length(temp),1:length(temp),temp.^(-1),...
+                        length(temp),length(temp))*gg.nmeany;
+temp = gg.nmeans(:,gg.cin)*ones(length(gg.cin),1); temp(temp==0) = inf; 
+gg.nmeansin = sparse(1:length(temp),1:length(temp),temp.^(-1),...
+                        length(temp),length(temp))*gg.nmeans;
+temp = gg.nmeanr(:,gg.cin)*ones(length(gg.cin),1); temp(temp==0) = inf; 
+gg.nmeanrin = sparse(1:length(temp),1:length(temp),temp.^(-1),...
+                        length(temp),length(temp))*gg.nmeanr;
+
+temp = gg.nmeanx(:,gg.ein_blister)*ones(length(gg.ein_blister),1); temp(temp==0) = inf;
+gg.nmeanxin_blister = sparse(1:length(temp),1:length(temp),temp.^(-1),...
+                        length(temp),length(temp))*gg.nmeanx;
+temp = gg.nmeany(:,gg.fin_blister)*ones(length(gg.fin_blister),1); temp(temp==0) = inf;
+gg.nmeanyin_blister = sparse(1:length(temp),1:length(temp),temp.^(-1),...
+                        length(temp),length(temp))*gg.nmeany;
+temp = gg.nmeans(:,gg.cin_blister)*ones(length(gg.cin_blister),1); temp(temp==0) = inf;
+gg.nmeansin_blister = sparse(1:length(temp),1:length(temp),temp.^(-1),...
+                        length(temp),length(temp))*gg.nmeans;
+temp = gg.nmeanr(:,gg.cin_blister)*ones(length(gg.cin_blister),1); temp(temp==0) = inf;
+gg.nmeanrin_blister = sparse(1:length(temp),1:length(temp),temp.^(-1),...
+                        length(temp),length(temp))*gg.nmeanr;  
+
+
 end

@@ -80,7 +80,7 @@ pd.A_glen = 1/2/((eps)*pd.rho_i*pd.g*ps.z*ps.x/pd.u_b); % to make membrane stres
 gg = nevis_label_ice(gg); % add boundary labels needed for ice velocity
 
 figure(1); clf; 
-nevis_plot_grid_ice(gg); 
+% nevis_plot_grid_ice(gg); 
 
 %% initialize
 [aa,vv] = nevis_initialize(b,s,gg,pp,oo);

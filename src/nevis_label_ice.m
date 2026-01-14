@@ -159,4 +159,27 @@ gg.eout2 = eout;
 gg.fout2 = fout;
 gg.cout2 = cout;
 
+% redfine mean operators to only include active nodes
+temp = gg.nmeanx(:,es)*ones(length(es),1); 
+temp(temp==0) = inf;
+gg.nmeanx2 = sparse(1:length(temp),1:length(temp),temp.^(-1),length(temp),length(temp))*gg.nmeanx;
+
+temp = gg.nmeany(:,fs)*ones(length(fs),1); 
+temp(temp==0) = inf; 
+gg.nmeany2 = sparse(1:length(temp),1:length(temp),temp.^(-1),length(temp),length(temp))*gg.nmeany;
+temp = gg.nmeanc(:,cs)*ones(length(cs),1); 
+temp(temp==0) = inf; 
+gg.nmeanc2 = sparse(1:length(temp),1:length(temp),temp.^(-1),length(temp),length(temp))*gg.nmeanc;
+
+temp = gg.emean(:,ns)*ones(length(ns),1); 
+temp(temp==0) = inf; 
+gg.emean2 = sparse(1:length(temp),1:length(temp),temp.^(-1),length(temp),length(temp))*gg.emean;
+temp = gg.fmean(:,ns)*ones(length(ns),1); 
+temp(temp==0) = inf; 
+gg.fmean2 = sparse(1:length(temp),1:length(temp),temp.^(-1),length(temp),length(temp))*gg.fmean;
+
+temp = gg.cmean(:,ns)*ones(length(ns),1); 
+temp(temp==0) = inf; 
+gg.cmean2 = sparse(1:length(temp),1:length(temp),temp.^(-1),length(temp),length(temp))*gg.cmean;
+
 end
