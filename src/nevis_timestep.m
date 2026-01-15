@@ -14,7 +14,7 @@ function [vv1,vv2,info] = nevis_timestep(dt,vv,aa,pp,gg,oo)
 %
 % IJH 13 August 2014 : largely taken from hydro_timestep_diag
 % HZ 06 June 2024 : adding ice sheet dynamics
-num = 8;
+num = 10;
 % ITERATION OPTIONS
 if ~isfield(oo,'Tol_F'), oo.Tol_F = 1e-8; end                       % tolerance on Newton iteration
 if ~isfield(oo,'check_Fs'), oo.check_Fs = 0; end                    % check tolerances seprately for residuals 1-6
@@ -156,7 +156,7 @@ for iter_new = 1:max_iter_new+1
     %% calculate Jacobian         
     tstart = tic;
     oo.evaluate_variables = 0; oo.evaluate_residual = 0; oo.evaluate_jacobian = 1; 
-    [~,~,~,~,~,~,~,~,~,~,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,oo);
+    [~,~,~,~,~,~,~,~,~,~,~,~,J] = nevis_backbone(dt,vv,vv0,aa,pp,gg,oo);
     info.jacob_time = info.jacob_time + toc(tstart);
 
     %% Newton step [ add line search here ? ]

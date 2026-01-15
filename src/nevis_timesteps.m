@@ -210,7 +210,7 @@ while t<t_stop+oo.dt_min
     % total elastic sheet volume, scaled with ps.h*ps.x^2
     tt(ti).he = sum(vv2.he(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns)); 
     if oo.include_ice
-         tt(ti).U = mean(vv.U);                                % mean ice velocity, scaled with ps.u
+         % tt(ti).U = mean(vv2.Us);                                % mean ice velocity, scaled with ps.u
         %  disp([[t*10,60*tt(ti).U]]);
     end
     if oo.save_pts_all
@@ -221,7 +221,7 @@ while t<t_stop+oo.dt_min
          tt(ti).pts_pb = vv.pb(oo.pts_ni);
          tt(ti).pts_hc = vv2.hc(oo.pts_ni);
          if oo.include_ice
-            tt(ti).pts_u = vv.U(oo.pts_ni);
+            % tt(ti).pts_u = vv2.Us(oo.pts_ni);
          end
     end
     %% saving    

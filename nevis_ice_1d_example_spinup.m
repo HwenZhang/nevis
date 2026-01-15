@@ -20,6 +20,8 @@ oo.relaxation_term = 1;                         % 0 is alpha hb, 1 is alpha delt
 oo.initial_condition = 0;                       
 oo.cavity_coupling = 0;                         % couple to ice velocity
 oo.melt_coupling = 0;                           % couple to basal melt
+oo.plot_residual = 1;
+% oo.display_residual = 1;
 
 moulin_input = 0;                               % prescribed moulin input (m^3/s)
 pd.mu = 1e1;                                    % water viscosity (Pa s)
@@ -71,7 +73,7 @@ gg = nevis_label_blister(gg,gg.n1_blister,oo);    % label blister boundary nodes
 
 %% plot grid
 nevis_plot_grid(gg);
-
+% return;
 %% add parameters and boundary labels for ice velocity
 pd.n_glen = 1;
 eps = 0.1; 
@@ -135,7 +137,7 @@ save([oo.rn,oo.fn],'pp','pd','ps','gg','aa','vv','oo');
 oo.dt = 1/24*pd.td/ps.t; 
 oo.save_timesteps = 1; 
 oo.save_pts_all = 1; 
-oo.t_span = (0:1:365*20)*pd.td/ps.t;         
+oo.t_span = (0:1:365*2)*pd.td/ps.t;         
 [tt,vv] = nevis_timesteps(oo.t_span,vv,aa,pp,gg,oo);     % save at daily timesteps
 
 %% plot discharge
@@ -146,12 +148,12 @@ save([oo.rn,oo.fn],'pp','pd','ps','gg','aa','vv','oo');
 % nevis_2d_animation_ice;
 
 %% plot stresses
-figure(3); clf; 
-% imagesc(gg.ex(:,1),gg.ey(1,:),reshape(taudx,gg.eI,gg.eJ)'); colorbar;
-imagesc(gg.nx(:,1),gg.ny(1,:),reshape(tauxx,gg.nI,gg.nJ)'); colorbar;
-
-[tau1,tau2,theta] = nevis_principal_stress(Txx,Tyy,gg.nmeanc*Txy);
-imagesc(gg.nx(:,1),gg.ny(1,:),reshape(tau1,gg.nI,gg.nJ)'); colorbar;
+% figure(3); clf; 
+% % imagesc(gg.ex(:,1),gg.ey(1,:),reshape(taudx,gg.eI,gg.eJ)'); colorbar;
+% imagesc(gg.nx(:,1),gg.ny(1,:),reshape(tauxx,gg.nI,gg.nJ)'); colorbar;
+% 
+% [tau1,tau2,theta] = nevis_principal_stress(Txx,Tyy,gg.nmeanc*Txy);
+% imagesc(gg.nx(:,1),gg.ny(1,:),reshape(tau1,gg.nI,gg.nJ)'); colorbar;
 
 
 

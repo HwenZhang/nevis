@@ -69,10 +69,11 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
     if ~isfield(pp,'c61'), pp.c61 = 1; end % dimensionless coefficient in front of sliding law in force balance
     if ~isfield(pp,'c62'), pp.c62 = 1; end % dimensionless coefficient in front of longitudinal stress in force balance
     if ~isfield(pp,'eps_reg'), pp.eps_reg = 1e-16; end % regularisation on strain rates
-    if ~isfield(pp,'Ub_reg'), pp.Ub_reg = 1e-16; end % regularisation on sliding speed
+    if ~isfield(pp,'Ub_reg'), pp.Us_reg = 1e-16; end % regularisation on sliding speed
     if ~isfield(pp,'N_slide_reg'), pp.N_slide_reg = 1e-16; end % regularisation on effective pressure in sliding law
     if ~isfield(pp,'taud_reg'), pp.taud_reg = 1e-16; end % regularisation on basal shear stress [ may not be needed ? ]
     if ~isfield(pp,'C2'), pp.C2 = 0; end % added power-law coefficient in sliding law
+    if ~isfield(pp,'alpha_u'), pp.alpha_u = 1; end % coefficient to calculate ice speed from velocity components
 
     % REQRUIED FIELDS
     if ~isfield(aa,'C'), aa.C = pp.C*ones(gg.nIJ,1); end % dimensionless sliding coefficient 
@@ -129,25 +130,25 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
                             length(temp),length(temp))*gg.nmeanr;  
     
     % mean operators for ice velocities
-    temp = gg.nmeanx(:,gg.es)*ones(length(gg.es),1); 
+    temp = gg.nmeanx(:,gg.es2)*ones(length(gg.es2),1); 
     temp(temp==0) = inf;
     gg.nmeanx2 = sparse(1:length(temp),1:length(temp),temp.^(-1),length(temp),length(temp))*gg.nmeanx;
 
-    temp = gg.nmeany(:,gg.fs)*ones(length(gg.fs),1); 
+    temp = gg.nmeany(:,gg.fs2)*ones(length(gg.fs2),1); 
     temp(temp==0) = inf; 
     gg.nmeany2 = sparse(1:length(temp),1:length(temp),temp.^(-1),length(temp),length(temp))*gg.nmeany;
-    temp = gg.nmeanc(:,gg.cs)*ones(length(gg.cs),1); 
+    temp = gg.nmeanc(:,gg.cs2)*ones(length(gg.cs2),1); 
     temp(temp==0) = inf; 
     gg.nmeanc2 = sparse(1:length(temp),1:length(temp),temp.^(-1),length(temp),length(temp))*gg.nmeanc;
 
-    temp = gg.emean(:,gg.ns)*ones(length(gg.ns),1); 
+    temp = gg.emean(:,gg.ns2)*ones(length(gg.ns2),1); 
     temp(temp==0) = inf; 
     gg.emean2 = sparse(1:length(temp),1:length(temp),temp.^(-1),length(temp),length(temp))*gg.emean;
-    temp = gg.fmean(:,gg.ns)*ones(length(gg.ns),1); 
+    temp = gg.fmean(:,gg.ns2)*ones(length(gg.ns2),1); 
     temp(temp==0) = inf; 
     gg.fmean2 = sparse(1:length(temp),1:length(temp),temp.^(-1),length(temp),length(temp))*gg.fmean;
 
-    temp = gg.cmean(:,gg.ns)*ones(length(gg.ns),1); 
+    temp = gg.cmean(:,gg.ns2)*ones(length(gg.ns2),1); 
     temp(temp==0) = inf; 
     gg.cmean2 = sparse(1:length(temp),1:length(temp),temp.^(-1),length(temp),length(temp))*gg.cmean;
     % gg.nmeanc = nmeanc; % ? for use in calculate_viscosity 
@@ -185,8 +186,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
     s = b+H;      % surface elevation [nIJ-by-1]
     
     % ice velocities and viscosity
-    Ub = ((gg.nmeanx2(:,gg.es)*u(gg.es)).^2+(gg.nmeany2(:,gg.fs)*v(gg.fs)).^2 ).^(1/2);   % speed [n_IJ-by-1]
-    etabar = etabar_func(u,v,pp,gg,oo);                                                   % viscosity [nIJ-by-1]
+    Us = ((gg.nmeanx2(:,gg.es2)*u(gg.es2)).^2+(gg.nmeany2(:,gg.fs2)*v(gg.fs2)).^2 ).^(1/2);   % speed [n_IJ-by-1]
+    Ub = pp.alpha_u*Us;                                                                       % speed [n_IJ-by-1]
+    etabar = etabar_func(u,v,pp,gg,oo);                                                       % viscosity [nIJ-by-1]
 
     % boundary potential
     if ~isempty(gg.nbdy)
@@ -451,6 +453,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
         vv2.u = u;
         vv2.v = v;
         vv2.hc = pp.c8*(gg.nmeanx*Sx.*gg.Dx+gg.nmeany*Sy.*gg.Dy+gg.nmeans*Ss.*gg.Ds+gg.nmeanr*Sr.*gg.Dr)./(gg.Dx.*gg.Dy);
+        vv2.Us = Us;
 
         % fluxes and potential gradient
         vv2.qsx = qsx;
@@ -658,7 +661,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
         % H_times_etabar_matrix = sparse(nin,nin,H(nin).*etabar(nin),nIJ,nIJ); % [nIJ-by-nIJ]
         % H_times_etabar_matrix_c = sparse(cin,cin,gg.cmean(cin,ns)*(H(ns).*etabar(ns)),cIJ,cIJ); % [cIJ-by-cIJ]
 
-        Fx_res = - pp.c61*emean2(ein2,ns2)*(taub(U(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo)) + ...
+        Fx_res = - pp.c61*(emean2(ein2,ns2)*(taub_over_Us(Us(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo))).*u(ein2) + ...
             pp.c62*(eddx(ein2,nin2)*(4*H(nin2).*etabar(nin2).*(nddx(nin2,ein2)*u(ein2))) + ...
                     eddy(ein2,cin2)*(cmean2(cin2,ns2)*(H(ns2).*etabar(ns2)).*(cddy(cin2,ein2)*u(ein2)))) - ...
             pp.c60*(emean2(ein2,ns2)*H(ns2)).*(eddx(ein2,ns2)*s(ns2));
@@ -687,10 +690,11 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
         %         -emean(ein,ns)*(taub(U(ns),N(ns),C(ns),mu(ns),pp,gg,oo)),length(ein),length(ein)) + ...
         %         pp.c62*(eddx(ein,nin)*(4*H_times_etabar_matrix(nin,nin)*nddx(nin,ein)) +...
         %                 eddy(ein,cin)*(H_times_etabar_matrix_c(cin,cin)*cddy(cin,ein)));
-        Fy_res = - fmean2(fin2,ns2)*(taub(U(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo)) + ...
+        Fy_res = - fmean2(fin2,ns2)*(taub_over_Us(Us(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo)).*v(fin2) + ...
             pp.c62*(fddy(fin2,nin2)*(4*H(nin2).*etabar(nin2).*(nddy(nin2,fin2)*v(fin2))) + ...
                     fddx(fin2,cin2)*(cmean2(cin2,ns2)*(H(ns2).*etabar(ns2)).*(cddx(cin2,fin2)*v(fin2)))) - ...
-            pp.c60*(fmean2(fin2,ns2)*H(ns2)).*(fddy(fin2,ns2)*s(ns2));       
+            pp.c60*(fmean2(fin2,ns2)*H(ns2)).*(fddy(fin2,ns2)*s(ns2)); 
+        
         % prescribed boundary velocity
         if ~isempty(ebdy2)
             Fy_res = Fy_res + ...
@@ -1102,9 +1106,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
 
         %% Derivatives related to ice dynamics
         % node velocities
-        U = ((nmeanx2(:,es2)*u(es2)).^2+(nmeany2(:,fs2)*v(fs2)).^2).^(1/2); % nIJ x 1
-        DU_Du = sparse(1:nIJ,1:nIJ, (nmeanx2(:,es2)*u(es2))./(U+eps) ,nIJ,nIJ)*nmeanx2(:,:); % nIJ x eIJ
-        DU_Dv = sparse(1:nIJ,1:nIJ, (nmeany2(:,fs2)*v(fs2))./(U+eps) ,nIJ,nIJ)*nmeany2(:,:); % nIJ x fIJ
+        % Us = pp.alpha_u*((nmeanx2(:,es2)*u(es2)).^2+(nmeany2(:,fs2)*v(fs2)).^2).^(1/2); % nIJ x 1
+        DUb_Du = sparse(1:nIJ,1:nIJ, pp.alpha_u*(nmeanx2(:,es2)*u(es2))./(Ub+eps) ,nIJ,nIJ)*nmeanx2(:,:); % nIJ x eIJ
+        DUb_Dv = sparse(1:nIJ,1:nIJ, pp.alpha_u*(nmeany2(:,fs2)*v(fs2))./(Ub+eps) ,nIJ,nIJ)*nmeany2(:,:); % nIJ x fIJ
 
         % node strain rates
         epsxx = gg.nddx(:,gg.es2)*u(gg.es2);                                              % nIJ x 1
@@ -1135,6 +1139,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
                         - c18.*abs(N(ns)).^(n_Glen-1).*(N(ns)) ,length(ns),length(ns)); 
         temp = sparse(nin,1:length(nin), c18*hs(nin).*abs(N(nin)).^(n_Glen-1)*(n_Glen) ,nIJ,length(nin)); % ns eqns, nin variables 
         DF1_phi = temp(ns,:); 
+        DF1_u = sparse(1:length(ns),1:length(ns), c16*max(1-pp.c17*hs(ns),0) ,length(ns),length(ns))*DUb_Du(ns,ein2);
+        DF1_v = sparse(1:length(ns),1:length(ns), c16*max(1-pp.c17*hs(ns),0) ,length(ns),length(ns))*DUb_Dv(ns,fin2);
 
         %DF2
         temp = sparse(1:length(nin), nin, - c1*ones(length(nin),1).*dt.^(-1) ...
@@ -1184,6 +1190,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
                     + sparse(1:length(nin),1:length(nin),Dr(nin).*Dx(nin).^(-1).*Dy(nin).^(-1),length(nin),length(nin))*( -c8*dt^(-1).*nmeanr(nin,cin) ...
                     + c11*nmeanr(nin,cin)*DXicr_Sr(:,cin) )...
                     + sparse(1:length(nin), 1:length(nin), 0.25*c52*kl_s*(Reg_deltaphi(pb(nin)-phi(nin)+phi_a(nin),deltap_reg)).*Reg_hb(hb(nin),hb_reg2).*Reg_H(aa.H(nin)), length(nin), length(nin))*nmeanr(nin,cin);
+
         %DF3
         DF3_Sx = sparse(1:length(ein),1:length(ein),-c12*ones(length(ein),1).*dt.^(-1) ...
             - c14.*abs(emean(ein,:)*(N)).^(n_Glen-1).*(emean(ein,:)*(N)) ...
@@ -1194,6 +1201,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
                 + c13*(DXicx_phi(:,nin)+DXix_phi(:,nin));
 
         DF3_hs = c13*DXix_hs(:,ns);
+
+        DF3_u = sparse(1:length(ein),1:length(ein), pp.c35*aa.lcx(ein).*max(1-pp.c36*Sx(ein),0), length(ein),length(ein))*(gg.emean(ein,:))*DUb_Du(:,ein2);
+        DF3_v = sparse(1:length(ein),1:length(ein), pp.c35*aa.lcx(ein).*max(1-pp.c36*Sx(ein),0), length(ein),length(ein))*(gg.emean(ein,:))*DUb_Dv(:,fin2);
 
         %DF4
         DF4_Sy = sparse(1:length(fin),1:length(fin),-c12*ones(length(fin),1).*dt.^(-1) ...
@@ -1206,6 +1216,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
 
         DF4_hs = c13*DXiy_hs(:,ns);
 
+        DF4_u = sparse(1:length(fin),1:length(fin), pp.c35*aa.lcy(fin).*max(1-pp.c36*Sy(fin),0), length(fin),length(fin))*(gg.fmean(fin,:))*DUb_Du(:,ein2);
+        DF4_v = sparse(1:length(fin),1:length(fin), pp.c35*aa.lcy(fin).*max(1-pp.c36*Sy(fin),0), length(fin),length(fin))*(gg.fmean(fin,:))*DUb_Dv(:,fin2);
+
         %DF5 (cin eqns)
         DF5_Ss = sparse(1:length(cin),1:length(cin),-c12*ones(length(cin),1).*dt.^(-1) ...
             - c14.*abs(cmean(cin,:)*(N)).^(n_Glen-1).*(cmean(cin,:)*(N)) ...
@@ -1217,6 +1230,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
 
         DF5_hs = c13*DXis_hs(:,ns);
 
+        DF5_u = sparse(1:length(cin),1:length(cin), pp.c35*aa.lcs(cin).*max(1-pp.c36*Ss(cin),0), length(cin),length(cin))*(gg.cmean(cin,:))*DUb_Du(:,ein2);
+        DF5_v = sparse(1:length(cin),1:length(cin), pp.c35*aa.lcs(cin).*max(1-pp.c36*Ss(cin),0), length(cin),length(cin))*(gg.cmean(cin,:))*DUb_Dv(:,fin2);
+
         %DF6 (cin eqns)
         DF6_Sr = sparse(1:length(cin),1:length(cin),-c12*ones(length(cin),1).*dt.^(-1) ...
             - c14.*abs(cmean(cin,:)*(N)).^(n_Glen-1).*(cmean(cin,:)*(N)) ...
@@ -1227,6 +1243,9 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
                 + c13*(DXicr_phi(:,nin)+DXir_phi(:,nin));
 
         DF6_hs = c13*DXir_hs(:,ns);
+
+        DF6_u = sparse(1:length(cin),1:length(cin), pp.c35*aa.lcr(cin).*max(1-pp.c36*Sr(cin),0), length(cin),length(cin))*(gg.cmean(cin,:))*DUb_Du(:,ein2);
+        DF6_v = sparse(1:length(cin),1:length(cin), pp.c35*aa.lcr(cin).*max(1-pp.c36*Sr(cin),0), length(cin),length(cin))*(gg.cmean(cin,:))*DUb_Dv(:,fin2);
 
         % DF7 (ns_blister eqns)
         biharmonic = (gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(max(H.^3,B_reg).*(gg.nddx*gg.eddx + gg.nddy*gg.fddy));
@@ -1255,30 +1274,38 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
         DF8_Sr = 0*sparse(1:length(nin_blister), 1:length(nin_blister), -0.25*c51*kl_s*(Reg_deltaphi(pb(nin_blister)-phi(nin_blister)+phi_a(nin_blister),deltap_reg)).*Reg_hb(hb(nin_blister),hb_reg2).*Reg_H(aa.H(nin_blister)), length(nin_blister), length(nin_blister))*nmeanr(nin_blister,cin);
 
         % DF9 (ice sheet velocity u)
-        % Fx_res = - pp.c61*emean2(ein2,ns2)*(taub(U(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo)) + ...
+        % Fx_res = - pp.c61*(emean2(ein2,ns2)*(taub_over_Us(Us(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo))).*u(ein2) + ...
         %     pp.c62*(eddx(ein2,nin2)*(4*H(nin2).*etabar(nin2).*(nddx(nin2,ein2)*u(ein2))) + ...
         %             eddy(ein2,cin2)*(cmean2(cin2,ns2)*(H(ns2).*etabar(ns2)).*(cddy(cin2,ein2)*u(ein2)))) - ...
         %     pp.c60*(emean2(ein2,ns2)*H(ns2)).*(eddx(ein2,ns2)*s(ns2));
 
-        temp = - c61*emean(ein2,ns2)*sparse(1:length(ns2),1:length(ns2), ...
-                                    Dtaub_DN(U(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo).*DReg_Ni_DN(N(ns2),pp.N_slide_reg), ...
-                                    length(ns2), length(ns2));
+        temp = - c61*sparse(1:length(ein2),1:length(ein2),u(ein2),length(ein2),length(ein2))*...
+                    (emean(ein2,ns2)*sparse(1:length(ns2),1:length(ns2), ...
+                        Dtaub_over_Us_DN(Us(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo).*DReg_Ni_DN(N(ns2),pp.N_slide_reg), ...
+                        length(ns2), length(ns2)));
+
+        % DReg_Ni_DN(N(ns2),pp.N_slide_reg)
         DF9_phi = -temp(:,nin); % ein2 eqns, nin2 variables
 
         % ein2 eqns, ein2 variables
-        DF9_u = - c61*emean(ein2,ns2)*sparse(1:length(ns2),1:length(ns2), ...
-                                        Dtaub_DUb(U(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo), ...
-                                        length(ns2), length(ns2))*DU_Du(ns2,ein2) + ...
+        DF9_u = - c61*sparse(1:length(ein2),1:length(ein2), emean(ein2,ns2)* ...
+                             taub_over_Us(Us(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo), ...
+                             length(ein2), length(ein2)) - ...
+                c61*sparse(1:length(ein2),1:length(ein2),u(ein2),length(ein2),length(ein2))*...
+                    emean(ein2,ns2)*sparse(1:length(ns2),1:length(ns2), ...
+                            Dtaub_over_Us_DUs(Us(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo), ...
+                            length(ns2), length(ns2))*DUb_Du(ns2,ein2) + ...
                 c62*(eddx(ein2,nin2)*(4*H(nin2).*etabar(nin2).*nddx(nin2,ein2)) + ...
                      eddy(ein2,cin2)*((cmean2(cin2,ns2)*(H(ns2).*etabar(ns2))).*cddy(cin2,ein2))) + ...
                 c62*(eddx(ein2,nin2)*(4*H(nin2).*(nddx(nin2,ein2)*u(ein2)).*Deta_Du(nin2,ein2))+...
                      eddy(ein2,cin2)*((cddy(cin2,ein2)*u(ein2)).*cmean2(cin2,ns2)*(H(ns2).*Deta_Du(ns2,ein2))));
         
         % ein2 eqns, fin2 variables
-        DF9_v = - c61*emean(ein2,ns2)*sparse(1:length(ns2),1:length(ns2), ...
-                                        Dtaub_DUb(U(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo), ...
-                                        length(ns2), length(ns2))*DU_Dv(ns2,fin2) + ...
-                c62*(eddx(ein2,nin2)*(4*H(nin2).*(nddx(nin2,ein2)*u(ein2)).*Deta_Dv(nin2,fin2))+...
+        DF9_v = - c61*sparse(1:length(ein2),1:length(ein2),u(ein2),length(ein2),length(ein2))*...
+                            emean(ein2,ns2)*sparse(1:length(ns2),1:length(ns2), ...
+                                Dtaub_over_Us_DUs(Us(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo), ...
+                                length(ns2), length(ns2))*DUb_Dv(ns2,fin2) + ...
+                c62*(eddx(ein2,nin2)*(4*H(nin2).*(nddx(nin2,ein2)*u(ein2)).*Deta_Dv(nin2,fin2)) + ...
                      eddy(ein2,cin2)*((cddy(cin2,ein2)*u(ein2)).*cmean2(cin2,ns2)*(H(ns2).*Deta_Dv(ns2,fin2))));
 
         % DF10 (ice sheet velocity v)
@@ -1287,21 +1314,27 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
         %              fddx(fin,cin)*(H(cin).*etabar(cin).*(cddx(cin,fin)*v(fin)))) - ...
         %         c60*(fmean(fin,ns)*H(ns)).*(fddy(fin,ns)*s(ns)); 
         
-        temp = -c61*fmean(fin2,ns2)*sparse(1:length(ns2),1:length(ns2), ...
-                                        Dtaub_DN(U(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo).*DReg_Ni_DN(N(ns2),pp.N_slide_reg), ...
-                                        length(ns2), length(ns2));
+        temp = -c61*sparse(1:length(fin2),1:length(fin2),v(fin2),length(fin2),length(fin2))*...
+                    fmean(fin2,ns2)*sparse(1:length(ns2),1:length(ns2), ...
+                        Dtaub_over_Us_DN(Us(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo).*DReg_Ni_DN(N(ns2),pp.N_slide_reg), ...
+                        length(ns2), length(ns2));
         DF10_phi = -temp(:,nin); % fin2 eqns, nin2 variables
 
         % fin eqns, fin variables
-        DF10_u = - c61*fmean(fin2,ns2)*sparse(1:length(ns2),1:length(ns2), ...
-                                        Dtaub_DUb(U(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo), ...
-                                        length(ns2), length(ns2))*DU_Du(ns2,ein2) + ...
+        DF10_u = - c61*sparse(1:length(fin2),1:length(fin2),v(fin2),length(fin2),length(fin2))*...
+                            fmean(fin2,ns2)*sparse(1:length(ns2),1:length(ns2), ...
+                                Dtaub_over_Us_DUs(Us(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo), ...
+                                length(ns2), length(ns2))*DUb_Du(ns2,ein2) + ...
                 c62*(fddy(fin2,nin2)*(4*H(nin2).*(nddy(nin2,fin2)*v(fin2)).*Deta_Du(nin2,ein2)) + ...
                      fddx(fin2,cin2)*((cddx(cin2,fin2)*v(fin2)).*cmean2(cin2,ns2)*(H(ns2).*Deta_Du(ns2,ein2))));
 
-        DF10_v = - c61*fmean(fin2,ns2)*sparse(1:length(ns2),1:length(ns2), ...
-                                        Dtaub_DUb(U(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo), ...
-                                        length(ns2), length(ns2))*DU_Dv(ns2,fin2) + ...
+        DF10_v = - c61*sparse(1:length(fin2),1:length(fin2), fmean(fin2,ns2)* ...
+                             taub_over_Us(Us(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo), ...
+                             length(fin2), length(fin2)) - ...
+                c61*sparse(1:length(fin2),1:length(fin2),v(fin2),length(fin2),length(fin2))*...
+                    fmean(fin2,ns2)*sparse(1:length(ns2),1:length(ns2), ...
+                            Dtaub_over_Us_DUs(Us(ns2),N(ns2),C(ns2),mu(ns2),pp,gg,oo), ...
+                            length(ns2), length(ns2))*DUb_Dv(ns2,fin2) + ...
                 c62*(fddy(fin2,nin2)*(4*H(nin2).*etabar(nin2).*nddy(nin2,fin2)) + ...
                      fddx(fin2,cin2)*((cmean2(cin2,ns2)*(H(ns2).*etabar(ns2))).*cddx(cin2,fin2))) + ...
                 c62*(fddy(fin2,nin2)*(4*H(nin2).*(nddy(nin2,fin2)*v(fin2)).*Deta_Dv(nin2,fin2)) + ...
@@ -1352,12 +1385,12 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
     %         sparse(length(nin),length(ns)) sparse(length(nin),length(nin)) sparse(length(nin),length(ein)) sparse(length(nin),length(fin)) sparse(length(nin),length(cin)) sparse(length(nin),length(cin)) DF8_Vb DF8_Rb ];
     
         %[ alternative that looks nicer : not sure if it will be quicker or slower ]
-        J = [   DF1_hs DF1_phi sparse(length(ns),length(ein)) sparse(length(ns),length(fin)) sparse(length(ns),length(cin)) sparse(length(ns),length(cin)) sparse(length(ns),length(ns_blister)) sparse(length(ns),length(nin_blister)) sparse(length(ns), length(ein2)) sparse(length(ns),length(fin2)); ...
+        J = [   DF1_hs DF1_phi sparse(length(ns),length(ein)) sparse(length(ns),length(fin)) sparse(length(ns),length(cin)) sparse(length(ns),length(cin)) sparse(length(ns),length(ns_blister)) sparse(length(ns),length(nin_blister)) DF1_u DF1_v; ...
                 DF2_hs DF2_phi DF2_Sx DF2_Sy DF2_Ss DF2_Sr DF2_hb DF2_pb sparse(length(nin), length(ein2)) sparse(length(nin),length(fin2)); ...
-                DF3_hs DF3_phi DF3_Sx sparse(length(ein),length(fin)) sparse(length(ein),length(cin)) sparse(length(ein),length(cin)) sparse(length(ein),length(ns_blister)) sparse(length(ein),length(nin_blister)) sparse(length(ein), length(ein2)) sparse(length(ein),length(fin2)); ...
-                DF4_hs DF4_phi sparse(length(fin),length(ein)) DF4_Sy sparse(length(fin),length(cin)) sparse(length(fin),length(cin)) sparse(length(fin),length(ns_blister)) sparse(length(fin),length(nin_blister)) sparse(length(fin), length(ein2)) sparse(length(fin),length(fin2)); ...
-                DF5_hs DF5_phi sparse(length(cin),length(ein)) sparse(length(cin),length(fin)) DF5_Ss sparse(length(cin),length(cin)) sparse(length(cin),length(ns_blister)) sparse(length(cin),length(nin_blister)) sparse(length(cin), length(ein2)) sparse(length(cin),length(fin2)); ...
-                DF6_hs DF6_phi sparse(length(cin),length(ein)) sparse(length(cin),length(fin)) sparse(length(cin),length(cin)) DF6_Sr sparse(length(cin),length(ns_blister)) sparse(length(cin),length(nin_blister)) sparse(length(cin), length(ein2)) sparse(length(cin),length(fin2)); ...
+                DF3_hs DF3_phi DF3_Sx sparse(length(ein),length(fin)) sparse(length(ein),length(cin)) sparse(length(ein),length(cin)) sparse(length(ein),length(ns_blister)) sparse(length(ein),length(nin_blister)) DF3_u DF3_v; ...
+                DF4_hs DF4_phi sparse(length(fin),length(ein)) DF4_Sy sparse(length(fin),length(cin)) sparse(length(fin),length(cin)) sparse(length(fin),length(ns_blister)) sparse(length(fin),length(nin_blister)) DF4_u DF4_v; ...
+                DF5_hs DF5_phi sparse(length(cin),length(ein)) sparse(length(cin),length(fin)) DF5_Ss sparse(length(cin),length(cin)) sparse(length(cin),length(ns_blister)) sparse(length(cin),length(nin_blister)) DF5_u DF5_v; ...
+                DF6_hs DF6_phi sparse(length(cin),length(ein)) sparse(length(cin),length(fin)) sparse(length(cin),length(cin)) DF6_Sr sparse(length(cin),length(ns_blister)) sparse(length(cin),length(nin_blister)) DF6_u DF6_v; ...
                 sparse(length(ns_blister),length(ns)) DF7_phi sparse(length(ns_blister),length(ein)) sparse(length(ns_blister),length(fin)) sparse(length(ns_blister),length(cin)) sparse(length(ns_blister),length(cin)) DF7_hb DF7_pb sparse(length(ns_blister), length(ein2)) sparse(length(ns_blister),length(fin2)); ...
                 DF8_hs DF8_phi DF8_Sx DF8_Sy DF8_Ss DF8_Sr DF8_hb DF8_pb sparse(length(nin_blister), length(ein2)) sparse(length(nin_blister),length(fin2));...
                 sparse(length(ein2),length(ns)) DF9_phi sparse(length(ein2),length(ein)) sparse(length(ein2),length(fin)) sparse(length(ein2),length(cin)) sparse(length(ein2),length(cin)) sparse(length(ein2),length(ns_blister)) sparse(length(ein2),length(nin_blister)) DF9_u DF9_v; ...
@@ -1618,34 +1651,34 @@ end
 % end
 
 %% sliding law
-function tau_b_over_Ub = taub(Ub,N,C,mu,pp,gg,oo)
+function tau_b_over_Ub = taub_over_Us(Ub,N,C,mu,pp,gg,oo)
 % cavity-based sliding law
 % tau_b ~ mu*N for large Ub, tau_b ~ C*Ub^(1/n) for small Ub 
-    tau_b_over_Ub = N.*Ub.^(1/pp.n_slide).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide) + pp.C2*Ub.^(1/pp.n_slide);
+    tau_b_over_Ub = N.*(Ub+pp.Us_reg).^(1/pp.n_slide-1).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide) + pp.C2*(Ub+pp.Us_reg).^(1/pp.n_slide-1);
 end
 
-function Dtaub_DUb = Dtaub_DUb(Ub,N,C,mu,pp,gg,oo)
+function Dtaub_over_Us_DUs = Dtaub_over_Us_DUs(Ub,N,C,mu,pp,gg,oo)
 % derivative of cavity-based sliding law wrt Ub
-    term1 = (1/pp.n_slide)*Ub.^(1/pp.n_slide-1).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide);
-    term2 = (1/pp.n_slide)*N.*Ub.^(1/pp.n_slide).*(mu.^(-pp.n_slide)).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide-1);
-    Dtaub_DUb = term1 + term2 + pp.C2*(1/pp.n_slide)*Ub.^(1/pp.n_slide-1);
+    term1 = (1/pp.n_slide-1)*N.*(Ub+pp.Us_reg).^(1/pp.n_slide-2).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide);
+    term2 = (1/pp.n_slide)*N.*(Ub+pp.Us_reg).^(1/pp.n_slide-1).*(mu.^(-pp.n_slide)).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide-1);
+    Dtaub_over_Us_DUs = term1 - term2 + pp.C2*(1/pp.n_slide-1)*(Ub+pp.Us_reg).^(1/pp.n_slide-2);
 end
 
-function Dtaub_DN = Dtaub_DN(Ub,N,C,mu,pp,gg,oo)
+function Dtaub_over_Us_DN = Dtaub_over_Us_DN(Ub,N,C,mu,pp,gg,oo)
 % derivative of cavity-based sliding law wrt N
     % tau_b_over_Ub = taub(Ub,N,C,mu,pp,gg,oo);
-    term1 = Ub.^(1/pp.n_slide).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide);
-    term2 = C.^(-pp.n_slide).*N.^(pp.n_slide).*Ub.^(1/pp.n_slide).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide-1);
-    Dtaub_DN = term1 + term2;
+    term1 = (Ub+pp.Us_reg).^(1/pp.n_slide-1).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide);
+    term2 = C.^(-pp.n_slide).*N.^(pp.n_slide).*(Ub+pp.Us_reg).^(1/pp.n_slide-1).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide-1);
+    Dtaub_over_Us_DN = term1 - term2;
 end
 
 % function Dtaub_Du = Dtaub_Du(u,v,N,C,mu,pp,gg,oo)
 % % derivative of cavity-based sliding law wrt u
-%     Dtaub_Du = Dtaub_DUb(Ub(u,v),N,C,mu,pp,gg,oo).*DUb_Du(u,v);
+%     Dtaub_Du = Dtaub_over_Us_DUs(Ub(u,v),N,C,mu,pp,gg,oo).*DUb_Du(u,v);
 % end
 % function Dtaub_Dv = Dtaub_Dv(u,v,N,C,mu,pp,gg,oo)
 % % derivative of cavity-based sliding law wrt v
-%     Dtaub_Dv = Dtaub_DUb(Ub(u,v),N,C,mu,pp,gg,oo).*DUb_Dv(u,v);
+%     Dtaub_Dv = Dtaub_over_Us_DUs(Ub(u,v),N,C,mu,pp,gg,oo).*DUb_Dv(u,v);
 % end 
 % function Dtaub_Dphi = Dtaub_Dphi(u,v,N,C,mu,pp,gg,oo,beta)
 % % derivative of cavity-based sliding law wrt phi
