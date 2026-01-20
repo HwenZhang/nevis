@@ -33,7 +33,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
     % use arithmetic means for permeability rather than harmonic means
     if ~isfield(oo,'mean_perms'), oo.mean_perms = 0; end                 
      % evaluate expanded solution variables in vv2
-    if ~isfield(oo,'evaluate_variables'), oo.evaluate_variables = 0; end   
+    if ~isfield(oo,'evaluate_variables'), oo.evaluate_variables = 1; end   
     % evaluate residual [ otherwise returns empty F ]
     if ~isfield(oo,'evaluate_residual'), oo.evaluate_residual = 1; end 
      % evaluate Jacobian [ otherwise returns emtpy J ]
@@ -48,7 +48,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
     if ~isfield(oo,'sheet_k'), oo.sheet_k = 0; end 
     if ~isfield(oo,'channel_k'), oo.channel_k = 0; end 
     
-    if ~isfield(oo,'N_coupling'), oo.N_coupling = 0; end      % update sliding speed in cavity opening term
+    if ~isfield(oo,'N_coupling'), oo.N_coupling = 1; end      % when 1 switch on N in sliding speed, when 0, N=0 is used in the sliding law
     if ~isfield(oo,'U_coupling'), oo.U_coupling = 0; end      % update sliding speed in basal melt term
 
     %% OPTIONS FOR ICE
@@ -240,7 +240,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
 
     % effective pressure
     N = aa.phi_0 - phi;
-    Ni = Reg_N(N,pp.N_reg_s,oo.N_coupling); % effective pressure non-negative
+    Ni = Reg_Ni(N,pp.N_reg_s,oo.N_coupling); % effective pressure non-negative
 
     % elastic sheet
     he = he_fun(aa.phi_0-phi,aa.phi_0-aa.phi_a,pp,oo);
@@ -444,6 +444,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
         Xir = pp.c20*aa.lcr.*(gg.cmean(:,:)*Xi);
     end
 
+    % vv.Us = Us;
+
     %% Variables
     if oo.evaluate_variables
         vv2 = vv;
@@ -456,7 +458,6 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
         vv2.u = u;
         vv2.v = v;
         vv2.hc = pp.c8*(gg.nmeanx*Sx.*gg.Dx+gg.nmeany*Sy.*gg.Dy+gg.nmeans*Ss.*gg.Ds+gg.nmeanr*Sr.*gg.Dr)./(gg.Dx.*gg.Dy);
-        vv2.Us = Us;
 
         % fluxes and potential gradient
         vv2.qsx = qsx;
@@ -664,7 +665,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
         % H_times_etabar_matrix = sparse(nin,nin,H(nin).*etabar(nin),nIJ,nIJ); % [nIJ-by-nIJ]
         % H_times_etabar_matrix_c = sparse(cin,cin,gg.cmean(cin,ns)*(H(ns).*etabar(ns)),cIJ,cIJ); % [cIJ-by-cIJ]
 
-        Fx_res = - pp.c61*(emean2(ein2,ns2)*(taub_over_Us(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s),C(ns2),mu(ns2),pp,gg,oo))).*u(ein2) + ...
+        Fx_res = - pp.c61*(emean2(ein2,ns2)*(taub_over_Us(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s,oo.N_coupling),C(ns2),mu(ns2),pp,gg,oo))).*u(ein2) + ...
             pp.c62*(eddx(ein2,nin2)*(4*H(nin2).*etabar(nin2).*(nddx(nin2,ein2)*u(ein2))) + ...
                     eddy(ein2,cin2)*(cmean2(cin2,ns2)*(H(ns2).*etabar(ns2)).*(cddy(cin2,ein2)*u(ein2)))) - ...
             pp.c60*(emean2(ein2,ns2)*H(ns2)).*(eddx(ein2,ns2)*s(ns2));
@@ -693,7 +694,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
         %         -emean(ein,ns)*(taub(U(ns),N(ns),C(ns),mu(ns),pp,gg,oo)),length(ein),length(ein)) + ...
         %         pp.c62*(eddx(ein,nin)*(4*H_times_etabar_matrix(nin,nin)*nddx(nin,ein)) +...
         %                 eddy(ein,cin)*(H_times_etabar_matrix_c(cin,cin)*cddy(cin,ein)));
-        Fy_res = - fmean2(fin2,ns2)*(taub_over_Us(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s),C(ns2),mu(ns2),pp,gg,oo)).*v(fin2) + ...
+        Fy_res = - fmean2(fin2,ns2)*(taub_over_Us(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s,oo.N_coupling),C(ns2),mu(ns2),pp,gg,oo)).*v(fin2) + ...
             pp.c62*(fddy(fin2,nin2)*(4*H(nin2).*etabar(nin2).*(nddy(nin2,fin2)*v(fin2))) + ...
                     fddx(fin2,cin2)*(cmean2(cin2,ns2)*(H(ns2).*etabar(ns2)).*(cddx(cin2,fin2)*v(fin2)))) - ...
             pp.c60*(fmean2(fin2,ns2)*H(ns2)).*(fddy(fin2,ns2)*s(ns2)); 
@@ -755,8 +756,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
         % R7 = - pb + pp.c46*hb + phi + pp.c49*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(H.^3.*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*hb); % blister pressure
         R7 = - pb + pp.c46*hb + (aa.phi_0-aa.phi_a) + pp.c49*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*(max(H.^3,pp.B_reg).*(gg.nddx*gg.eddx + gg.nddy*gg.fddy)*hb); % blister pressure
         R8 = - (hb-hb_old).*dt^(-1) + hb_t;        % mass conservation of the blister
-        R9 = Fx_res;                       % ice velocity u (ein)
-        R10 = Fy_res;                      % ice velocity v (fin)
+        R9 = pp.c66*Fx_res;                       % ice velocity u (ein)
+        R10 = pp.c66*Fy_res;                      % ice velocity v (fin)
         
  
     end
@@ -897,6 +898,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
         c60 = pp.c60;
         c61 = pp.c61;
         c62 = pp.c62;
+        c66 = pp.c66;
 
         n_Glen = pp.n_Glen;
         alpha_c = pp.alpha_c;
@@ -1286,27 +1288,28 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
 
         temp = - c61*spdiags(u(ein2), 0, length(ein2), length(ein2))*...
                     (emean(ein2,ns2)*...
-                    spdiags(Dtaub_over_Us_DN(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s),C(ns2),mu(ns2),pp,gg,oo).*DReg_Ni_DN(N(ns2),pp.N_reg_s), 0, length(ns2), length(ns2)));
+                    spdiags(Dtaub_over_Us_DN(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s,oo.N_coupling),C(ns2),mu(ns2),pp,gg,oo).*DReg_Ni_DN(N(ns2),pp.N_reg_s,oo.N_coupling), 0, length(ns2), length(ns2)));
 
         % DReg_Ni_DN(N(ns2),pp.N_reg_s)
         DF9_phi = -temp(:,nin); % ein2 eqns, nin2 variables
-
+        DF9_phi = c66 * DF9_phi;
         % ein2 eqns, ein2 variables
-        DF9_u = - c61*spdiags(emean(ein2,ns2)*taub_over_Us(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s),C(ns2),mu(ns2),pp,gg,oo), 0, length(ein2), length(ein2)) - ...
+        DF9_u = - c61*spdiags(emean(ein2,ns2)*taub_over_Us(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s,oo.N_coupling),C(ns2),mu(ns2),pp,gg,oo), 0, length(ein2), length(ein2)) - ...
                 c61*spdiags(u(ein2), 0, length(ein2), length(ein2))*...
                     emean(ein2,ns2)*...
-                    spdiags(Dtaub_over_Us_DUs(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s),C(ns2),mu(ns2),pp,gg,oo), 0, length(ns2), length(ns2))*DUs_Du(ns2,ein2) + ...
+                    spdiags(Dtaub_over_Us_DUs(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s,oo.N_coupling),C(ns2),mu(ns2),pp,gg,oo), 0, length(ns2), length(ns2))*DUs_Du(ns2,ein2) + ...
                 c62*(eddx(ein2,nin2)*(4*H(nin2).*etabar(nin2).*nddx(nin2,ein2)) + ...
                      eddy(ein2,cin2)*((cmean2(cin2,ns2)*(H(ns2).*etabar(ns2))).*cddy(cin2,ein2))) + ...
                 c62*(eddx(ein2,nin2)*(4*H(nin2).*(nddx(nin2,ein2)*u(ein2)).*Deta_Du(nin2,ein2))+...
                      eddy(ein2,cin2)*((cddy(cin2,ein2)*u(ein2)).*cmean2(cin2,ns2)*(H(ns2).*Deta_Du(ns2,ein2))));
-        
+        DF9_u = c66 * DF9_u;
         % ein2 eqns, fin2 variables
         DF9_v = - c61*spdiags(u(ein2), 0, length(ein2), length(ein2))*...
                     emean(ein2,ns2)*...
-                    spdiags(Dtaub_over_Us_DUs(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s),C(ns2),mu(ns2),pp,gg,oo), 0, length(ns2), length(ns2))*DUs_Dv(ns2,fin2) + ...
+                    spdiags(Dtaub_over_Us_DUs(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s,oo.N_coupling),C(ns2),mu(ns2),pp,gg,oo), 0, length(ns2), length(ns2))*DUs_Dv(ns2,fin2) + ...
                 c62*(eddx(ein2,nin2)*(4*H(nin2).*(nddx(nin2,ein2)*u(ein2)).*Deta_Dv(nin2,fin2)) + ...
                      eddy(ein2,cin2)*((cddy(cin2,ein2)*u(ein2)).*cmean2(cin2,ns2)*(H(ns2).*Deta_Dv(ns2,fin2))));
+        DF9_v = c66 * DF9_v;
         % DF10 (ice sheet velocity v)
         % Fy_res = - c61*fmean(fin,ns)*(taub(U(ns),N(ns),C(ns),mu(ns),pp,gg,oo)) + ...
         %         c62*(fddy(fin,nin)*(4*H(nin).*etabar(nin).*(nddy(nin,fin)*v(fin))) + ...
@@ -1315,26 +1318,26 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
         
         temp = - c61*spdiags(v(fin2), 0, length(fin2), length(fin2))*...
                     fmean(fin2,ns2)*...
-                    spdiags(Dtaub_over_Us_DN(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s),C(ns2),mu(ns2),pp,gg,oo).*DReg_Ni_DN(N(ns2),pp.N_reg_s), 0, length(ns2), length(ns2));
+                    spdiags(Dtaub_over_Us_DN(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s,oo.N_coupling),C(ns2),mu(ns2),pp,gg,oo).*DReg_Ni_DN(N(ns2),pp.N_reg_s,oo.N_coupling), 0, length(ns2), length(ns2));
         DF10_phi = -temp(:,nin); % fin2 eqns, nin2 variables
-
+        DF10_phi = c66 * DF10_phi;
         % fin eqns, fin variables
         DF10_u = - c61*spdiags(v(fin2), 0, length(fin2), length(fin2))*...
                         fmean(fin2,ns2)*...
-                        spdiags(Dtaub_over_Us_DUs(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s),C(ns2),mu(ns2),pp,gg,oo), 0, length(ns2), length(ns2))*...
+                        spdiags(Dtaub_over_Us_DUs(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s,oo.N_coupling),C(ns2),mu(ns2),pp,gg,oo), 0, length(ns2), length(ns2))*...
                         DUs_Du(ns2,ein2) + ...
                 c62*(fddy(fin2,nin2)*(4*H(nin2).*(nddy(nin2,fin2)*v(fin2)).*Deta_Du(nin2,ein2)) + ...
                      fddx(fin2,cin2)*((cddx(cin2,fin2)*v(fin2)).*cmean2(cin2,ns2)*(H(ns2).*Deta_Du(ns2,ein2))));
-
-        DF10_v = -  c61*spdiags(fmean(fin2,ns2)*taub_over_Us(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s),C(ns2),mu(ns2),pp,gg,oo), 0, length(fin2), length(fin2)) - ...
+        DF10_u = c66 * DF10_u;
+        DF10_v = -  c61*spdiags(fmean(fin2,ns2)*taub_over_Us(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s,oo.N_coupling),C(ns2),mu(ns2),pp,gg,oo), 0, length(fin2), length(fin2)) - ...
                     c61*spdiags(v(fin2), 0, length(fin2), length(fin2))*...
-                        fmean(fin2,ns2)*spdiags(Dtaub_over_Us_DUs(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s),C(ns2),mu(ns2),pp,gg,oo), 0, length(ns2), length(ns2))*...
+                        fmean(fin2,ns2)*spdiags(Dtaub_over_Us_DUs(Us(ns2),Reg_Ni(N(ns2),pp.N_reg_s,oo.N_coupling),C(ns2),mu(ns2),pp,gg,oo), 0, length(ns2), length(ns2))*...
                         DUs_Dv(ns2,fin2) + ...
                 c62*(fddy(fin2,nin2)*(4*H(nin2).*etabar(nin2).*nddy(nin2,fin2)) + ...
                      fddx(fin2,cin2)*((cmean2(cin2,ns2)*(H(ns2).*etabar(ns2))).*cddx(cin2,fin2))) + ...
                 c62*(fddy(fin2,nin2)*(4*H(nin2).*(nddy(nin2,fin2)*v(fin2)).*Deta_Dv(nin2,fin2)) + ...
                      fddx(fin2,cin2)*((cddx(cin2,fin2)*v(fin2)).*cmean2(cin2,ns2)*(H(ns2).*Deta_Dv(ns2,fin2))));
-
+        DF10_v = c66 * DF10_v;
         %% construct Jacobian matrix
         % % [ original way of calculating ]
         % if opts.no_channels && opts.no_sheet  
@@ -1581,14 +1584,14 @@ function out = Reg_H(H)
 end
 
 % Regularised effective pressure for the sliding law, N_reg_s is the regularisation parameter
-function out = Reg_Ni(N,N_reg_s,oo)
+function out = Reg_Ni(N,N_reg_s,N_coupling)
     if nargin < 2, N_reg_s = 1; end
-    out = oo.N_coupling*N_reg_s*log(1 + exp(N/N_reg_s));
+    out = N_coupling*N_reg_s*log(1 + exp(N/N_reg_s));
 end
 
-function out = DReg_Ni_DN(N,N_reg_s,oo)
+function out = DReg_Ni_DN(N,N_reg_s,N_coupling)
     if nargin < 2, N_reg_s = 1; end
-    out = oo.N_coupling*exp(N/N_reg_s) ./ (1 + exp(N/N_reg_s));
+    out = N_coupling*exp(N/N_reg_s) ./ (1 + exp(N/N_reg_s));
 end
 
 

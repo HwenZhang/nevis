@@ -40,6 +40,7 @@ pp.c62 = ps.eta*ps.u/pd.rho_i/pd.g/ps.z/ps.x; % dimensionless coefficient in fro
 pp.c63 = pd.G/pd.rho_w/pd.L/ps.m;     % dimensionless coefficient of melt rate from geothermal heating
 pp.c64 = ps.tau*ps.u/pd.rho_w/pd.L/ps.m;    % dimensionless coefficient of melt rate from frictional heating
 pp.c65 = ps.u/ps.u_b;             % ratio between sliding speed scale and sliding speed scale in cavity opening term
+pp.c66 = 1;
 
 %% Options
 % oo.include_ice = 1;         % option to include ice velocity solve in nevis_timesteps

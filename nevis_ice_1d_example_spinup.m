@@ -18,9 +18,11 @@ oo.evaluate_variables = 1;
 oo.input_gaussian = 1;
 oo.relaxation_term = 1;                         % 0 is alpha hb, 1 is alpha deltap hb
 oo.initial_condition = 0;                       
-oo.cavity_coupling = 0;                         % couple to ice velocity
-oo.melt_coupling = 0;                           % couple to basal melt
-oo.plot_residual = 1;
+% oo.cavity_coupling = 0;                         % couple to ice velocity
+% oo.melt_coupling = 0;                           % couple to basal melt
+oo.plot_residual = 0;
+oo.N_coupling = 0; % turn on effective pressure coupling                                   
+oo.U_coupling = 0; % turn on basal sliding coupling
 % oo.display_residual = 1;
 
 moulin_input = 0;                               % prescribed moulin input (m^3/s)
@@ -51,8 +53,15 @@ pd.c0 = 1;
 %% grid and geometry, linear bedslope
 L = 100000; % length in m
 W = 50000; % width in m
-x = linspace(0,(L/ps.x),401); 
+% 1) non-uniform grid spacing, refined at x=L/ps.x
+% xi = linspace(0,1,401); 
+% beta = 10;
+% x = L/ps.x*(tanh(beta*xi)/tanh(beta));
+
+% 2) uniform grid spacing
+x = linspace(0,(L/ps.x),3201); 
 y = linspace(0,(W/ps.x),1);
+
 oo.xperiodic = 0;
 oo.yperiodic = 1;
 gg = nevis_grid(x,y,oo);
@@ -72,7 +81,7 @@ gg = nevis_label(gg,gg.n1m);    % label pressure boundary nodes
 gg = nevis_label_blister(gg,gg.n1_blister,oo);    % label blister boundary nodes
 
 %% plot grid
-nevis_plot_grid(gg);
+% nevis_plot_grid(gg);
 % return;
 %% add parameters and boundary labels for ice velocity
 pd.n_glen = 1;
@@ -80,9 +89,6 @@ eps = 0.1;
 pd.A_glen = 1/2/((eps)*pd.rho_i*pd.g*ps.z*ps.x/pd.u_b); % to make membrane stress terms of dimensionless size eps in momentum equation
 [pd,ps,pp,oo] = nevis_add_parameters_ice(pd,ps,pp,oo); % add parameters etc needed to solve for ice velocity
 gg = nevis_label_ice(gg); % add boundary labels needed for ice velocity
-
-figure(1); clf; 
-% nevis_plot_grid_ice(gg); 
 
 %% initialize
 [aa,vv] = nevis_initialize(b,s,gg,pp,oo);
@@ -137,7 +143,7 @@ save([oo.rn,oo.fn],'pp','pd','ps','gg','aa','vv','oo');
 oo.dt = 1/24*pd.td/ps.t; 
 oo.save_timesteps = 1; 
 oo.save_pts_all = 1; 
-oo.t_span = (0:1:365*2)*pd.td/ps.t;         
+oo.t_span = (0:1:365*0.01)*pd.td/ps.t;         
 [tt,vv] = nevis_timesteps(oo.t_span,vv,aa,pp,gg,oo);     % save at daily timesteps
 
 %% plot discharge
@@ -154,6 +160,6 @@ save([oo.rn,oo.fn],'pp','pd','ps','gg','aa','vv','oo');
 % 
 % [tau1,tau2,theta] = nevis_principal_stress(Txx,Tyy,gg.nmeanc*Txy);
 % imagesc(gg.nx(:,1),gg.ny(1,:),reshape(tau1,gg.nI,gg.nJ)'); colorbar;
-
+test
 
 
