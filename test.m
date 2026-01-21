@@ -127,7 +127,7 @@ v = VideoWriter(['./presentation/animation/' casename '_timeseries'],'MPEG-4');
 v.FrameRate = 1;
 open(v);
 
-for nframe = index(1:1:end)
+for nframe = index(2:1:end)
     vva = load([path num2str(nframe,formatSpec)], 'vv');
     vva = vva.vv;
     uxn = gg.nmeanx(:,gg.es2)*vva.u(gg.es2); % x-component of ice velocity at nodes

@@ -44,7 +44,6 @@ pd.melt = pd.G/pd.rho_w/pd.L;                   % geothermal heat derived basal 
 pd.alpha_b = 0;                                 % relaxation rate (s^-1)
 pd.kappa_b = 1e-10;                             % relaxation coeff
 pd.c0 = 1;
-
 % pd.C = 1e99;
 % pd.mu = 0.01;
 
@@ -143,7 +142,7 @@ save([oo.rn,oo.fn],'pp','pd','ps','gg','aa','vv','oo');
 oo.dt = 1/24*pd.td/ps.t; 
 oo.save_timesteps = 1; 
 oo.save_pts_all = 1; 
-oo.t_span = (0:1:365*0.01)*pd.td/ps.t;         
+oo.t_span = (0:1:365*0.02)*pd.td/ps.t;         
 [tt,vv] = nevis_timesteps(oo.t_span,vv,aa,pp,gg,oo);     % save at daily timesteps
 
 %% plot discharge

@@ -23,7 +23,7 @@ if ~isfield(pd,'n_glen'), pd.n_glen = pd.n_Glen; end        % exponent in ice fl
 if ~isfield(pd,'A_glen'), pd.A_glen = pd.A; end             % coefficient in ice flow law
 if ~isfield(pd,'n_slide'), pd.n_slide = 1; end              % exponent in sliding law tau_b ~ C u_b^(1/n) / ( 1 + (C/mu)^n u_b/N^n )^(1/n)
 if ~isfield(pd,'C'), pd.C = ps.tau/ps.u^(1/pd.n_slide); end % coefficient in sliding law tau_b ~ C u_b^(1/n) / ( 1 + (C/mu)^n u_b/N^n )^(1/n)
-if ~isfield(pd,'C2'), pd.C2 = 0; end                        % second coefficient in sliding law tau_b ~ C2 u_b^(1/n)
+if ~isfield(pd,'C2'), pd.C2 = 0.00*ps.tau/ps.u^(1/pd.n_slide); end                        % second coefficient in sliding law tau_b ~ C2 u_b^(1/n)
 if ~isfield(pd,'mu_s'), pd.mu_s = 0.1; end                  % Coulomb friction coefficient (make infinite for Weertman sliding)
 if ~isfield(ps,'eta'), ps.eta = 1/2*pd.A_glen^(-1/pd.n_glen)*(ps.u/ps.x)^(1/pd.n_glen-1); end
 
