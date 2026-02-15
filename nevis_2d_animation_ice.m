@@ -1,128 +1,283 @@
-%% Import necessary libraries
-casename = 'n2d_moulin1e1_eps1e_02_kappa1e_10_mu1e1_spinup';
-load(['./results/' casename '/' casename])
-oo.fn = ['/',casename];                         % filename (same as casename)
-oo.rn = [oo.root,oo.results,oo.fn];             % path to the case results
-oo.code = '../nevis/src';                       % code directory  
-path = [oo.rn,'/'];
-addpath(oo.code);                               % add path to code
-oo.t_span = (0:1:365*5)*pd.td/ps.t; 
-plot_delta = 1;                                 % plot change from initial condition
+%% Animation script for NEVIS 2D ice-hydrology coupled model
+% Produces a video with time series (left) and spatial fields (right):
+%   Left:  Q fluxes, effective pressure, sheet/channel, ice speed
+%   Right: net flux, cavity thickness, effective pressure, 
+%          channel cross-section, ice speed, ice speed change
+clc; clear; close all;
 
-%% colormap
-n = 256; % number of color
+%% Settings
+casename = 'n2d_region_ice_meanperms1_Hreg1000_kappa1e_10_mu2e1_bdtest_drainage_dc';
+load(['./results/' casename '/' casename])
+oo.fn = ['/',casename];
+oo.rn = [oo.root,oo.results,oo.fn];
+oo.code = '../nevis/src';
+filepath = [oo.rn,'/'];
+addpath(oo.code);
+formatSpec = '%04d';
+
+%% Colormap
+n = 256;
 cmap = [linspace(0,1,n)', linspace(0,1,n)', ones(n,1); 
         ones(n,1), linspace(1,0,n)', linspace(1,0,n)'];
 
-%% read in the screenshot at the intial timestep
-formatSpec = '%04d';
-nframe = 1;
-vva = load([path num2str(nframe,formatSpec)], 'vv');
-vva = vva.vv;
-xx = (ps.x/10^3)*gg.nx; % x grid in km
-yy = (ps.x/10^3)*gg.ny; 
-xx(gg.nout) = NaN;
-yy(gg.nout) = NaN;
+%% Time range
+tmin_yr = 0;           % start time in years
+tmax_yr = tmin_yr + 0.1;  % end time in years
+tmin = tmin_yr * 365;  % in days
+tmax = tmax_yr * 365;
 
-%% Calculate node means of ice velocities
-uxn = gg.nmeanx(:,gg.es2)*vva.u(gg.es2); % x-component of ice velocity at nodes
-vyn = gg.nmeany(:,gg.fs2)*vva.v(gg.fs2); % y-component of ice velocity at nodes
-Un = ((uxn).^2+(vyn).^2).^(1/2); % ice speed at nodes
+tspan_d = (ps.t/pd.td) * oo.t_span;  % t_span in days
+index = find(tspan_d >= tmin & tspan_d <= tmax);
+if isempty(index)
+    error('No frames found in the specified time range [%.1f, %.1f] days', tmin, tmax);
+end
+fprintf('Found %d frames in time range [%.1f, %.1f] days\n', length(index), tmin, tmax);
+
+%% Read time series data
+t = (ps.t/pd.td) * [tt.t];  % dimensional time (days)
+
+Q_b_in  = pd.Q_0 * [tt.Qb_in];
+Q_b_dec = ps.h*ps.x^2/ps.t * [tt.Qb_dec];
+Q_in    = ps.Q * [tt.Q_in];
+Q_out   = ps.Q * [tt.Q_out];
+Q_out_Q = ps.Q * [tt.Q_outQ];
+Q_out_q = ps.Q * [tt.Q_outq];
+E       = (ps.m*ps.x^2) * [tt.E];
+N_ts    = (ps.phi) * [tt.N];  % effective pressure time series
+hs_ts   = ps.x^2*ps.h * [tt.hs];
+he_ts   = ps.x^2*ps.h * [tt.he];
+S_ts    = ps.x*ps.S * [tt.S];
+A_total = ps.x^2 * sum(gg.Dx.*gg.Dy);
+
+%% Read initial frame
+nframe = index(1);
+vva = load([filepath num2str(nframe,formatSpec)], 'vv');
+vva = vva.vv;
+aa = nevis_inputs(vva.t,aa,vva,pp,gg,oo);
+[vv2] = nevis_backbone(inf,vva,vva,aa,pp,gg,oo);
+vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo);
+qnet = ps.qs*(vv2.qs + vv2.qe + vv2.qQ);
+
+xx = (ps.x/1e3)*gg.nx;  % x grid in km
+yy = (ps.x/1e3)*gg.ny;
+
+%% Compute initial ice velocity
+uxn = gg.nmeanx2(:,gg.es2)*vva.u(gg.es2);
+vyn = gg.nmeany2(:,gg.fs2)*vva.v(gg.fs2);
+Un  = sqrt(uxn.^2 + vyn.^2);
 Un(gg.nout) = NaN;
 
-vux = ps.u_b*pd.ty*reshape(uxn,gg.nI,gg.nJ); % x-component of ice velocity at nodes in m/yr
-vuy = ps.u_b*pd.ty*reshape(vyn,gg.nI,gg.nJ); % y-component of ice velocity at nodes in m/yr
-vUU = ps.u_b*pd.ty*reshape(Un,gg.nI,gg.nJ);   % ice speed at nodes in m/yr
+vux0 = ps.u_b*pd.ty * reshape(uxn,gg.nI,gg.nJ);
+vuy0 = ps.u_b*pd.ty * reshape(vyn,gg.nI,gg.nJ);
+vUU0 = sqrt(vux0.^2 + vuy0.^2);
 
-vphi = reshape(vva.phi*ps.phi,gg.nI,gg.nJ);
-vphi0 = reshape(aa.phi_0*ps.phi,gg.nI,gg.nJ);
+%% Create figure layout
+f = figure('Position', [50, 50, 1800, 900]);
+mainLayout = tiledlayout(f, 1, 5);
+mainLayout.TileSpacing = 'compact';
+mainLayout.Padding = 'compact';
 
-%% Plot the velocity field with time
-figure(2); clf;
-% zu = (ps.x/ps.t*pd.ty)*reshape(vva.u,gg.nI,gg.nJ);
-% zv = (ps.x/ps.t*pd.ty)*reshape(vva.v,gg.nI,gg.nJ); 
-subplot(3,1,1);
-pvel = pcolor(xx,yy,vUU); 
-shading interp; colorbar; colormap(cmap);
-caxis([-30 30]);
+% Left panel: time series (4 rows)
+leftLayout = tiledlayout(mainLayout, 4, 1);
+leftLayout.Layout.Tile = 1;
+leftLayout.Layout.TileSpan = [1, 2];
+leftLayout.TileSpacing = 'compact';
+leftLayout.Padding = 'compact';
+
+% Right panel: spatial fields (3 rows x 2 cols)
+rightLayout = tiledlayout(mainLayout, 3, 2);
+rightLayout.Layout.Tile = 3;
+rightLayout.Layout.TileSpan = [1, 3];
+rightLayout.TileSpacing = 'compact';
+rightLayout.Padding = 'compact';
+
+%% ===== Left layout: time series =====
+tframe_d = vva.t*ps.t/pd.td;
+
+% (a) Fluxes
+ax_a = nexttile(leftLayout);
+plot(ax_a, t, Q_b_dec,'r-', 'LineWidth',1.5);
+% plot(ax_a, t, Q_b_in,'b-', t, Q_b_dec,'r-', 'LineWidth',1.5);
 hold on;
-vel_field = quiver(xx,yy,vux,vuy, 0.3,'k'); 
+plot(ax_a, t, Q_out_Q,'--', 'Color',[0,0.5,0], 'LineWidth',1.5);
+plot(ax_a, t, Q_out_q,'b--', 'LineWidth',1.5);
+plot(ax_a, t, E,'k-.', 'LineWidth',1.5);
+x1 = xline(tframe_d,'--k','LineWidth',1.5);
+xlabel('t [d]'); ylabel('Q [m^3/s]');
+legend('Q_{b,relax}','Q_{outQ}','Q_{outq}','E','NumColumns',2,'Location','southeast');
+text(0.025,0.85,'(a) flux','Units','normalized','FontSize',12);
+xlim([tmin tmax]); set(gca,'YScale','log'); ylim([1e-2 1e4]);
+grid on; grid minor;
 
-ttext = text(0.1*L/10^3,0.9*W/10^3,['Time = ' num2str(vva.t*ps.t/pd.td,'%.1f') ' days'],'FontSize',14,'Color','k');
-
-xlabel('x (km)','FontSize',14);
-ylabel('y (km)','FontSize',14);
-title('Ice velocity change (m/yr)','FontSize',14);
-set(gca,'FontSize',12);
-
-subplot(3,1,2);
-phs = pcolor(xx,yy,reshape(vva.hs*ps.h,gg.nI,gg.nJ)); 
-shading interp; 
-colorbar;colormap(cmap);
-caxis([-0.1 0.1]);
-clabels = colorbar;
-clabels.Label.String = 'Sheet thickness change (m)';
-xlabel('x (km)','FontSize',14);
-ylabel('y (km)','FontSize',14);
-title('Sheet thickness change (m)','FontSize',14);
-
-subplot(3,1,3);
-pphi = pcolor(xx,yy,(vphi0-vphi)/1e6); 
-shading interp; 
-colorbar;colormap(cmap);
-caxis([-1 1]);
-clabels = colorbar;
-clabels.Label.String = 'Effective pressure change (MPa)';
+% (b) Effective pressure
+ax_b = nexttile(leftLayout);
+plot(ax_b, t, N_ts/1e6,'-', 'LineWidth',1.5);
 hold on;
-[Cb,phb] = contour(xx,yy,reshape(vva.hb*ps.hb,gg.nI,gg.nJ),[0.01, 0.1],'k');
+x2 = xline(tframe_d,'--k','LineWidth',1.5);
+xlabel('t [d]'); ylabel('N [MPa]');
+legend('averaged N','Location','southeast');
+text(0.025,0.85,'(b) effective pressure','Units','normalized','FontSize',12);
+xlim([tmin tmax]); grid on; grid minor;
 
-xlabel('x (km)','FontSize',14);
-ylabel('y (km)','FontSize',14);
-title('Effective pressure change (MPa)','FontSize',14);
+% (c) Sheet thickness & channel
+ax_c = nexttile(leftLayout);
+yyaxis(ax_c,'left');
+plot(ax_c, t, hs_ts./A_total,'b-', t, he_ts./A_total,'k-', 'LineWidth',1.5);
+ylabel('Average h [m]');
+yyaxis(ax_c,'right');
+plot(ax_c, t, S_ts/A_total,'r-', 'LineWidth',1.5);
+hold on; x3 = xline(tframe_d,'--k','LineWidth',1.5);
+ylabel('S/A [m]');
+legend('h_{cav}','h_e','S','NumColumns',3,'Location','southeast');
+text(0.025,0.85,'(c) averaged h and S','Units','normalized','FontSize',12);
+xlim([tmin tmax]); grid on; grid minor;
 
-%% Animate over all timesteps
-tmin = 0*365;
-tmax = tmin+1.1*365;
-index = find(oo.t_span>=tmin*pd.td/ps.t & oo.t_span<=tmax*pd.td/ps.t);
-% n0 = index; % starting frame number
-v = VideoWriter(['./test'],'MPEG-4');
-v.FrameRate = 1;
+% (d) Ice speed time series (if available)
+ax_d = nexttile(leftLayout);
+% Placeholder: plot max ice speed over time if tracked
+x4 = xline(tframe_d,'--k','LineWidth',1.5);
+xlabel('t [d]'); ylabel('U [m/yr]');
+text(0.025,0.85,'(d) ice speed','Units','normalized','FontSize',12);
+xlim([tmin tmax]); grid on; grid minor;
+
+xlines = [x1, x2, x3, x4];
+
+%% ===== Right layout: spatial fields =====
+
+% (1) Blister sheet thickness hb
+ax1 = nexttile(rightLayout);
+zhb = ps.hb * reshape(vva.hb,gg.nI,gg.nJ);
+zphi = ps.phi * reshape(vva.phi,gg.nI,gg.nJ);
+phb = pcolor(ax1, xx, yy, zhb);
+set(phb,'linestyle','none');
+cx = colorbar(); colormap(ax1, cmap);
+clim([-0.2 0.2]);
+cx.Label.String = 'h_b [m]';
+hold on;
+[~, phb_contour] = contour(ax1, xx, yy, zphi, 'linecolor','k','linewidth',0.5);
+title('(e) blister sheet h_b'); ylabel('y (km)');
+axis equal; axis tight;
+
+% (2) Cavity sheet thickness
+ax2 = nexttile(rightLayout);
+zhs = ps.hs * reshape(vva.hs,gg.nI,gg.nJ);
+phs = pcolor(ax2, xx, yy, zhs);
+set(phs,'linestyle','none');
+cx = colorbar();
+cx.Label.String = 'h_s [m]';
+clim([0 0.1]);
+hold on;
+[~, phs_contour] = contour(ax2, xx, yy, zphi, 'linecolor','k','linewidth',0.5);
+title('(f) cavity sheet'); ylabel('y (km)');
+axis equal; axis tight;
+
+% (3) Effective pressure
+ax3 = nexttile(rightLayout);
+zN = (ps.phi/1e6) * reshape(aa.phi_0 - vva.phi, gg.nI, gg.nJ);
+peff = pcolor(ax3, xx, yy, zN);
+set(peff,'linestyle','none');
+cx = colorbar(); colormap(ax3, cmap);
+cx.Label.String = 'N [MPa]';
+clim([-3 3]);
+title('(g) effective pressure'); ylabel('y (km)');
+axis equal; axis tight;
+
+% (4) Channel cross-section area
+ax4 = nexttile(rightLayout);
+zS = ps.S * reshape(0.25*(gg.nmeanx*vva.Sx + gg.nmeany*vva.Sy + gg.nmeans*vva.Ss + gg.nmeanr*vva.Sr), gg.nI, gg.nJ);
+pS = pcolor(ax4, xx, yy, zS);
+set(pS,'linestyle','none');
+ax4.ColorScale = 'log';
+cx = colorbar();
+cx.Label.String = 'S [m^2]';
+clim([1e-4 1e1]);
+cx.Ticks = [1e-4 1e-3 1e-2 1e-1 1e0 1e1];
+title('(h) channel cross section'); ylabel('y (km)');
+axis equal; axis tight;
+
+% (5) Ice speed
+ax5 = nexttile(rightLayout);
+pvel = pcolor(ax5, xx, yy, vUU0);
+set(pvel,'linestyle','none');
+cx = colorbar();
+cx.Label.String = 'U [m/yr]';
+clim([0 200]);
+hold on;
+skip = 5;  % quiver skip for clarity
+vel_field = quiver(ax5, xx(1:skip:end,1:skip:end), yy(1:skip:end,1:skip:end), ...
+    vux0(1:skip:end,1:skip:end), vuy0(1:skip:end,1:skip:end), 0.3, 'k');
+title('(i) ice speed'); ylabel('y (km)');
+axis equal; axis tight;
+
+% (6) Ice speed change
+ax6 = nexttile(rightLayout);
+pvel_delta = pcolor(ax6, xx, yy, zeros(gg.nI,gg.nJ));
+set(pvel_delta,'linestyle','none');
+cx = colorbar(); colormap(ax6, cmap);
+cx.Label.String = '\Delta U [m/yr]';
+clim([-50 50]);
+ttext = text(ax6, 0.5, 0.9, ['t = ' num2str(tframe_d,'%.1f') ' d'], ...
+    'Units','normalized','FontSize',14,'FontWeight','bold');
+title('(j) ice speed change'); ylabel('y (km)'); xlabel('x (km)');
+axis equal; axis tight;
+
+%% ===== Animation loop =====
+v = VideoWriter(['./results/videos/' casename],'MPEG-4');
+v.FrameRate = 3;
 open(v);
-for nframe = index
 
-    vva = load([path num2str(nframe,formatSpec)], 'vv');
-    vva = vva.vv;
-    uxn = gg.nmeanx(:,gg.es2)*vva.u(gg.es2); % x-component of ice velocity at nodes
-    vyn = gg.nmeany(:,gg.fs2)*vva.v(gg.fs2); % y-component of ice velocity at nodes
-    Un = ((uxn).^2+(vyn).^2).^(1/2); % ice speed at nodes
-    Un(gg.nout) = NaN;  
-
-    vux = ps.u_b*pd.ty*reshape(uxn,gg.nI,gg.nJ); % x-component of ice velocity at nodes in m/yr
-    vuy = ps.u_b*pd.ty*reshape(vyn,gg.nI,gg.nJ); % y-component of ice velocity at nodes in m/yr
-    vUU = (vux.^2+vuy.^2).^(1/2);   % ice speed at nodes in m/yr
-    vphi = reshape(vva.phi*ps.phi/1e6,gg.nI,gg.nJ);
-    vphi_0 = reshape(aa.phi_0*ps.phi/1e6,gg.nI,gg.nJ);
-    vhs = reshape(vva.hs*ps.h,gg.nI,gg.nJ);
-    vN = vphi_0-vphi;
-    if nframe==index(1)
-        vN0 = vphi_0-vphi;
-        vux0 = vux;
-        vuy0 = vuy;
-        vUU0 = vUU;
-        vhs0 = vhs;
+for i_idx = 1:length(index)
+    if ~isvalid(f)
+        disp('Figure closed. Animation stopped.');
+        break
     end
-    phs.CData = vhs;
+    i_t = index(i_idx);
+    fprintf('Frame %d / %d ...\n', i_idx, length(index));
+
+    % Load timestep
+    vva = load([filepath num2str(i_t,formatSpec)], 'vv');
+    vva = vva.vv;
+    aa = nevis_inputs(vva.t,aa,vva,pp,gg,oo);
+    [vv2] = nevis_backbone(inf,vva,vva,aa,pp,gg,oo);
+    vv2 = nevis_nodedischarge(vv2,aa,pp,gg,oo);
+    qnet = ps.qs*(vv2.qs + vv2.qe + vv2.qQ);
+
+    % Ice velocity
+    uxn = gg.nmeanx2(:,gg.es2)*vva.u(gg.es2);
+    vyn = gg.nmeany2(:,gg.fs2)*vva.v(gg.fs2);
+    Un  = sqrt(uxn.^2 + vyn.^2);
+    Un(gg.nout) = NaN;
+    vux = ps.u_b*pd.ty * reshape(uxn,gg.nI,gg.nJ);
+    vuy = ps.u_b*pd.ty * reshape(vyn,gg.nI,gg.nJ);
+    vUU = sqrt(vux.^2 + vuy.^2);
+
+    % Update right panels
+    phb.CData = ps.hb * reshape(vva.hb,gg.nI,gg.nJ);
+    phb_contour.ZData = ps.phi * reshape(vva.phi,gg.nI,gg.nJ);
+
+    phs.CData = ps.hs * reshape(vva.hs,gg.nI,gg.nJ);
+    phs_contour.ZData = ps.phi * reshape(vva.phi,gg.nI,gg.nJ);
+
+    peff.CData = (ps.phi/1e6) * reshape(aa.phi_0 - vva.phi, gg.nI, gg.nJ);
+    pS.CData = ps.S * reshape(0.25*(gg.nmeanx*vva.Sx + gg.nmeany*vva.Sy + ...
+               gg.nmeans*vva.Ss + gg.nmeanr*vva.Sr), gg.nI, gg.nJ);
+
     pvel.CData = vUU;
-    vel_field.UData = vux;
-    vel_field.VData = vuy;
-    pphi.CData = vN;
-    phb.ZData = reshape(vva.hb*ps.hb,gg.nI,gg.nJ);
-    ttext.String = ['Time = ' num2str(vva.t*ps.t/pd.td,'%.1f') ' days'];
-    
-    refreshdata
-    drawnow
-    % pause(0.2)
-    frame = getframe(gcf);
-%     writeVideo(v,frame);
+    vel_field.UData = vux(1:skip:end,1:skip:end);
+    vel_field.VData = vuy(1:skip:end,1:skip:end);
+    pvel_delta.CData = vUU - vUU0;
+
+    % Update time markers
+    tframe_d = vva.t*ps.t/pd.td;
+    for xl = xlines
+        xl.Value = tframe_d;
+    end
+    ttext.String = ['t = ' num2str(tframe_d,'%.1f') ' d'];
+
+    drawnow;
+    frame = getframe(f);
+    writeVideo(v, frame);
 end
-% close(v);
+
+try close(v); catch; end
+fprintf('Video saved: %s\n', v.Filename);

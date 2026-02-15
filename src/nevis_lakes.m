@@ -6,7 +6,7 @@ function [ni_l,sum_l] = nevis_lakes(x_l,y_l,gg,oo)
 % corresponds to a lake, having entries 1 for nodes in its cell, 0.5 for nodes on boundary, and 0
 % for nodes outside] [eg area_m = sum_m*(Dx.*Dy) gives the area of each lake's cell]
 % inputs  
-%   x_m,y_m   coordinates of lakes 
+%   pp        struct with lake coordinates and options
 %   gg     	  grid structre containing node coordinates nx and ny
 %   oo        [optional] options
 % outputs 
@@ -22,7 +22,7 @@ if nargin<4, oo = struct; end
 % pick random lake coordinates [value should be desired number of lakes]
 if ~isfield(oo,'random_lakes'), oo.random_lakes = 0; end 
 % keep all lakes even if on same node
-if ~isfield(oo,'keep_all_lakes'), oo.keep_all_lakes = 0; end 
+if ~isfield(oo,'keep_all_lakes'), oo.keep_all_lakes = 1; end 
 % move lakes that are outside domain to nearest position inside domain
 if ~isfield(oo,'move_lakes'), oo.move_lakes = 0; end 
 % use prescribed shapefile S to give catchments of lakes
@@ -30,6 +30,8 @@ if ~isfield(oo,'prescribed_lake_catchments'), oo.prescribed_lake_catchments = 0;
 % use lake coordinates from a specific data file
 if ~isfield(oo,'lake_output_file'), oo.lake_output_file = 0; end 
 
+% x_l = pp.x_l; 
+% y_l = pp.y_l;
 %% pick random lake coordinates
 if oo.random_lakes
     xl = min(min(gg.nx)); xr = max(max(gg.nx)); 
@@ -66,10 +68,25 @@ for i_l = 1:n_l
 end
 
 if ~oo.keep_all_lakes
-    ni_l = unique(ni_l,'stable'); 
+    % if two lakes are on the same node, keep only one lake (the first one)
+    [ni_l,~,~] = unique(ni_l,'stable'); 
+    % pp.x_l = pp.x_l(ia); 
+    % pp.y_l = pp.y_l(ia);
+    % pp.V_l = pp.V_l(ia);
+    % pp.t_drainage = pp.t_drainage(ia);
+    % pp.t_duration = pp.t_duration(ia);
+    % % add the volume of lakes that are on the same node together
+    % for i = 1:length(ni_l)
+    %     inds = find(ni_l == ni_l(i));
+    %     if length(inds) > 1
+    %         pp.V_l(i) = sum(pp.V_l(inds));
+    %         pp.t_drainage(i) = mean(pp.t_drainage(inds));
+    %         pp.t_duration(i) = mean(pp.t_duration(inds));   
+    %     end
+    % end
 end
-
-% n_l = length(ni_l);
+% ni_l = unique(ni_l,'stable'); 
+n_l = length(ni_l);
 x_l = gg.nx(ni_l); 
 y_l = gg.ny(ni_l);
 
@@ -116,5 +133,8 @@ end
 temp = sum(sum_l,1); % number of polygons each node is connected to (0-3) 
 temp(temp==0) = inf;
 sum_l = sum_l*sparse(1:length(temp),1:length(temp),temp.^(-1)); %
+
+pp.ni_l = ni_l; 
+pp.sum_l = sum_l;
 
 end

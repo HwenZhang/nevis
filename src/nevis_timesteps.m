@@ -21,8 +21,7 @@ if ~isfield(pp,'phi_s'), pp.phi_s = -inf; end
 
 % ================= TIMESTEPPING OPTIONS =================
 % update ice velocity
-if ~isfield(oo,'include_ice'), oo.include_ice = 0; end
-if ~isfield(oo,'include_ice'), oo.include_ice = 0; end          % update ice velocity
+if ~isfield(oo,'include_ice'), oo.include_ice = 1; end
 if ~isfield(oo,'cavity_coupling'), oo.cavity_coupling = 0; end  % update sliding speed in cavity opening term
 if ~isfield(oo,'melt_coupling'), oo.melt_coupling = 0; end      % update sliding speed in basal melt term
 
@@ -66,7 +65,9 @@ if ~isfield(oo,'save_pts_all'), oo.save_pts_all = 0; end
 % nodes at which to save output
 if ~isfield(oo,'pts_ni'), oo.pts_ni = []; end       
 % save average pressure between timesteps           
-if ~isfield(oo,'save_phi_av'), oo.save_phi_av = 0; end          
+if ~isfield(oo,'save_phi_av'), oo.save_phi_av = 0; end        
+
+if ~isfield(oo,'visualize_vel'), oo.visualize_vel = 1; end  % option to visualize velocity field at each timestep for maintenance
 
 % ================= UPDATE BOUNDARIES =================
 if oo.adjust_boundaries && isfield(vv,'nbdy')         
@@ -295,6 +296,8 @@ while t<t_stop+oo.dt_min
             disp(['nevis_timesteps: Failed [ ',num2str(comp_time),' s, ',num2str(info.iter_new-1),' iterations, dt = ',num2str(dt),' ]']);
             return;
         end
+        % convergence, plot the velocity field for maintenance
+        if oo.visualize_vel, nevis_plot_velocity(gg,vv); end
     end
     
     %% time averaging of pressure

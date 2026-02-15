@@ -31,19 +31,19 @@ ein = gg.ein2;
 fin = gg.fin2;
 cin = gg.cin2;
 
-% figure;
+figure;
     plot(nx(nout),ny(nout),'.','color',.9*[1 1 1],'markersize',8); hold on;
     plot(ex(eout),ey(eout),'x','color',.9*[1 1 1]);
     plot(fx(fout),fy(fout),'x','color',.9*[1 1 1]);
     plot(cx(cout),cy(cout),'+','color',.9*[1 1 1]);
+    
     plot(nx(nbdy),ny(nbdy),'r.','markersize',8); 
     plot(nx(nin),ny(nin),'k.','markersize',8);
-    plot(ex(ebdy),ey(ebdy),'rx');
-    plot(ex(ein),ey(ein),'kx');
-    plot(fx(fbdy),fy(fbdy),'rx');
-    plot(fx(fin),fy(fin),'kx');
-    plot(cx(cbdy),cy(cbdy),'r+');
-    plot(cx(cin),cy(cin),'k+');
+
+    plot(ex(ebdy),ey(ebdy),'r+');
+    plot(fx(fbdy),fy(fbdy),'b+');
+    plot(cx(cbdy),cy(cbdy),'gx');
+
     
     plot(nx(ni),ny(ni),'go');
    

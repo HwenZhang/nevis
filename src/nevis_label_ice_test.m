@@ -6,6 +6,11 @@ function gg = nevis_label_ice(gg,oo)
     %   different from those needed by the hydrology model
 
     if nargin<2, oo = struct; end
+    if ~isfield(oo,'boundary_method'), oo.boundary_method = 'default'; end
+    % mask_boundary_method: how to treat the irregular mask boundary
+    %   'velocity' : prescribe velocity (e.g. u=0) on mask boundary [default]
+    %   'stress_free' : prescribe stress-free on mask boundary
+    if ~isfield(oo,'mask_boundary_method'), oo.mask_boundary_method = 'velocity'; end
 
     %% grid point labels [ labelled first along x axis then along y axis, so location i,j becomes i+(j-1)*I ]
     ns = (1:gg.nIJ)';
@@ -26,42 +31,39 @@ function gg = nevis_label_ice(gg,oo)
     c1 = gg.c1; % corners connected to one outside node 
     c2 = gg.c2; % corners connected to two outside nodes
     c3 = gg.c3; % corners connected to three outside nodes
-    
+
     nx = gg.nx; ny = gg.ny;
     ex = gg.ex; ey = gg.ey;
     fx = gg.fx; fy = gg.fy;
     cx = gg.cx; cy = gg.cy;
 
-    temp = zeros(gg.eIJ,1); temp(e1) = 1; n1x = find(gg.nmeanx*temp>0); n1x = setdiff(n1x,nout); % nodes connected by an e edge to an outside node : x boundary nodes 
-    temp = zeros(gg.fIJ,1); temp(f1) = 1; n1y = find(gg.nmeany*temp>0); n1y = setdiff(n1y,nout); % nodes connected by an f edge to an outside node : y boundary nodes 
+    temp = zeros(gg.eIJ,1); 
+    temp(e1) = 1; 
+    n1x = find(gg.nmeanx*temp>0); 
+    n1x = setdiff(n1x,nout); % nodes connected by an e edge to an outside node : x boundary nodes 
+    temp = zeros(gg.fIJ,1); 
+    temp(f1) = 1; 
+    n1y = find(gg.nmeany*temp>0); 
+    n1y = setdiff(n1y,nout); % nodes connected by an f edge to an outside node : y boundary nodes 
 
     %% default boundary labels for whole grid
     nlbdy = gg.bdy.nlbdy; nrbdy = gg.bdy.nrbdy; ntopbdy = gg.bdy.ntopbdy; nbotbdy = gg.bdy.nbotbdy;
     elbdy = gg.bdy.elbdy; erbdy = gg.bdy.erbdy; etopbdy = gg.bdy.etopbdy; ebotbdy = gg.bdy.ebotbdy;
     flbdy = gg.bdy.flbdy; frbdy = gg.bdy.frbdy; ftopbdy = gg.bdy.ftopbdy; fbotbdy = gg.bdy.fbotbdy;
     clbdy = gg.bdy.clbdy; crbdy = gg.bdy.crbdy; ctopbdy = gg.bdy.ctopbdy; cbotbdy = gg.bdy.cbotbdy;
-
-    % figure; clf;
-    % hold on
-    % plot(gg.nx(nlbdy),gg.ny(nlbdy),'k.','markersize',8);
-    % plot(gg.nx(nrbdy),gg.ny(nrbdy),'r.','markersize',8);
-    % plot(gg.nx(ntopbdy),gg.ny(ntopbdy),'b.','markersize',8);
-    % plot(gg.nx(nbotbdy),gg.ny(nbotbdy),'g.','markersize',8);
     
-    oo.boundary_method = 'stress_tblr';
-
     if isfield(oo,'boundary_method') && strcmp(oo.boundary_method,'per_tblr')   
-        % % [ appropriate for periodic top and bottom boundaries, periodic left and right ]
-        % ebdy = unique([]);       
-        % fbdy = unique([]);         
-        % nbdyx = unique([]); 
-        % nbdyy = unique([]); 
-        % cbdy = unique([]); 
-        % eout = unique([]);
-        % fout = unique([]);
-        % cout = unique([]);
+        % [ appropriate for periodic top and bottom boundaries, periodic left and right ]
+        ebdy = unique([]);       
+        fbdy = unique([]);         
+        nbdyx = unique([]); 
+        nbdyy = unique([]); 
+        cbdy = unique([]); 
+        eout = unique([]);
+        fout = unique([]);
+        cout = unique([]);
 
-    elseif isfield(oo,'boundary_method') && strcmp(oo.boundary_method,'vel_tblr')
+    elseif strcmp(oo.boundary_method,'vel_tblr')
         % [ appropriate for prescribing velocity on all boundaries ]
         ebdy = unique([etopbdy; ebotbdy; elbdy; erbdy]);       
         fbdy = unique([ftopbdy; fbotbdy; flbdy; frbdy]);         
@@ -72,7 +74,7 @@ function gg = nevis_label_ice(gg,oo)
         fout = unique([]);
         cout = unique([ctopbdy; cbotbdy; clbdy; crbdy]);
 
-    elseif isfield(oo,'boundary_method') && strcmp(oo.boundary_method,'stress_tblr')
+    elseif strcmp(oo.boundary_method,'stress_tblr')
         % [ appropriate for prescribing normal and tangential stress on all boundaries]
         ebdy = unique([]);
         fbdy = unique([]);
@@ -82,6 +84,28 @@ function gg = nevis_label_ice(gg,oo)
         eout = unique([ebotbdy; etopbdy; elbdy; erbdy]);
         fout = unique([fbotbdy; ftopbdy; flbdy; frbdy]);
         cout = unique([]);
+
+    elseif strcmp(oo.boundary_method,'vel_r_stress_tbl')
+        % [ appropriate for prescribing velocity on right, stress-free on others ]
+        ebdy = unique([erbdy]);
+        fbdy = unique([frbdy]);
+        nbdyx = unique([nlbdy]); 
+        nbdyy = unique([ntopbdy; nbotbdy]); 
+        cbdy = unique([clbdy]);
+        eout = unique([elbdy]);
+        fout = unique([flbdy]);
+        cout = unique([crbdy]);
+
+    elseif strcmp(oo.boundary_method, 'stress_l_vel_tbl')
+        % [ appropriate for prescribing zero stress on left, velocity on top, bottom, and right ] 
+        ebdy = unique([etopbdy; ebotbdy; erbdy]); 
+        fbdy = unique([ftopbdy; fbotbdy; frbdy]); 
+        nbdyx = unique([nlbdy]); 
+        nbdyy = unique([]); 
+        cbdy = unique([clbdy]); 
+        eout = unique([elbdy]); 
+        fout = unique([flbdy]); 
+        cout = unique([crbdy]);
 
     else
         % [ appropriate for prescribing velocity on left boundary, reflective or periodic on top and bottom, and normal and tangential stress on right]
@@ -95,56 +119,54 @@ function gg = nevis_label_ice(gg,oo)
         cout = unique([clbdy]);
 
     end
-    % [ could add more alternatives here ]
 
-    % % [ appropriate for prescribing velocity on left boundary, normal velocity and tangential stress on top and bottom, and normal and tangential stress on right]
-    % ebdy = unique([elbdy]);
-    % fbdy = unique([flbdy; ftopbdy; fbotbdy]);
-    % nbdyx = unique([nrbdy]); 
-    % nbdyy = unique([]); 
-    % cbdy = unique([ctopbdy; cbotbdy; crbdy]);
-    % eout = unique([erbdy]);
-    % fout = unique([]);
-    % cout = unique([clbdy]);
-
-    % % [ appropriate for prescribing velocity on left, top and bottom boundaries, and normal and tangential stress on right]
-    % ebdy = unique([elbdy; etopbdy; ebotbdy]);
-    % fbdy = unique([flbdy; ftopbdy; fbotbdy]);
-    % nbdyx = unique([nrbdy]); 
-    % nbdyy = unique([]); 
-    % cbdy = unique([crbdy]);
-    % eout = unique([erbdy]);
-    % fout = unique([]);
-    % cout = unique([clbdy]);
-
-    % appropriate for prescribing velocity on right, and stress free
-    % boundary conditions on others
-    ebdy = unique([erbdy]);
-    fbdy = unique([frbdy]);
-    nbdyx = unique([nlbdy]); 
-    nbdyy = unique([ntopbdy; nbotbdy]); 
-    cbdy = unique([clbdy]);
-    eout = unique([elbdy]);
-    fout = unique([flbdy]);
-    cout = unique([crbdy]);
-
-
-
-    %% modification to boundary labels for masked region
-    % [ appropriate for prescribing velocity on all masked boundaries ]
-    nbdyx = [nbdyx];
-    nbdyy = [nbdyy];
-    ebdy = unique([ebdy; e1; e2]); 
-    fbdy = unique([fbdy; f1; f2]); 
-    cbdy = [cbdy]; 
-
-    nout = unique([nout]);
-    eout = unique([eout; e0]);
-    fout = unique([fout; f0]);
-    cout = unique([cout; c0; c3; c2]);
-
-    % [ appropriate for prescribing stress on labelled nodes ]
-    % [ not included yet ]
+    %% modification to boundary labels for masked (irregular) region
+    if strcmp(oo.mask_boundary_method, 'stress_free')
+        % ============================================================
+        % Stress-free on the irregular mask boundary
+        % ============================================================
+        % The mask boundary nodes (n1x, n1y) are where the domain meets
+        % the masked-out region. For stress-free conditions, we prescribe
+        % sigma.n = 0 at these nodes instead of prescribing velocity.
+        %
+        % n1x: nodes adjacent to a masked x-edge (e1) -> stress in x
+        % n1y: nodes adjacent to a masked y-edge (f1) -> stress in y
+        %
+        % The boundary edges (e1, f1) are placed in eout/fout (not ebdy/fbdy)
+        % because we do NOT prescribe velocity there; instead the stress
+        % equations at nbdyx/nbdyy enforce the stress-free condition.
+        
+        nbdyx = unique([nbdyx; n1x]);   % stress-free in x on mask boundary
+        nbdyy = unique([nbdyy; n1y]);   % stress-free in y on mask boundary
+        
+        % mask boundary edges -> out (not velocity-prescribed)
+        eout = unique([eout; e0; e1; e2]);
+        fout = unique([fout; f0; f1; f2]);
+        
+        % along-boundary edges: prescribe velocity = 0 (tangential)
+        % ebdy = unique([ebdy; e2]); 
+        % fbdy = unique([fbdy; f2]); 
+        
+        cout = unique([cout; c0; c3; c2]);
+        
+        disp('nevis_label_ice: Stress-free BCs on irregular mask boundary');
+        
+    else
+        % ============================================================
+        % Velocity (Dirichlet) on the irregular mask boundary [default]
+        % ============================================================
+        % Prescribe velocity (typically u=0) on all mask boundary edges.
+        % This is the original behaviour.
+        
+        ebdy = unique([ebdy; e1; e2]); 
+        fbdy = unique([fbdy; f1; f2]); 
+        
+        eout = unique([eout; e0]);
+        fout = unique([fout; f0]);
+        cout = unique([cout; c0; c3; c2]);
+        
+        disp('nevis_label_ice: Velocity BCs on irregular mask boundary');
+    end
 
     %% restrict labels to active area (i.e. remove points now assigned as out)
     ns = setdiff(ns,nout);   
@@ -162,7 +184,7 @@ function gg = nevis_label_ice(gg,oo)
     nin = setdiff(ns,nbdy);   
     ein = setdiff(es,ebdy);  
     fin = setdiff(fs,fbdy);  
-    cin = setdiff(cs,cbdy);   
+    cin = setdiff(cs,cbdy); 
     
     %% diagnostic plot
     figure; clf;
@@ -189,7 +211,6 @@ function gg = nevis_label_ice(gg,oo)
     axis equal; box on;
     hold off;
 
-
     % [ possibly want to redefine mean operators here ? ]
 
     %% assign labels to gg (ice labels with suffix 2 may be slightly different to hydrology labels)
@@ -210,6 +231,8 @@ function gg = nevis_label_ice(gg,oo)
     gg.eout2 = eout;
     gg.fout2 = fout;
     gg.cout2 = cout;
+    gg.n1x2 = n1x;
+    gg.n1y2 = n1y;
 
     % redfine mean operators to only include active nodes
     temp = gg.nmeanx(:,es)*ones(length(es),1); 
