@@ -35,6 +35,9 @@ pd.n_slide = 1;
 eps = 0.05; % ratio of membrane stress to driving stress, used to set the ice softness to ensure 
 % that membrane stresses are small in this test case, eps rises, A decreases, and viscosity increases
 pd.A_glen = 1/2/((eps)*pd.rho_i*pd.g*ps.z*ps.x/pd.u_b); % to make membrane stress terms of dimensionless size eps in momentum equation
+% Force-update ps.eta from the new pd.A_glen (loaded ps may have eta from a spinup with different eps).
+% nevis_add_parameters_ice only sets ps.eta if it is absent, so we must clear it first.
+if isfield(ps,'eta'), ps = rmfield(ps,'eta'); end
 [pd,ps,pp,oo] = nevis_add_parameters_ice(pd,ps,pp,oo);
 % NOTE: nevis_add_parameters_ice sets pp.A_glen = 1 (hardcoded), ignoring pd.A_glen.
 % The eps-based pd.A_glen only affects ps.eta → pp.c62 (membrane stress coefficient).
@@ -87,7 +90,7 @@ fprintf('Excluded %d ebdy + %d fbdy Dirichlet edges from misfit\n', ...
     length(gg.ebdy2), length(gg.fbdy2));
 
 % effective pressure for forward model (use spinup or assume N=1)
-oo.initname = 'n2d_region_melt_meanperms1_Hreg1000_kappa1e_10_ks1e_03_mu1e1_spinup';
+% oo.initname = 'n2d_region_melt_meanperms1_Hreg1000_kappa1e_10_ks1e_03_mu1e1_spinup';
 oo.initname = 'n2d_region_ice_inversion_test';
 init_cond = load(['./results/' oo.initname '/' '0036.mat']); % load initial condition
 vv = init_cond.vv;                                % load state variables from the initial 
