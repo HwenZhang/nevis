@@ -107,7 +107,7 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus)
 
     %% add parameters and boundary labels for ice velocity
     pd.n_glen = 1;
-    eps = 0.1; % ratio of membrane stress to driving stress, used to set the ice softness to ensure that membrane stresses are small in this test case, eps rises, A decreases, and viscosity increases
+    eps = 0.05; % ratio of membrane stress to driving stress, used to set the ice softness to ensure that membrane stresses are small in this test case, eps rises, A decreases, and viscosity increases
     pd.A_glen = 1/2/((eps)*pd.rho_i*pd.g*ps.z*ps.x/pd.u_b); % to make membrane stress terms of dimensionless size eps in momentum equation
     pd.mu_s = mus;
     [pd,ps,pp,oo] = nevis_add_parameters_ice(pd,ps,pp,oo); % add parameters etc needed to solve for ice velocity
@@ -160,7 +160,9 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus)
     dd = measures_for_nevis_140km;
     un = dd.u_obs_dim/(pd.ty*ps.u);
     vn = dd.v_obs_dim/(pd.ty*ps.u);
-
+    % un = gg.nmeanx2*vv_prev.u;
+    % vn = gg.nmeany2*vv_prev.v;
+    % check if un(gg.ebdy2) agrees with dd.u_obs_dim(gg.ebdy2)/(pd.ty*ps.u)
     un_filled = un(:);
     vn_filled = vn(:);
 

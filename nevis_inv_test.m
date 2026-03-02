@@ -866,9 +866,19 @@ function [J, g] = objective_and_grad(c, u_obs, v_obs, ...
 
     [u, v] = nevis_velocity(aa.H, u, v, N, aa_loc, pp, gg, oo);
 
-    % Implement Dirichlet boundary condition here
-    % u(gg.ebdy2) = u_obs(gg.ebdy2);
-    % v(gg.fbdy2) = v_obs(gg.fbdy2);
+    % --- Check: boundary values must match observations exactly ---
+    % nevis_velocity never modifies ebdy2/fbdy2 edges (they are treated as
+    % prescribed BCs via the rhs), so u(ebdy2) should still equal u_obs(ebdy2).
+    % A mismatch here means the initial guess was wrong or there is a bug.
+    ebdy_err_u = max(abs(u(gg.ebdy2) - u_obs(gg.ebdy2)));
+    fbdy_err_v = max(abs(v(gg.fbdy2) - v_obs(gg.fbdy2)));
+    if ebdy_err_u > 1e-10 || fbdy_err_v > 1e-10
+        warning('objective_and_grad: boundary mismatch! max|u(ebdy)-u_obs(ebdy)|=%.2e, max|v(fbdy)-v_obs(fbdy)|=%.2e', ...
+            ebdy_err_u, fbdy_err_v);
+        % Force consistency: overwrite with observed BCs
+        u(gg.ebdy2) = u_obs(gg.ebdy2);
+        v(gg.fbdy2) = v_obs(gg.fbdy2);
+    end
 
     % --- 2. Velocity misfit ---
     ein = gg.ein2; 

@@ -72,8 +72,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
     if ~isfield(pp,'c61'), pp.c61 = 1; end % dimensionless coefficient in front of sliding law in force balance
     if ~isfield(pp,'c62'), pp.c62 = 1; end % dimensionless coefficient in front of longitudinal stress in force balance
     if ~isfield(pp,'eps_reg'), pp.eps_reg = 1e-16; end % regularisation on strain rates
-    if ~isfield(pp,'Ub_reg'), pp.Us_reg = 1e-10; end % regularisation on sliding speed
-    if ~isfield(pp,'N_reg_s'), pp.N_reg_s = 1e-3; end % regularisation on effective pressure in sliding law
+    if ~isfield(pp,'Us_reg'), pp.Us_reg = 1e-10; end % regularisation on sliding speed
+    if ~isfield(pp,'N_reg_s'), pp.N_reg_s = 1e-4; end % regularisation on effective pressure in sliding law
     if ~isfield(pp,'taud_reg'), pp.taud_reg = 1e-16; end % regularisation on basal shear stress [ may not be needed ? ]
     if ~isfield(pp,'C2'), pp.C2 = 0; end % added power-law coefficient in sliding law
     if ~isfield(pp,'alpha_u'), pp.alpha_u = 1; end % coefficient to calculate ice speed from velocity components
@@ -240,7 +240,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
 
     % effective pressure
     N = aa.phi_0 - phi;
-    Ni = Reg_Ni(N,pp.N_reg_s,oo.N_coupling); % effective pressure non-negative
+    % Ni = Reg_Ni(N,pp.N_reg_s,oo.N_coupling); % effective pressure non-negative
 
     % elastic sheet
     he = he_fun(aa.phi_0-phi,aa.phi_0-aa.phi_a,pp,oo);
@@ -252,7 +252,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
     hm = hm_fun(phi-aa.phi_a,aa.phi_0-aa.phi_a,pp.c25*sigma_m,pp,oo);
     
     % ice stresses
-    [~,~,~,~,~,~,tau_b] = nevis_stresses(aa.H,u,v,Ni,aa,pp,gg,oo);
+    % [~,~,~,~,~,~,tau_b] = nevis_stresses(aa.H,u,v,Ni,aa,pp,gg,oo);
 
     % % upwind directions
     % eup = gg.econnect(:,1).*(Psi_x<=0) + gg.econnect(:,2).*(Psi_x>0);
@@ -1663,21 +1663,21 @@ end
 function tau_b_over_Ub = taub_over_Us(Ub,N,C,mu,pp,gg,oo)
 % cavity-based sliding law
 % tau_b ~ mu*N for large Ub, tau_b ~ C*Ub^(1/n) for small Ub 
-    tau_b_over_Ub = N.*(Ub+pp.Us_reg).^(1/pp.n_slide-1).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide) + pp.C2*(Ub+pp.Us_reg).^(1/pp.n_slide-1);
+    tau_b_over_Ub = N.*(Ub+pp.Us_reg).^(1/pp.n_slide-1).*(mu.^(-pp.n_slide).*(Ub+pp.Us_reg)+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide) + pp.C2*(Ub+pp.Us_reg).^(1/pp.n_slide-1);
 end
 
 function Dtaub_over_Us_DUs = Dtaub_over_Us_DUs(Ub,N,C,mu,pp,gg,oo)
 % derivative of cavity-based sliding law wrt Ub
-    term1 = (1/pp.n_slide-1)*N.*(Ub+pp.Us_reg).^(1/pp.n_slide-2).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide);
-    term2 = (1/pp.n_slide)*N.*(Ub+pp.Us_reg).^(1/pp.n_slide-1).*(mu.^(-pp.n_slide)).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide-1);
+    term1 = (1/pp.n_slide-1)*N.*(Ub+pp.Us_reg).^(1/pp.n_slide-2).*(mu.^(-pp.n_slide).*(Ub+pp.Us_reg)+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide);
+    term2 = (1/pp.n_slide)*N.*(Ub+pp.Us_reg).^(1/pp.n_slide-1).*(mu.^(-pp.n_slide)).*(mu.^(-pp.n_slide).*(Ub+pp.Us_reg)+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide-1);
     Dtaub_over_Us_DUs = term1 - term2 + pp.C2*(1/pp.n_slide-1)*(Ub+pp.Us_reg).^(1/pp.n_slide-2);
 end
 
 function Dtaub_over_Us_DN = Dtaub_over_Us_DN(Ub,N,C,mu,pp,gg,oo)
 % derivative of cavity-based sliding law wrt N
     % tau_b_over_Ub = taub(Ub,N,C,mu,pp,gg,oo);
-    term1 = (Ub+pp.Us_reg).^(1/pp.n_slide-1).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide);
-    term2 = C.^(-pp.n_slide).*N.^(pp.n_slide).*(Ub+pp.Us_reg).^(1/pp.n_slide-1).*(mu.^(-pp.n_slide).*Ub+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide-1);
+    term1 = (Ub+pp.Us_reg).^(1/pp.n_slide-1).*(mu.^(-pp.n_slide).*(Ub+pp.Us_reg)+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide);
+    term2 = C.^(-pp.n_slide).*N.^(pp.n_slide).*(Ub+pp.Us_reg).^(1/pp.n_slide-1).*(mu.^(-pp.n_slide).*(Ub+pp.Us_reg)+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide-1);
     Dtaub_over_Us_DN = term1 - term2;
 end
 

@@ -298,6 +298,7 @@ while t<t_stop+oo.dt_min
             return;
         end
         % convergence, plot the velocity field for maintenance
+        % [u_inv, v_inv] = nevis_velocity(aa.H, vv1.u, vv1.v, aa.phi_0-vv1.phi, aa, pp, gg, oo);
         [u_inv, v_inv] = nevis_velocity(aa.H, aa.u_obs, aa.v_obs, aa.phi_0-vv1.phi, aa, pp, gg, oo);
         if oo.visualize_vel
             vv_vel_solve = vv;
