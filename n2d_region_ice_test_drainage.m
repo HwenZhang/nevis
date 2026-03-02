@@ -5,8 +5,8 @@ clc,clear
 format compact
 
 %% read in the initial condition
-casename = 'n2d_region_ice_meanperms1_Hreg1000_kappa1e_10_mu2e1_bdtest_drainage_dc'; % drainage system filename
-initname = 'n2d_region_ice_meanperms1_Hreg1000_kappa1e_10_mu2e1_bdtest';
+casename = 'n2d_region_ice_Cinv_test_drainage'; % drainage system filename
+initname = 'n2d_region_ice_Cinv_test';
 
 %% parameters
 data = load(['./results/' initname '/' initname]);
@@ -102,7 +102,7 @@ oo.RACMO_runoff = 0;                                            % If set to 1 tu
 oo.distributed_input = 1;                                       % If set to 1 distributes input across the domain
                                                                 % 0 inputs to discrete moulins
 
-pp.meltE = @(t) (0/1000/pd.td/ps.m)*(1-exp(-t/(30*pd.td/ps.t))); 
+pp.meltE = @(t) (30/1000/pd.td/ps.m)*(1-0*exp(-t/(30*pd.td/ps.t))); 
 pp.runoff_function = @(t) runoff(((t*ps.t)/pd.td),runoff_2022_nevis140)./ps.m;  % distributed input (m/sec)
 pp.input_function = @(t) 0;
 
@@ -115,7 +115,7 @@ oo.save_pts_all = 1;
 pp.ni_gps = nevis_gps_array([40e3,40e3,20e3,0,-40e3]/ps.x, [-15e3,-5e3,-15e3,-25e3,-30e3]/ps.x, gg, oo); % GPS station points
 oo.pts_ni = [pp.ni_l' pp.ni_m' pp.ni_gps];    
 % oo.t_span = [(1:1:365*1)*pd.td/ps.t];
-oo.t_span = [(1:1:9)*pd.td/ps.t (9.5:0.1:10.5)*pd.td/ps.t (11:1:50)*pd.td/ps.t];
+oo.t_span = [(1:1:9)*pd.td/ps.t (9.5:0.1:10.5)*pd.td/ps.t (11:1:60)*pd.td/ps.t];
 
 %% save initial parameters
 save([oo.rn, oo.fn],'pp','pd','ps','gg','aa','vv','oo');

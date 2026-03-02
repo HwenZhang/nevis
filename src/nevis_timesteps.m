@@ -215,6 +215,7 @@ while t<t_stop+oo.dt_min
         tt(ti).U = mean(Us);                                % mean ice velocity, scaled with ps.u
         disp(['Mean velocity of the ice sheet is ' num2str(60*tt(ti).U) ' m/yr.']);
     end
+    disp(['Mean effective pressure within the domain is ' num2str(tt(ti).N*8927100/1e6) ' MPa.']);
     if oo.save_pts_all
          tt(ti).pts_phi = vv.phi(oo.pts_ni);
          tt(ti).pts_hs = vv.hs(oo.pts_ni);
@@ -297,7 +298,14 @@ while t<t_stop+oo.dt_min
             return;
         end
         % convergence, plot the velocity field for maintenance
-        if oo.visualize_vel, nevis_plot_velocity(gg,vv); end
+        [u_inv, v_inv] = nevis_velocity(aa.H, aa.u_obs, aa.v_obs, aa.phi_0-vv1.phi, aa, pp, gg, oo);
+        if oo.visualize_vel
+            vv_vel_solve = vv;
+            vv_vel_solve.u = u_inv;
+            vv_vel_solve.v = v_inv;
+            nevis_plot_velocity(gg,vv,1); 
+            nevis_plot_velocity(gg,vv_vel_solve,2);
+        end
     end
     
     %% time averaging of pressure
@@ -331,7 +339,7 @@ while t<t_stop+oo.dt_min
             aa.phi = aa.phi_b(gg.nbdy);                    % boundary conditions
             % nevis_plot_grid(gg,gg.nbdy);  % for maintenance
         end
-
+        
         % update boundary nodes for blister
         % ni1 = gg.nbdy(vv2.R_bdy_blister<0); % Dirichlet nodes with inflow
         % ni2 = gg.n1m((vv.pb(gg.n1m)+aa.phi_a(gg.n1m)-aa.phi_0(gg.n1m))>pp.p_a_reg); % boundary nodes with too high pressure

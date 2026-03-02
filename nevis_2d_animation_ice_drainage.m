@@ -1,5 +1,5 @@
 %% Import necessary libraries
-casename = 'n2d_moulin0e00_eps1e_01_kappa1e_10_mu1e1_V1e7_drainage';
+casename = 'n2d_region_ice_Cinv_test_drainage';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];             % path to the case results

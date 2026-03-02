@@ -2,12 +2,11 @@
 
 # Move generated scripts to the root directory
 # mv ./generated_scripts/spinup/* ./
-<<<<<<< HEAD
-mv ./generated_scripts/ice_dynamics/spinup/* ./
-mv ./generated_scripts/ice_dynamics/drainage/* ./
-=======
+
+# mv ./generated_scripts/ice_dynamics/spinup/* ./
+# mv ./generated_scripts/ice_dynamics/drainage/* ./
+
 # mv ./generated_scripts/drainage/* ./
->>>>>>> btest
 # mv ./generated_scripts/output/* ./
 # mv ./generated_scripts/convergence_tests/* ./
 # mv ./generated_scripts/case_studys/* ./

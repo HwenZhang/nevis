@@ -18,7 +18,7 @@ function [u,v] = nevis_velocity(H,u,v,N,aa,pp,gg,oo)
 % 10 Oct 2025 - edited to make nevis_velocity.m, compatibale with nevis
 
 % ITERATION OPTIONS
-if ~isfield(oo,'iter_max'), oo.iter_max = 20; end
+if ~isfield(oo,'iter_max'), oo.iter_max = 100; end
 if ~isfield(oo,'tol_vel'), oo.tol_vel = 1e-4; end
 if ~isfield(oo,'tol_eta'), oo.tol_eta = 1e-6; end
 

@@ -1,6 +1,6 @@
 %% Import necessary libraries
 % casename = oo.casename;
-casename = 'n2d_bdtest_0m3s_kappa1e_20_mu1e01_hbreg5e_3_spinup';  % specify the case name
+casename = 'n2d_region_ice_Cinv_test';  % specify the case name
 oo.plot_residual = 0;
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)

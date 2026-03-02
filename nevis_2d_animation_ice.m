@@ -6,7 +6,8 @@
 clc; clear; close all;
 
 %% Settings
-casename = 'n2d_region_ice_meanperms1_Hreg1000_kappa1e_10_mu2e1_bdtest_drainage_dc';
+casename = 'n2d_region_ice_Cinv_test_drainage';
+casename = 'n2d_region_ice_Cinv_test';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];
 oo.rn = [oo.root,oo.results,oo.fn];
@@ -21,8 +22,8 @@ cmap = [linspace(0,1,n)', linspace(0,1,n)', ones(n,1);
         ones(n,1), linspace(1,0,n)', linspace(1,0,n)'];
 
 %% Time range
-tmin_yr = 0;           % start time in years
-tmax_yr = tmin_yr + 0.1;  % end time in years
+tmin_yr = 0.0;           % start time in years
+tmax_yr = tmin_yr + 1;  % end time in years
 tmin = tmin_yr * 365;  % in days
 tmax = tmax_yr * 365;
 

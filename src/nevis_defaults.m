@@ -50,7 +50,7 @@ if ~isfield(pd,'S_rc'), pd.S_rc = 0; end                           % max conduit
 
 if ~isfield(pd,'A_m'), pd.A_m = 10; end                            % moulin cross-sectional area [m^2]
 if ~isfield(pd,'l_c'), pd.l_c = 10; end                            % roughness scale for conduit melting [m]
-if ~isfield(pd,'u_b'), pd.u_b = 60/pd.ty; end                      % sliding speed [m/s]
+if ~isfield(pd,'u_b'), pd.u_b = 100/pd.ty; end                      % sliding speed [m/s]
 if ~isfield(pd,'sigma'), pd.sigma = 0; end                         % englacial void fraction 
 if ~isfield(pd,'melt'), pd.melt = 0*((pd.G)/pd.rho_w/pd.L); end    % basal melt rate [m/s]
 if ~isfield(pd,'phi_s'), pd.phi_s = -inf; end                      % sea level potential [Pa]
@@ -145,6 +145,6 @@ if ~isfield(oo,'dt_max'), oo.dt_max = 1e0; end
 if ~isfield(oo,'dt_min'), oo.dt_min = 1e-5; end
 if ~isfield(oo,'dt_factor'), oo.dt_factor = 2; end
 if ~isfield(oo,'check_Fs'), oo.check_Fs = 1; end
-if ~isfield(oo,'Tol_Fs'), oo.Tol_Fs = oo.Tol_F*[1 1 .1 .1 .1 .1 .1 .1 .1 .1]; end
+if ~isfield(oo,'Tol_Fs'), oo.Tol_Fs = oo.Tol_F*[1 1 .1 .1 .1 .1 .1 .1 1e-1 1e-1]; end
 
 end
