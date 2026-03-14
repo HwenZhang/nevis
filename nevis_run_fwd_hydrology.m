@@ -106,11 +106,13 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus)
     % oo.boundary_method = 'vel_tblr';
 
     %% add parameters and boundary labels for ice velocity
-    pd.n_glen = 1;
-    eps = 0.05; % ratio of membrane stress to driving stress, used to set the ice softness to ensure that membrane stresses are small in this test case, eps rises, A decreases, and viscosity increases
-    pd.A_glen = 1/2/((eps)*pd.rho_i*pd.g*ps.z*ps.x/pd.u_b); % to make membrane stress terms of dimensionless size eps in momentum equation
-    pd.mu_s = mus;
-    [pd,ps,pp,oo] = nevis_add_parameters_ice(pd,ps,pp,oo); % add parameters etc needed to solve for ice velocity
+    % pd.n_glen = 1;
+    % eps = 0.05; % ratio of membrane stress to driving stress, used to set the ice softness to ensure that membrane stresses are small in this test case, eps rises, A decreases, and viscosity increases
+    % pd.A_glen = 1/2/((eps)*pd.rho_i*pd.g*ps.z*ps.x/pd.u_b); % to make membrane stress terms of dimensionless size eps in momentum equation
+    % pd.mu_s = mus;
+    % [pd,ps,pp,oo] = nevis_add_parameters_ice(pd,ps,pp,oo); % add parameters etc needed to solve for ice velocity
+
+    [pd,ps,pp,oo] = nevis_update_parameters_ice(pd,ps,pp,oo); % add parameters etc needed to solve for ice velocity
     gg = nevis_label_ice_test(gg, oo); % add boundary labels needed for ice velocity
 
     %% load the slipperiness field for the inversion test
@@ -149,9 +151,11 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus)
 
     % --- Fresh start from spinup state ---
     fprintf('  Starting from k_f=0.9 initial condition\n');
-    pd.k_f = 0.9;                                     % percent overburden (k-factor) 
-    vv.phi = aa.phi_a+pd.k_f*(aa.phi_0-aa.phi_a);     % initial pressure  k_f*phi_0
-    N = aa.phi_0-vv.phi;                              % N for initial cavity sheet size 
+    % pd.k_f = 0.9;                                     % percent overburden (k-factor) 
+    % vv.phi = aa.phi_a+pd.k_f*(aa.phi_0-aa.phi_a);     % initial pressure  k_f*phi_0
+    % N = aa.phi_0-vv.phi;                              % N for initial cavity sheet size 
+    N = vv_prev.N;
+    vv.phi = aa.phi_0 - N;
     vv.hs = ((((pd.u_b*pd.h_r/pd.l_r)./((pd.u_b/pd.l_r)+(pd.K_c.*((ps.phi*N).^3)))))./ps.h); % initial cavity sheet size as f(N)
 
     %% initial ice velocity
@@ -249,7 +253,7 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus)
     % Add GPS station points downstream of the moulin every 5km
     pp.ni_gps = nevis_gps_array([40e3,40e3,20e3,0,-40e3]/ps.x, [-15e3,-5e3,-15e3,-25e3,-30e3]/ps.x, gg, oo); % GPS station points
     oo.pts_ni = [pp.ni_l' pp.ni_m' pp.ni_gps];    
-    oo.t_span = [(1:1:75)*pd.td/ps.t];
+    oo.t_span = [(1:1:35)*pd.td/ps.t];
     % oo.t_span = [(1:1:59)*pd.td/ps.t (59.5:0.001:60.5)*pd.td/ps.t (61:1:120)*pd.td/ps.t];
 
     %% save initial parameters

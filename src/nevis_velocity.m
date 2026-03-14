@@ -18,9 +18,10 @@ function [u,v] = nevis_velocity(H,u,v,N,aa,pp,gg,oo)
 % 10 Oct 2025 - edited to make nevis_velocity.m, compatibale with nevis
 
 % ITERATION OPTIONS
-if ~isfield(oo,'iter_max'), oo.iter_max = 100; end
+if ~isfield(oo,'iter_max'), oo.iter_max = 200; end
 if ~isfield(oo,'tol_vel'), oo.tol_vel = 1e-4; end
 if ~isfield(oo,'tol_eta'), oo.tol_eta = 1e-6; end
+if ~isfield(oo,'tol_res'), oo.tol_res = 1e-3; end  % nonlinear Picard residual tolerance
 
 % DIAGNOSTIC OPTIONS
 if ~isfield(oo,'display_norms'), oo.display_norms = 0; end          % display norms at each iteration
@@ -132,13 +133,11 @@ etabar = calculate_viscosity(u,v,pp,gg,oo); % viscosity [nIJ-by-1]
 
 %iterate nonlinear viscosity
 iter = 1;
+norm_vel = inf; norm_eta = inf; norm_res = inf;
+
 while iter <= oo.iter_max 
     
-    % remember current values for convergence check
-    U_old = U; 
-    etabar_old = etabar;
-    
-    % setup linear system for velocities
+    % setup linear system for velocities (using current eta, U, slide_fun)
     H_times_etabar_matrix = sparse(nin,nin,H(nin).*etabar(nin),nIJ,nIJ);                   % [nIJ-by-nIJ]
     H_times_etabar_matrix_c = sparse(cin,cin,cmean(cin,ns)*(H(ns).*etabar(ns)),cIJ,cIJ);   % [cIJ-by-cIJ]
  
@@ -160,41 +159,59 @@ while iter <= oo.iter_max
     Fy_vb = pp.c61*sparse(1:length(fin),1:length(fin),-fmean(fin,ns)*( slide_fun(U(ns),N(ns),C(ns),mu(ns),pp,gg,oo) ),length(fin),length(fin)) ...
         + pp.c62*( fddy(fin,nin)*(4*H_times_etabar_matrix(nin,nin)*nddy(nin,fin)) + fddx(fin,cin)*(H_times_etabar_matrix_c(cin,cin)*cddx(cin,fin)) );
     
-    % solve for velocities 
+    % --- Nonlinear (Picard) residual ---
+    % F(u, eta(u)) = A(eta)*u + b  should be zero at convergence.
+    % Uses CURRENT viscosity and sliding law evaluated at current (u,v),
+    % unlike post-solve linear residual which is always ~0 by construction.
+    res_vec = [Fx_ub*u(ein)+Fx_vb*v(fin)+Fx_res; ...
+               Fy_ub*u(ein)+Fy_vb*v(fin)+Fy_res];
+    driving_scale = norm([Fx_res; Fy_res], inf);
+    norm_res = norm(res_vec, inf) / max(driving_scale, 1e-16);
+    
+    % --- Display norms ---
+    if oo.display_norms
+        fprintf('  iter %3d:  norm_vel = %.3e,  norm_res = %.3e,  norm_eta = %.3e\n', ...
+            iter, norm_vel, norm_res, norm_eta);
+    end
+    
+    % --- Convergence check ---
+    % Require BOTH small velocity change AND small nonlinear residual.
+    % This prevents premature stopping when Picard iteration stalls.
+    if iter > 1 && norm_vel < oo.tol_vel
+        if norm_res < oo.tol_res
+            if oo.verb, fprintf('Converged at iter %d: norm_vel=%.2e, norm_res=%.2e\n', ...
+                    iter, norm_vel, norm_res); end
+            break;
+        else
+            if oo.verb || oo.display_norms
+                fprintf('  ⚠ Picard stalling: norm_vel=%.2e < tol, but norm_res=%.2e still large\n', ...
+                    norm_vel, norm_res);
+            end
+        end
+    end
+    
+    if iter == oo.iter_max
+        fprintf('!!! Max iterations (%d) reached: norm_vel=%.2e, norm_res=%.2e\n', ...
+            oo.iter_max, norm_vel, norm_res);
+        break;
+    end
+    
+    % --- Solve for velocities ---
     rhs = -[Fx_res; Fy_res];
     matrix = [Fx_ub Fx_vb; Fy_ub Fy_vb];
     temp = matrix\rhs;
     u(ein) = temp(1:length(ein)); 
     v(fin) = temp(length(ein)+(1:length(fin)));
     
-    % update speed and viscosity
+    % --- Update speed and viscosity ---
+    U_old = U; etabar_old = etabar;
     U = ( (nmeanx(:,es)*u(es)).^2+(nmeany(:,fs)*v(fs)).^2 ).^(1/2); % [n_IJ-by-1]
     etabar = calculate_viscosity(u,v,pp,gg,oo); % [nIJ-by-1]
     
-    % check convergence
-%      norm_vel = norm((U-U_old)./U,2)/length(U);  % based on relative change of speed
-   norm_vel = norm((U(ns)-U_old(ns)),inf)/(norm(U(ns),2)+pp.Ub_reg);  % based on relative change of speed
- %   norm_vel = norm(U-U_old,inf);    % based on absolute change of speed
-   norm_eta = norm((etabar(ns)-etabar_old(ns)),2)/norm(etabar(ns),2);  % based on relative change of viscosity
-  
-    if oo.display_norms
-        disp(['norm_vel = ',num2str(norm_vel),' after ',num2str(iter),' iterations']);
-        disp(['norm_eta = ',num2str(norm_eta),' after ',num2str(iter),' iterations']);
-    end
-
-    % if norm_eta < oo.tol_eta && norm_vel < oo.tol_vel, 
-    %     if oo.verb, disp(['Less than tolerance: stopping']); end; 
-    %     break,
-    % end
-    % if norm_eta < oo.tol_eta, 
-    %     if oo.verb, disp(['Less than tolerance: stopping']); end; 
-    %     break, 
-    % end
-    if norm_vel < oo.tol_vel 
-        if oo.verb, disp(['Less than tolerance: stopping']); end
-        break,
-    end
-    if iter == oo.iter_max, disp(['!!! Max iterations reached: stopping']); break; end
+    % --- Change norms ---
+    norm_vel = norm((U(ns)-U_old(ns)),inf)/(norm(U(ns),2)+pp.Ub_reg);
+    norm_eta = norm((etabar(ns)-etabar_old(ns)),2)/norm(etabar(ns),2);
+    
     iter = iter+1; 
 
 end

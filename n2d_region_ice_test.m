@@ -8,7 +8,7 @@ oo.root = './';                                % filename root
 oo.code = './src';                             % code directory   
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name
-oo.casename = 'n2d_region_ice_Cinv_test1'; % casename
+oo.casename = 'n2d_region_ice_Cinv_test2'; % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
 oo.dn = [oo.root, 'data/', oo.dataset, '/'];   % path to the data
@@ -24,11 +24,12 @@ oo.relaxation_term = 1;                         % 0 is alpha hb, 1 is alpha delt
 oo.initial_condition = 1;                       % 1 is default condition from 0365.mat, 0 is using steady-state drainage system, winter or summertime
 oo.mean_perms = 1;
 oo.modified_mean_perms = 0;
-oo.display_residual =0;
+oo.display_residual = 0;
 oo.N_coupling = 1; % turn on effective pressure coupling                                   
-oo.U_coupling = 1; % turn on basal sliding coupling
+oo.U_coupling = 0; % turn on basal sliding coupling
 oo.boundary_method = 'stress_l_vel_tbl';
 oo.mask_boundary_method = 'stress_free';
+oo.plot_residual = 0;
 
 pd.alpha_b = 0;                                 % relaxation rate (s^-1)
 pd.kappa_b = 1e-10;                             % relaxation coeff
@@ -58,7 +59,6 @@ pd.B_reg = pd.Ye*(1000)^3/(12*(1-0.33)^2);      % Reg parameter for bending stif
 % non-dimensionalise
 ps = struct;
 [ps,pp] = nevis_nondimension(pd,ps,oo);
-pp.n_slide = 3;
 
 %% grid and geometry
 load([oo.dn '/' 'morlighem_for_nevis_140km']); % load Morlighem bedmap (previously collated)
@@ -100,15 +100,22 @@ oo.adjust_boundaries = 1;                         % enable option of changing co
 % oo.boundary_method = 'vel_tblr';
 
 %% add parameters and boundary labels for ice velocity
-pd.n_glen = 1;
-eps = 0.2; % ratio of membrane stress to driving stress, used to set the ice softness to ensure that membrane stresses are small in this test case, eps rises, A decreases, and viscosity increases
-pd.A_glen = 1/2/((eps)*pd.rho_i*pd.g*ps.z*ps.x/pd.u_b); % to make membrane stress terms of dimensionless size eps in momentum equation
-pd.mu_s = 0.5;
-[pd,ps,pp,oo] = nevis_add_parameters_ice(pd,ps,pp,oo); % add parameters etc needed to solve for ice velocity
+% pd.n_glen = 1;
+% eps = 0.05; % ratio of membrane stress to driving stress, used to set the ice softness to ensure that membrane stresses are small in this test case, eps rises, A decreases, and viscosity increases
+% pd.A_glen = 1/2/((eps)*pd.rho_i*pd.g*ps.z*ps.x/pd.u_b); % to make membrane stress terms of dimensionless size eps in momentum equation
+% pd.mu_s = 0.5;
+% [pd,ps,pp,oo] = nevis_add_parameters_ice(pd,ps,pp,oo); % add parameters etc needed to solve for ice velocity
+[pd,ps,pp,oo] = nevis_update_parameters_ice(pd,ps,pp,oo); % add parameters etc needed to solve for ice velocity
 gg = nevis_label_ice_test(gg, oo); % add boundary labels needed for ice velocity
 
+if ~isfield(pp,'eps_reg'), pp.eps_reg = 1e-6; end % regularisation on strain rates
+if ~isfield(pp,'Ub_reg'), pp.Ub_reg = 1e-16; end % regularisation on sliding speed (max-based, matches nevis_velocity)
+if ~isfield(pp,'N_slide_reg'), pp.N_slide_reg = 1e-4; end % regularisation on effective pressure (max-based, matches nevis_velocity)
+if ~isfield(pp,'taud_reg'), pp.taud_reg = 1e-16; end % regularisation on basal shear stress [ may not be needed ? ]
+if ~isfield(pp,'C2'), pp.C2 = 0; end % added power-law coefficient in sliding law
+
 %% load the slipperiness field for the inversion test
-load(['./data/C_inversion_results_test.mat'], 'C_hat_dim');
+load(['./data/C_inversion_outer1.mat'], 'C_hat_dim');
 
 %% plot grid
 % nevis_plot_grid_ice(gg); return;                    % check to see what grid looks like
@@ -118,13 +125,17 @@ load(['./data/C_inversion_results_test.mat'], 'C_hat_dim');
 % C_hat_dim is dimensional; convert back to nondimensional C
 aa.C = C_hat_dim * (ps.u_b^(1/pp.n_slide) / ps.tau);
 % plot the C field
-figure;
-pcolor(gg.nx, gg.ny, reshape(aa.C, gg.nI, gg.nJ)); shading flat; colorbar();
-title('Nondimensional slipperiness field C');
+% figure;
+% pcolor(gg.nx, gg.ny, reshape(aa.C, gg.nI, gg.nJ)); shading flat; colorbar();
+% title('Nondimensional slipperiness field C');
 
-pd.k_f = 0.9;                                     % percent overburden (k-factor) 
-vv.phi = aa.phi_a+pd.k_f*(aa.phi_0-aa.phi_a);     % initial pressure  k_f*phi_0
-N = aa.phi_0-vv.phi;                              % N for initial cavity sheet size 
+load(['./data/velocity_inverted.mat'], 'vv_hydro');
+% pd.k_f = 0.9;                                     % percent overburden (k-factor) 
+% vv.phi = aa.phi_a+pd.k_f*(aa.phi_0-aa.phi_a);     % initial pressure  k_f*phi_0
+% N = aa.phi_0-vv.phi;                              % N for initial cavity sheet size 
+
+N = vv_hydro.N;     
+vv.phi = aa.phi_0 - N;
 vv.hs = ((((pd.u_b*pd.h_r/pd.l_r)./((pd.u_b/pd.l_r)+(pd.K_c.*((ps.phi*N).^3)))))./ps.h); % initial cavity sheet size as f(N)
 
 %% initial ice velocity
@@ -168,15 +179,23 @@ end
 
 vv.u = gg.emean2*un_filled;
 vv.v = gg.fmean2*vn_filled;
-% vv.u = gg.emean2*un(:);
-% vv.v = gg.fmean2*vn(:);
 vv.u(gg.eout2) = NaN;
 vv.v(gg.fout2) = NaN;
+aa.u_obs = vv.u;
+aa.v_obs = vv.v;
+
+% Option 3: used inverted velocity
+% vv.u = vv_hydro.u;
+% vv.v = vv_hydro.v;
+% vv.u(gg.eout2) = NaN;
+% vv.v(gg.fout2) = NaN;
+% aa.u_obs = vv.u;
+% aa.v_obs = vv.v;
 
 % vv.u = reshape(gg.emean2*un(:), gg.eI, gg.nJ);
 % vv.v = reshape(gg.fmean2*vn(:), gg.nI, gg.fJ); %% plot initial velocity field
-nevis_plot_velocity(gg, vv);
-return;
+nevis_plot_velocity(gg, vv, 1, 0);
+% return;
 
 %% boundary conditions
 aa.phi_b = max(aa.phi_0,aa.phi_a);                % prescribed boundary pressure at overburden or atmospheric

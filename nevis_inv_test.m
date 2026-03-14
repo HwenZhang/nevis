@@ -1,11 +1,14 @@
 %% NEVIS C-field inversion script
 % Invert for the spatial basal friction coefficient C(x,y) using adjoint method
-% Given: observed surface velocity (u_obs, v_obs), ice geometry (H, s, b),
-%        effective pressure N, Coulomb coefficient mu
+% Given: observed surface velocity (u_obs, v_obs), 
+%        ice geometry (H, s, b),
+%        effective pressure N, 
+%        Coulomb coefficient mu
 % Control variable: c = log(C) on nodes
-%
+
 % The sliding law is:
 %   tau_b/Ub = N * Ub^(1/n-1) * (mu^(-n)*Ub + C^(-n)*N^n)^(-1/n) + C2*Ub^(1/n-1)
+%   C2 is assumed to be 0 for the moment
 %
 % Author: Hanwen Zhang
 % Date: Feb 2026
@@ -27,26 +30,16 @@ addpath(oo.code);
 
 % load saved spinup state
 load([oo.rn, oo.fn], 'pp','pd','ps','gg','aa','oo');
-
-pd.u_b = 100/pd.ty;
-pd.mu_s = 0.5;
-pd.n_glen = 1;
-pd.n_slide = 1;
-eps = 0.05; % ratio of membrane stress to driving stress, used to set the ice softness to ensure 
-% that membrane stresses are small in this test case, eps rises, A decreases, and viscosity increases
-pd.A_glen = 1/2/((eps)*pd.rho_i*pd.g*ps.z*ps.x/pd.u_b); % to make membrane stress terms of dimensionless size eps in momentum equation
-% Force-update ps.eta from the new pd.A_glen (loaded ps may have eta from a spinup with different eps).
-% nevis_add_parameters_ice only sets ps.eta if it is absent, so we must clear it first.
-if isfield(ps,'eta'), ps = rmfield(ps,'eta'); end
-[pd,ps,pp,oo] = nevis_add_parameters_ice(pd,ps,pp,oo);
-% NOTE: nevis_add_parameters_ice sets pp.A_glen = 1 (hardcoded), ignoring pd.A_glen.
-% The eps-based pd.A_glen only affects ps.eta → pp.c62 (membrane stress coefficient).
+[pd,ps,pp,oo] = nevis_update_parameters_ice(pd,ps,pp,oo);
 
 % Picard iteration settings for velocity solver
 oo.iter_max = 100;      % increase from default 10 — essential for convergence
-oo.tol_vel = 1e-6;      % tighter convergence tolerance
+oo.tol_vel = 1e-6;      % convergence tolerance
 oo.display_norms = 0;   % set to 1 for debugging
 oo.verb = 0;            % suppress Picard iteration messages from nevis_velocity
+oo.display_norms = 0;
+oo.boundary_method = 'stress_l_vel_tbl';
+oo.mask_boundary_method = 'stress_free';  % allow outlet glaciers to flow freely at mask boundary
 
 fprintf('\n=== Key dimensionless parameters ===\n');
 fprintf('pp.n_glen  = %d\n', pp.n_glen);
@@ -61,41 +54,43 @@ fprintf('pp.C2      = %.4e\n', pp.C2);
 fprintf('================================\n\n');
 
 % add regularisation parameters to pp if not already present (for backward compatibility)
-if ~isfield(pp,'eps_reg'), pp.eps_reg = 1e-16; end % regularisation on strain rates
-if ~isfield(pp,'Ub_reg'), pp.Ub_reg = 1e-16; end % regularisation on sliding speed (max-based, matches nevis_velocity)
-if ~isfield(pp,'N_slide_reg'), pp.N_slide_reg = 1e-16; end % regularisation on effective pressure (max-based, matches nevis_velocity)
-if ~isfield(pp,'taud_reg'), pp.taud_reg = 1e-16; end % regularisation on basal shear stress [ may not be needed ? ]
-if ~isfield(pp,'C2'), pp.C2 = 0; end % added power-law coefficient in sliding law
+pp.eps_reg = 1e-6;      % regularisation on strain rates
+pp.Ub_reg = 1e-16;      % regularisation on sliding speed (max-based, matches nevis_velocity)
+pp.N_slide_reg = 1e-16; % regularisation on effective pressure (max-based, matches nevis_velocity)
+pp.taud_reg = 1e-16;    % regularisation on basal shear stress [ may not be needed ? ]
+pp.C2 = 0;              % added power-law coefficient in sliding law
 
 %% ============================================================
 %  2. Load or generate observed velocity
 %  ============================================================
 % Option A: load observed velocity from data file
+gg = nevis_label_ice_test(gg, oo);
 load([oo.dn 'measures_for_nevis_140km.mat']);  % [m/yr]
 dd = measures_for_nevis_140km;
 u_obs = dd.u_obs_dim / (ps.u_b * pd.ty);  % non-dimensionalise
 v_obs = dd.v_obs_dim / (ps.u_b * pd.ty);
-u_obs = gg.emean2*u_obs(:);
+u_obs = gg.emean2*u_obs(:);               % project edge vel onto nodes
 v_obs = gg.fmean2*v_obs(:);
 u_obs(gg.eout2) = NaN;
 v_obs(gg.fout2) = NaN;
 
-% observation mask: only fit where we have valid observations
+% Observation mask: only fit where we have valid observations
 % Exclude Dirichlet boundary edges — their velocity is prescribed, not controlled by C
-obs_mask_e = zeros(gg.eIJ,1);  obs_mask_e(gg.ein2) = 1;
-obs_mask_f = zeros(gg.fIJ,1);  obs_mask_f(gg.fin2) = 1;
+obs_mask_e = zeros(gg.eIJ,1);  
+obs_mask_e(gg.ein2) = 1;
+obs_mask_f = zeros(gg.fIJ,1); 
+obs_mask_f(gg.fin2) = 1;
 obs_mask_e(gg.ebdy2) = 0;  % exclude Dirichlet x-boundary edges
 obs_mask_f(gg.fbdy2) = 0;  % exclude Dirichlet y-boundary edges
 fprintf('Excluded %d ebdy + %d fbdy Dirichlet edges from misfit\n', ...
     length(gg.ebdy2), length(gg.fbdy2));
 
 % effective pressure for forward model (use spinup or assume N=1)
-% oo.initname = 'n2d_region_melt_meanperms1_Hreg1000_kappa1e_10_ks1e_03_mu1e1_spinup';
 oo.initname = 'n2d_region_ice_inversion_test';
-init_cond = load(['./results/' oo.initname '/' '0036.mat']); % load initial condition
-vv = init_cond.vv;                                % load state variables from the initial 
-% N_obs = 0.1*ones(gg.nIJ,1);
-N_obs = (aa.phi_0 - vv.phi);
+init_cond = load(['./results/' oo.initname '/' '0036.mat']); 
+                           % load initial condition
+vv = init_cond.vv;         % load state variables from the initial 
+N_obs = max(aa.phi_0 - vv.phi, pp.N_slide_reg);
 
 % no noise for real observations
 u_obs_noisy = u_obs;
@@ -126,26 +121,26 @@ v_obs_noisy = v_obs;
 %% ============================================================
 %  3. Inversion settings
 %  ============================================================
-opts_inv.u0_reg = 2e-1;      % velocity scale for relative misfit (dimensionless)
+opts_inv.u0_reg = 1e-1;      % velocity scale for relative misfit (dimensionless)
 
 % Continuation schedule (coarse -> fine): start strongly regularized, then relax
-opts_inv.alpha_schedule = [1e-3, 3e-4, 1e-4, 3e-5, 1e-5, 3e-6, 1e-7];
-opts_inv.gamma_schedule = [1e-6, 3e-7, 1e-7, 3e-8, 1e-8, 3e-9, 1e-10];
-opts_inv.alpha_schedule = [1e-3, 3e-4, 1e-4, 3e-5, 1e-6];
-opts_inv.gamma_schedule = [1e-6, 3e-7, 1e-7, 3e-8, 1e-9];
-opts_inv.alpha_schedule = [1e-3, 1e-4, 1e-5, 1e-6];
+% opts_inv.alpha_schedule = [1e-3, 3e-4, 1e-4, 3e-5, 1e-5, 3e-6, 1e-7];
+% opts_inv.gamma_schedule = [1e-6, 3e-7, 1e-7, 3e-8, 1e-8, 3e-9, 1e-10];
+% opts_inv.alpha_schedule = [1e-3, 3e-4, 1e-4, 3e-5, 1e-6];
+% opts_inv.gamma_schedule = [1e-6, 3e-7, 1e-7, 3e-8, 1e-9];
+opts_inv.alpha_schedule = [1e-3, 1e-4, 1e-9, 1e-12];
 opts_inv.gamma_schedule = [1e-6, 1e-7, 1e-8, 1e-9];
-opts_inv.max_iter_schedule = [30, 25, 5, 1];  % more iters when reg is strong
+opts_inv.max_iter_schedule = [25, 25, 2, 2];  % more iters when reg is strong
 % Iteration controls (per stage)
-opts_inv.max_iter_stage = 25;    % max iterations per continuation stage
-opts_inv.max_iter_total = 100;    % safety cap across all stages
+opts_inv.max_iter_stage = 50;    % max iterations per continuation stage
+opts_inv.max_iter_total = 200;    % safety cap across all stages
 
 % Convergence thresholds (per stage)
 opts_inv.J_tol = 1e-3;
 opts_inv.dJ_tol = 1e-6;
 
 % Outer loop: iterative C-N coupling
-opts_inv.max_outer_iter = 5;      % max C-N coupling iterations
+opts_inv.max_outer_iter = 2;      % max C-N coupling iterations
 opts_inv.C_tol = 1e-3;             % relative change in C for outer convergence
 opts_inv.N_tol = 1e-3;             % relative change in N for outer convergence
 
@@ -154,6 +149,7 @@ opts_inv.alpha = opts_inv.alpha_schedule(1);
 opts_inv.gamma = opts_inv.gamma_schedule(1);
 opts_inv.verbose = false;
 opts_inv.check_grad = false;  % set true to run Taylor test & per-component FD check
+opts_inv.speed_misfit = true; % true: misfit on speed |u|; false: misfit on components (u,v)
 
 % History
 history.stage = [];
@@ -170,10 +166,10 @@ outer_history.N_change = [];
 % initial guess for C (perturbed from truth for synthetic test)
 % load(['./data/C_inversion_results.mat'], 'C_hat_dim');
 % C_init = 0.01*C_hat_dim * (ps.u_b^(1/pp.n_slide) / ps.tau);
-
 C_init = ones(gg.nIJ,1);  % uniform prior
 c_prior = log(C_init);
 
+% % Estimate C value by balancing the driving stress and basal friction
 % U_obs_nodes = sqrt((gg.nmeanx2(:,gg.es2)*u_obs(gg.es2)).^2 + ...
 %     (gg.nmeany2(:,gg.fs2)*v_obs(gg.fs2)).^2);
 % % Surface gradient: nodes -> edges (eddx, fddy), then edges -> nodes (nmeanx2, nmeany2)
@@ -186,8 +182,6 @@ c_prior = log(C_init);
 % C_init = max(C_init, 0.01); 
 % C_init = min(C_init, 100); 
 % c_prior = log(C_init);
-
-% plot the prior C field
 % C_plot = reshape(C_init, gg.nI, gg.nJ);
 % xx = reshape(gg.nx, gg.nI, gg.nJ);
 % yy = reshape(gg.ny, gg.nI, gg.nJ);
@@ -196,8 +190,6 @@ c_prior = log(C_init);
 
 % build gradient operator L for regularisation (using grid finite differences)
 % L * c gives spatial gradient of c (defined on nodes)
-% eddx: [eIJ x nIJ] - x derivative at x-edges
-% fddy: [fIJ x nIJ] - y derivative at y-edges
 Lx = gg.eddx(gg.ein2, :);  % x-gradient at interior x-edges [length(ein2) x nIJ]
 Ly = gg.fddy(gg.fin2, :);  % y-gradient at interior y-edges [length(fin2) x nIJ]
 L = [Lx; Ly];
@@ -212,7 +204,7 @@ fprintf('========================================\n\n');
 
 c0 = c_prior;
 C_prev = exp(c0);
-N_current = N_obs;  % Initial N from input
+N_current = N_obs;   % Initial N from input
 vv_hydro = [];       % hydrology state (empty = fresh start on first iteration)
 
 for outer_iter = 1:opts_inv.max_outer_iter
@@ -253,7 +245,7 @@ for outer_iter = 1:opts_inv.max_outer_iter
 
     % Adaptive weight: w = 1 / (1 + beta * |grad(u)|/mean(|grad(u)|))
     % High gradient -> small w -> less regularization
-    beta_adaptive = 0.0;  % tuning parameter (increase to reduce reg more in shear zones)
+    beta_adaptive = 0.1;  % tuning parameter (increase to reduce reg more in shear zones)
     w_e = 1 ./ (1 + beta_adaptive * grad_mag_e / mean(grad_mag_e));
     w_f = 1 ./ (1 + beta_adaptive * grad_mag_f / mean(grad_mag_f));
 
@@ -294,7 +286,8 @@ for outer_iter = 1:opts_inv.max_outer_iter
         h_vals = [1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7];
         fprintf('  %12s  %14s  %14s  %10s  %10s\n', ...
             'h', '|J(c+h*dc)-J0|', '|...-h*g''dc|', 'ratio_1st', 'ratio_2nd');
-        err1_prev = NaN; err2_prev = NaN;
+        err1_prev = NaN; 
+        err2_prev = NaN;
         r2_vals = [];
         for ih = 1:length(h_vals)
             h = h_vals(ih);
@@ -452,11 +445,19 @@ for outer_iter = 1:opts_inv.max_outer_iter
     fprintf('Running forward model to update N...\n');
     N_old = N_current;  % save old N for convergence check
     
+    % before running the forward model, plot C in space
     aa.C = C_hat;
     [u_inv, v_inv] = nevis_velocity(aa.H, u_obs_noisy, v_obs_noisy, N_current, aa, pp, gg, oo);
     C_dim = C_hat * (ps.tau / ps.u_b^(1/pp.n_slide));
-    vv.hydro.u = u_inv;
-    vv.hydro.v = v_inv;
+
+    vv_hydro.u = u_inv;
+    vv_hydro.v = v_inv;
+    vv_hydro.N = N_current;
+    save('./data/velocity_inverted.mat', 'vv_hydro');
+
+    test
+    return;
+
     [N_new, vv_hydro] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_hydro, pd.mu_s);
     % N_new = N_old; 
 
@@ -664,6 +665,80 @@ xlabel('N [MPa]'); ylabel('Speed misfit [m/yr]');
 colorbar; title('(h) N vs misfit (color=log_{10}C)');
 
 drawnow;
+
+%% ============================================================
+%  5c. Basal friction distribution
+%  ============================================================
+% Compute tau_b on nodes using the same sliding law as nevis_velocity (slide_fun)
+U_nodes_fric = sqrt((gg.nmeanx2(:,gg.es2)*u_inv(gg.es2)).^2 + ...
+                    (gg.nmeany2(:,gg.fs2)*v_inv(gg.fs2)).^2);  % [nIJ x 1]
+Ub_fric  = max(U_nodes_fric, pp.Ub_reg);      % regularised speed
+Nr_fric  = max(N_current,    pp.N_slide_reg);  % regularised N
+C_fric   = C_hat;                             % inverted C
+mu_fric  = pp.mu * ones(gg.nIJ, 1);           % Coulomb coefficient
+
+% tau_b / Ub  (dimensionless)
+taub_over_Ub = Nr_fric .* Ub_fric.^(1/pp.n_slide-1) .* ...
+    (mu_fric.^(-pp.n_slide) .* Ub_fric + C_fric.^(-pp.n_slide) .* Nr_fric.^pp.n_slide).^(-1/pp.n_slide) ...
+    + pp.C2 * Ub_fric.^(1/pp.n_slide-1);
+
+% tau_b  [dimensional: Pa]
+tau_b_dim = pp.c61 * taub_over_Ub .* U_nodes_fric * ps.phi;   % [Pa]
+tau_b_kPa = tau_b_dim / 1e3;                                   % [kPa]
+
+% Driving stress [kPa] (for comparison)
+dsdx_fric = gg.nmeanx2(:,gg.es2) * (gg.eddx(gg.es2,:) * aa.s);
+dsdy_fric = gg.nmeany2(:,gg.fs2) * (gg.fddy(gg.fs2,:) * aa.s);
+tau_d_kPa = pp.c60 * aa.H .* sqrt(dsdx_fric.^2 + dsdy_fric.^2) * ps.phi / 1e3;  % [kPa]
+
+figure('Name','Basal Friction Distribution','Position',[100 100 1600 400]);
+
+% (a) Basal friction tau_b [kPa]
+subplot(1,4,1);
+z = reshape(tau_b_kPa, gg.nI, gg.nJ); z(gg.nout) = NaN;
+pcolor(gg.nx, gg.ny, z); shading flat; colorbar;
+clim([0 200]);
+title('\tau_b [kPa]'); xlabel('x'); ylabel('y'); axis equal tight;
+
+% (b) Driving stress tau_d [kPa]
+subplot(1,4,2);
+z = reshape(tau_d_kPa, gg.nI, gg.nJ); z(gg.nout) = NaN;
+pcolor(gg.nx, gg.ny, z); shading flat; colorbar;
+clim([0 200]);
+title('\tau_d [kPa]'); xlabel('x'); ylabel('y'); axis equal tight;
+
+% (c) Friction fraction tau_b / tau_d
+subplot(1,4,3);
+fric_frac = tau_b_kPa ./ max(tau_d_kPa, 0.1);  % avoid div by zero
+fric_frac(gg.nout) = NaN;
+z = reshape(fric_frac, gg.nI, gg.nJ); z(gg.nout) = NaN;
+pcolor(gg.nx, gg.ny, z); shading flat; colorbar;
+clim([0 2]);
+title('\tau_b / \tau_d'); xlabel('x'); ylabel('y'); axis equal tight;
+
+% (d) Coulomb cap mu*N [kPa]  (maximum possible friction)
+subplot(1,4,4);
+coulomb_cap_kPa = pp.mu * Nr_fric * ps.phi / 1e3;  % [kPa]
+z = reshape(coulomb_cap_kPa, gg.nI, gg.nJ); z(gg.nout) = NaN;
+pcolor(gg.nx, gg.ny, z); shading flat; colorbar;
+clim([0 200]);
+title('\mu N [kPa] (Coulomb cap)'); xlabel('x'); ylabel('y'); axis equal tight;
+
+colormap(jet);
+drawnow;
+
+fprintf('\n=== Basal Friction Summary ===\n');
+nin2 = gg.nin2;
+fprintf('  tau_b [kPa]:  mean=%.1f, median=%.1f, max=%.1f\n', ...
+    mean(tau_b_kPa(nin2)), median(tau_b_kPa(nin2)), max(tau_b_kPa(nin2)));
+fprintf('  tau_d [kPa]:  mean=%.1f, median=%.1f, max=%.1f\n', ...
+    mean(tau_d_kPa(nin2)), median(tau_d_kPa(nin2)), max(tau_d_kPa(nin2)));
+fprintf('  tau_b/tau_d:  mean=%.2f, median=%.2f\n', ...
+    mean(fric_frac(nin2)), median(fric_frac(nin2)));
+fprintf('  mu*N [kPa]:   mean=%.1f, median=%.1f\n', ...
+    mean(coulomb_cap_kPa(nin2)), median(coulomb_cap_kPa(nin2)));
+fprintf('  Nodes at Coulomb limit (tau_b > 0.9*mu*N): %d / %d\n', ...
+    sum(tau_b_kPa(nin2) > 0.9*coulomb_cap_kPa(nin2)), length(nin2));
 
 % --- Print summary of possible causes ---
 fprintf('\n=== Possible Causes of Speed Under-prediction ===\n');
@@ -888,22 +963,30 @@ function [J, g] = objective_and_grad(c, u_obs, v_obs, ...
     fin = gg.fin2;
     u0 = opts_inv.u0_reg;
     
-    du = obs_mask_e(ein) .* (u(ein) - u_obs(ein)) ./ (abs(u_obs(ein)) + u0);
-    dv = obs_mask_f(fin) .* (v(fin) - v_obs(fin)) ./ (abs(v_obs(fin)) + u0);
-    
-    Jmis = 0.5 * (du'*du + dv'*dv); % residual misfit
+    if opts_inv.speed_misfit
+        % --- Speed-based misfit (on nodes) ---
+        % U_mod and U_obs defined on nodes via renormalized mean operators
+        nmx = gg.nmeanx2; 
+        nmy = gg.nmeany2;
+        ux_mod = nmx(:,gg.es2)*u(gg.es2);   
+        vy_mod = nmy(:,gg.fs2)*v(gg.fs2);
+        ux_obs = nmx(:,gg.es2)*u_obs(gg.es2); 
+        vy_obs = nmy(:,gg.fs2)*v_obs(gg.fs2);
+        U_mod = sqrt(ux_mod.^2 + vy_mod.^2);       % speed at nodes
+        U_obs = sqrt(ux_obs.^2 + vy_obs.^2);       % observed speed at nodes
+        % node-level mask: active if ANY adjacent edge is observed
+        obs_mask_n = double(nmx(:,ein)*obs_mask_e(ein) + nmy(:,fin)*obs_mask_f(fin) > 0);
+        dU = obs_mask_n .* (U_mod - U_obs) ./ (U_obs + u0);
+        Jmis = 0.5 * (dU' * dU);
+    else
+        % --- Component-wise misfit (on edges) ---
+        du = obs_mask_e(ein) .* (u(ein) - u_obs(ein)) ./ (abs(u_obs(ein)) + u0);
+        dv = obs_mask_f(fin) .* (v(fin) - v_obs(fin)) ./ (abs(v_obs(fin)) + u0);
+        Jmis = 0.5 * (du'*du + dv'*dv);
+    end
     
     % Diagnostic: print speed statistics (only when verbose)
     if opts_inv.verbose
-        fast_mask = abs(u_obs(gg.ein2)) > 10*opts_inv.u0_reg;  
-        slow_mask = abs(u_obs(gg.ein2)) < opts_inv.u0_reg;
-        fprintf('Fast region: %d edges, slow region: %d edges\n', sum(fast_mask), sum(slow_mask));
-        U_obs_e = abs(u_obs(ein)) * ps.u_b * pd.ty;  % [m/yr]
-        U_mod_e = abs(u(ein)) * ps.u_b * pd.ty;
-        fprintf('Speed [m/yr]: obs [%.1f, %.1f], mod [%.1f, %.1f]\n', ...
-            min(U_obs_e), max(U_obs_e), min(U_mod_e), max(U_mod_e));
-        fprintf('Relative error: mean = %.1f%%, median = %.1f%%\n', ...
-            100*mean(abs(du)), 100*median(abs(du)));
         fprintf('Jmis = %.2e, Jreg = %.2e, Jdamp = %.2e\n', Jmis, ...
             0.5*opts_inv.alpha*(c'*(L'*L)*c), 0.5*opts_inv.gamma*sum((c-c_prior).^2));
     end
@@ -917,11 +1000,24 @@ function [J, g] = objective_and_grad(c, u_obs, v_obs, ...
     if nargout < 2, return; end  % only J requested
     
     % --- 4. Adjoint RHS: dJ/d[u,v] ---
-    % dJ/du_i = (u_i - u_obs_i) / (|u_obs_i| + u0)^2 * mask_i
     dJdu = zeros(gg.eIJ,1);
     dJdv = zeros(gg.fIJ,1);
-    dJdu(ein) = obs_mask_e(ein) .* (u(ein) - u_obs(ein)) ./ (abs(u_obs(ein)) + u0).^2;
-    dJdv(fin) = obs_mask_f(fin) .* (v(fin) - v_obs(fin)) ./ (abs(v_obs(fin)) + u0).^2;
+    
+    if opts_inv.speed_misfit
+        % Speed misfit: dJ/dU * dU/d[u,v]
+        % dJ/dU_j = (U_mod_j - U_obs_j) / (U_obs_j + u0)^2 * mask_j
+        dJdU = obs_mask_n .* (U_mod - U_obs) ./ (U_obs + u0).^2;  % [nIJ x 1]
+        % dU/du_k = nmeanx(j,k) * ux_mod(j) / max(U_mod(j), eps)
+        U_mod_safe = max(U_mod, 1e-40);
+        w_u = dJdU .* ux_mod ./ U_mod_safe;  % [nIJ x 1]
+        w_v = dJdU .* vy_mod ./ U_mod_safe;  % [nIJ x 1]
+        dJdu(ein) = nmx(gg.ns2,ein)' * w_u(gg.ns2);  % chain rule: nodes -> x-edges
+        dJdv(fin) = nmy(gg.ns2,fin)' * w_v(gg.ns2);  % chain rule: nodes -> y-edges
+    else
+        % Component misfit: straightforward
+        dJdu(ein) = obs_mask_e(ein) .* (u(ein) - u_obs(ein)) ./ (abs(u_obs(ein)) + u0).^2;
+        dJdv(fin) = obs_mask_f(fin) .* (v(fin) - v_obs(fin)) ./ (abs(v_obs(fin)) + u0).^2;
+    end
     
     % --- 5. Assemble Jacobian with Newton correction for exact adjoint ---
     % The Picard Jacobian A freezes slide_fun(U) w.r.t. U.
@@ -1070,11 +1166,75 @@ function [A, rhs, ops] = assemble_velocity_jacobian(u, v, N, aa, pp, gg, oo)
     
     A = [Fx_ub Fx_vb; Fy_ub Fy_vb];
     rhs = -[Fx_res; Fy_res];
+
+    % ===== Viscosity Newton correction (non-zero only when n_glen ~= 1) =====
+    % When n > 1, eta = A^{-1/n} * I2^{(1/n-1)/2} depends on strain rates,
+    % so d(eta)/d[u,v] ≠ 0.  The Picard Jacobian above freezes eta;
+    % this block adds the missing  dF/d(eta) * d(eta)/d[u,v]  terms.
+    if pp.n_glen ~= 1
+        ne = length(ein); nf = length(fin);
+
+        % --- Strain rates (same definitions as calculate_viscosity_local) ---
+        epsxx   = nddx(:,es)*u(es);                                 % [nIJ x 1]
+        epsyy   = nddy(:,fs)*v(fs);                                 % [nIJ x 1]
+        epsxy_c = 0.5*(cddy(:,es)*u(es) + cddx(:,fs)*v(fs));       % corners [cIJ x 1]
+        epsxy_n = nmeanc(:,cs)*epsxy_c(cs);                         % averaged to nodes [nIJ x 1]
+
+        % --- Second invariant and derivative factor ---
+        I2 = pp.eps_reg^2 + epsxx.^2 + epsyy.^2 + epsxx.*epsyy + epsxy_n.^2;
+        p_exp = (1/pp.n_glen - 1) / 2;          % exponent factor
+        beta  = p_exp * etabar ./ I2;            % d(eta)/d(I2) at each node [nIJ x 1]
+
+        % --- d(eta)/du  [nIJ x ne] ---
+        % d(I2)/du_k = (2*epsxx + epsyy)*nddx(:,k) + epsxy_n*[nmeanc*cddy](:,k)
+        Dxy_u = nmeanc(:,cs) * cddy(cs,ein);    % maps u(ein) -> epsxy contrib at nodes
+        deta_du = spdiags(beta, 0, nIJ, nIJ) * ...
+            ( spdiags(2*epsxx + epsyy, 0, nIJ, nIJ) * nddx(:,ein) + ...
+              spdiags(epsxy_n,         0, nIJ, nIJ) * Dxy_u );
+
+        % --- d(eta)/dv  [nIJ x nf] ---
+        Dxy_v = nmeanc(:,cs) * cddx(cs,fin);    % maps v(fin) -> epsxy contrib at nodes
+        deta_dv = spdiags(beta, 0, nIJ, nIJ) * ...
+            ( spdiags(epsxx + 2*epsyy, 0, nIJ, nIJ) * nddy(:,fin) + ...
+              spdiags(epsxy_n,         0, nIJ, nIJ) * Dxy_v );
+
+        % --- Stress coefficients at current u,v ---
+        tau_xx   = 4*epsxx + 2*epsyy;                           % node: x-mom [nIJ x 1]
+        tau_yy   = 2*epsxx + 4*epsyy;                           % node: y-mom [nIJ x 1]
+        tau_xy_c = cddy(:,es)*u(es) + cddx(:,fs)*v(fs);        % corner: 2*epsxy [cIJ x 1]
+
+        % --- d(H*eta at corners)/d[u,v] via cmean ---
+        H_diag     = spdiags(H, 0, nIJ, nIJ);
+        dHeta_c_du = cmean(cin,:) * H_diag * deta_du;           % [length(cin) x ne]
+        dHeta_c_dv = cmean(cin,:) * H_diag * deta_dv;           % [length(cin) x nf]
+
+        % --- Diagonal weight matrices ---
+        Hn_tau_xx  = spdiags(H(nin) .* tau_xx(nin), 0, length(nin), length(nin));
+        Hn_tau_yy  = spdiags(H(nin) .* tau_yy(nin), 0, length(nin), length(nin));
+        tau_xy_diag = spdiags(tau_xy_c(cin),         0, length(cin), length(cin));
+
+        % --- x-momentum viscosity Newton correction ---
+        dVisc_Fx_du = pp.c62 * ( eddx(ein,nin) * Hn_tau_xx  * deta_du(nin,:) ...
+                               + eddy(ein,cin) * tau_xy_diag * dHeta_c_du );
+        dVisc_Fx_dv = pp.c62 * ( eddx(ein,nin) * Hn_tau_xx  * deta_dv(nin,:) ...
+                               + eddy(ein,cin) * tau_xy_diag * dHeta_c_dv );
+
+        % --- y-momentum viscosity Newton correction ---
+        dVisc_Fy_du = pp.c62 * ( fddy(fin,nin) * Hn_tau_yy  * deta_du(nin,:) ...
+                               + fddx(fin,cin) * tau_xy_diag * dHeta_c_du );
+        dVisc_Fy_dv = pp.c62 * ( fddy(fin,nin) * Hn_tau_yy  * deta_dv(nin,:) ...
+                               + fddx(fin,cin) * tau_xy_diag * dHeta_c_dv );
+
+        A = A + [dVisc_Fx_du dVisc_Fx_dv; dVisc_Fy_du dVisc_Fy_dv];
+    end
+
     % Export renormalized operators for use in adjoint gradient computation
     ops.emean  = emean;   % renormalized edge←node average [eIJ x nIJ]
     ops.fmean  = fmean;   % renormalized edge←node average [fIJ x nIJ]
     ops.nmeanx = nmeanx;  % renormalized node←x-edge average [nIJ x eIJ]
     ops.nmeany = nmeany;  % renormalized node←y-edge average [nIJ x fIJ]
+    ops.nmeanc = nmeanc;  % renormalized node←corner average [nIJ x cIJ]
+    ops.cmean  = cmean;   % renormalized corner←node average [cIJ x nIJ]
 end
 
 %% ============================================================
