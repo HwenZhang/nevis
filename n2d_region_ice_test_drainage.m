@@ -5,8 +5,8 @@ clc,clear
 format compact
 
 %% read in the initial condition
-casename = 'n2d_region_ice_Cinv_test_drainage'; % drainage system filename
-initname = 'n2d_region_ice_Cinv_test';
+casename = 'n2d_region_ice_Cinv_test2_drainage3'; % drainage system filename
+initname = 'n2d_region_ice_Cinv_test2';
 
 %% parameters
 data = load(['./results/' initname '/' initname]);
@@ -18,7 +18,7 @@ oo = data.oo;                                % load options from the initial con
 
 oo.casename = casename;                      % drainage system filename
 oo.initname = initname;                      % initial condition filename, for spinup
-
+oo.display_residual = 0;
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
 addpath(oo.code);                              % add path to code
@@ -61,7 +61,6 @@ gg.n1m = gg.n1;                                   % label all edge nodes as boun
 gg = nevis_label(gg,gg.n1m);
 gg = nevis_label_blister(gg,gg.n1_blister,oo);    % label blister boundary nodes
 oo.adjust_boundaries = 1;                         % enable option of changing conditions
-% oo.boundary_method = 'vel_tblr';
 
 gg = nevis_label_ice_test(gg, oo); % add boundary labels needed for ice velocity
 
@@ -87,9 +86,9 @@ pp.ni_m = tmp.pp.ni_m; pp.sum_m = tmp.pp.sum_m; clear tmp;
 % multiple lakes from the catalogue
 pp.x_l = [40e3]/ps.x;                          % x-coord of lakes
 pp.y_l = [-15e3]/ps.x;                          % y-coord of lakes
-pp.V_l = [1e8]/(ps.Q0*ps.t);                    % volume of lakes         
+pp.V_l = [1e9]/(ps.Q0*ps.t);                    % volume of lakes         
 pp.t_drainage = pd.td/ps.t*[10];  % time of lake drainages (assumed to be the middle time of the Gaussian)
-pp.t_duration = pd.td/ps.t*[1];  % duration of lake drainages
+pp.t_duration = pd.td/ps.t*[0.1];  % duration of lake drainages
 [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo);          % calculate lake catchments
 
 %% surface runoff
@@ -115,7 +114,7 @@ oo.save_pts_all = 1;
 pp.ni_gps = nevis_gps_array([40e3,40e3,20e3,0,-40e3]/ps.x, [-15e3,-5e3,-15e3,-25e3,-30e3]/ps.x, gg, oo); % GPS station points
 oo.pts_ni = [pp.ni_l' pp.ni_m' pp.ni_gps];    
 % oo.t_span = [(1:1:365*1)*pd.td/ps.t];
-oo.t_span = [(1:1:9)*pd.td/ps.t (9.5:0.1:10.5)*pd.td/ps.t (11:1:60)*pd.td/ps.t];
+oo.t_span = [(1:1:9)*pd.td/ps.t (9.5:0.1:10.5)*pd.td/ps.t (11:1:100)*pd.td/ps.t];
 
 %% save initial parameters
 save([oo.rn, oo.fn],'pp','pd','ps','gg','aa','vv','oo');

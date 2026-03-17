@@ -22,14 +22,16 @@ oo.root = './';
 oo.code = './src';
 oo.results = 'results';
 oo.dataset = 'nevis_regional';
-oo.casename = 'n2d_region_ice_inversion_test';
+% note: this is a standard case used to initialise the 
+oo.casename = 'n2d_region_ice_inversion_test'; 
 oo.fn = ['/',oo.casename];
 oo.rn = [oo.root,oo.results,oo.fn];
+oo.in = [oo.root, 'data/', oo.casename];
 oo.dn = [oo.root, 'data/', oo.dataset, '/'];
 addpath(oo.code);
 
 % load saved spinup state
-load([oo.rn, oo.fn], 'pp','pd','ps','gg','aa','oo');
+load([oo.in, oo.fn], 'pp','pd','ps','gg','aa','oo');
 [pd,ps,pp,oo] = nevis_update_parameters_ice(pd,ps,pp,oo);
 
 % Picard iteration settings for velocity solver
@@ -54,7 +56,7 @@ fprintf('pp.C2      = %.4e\n', pp.C2);
 fprintf('================================\n\n');
 
 % add regularisation parameters to pp if not already present (for backward compatibility)
-pp.eps_reg = 1e-6;      % regularisation on strain rates
+pp.eps_reg = 1e-1;      % regularisation on strain rates
 pp.Ub_reg = 1e-16;      % regularisation on sliding speed (max-based, matches nevis_velocity)
 pp.N_slide_reg = 1e-16; % regularisation on effective pressure (max-based, matches nevis_velocity)
 pp.taud_reg = 1e-16;    % regularisation on basal shear stress [ may not be needed ? ]
@@ -87,11 +89,11 @@ fprintf('Excluded %d ebdy + %d fbdy Dirichlet edges from misfit\n', ...
 
 % effective pressure for forward model (use spinup or assume N=1)
 oo.initname = 'n2d_region_ice_inversion_test';
-init_cond = load(['./results/' oo.initname '/' '0036.mat']); 
+init_cond = load(['./data/' oo.initname '/' '0365.mat']); 
                            % load initial condition
 vv = init_cond.vv;         % load state variables from the initial 
-N_obs = max(aa.phi_0 - vv.phi, pp.N_slide_reg);
-
+% N_obs = max(aa.phi_0 - vv.phi, pp.N_slide_reg);
+N_obs = aa.phi_0 - vv.phi;
 % no noise for real observations
 u_obs_noisy = u_obs;
 v_obs_noisy = v_obs;
@@ -130,7 +132,7 @@ opts_inv.u0_reg = 1e-1;      % velocity scale for relative misfit (dimensionless
 % opts_inv.gamma_schedule = [1e-6, 3e-7, 1e-7, 3e-8, 1e-9];
 opts_inv.alpha_schedule = [1e-3, 1e-4, 1e-9, 1e-12];
 opts_inv.gamma_schedule = [1e-6, 1e-7, 1e-8, 1e-9];
-opts_inv.max_iter_schedule = [25, 25, 2, 2];  % more iters when reg is strong
+opts_inv.max_iter_schedule = [25, 2, 2, 2];  % more iters when reg is strong
 % Iteration controls (per stage)
 opts_inv.max_iter_stage = 50;    % max iterations per continuation stage
 opts_inv.max_iter_total = 200;    % safety cap across all stages
@@ -140,7 +142,7 @@ opts_inv.J_tol = 1e-3;
 opts_inv.dJ_tol = 1e-6;
 
 % Outer loop: iterative C-N coupling
-opts_inv.max_outer_iter = 2;      % max C-N coupling iterations
+opts_inv.max_outer_iter = 3;      % max C-N coupling iterations
 opts_inv.C_tol = 1e-3;             % relative change in C for outer convergence
 opts_inv.N_tol = 1e-3;             % relative change in N for outer convergence
 
@@ -185,8 +187,6 @@ c_prior = log(C_init);
 % C_plot = reshape(C_init, gg.nI, gg.nJ);
 % xx = reshape(gg.nx, gg.nI, gg.nJ);
 % yy = reshape(gg.ny, gg.nI, gg.nJ);
-% figure; pcolor(xx, yy, reshape(C_init, gg.nI, gg.nJ)); shading flat; colorbar;
-% return;
 
 % build gradient operator L for regularisation (using grid finite differences)
 % L * c gives spatial gradient of c (defined on nodes)
@@ -454,9 +454,6 @@ for outer_iter = 1:opts_inv.max_outer_iter
     vv_hydro.v = v_inv;
     vv_hydro.N = N_current;
     save('./data/velocity_inverted.mat', 'vv_hydro');
-
-    test
-    return;
 
     [N_new, vv_hydro] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_hydro, pd.mu_s);
     % N_new = N_old; 

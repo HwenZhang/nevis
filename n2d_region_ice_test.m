@@ -24,12 +24,14 @@ oo.relaxation_term = 1;                         % 0 is alpha hb, 1 is alpha delt
 oo.initial_condition = 1;                       % 1 is default condition from 0365.mat, 0 is using steady-state drainage system, winter or summertime
 oo.mean_perms = 1;
 oo.modified_mean_perms = 0;
-oo.display_residual = 0;
+oo.display_residual = 1;
 oo.N_coupling = 1; % turn on effective pressure coupling                                   
-oo.U_coupling = 0; % turn on basal sliding coupling
+oo.U_coupling = 1; % turn on basal sliding coupling
 oo.boundary_method = 'stress_l_vel_tbl';
+% oo.boundary_method = 'stress_tblr';
 oo.mask_boundary_method = 'stress_free';
 oo.plot_residual = 0;
+oo.max_iter_new = 100;
 
 pd.alpha_b = 0;                                 % relaxation rate (s^-1)
 pd.kappa_b = 1e-10;                             % relaxation coeff
@@ -108,14 +110,14 @@ oo.adjust_boundaries = 1;                         % enable option of changing co
 [pd,ps,pp,oo] = nevis_update_parameters_ice(pd,ps,pp,oo); % add parameters etc needed to solve for ice velocity
 gg = nevis_label_ice_test(gg, oo); % add boundary labels needed for ice velocity
 
-if ~isfield(pp,'eps_reg'), pp.eps_reg = 1e-6; end % regularisation on strain rates
+if ~isfield(pp,'eps_reg'), pp.eps_reg = 1e-1; end % regularisation on strain rates
 if ~isfield(pp,'Ub_reg'), pp.Ub_reg = 1e-16; end % regularisation on sliding speed (max-based, matches nevis_velocity)
-if ~isfield(pp,'N_slide_reg'), pp.N_slide_reg = 1e-4; end % regularisation on effective pressure (max-based, matches nevis_velocity)
+if ~isfield(pp,'N_slide_reg'), pp.N_slide_reg = 1e-16; end % regularisation on effective pressure (max-based, matches nevis_velocity)
 if ~isfield(pp,'taud_reg'), pp.taud_reg = 1e-16; end % regularisation on basal shear stress [ may not be needed ? ]
 if ~isfield(pp,'C2'), pp.C2 = 0; end % added power-law coefficient in sliding law
 
 %% load the slipperiness field for the inversion test
-load(['./data/C_inversion_outer1.mat'], 'C_hat_dim');
+load(['./data/C_inversion_results.mat'], 'C_hat_dim');
 
 %% plot grid
 % nevis_plot_grid_ice(gg); return;                    % check to see what grid looks like
@@ -183,18 +185,20 @@ vv.u(gg.eout2) = NaN;
 vv.v(gg.fout2) = NaN;
 aa.u_obs = vv.u;
 aa.v_obs = vv.v;
+% vv.u(gg.ebdy2) = 0*aa.u_obs(gg.ebdy2);
+% vv.v(gg.fbdy2) = 0*aa.v_obs(gg.fbdy2);
 
 % Option 3: used inverted velocity
-% vv.u = vv_hydro.u;
-% vv.v = vv_hydro.v;
-% vv.u(gg.eout2) = NaN;
-% vv.v(gg.fout2) = NaN;
-% aa.u_obs = vv.u;
-% aa.v_obs = vv.v;
+vv.u = vv_hydro.u;
+vv.v = vv_hydro.v;
+vv.u(gg.eout2) = NaN;
+vv.v(gg.fout2) = NaN;
+aa.u_obs = vv.u;
+aa.v_obs = vv.v;
 
 % vv.u = reshape(gg.emean2*un(:), gg.eI, gg.nJ);
 % vv.v = reshape(gg.fmean2*vn(:), gg.nI, gg.fJ); %% plot initial velocity field
-nevis_plot_velocity(gg, vv, 1, 0);
+% nevis_plot_velocity(gg, vv, 1, 0);
 % return;
 
 %% boundary conditions

@@ -31,11 +31,13 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus)
     oo.initial_condition = 1;                       % 1 is default condition from 0365.mat, 0 is using steady-state drainage system, winter or summertime
     oo.mean_perms = 1;
     oo.modified_mean_perms = 0;
-    oo.display_residual =0;
+    oo.display_residual = 1;
     oo.N_coupling = 1; % turn on effective pressure coupling                                   
     oo.U_coupling = 0; % turn on basal sliding coupling
     oo.boundary_method = 'stress_l_vel_tbl';
     oo.mask_boundary_method = 'stress_free';
+    oo.step_ice = 0.1;
+    oo.max_iter_new = 200;
 
     pd.alpha_b = 0;                                 % relaxation rate (s^-1)
     pd.kappa_b = 1e-10;                             % relaxation coeff
@@ -115,6 +117,12 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus)
     [pd,ps,pp,oo] = nevis_update_parameters_ice(pd,ps,pp,oo); % add parameters etc needed to solve for ice velocity
     gg = nevis_label_ice_test(gg, oo); % add boundary labels needed for ice velocity
 
+    if ~isfield(pp,'eps_reg'), pp.eps_reg = 1e-1; end % regularisation on strain rates
+    if ~isfield(pp,'Ub_reg'), pp.Ub_reg = 1e-16; end % regularisation on sliding speed (max-based, matches nevis_velocity)
+    if ~isfield(pp,'N_slide_reg'), pp.N_slide_reg = 1e-16; end % regularisation on effective pressure (max-based, matches nevis_velocity)
+    if ~isfield(pp,'taud_reg'), pp.taud_reg = 1e-16; end % regularisation on basal shear stress [ may not be needed ? ]
+    if ~isfield(pp,'C2'), pp.C2 = 0; end % added power-law coefficient in sliding law
+
     %% load the slipperiness field for the inversion test
     % load(['./data/C_inversion_results.mat'], 'C_hat_dim');
 
@@ -150,10 +158,12 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus)
     % end
 
     % --- Fresh start from spinup state ---
-    fprintf('  Starting from k_f=0.9 initial condition\n');
+    % fprintf('  Starting from k_f=0.9 initial condition\n');
+    load(['./data/velocity_inverted.mat'], 'vv_hydro');
     % pd.k_f = 0.9;                                     % percent overburden (k-factor) 
     % vv.phi = aa.phi_a+pd.k_f*(aa.phi_0-aa.phi_a);     % initial pressure  k_f*phi_0
     % N = aa.phi_0-vv.phi;                              % N for initial cavity sheet size 
+    % N = vv_hydro.N;
     N = vv_prev.N;
     vv.phi = aa.phi_0 - N;
     vv.hs = ((((pd.u_b*pd.h_r/pd.l_r)./((pd.u_b/pd.l_r)+(pd.K_c.*((ps.phi*N).^3)))))./ps.h); % initial cavity sheet size as f(N)
@@ -185,7 +195,6 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus)
         vn_filled(nan_idx) = griddata(gg.nx(valid_idx), gg.ny(valid_idx), ...
                                     vn_filled(valid_idx), gg.nx(nan_idx), gg.ny(nan_idx), 'nearest');
     end
-
     vv.u = gg.emean2*un_filled;
     vv.v = gg.fmean2*vn_filled;
     vv.u(gg.eout2) = NaN;
@@ -199,16 +208,13 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus)
 
     % Option 2: initialise the velocity field using a simplified SSA model
     % N = ones(gg.nIJ,1); 
-    % u = zeros(gg.eIJ,1); 
-    % v = zeros(gg.fIJ,1); 
-
-    % u(gg.eout2) = NaN; 
-    % v(gg.fout2) = NaN;
-    % [u,v] = nevis_velocity(aa.H,u,v,N,aa,pp,gg,oo);
+    u = vv.u;
+    v = vv.v;
+    [vv.u,vv.v] = nevis_velocity(aa.H,u,v,N,aa,pp,gg,oo);
     % [tauxx,tauyy,tauxy,Txx,Tyy,Txy,tau_b] = nevis_stresses(aa.H,u,v,N,aa,pp,gg,oo);
     % [tau1,tau2,theta] = nevis_principal_stress(Txx,Tyy,gg.nmeanc*Txy);
-    % vv.u = u; 
-    % vv.v = v;
+    aa.u_obs = vv.u;
+    aa.v_obs = vv.v;
 
     %% boundary conditions
     aa.phi_b = max(aa.phi_0,aa.phi_a);                % prescribed boundary pressure at overburden or atmospheric
@@ -253,7 +259,7 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus)
     % Add GPS station points downstream of the moulin every 5km
     pp.ni_gps = nevis_gps_array([40e3,40e3,20e3,0,-40e3]/ps.x, [-15e3,-5e3,-15e3,-25e3,-30e3]/ps.x, gg, oo); % GPS station points
     oo.pts_ni = [pp.ni_l' pp.ni_m' pp.ni_gps];    
-    oo.t_span = [(1:1:35)*pd.td/ps.t];
+    oo.t_span = [(1:1:365)*pd.td/ps.t];
     % oo.t_span = [(1:1:59)*pd.td/ps.t (59.5:0.001:60.5)*pd.td/ps.t (61:1:120)*pd.td/ps.t];
 
     %% save initial parameters

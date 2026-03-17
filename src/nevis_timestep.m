@@ -22,11 +22,12 @@ if ~isfield(oo,'Tol_Fs'), oo.Tol_Fs = oo.Tol_F*ones(1,num); end       % toleranc
 if length(oo.Tol_Fs)<num
     oo.Tol_Fs = [oo.Tol_Fs oo.Tol_Fs(end)*ones(1,num-length(oo.Tol_Fs))];
 end 
-if ~isfield(oo,'max_iter_new'), oo.max_iter_new = 20; end            % maximum number of Newton iterations
+if ~isfield(oo,'max_iter_new'), oo.max_iter_new = 100; end            % maximum number of Newton iterations
 if ~isfield(oo,'step_new'), oo.step_new = 1; end                    % step size for Newton iteration
 if ~isfield(oo,'max2_iter_new'), oo.max2_iter_new = 20; end         % maximum number of Newton iterations before step2 is used
 if ~isfield(oo,'step2_new'), oo.step2_new = 0.5*oo.step_new; end    % step2 size for Newton iteration
 if ~isfield(oo,'fac2_new'), oo.fac2_new = 1; end                    % factor for norm reduction above which step2 is used
+if ~isfield(oo,'step_ice'), oo.step_ice = 0.2; end                 % relaxation factor for ice velocity (R9,R10) Newton step
 
 % DIAGNOSTIC OPTIONS
 if ~isfield(oo,'plot_residual'), oo.plot_residual = 0; end          % plot residuals at each iteration
@@ -201,7 +202,24 @@ for iter_new = 1:max_iter_new+1
     step = oo.step_new;
     if iter_new>2 && norm_Fs(iter_new)/norm_Fs(iter_new-1)>oo.fac2_new, step = oo.step2_new; end % reduce size of step if previous iterations are slow
     if iter_new>oo.max2_iter_new, step = oo.step2_new; end % reduce size of step if more than max2_iter_new iterations
-    X = X + step*dX;
+    % apply per-component relaxation: step_ice for u,v (R9,R10)
+    step_vec = step * ones(size(dX));
+    % adaptive step_ice: ramp up from step_ice to 1 as iterations progress
+    if oo.include_ice
+        n_ice = length(gg.ein2) + length(gg.fin2);
+        if iter_new <= 3
+            % first few iterations: use the (small) prescribed step_ice
+            step_ice_iter = oo.step_ice;
+        elseif iter_new <= 6
+            % intermediate: blend toward 1
+            step_ice_iter = min(1, oo.step_ice + (1 - oo.step_ice) * (iter_new - 3) / 3);
+        else
+            % later iterations: full step
+            step_ice_iter = 1;
+        end
+        step_vec(end-n_ice+1:end) = step_ice_iter;
+    end
+    X = X + step_vec.*dX;
     
     vv.phi(gg.nbdy) = aa.phi; % boundary conditions
     
@@ -241,6 +259,22 @@ info.iter_new = iter_new;
 info.norm_Fs = norm_Fs;
 info.norms_Fs = norms_Fs;
 info.stop_time = toc(info.start_time);
+
+% diagnose whether ice velocity (F9,F10) is the convergence bottleneck
+info.ice_dominated = false;
+if info.failed && oo.include_ice
+    last_norms = norms_Fs(min(iter_new, size(norms_Fs,1)), :);
+    hydro_idx = setdiff(iFs, [9 10]);
+    hydro_converged = all(last_norms(hydro_idx) <= Tols_F(hydro_idx));
+    ice_not_converged = any(last_norms([9 10]) > Tols_F([9 10]));
+    if hydro_converged && ice_not_converged
+        info.ice_dominated = true;
+    end
+    % also flag as ice-dominated if F9/F10 are the largest residuals
+    if max(last_norms([9 10])) > 10 * max(last_norms(hydro_idx))
+        info.ice_dominated = true;
+    end
+end
 
 if info.failed
     vv1 = vv0;

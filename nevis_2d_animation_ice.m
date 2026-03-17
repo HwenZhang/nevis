@@ -6,8 +6,8 @@
 clc; clear; close all;
 
 %% Settings
-casename = 'n2d_region_ice_Cinv_test_drainage';
-casename = 'n2d_region_ice_Cinv_test';
+casename = 'n2d_region_ice_Cinv_test2_drainage';
+% casename = 'n2d_region_ice_Cinv_test2';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];
 oo.rn = [oo.root,oo.results,oo.fn];
@@ -23,7 +23,7 @@ cmap = [linspace(0,1,n)', linspace(0,1,n)', ones(n,1);
 
 %% Time range
 tmin_yr = 0.0;           % start time in years
-tmax_yr = tmin_yr + 1;  % end time in years
+tmax_yr = tmin_yr + 0.4;  % end time in years
 tmin = tmin_yr * 365;  % in days
 tmax = tmax_yr * 365;
 
@@ -43,12 +43,17 @@ Q_in    = ps.Q * [tt.Q_in];
 Q_out   = ps.Q * [tt.Q_out];
 Q_out_Q = ps.Q * [tt.Q_outQ];
 Q_out_q = ps.Q * [tt.Q_outq];
+Q_out_b = ps.Q * [tt.Q_outb];
 E       = (ps.m*ps.x^2) * [tt.E];
 N_ts    = (ps.phi) * [tt.N];  % effective pressure time series
 hs_ts   = ps.x^2*ps.h * [tt.hs];
 he_ts   = ps.x^2*ps.h * [tt.he];
 S_ts    = ps.x*ps.S * [tt.S];
 A_total = ps.x^2 * sum(gg.Dx.*gg.Dy);
+
+h_b = ps.hb*[tt.pts_hb];       %
+p_b = ps.phi*[tt.pts_pb];      %
+V_b = ps.x^2*ps.hb*[tt.Vb];
 
 %% Read initial frame
 nframe = index(1);
@@ -100,12 +105,12 @@ ax_a = nexttile(leftLayout);
 plot(ax_a, t, Q_b_dec,'r-', 'LineWidth',1.5);
 % plot(ax_a, t, Q_b_in,'b-', t, Q_b_dec,'r-', 'LineWidth',1.5);
 hold on;
-plot(ax_a, t, Q_out_Q,'--', 'Color',[0,0.5,0], 'LineWidth',1.5);
-plot(ax_a, t, Q_out_q,'b--', 'LineWidth',1.5);
+plot(ax_a, t, Q_out_Q + Q_out_q + Q_out_b,'-', 'Color',[0,0.25,0], 'LineWidth',2.5);
+% plot(ax_a, t, Q_out_q,'b--', 'LineWidth',1.5);
 plot(ax_a, t, E,'k-.', 'LineWidth',1.5);
 x1 = xline(tframe_d,'--k','LineWidth',1.5);
 xlabel('t [d]'); ylabel('Q [m^3/s]');
-legend('Q_{b,relax}','Q_{outQ}','Q_{outq}','E','NumColumns',2,'Location','southeast');
+legend('Q_{b,relax}','Q_{out}','Q_{in}','NumColumns',2,'Location','southeast');
 text(0.025,0.85,'(a) flux','Units','normalized','FontSize',12);
 xlim([tmin tmax]); set(gca,'YScale','log'); ylim([1e-2 1e4]);
 grid on; grid minor;
@@ -135,11 +140,15 @@ xlim([tmin tmax]); grid on; grid minor;
 
 % (d) Ice speed time series (if available)
 ax_d = nexttile(leftLayout);
-% Placeholder: plot max ice speed over time if tracked
+yyaxis left
+plot(ax_d, t, V_b, 'k-', 'LineWidth',1.5);
 x4 = xline(tframe_d,'--k','LineWidth',1.5);
 xlabel('t [d]'); ylabel('U [m/yr]');
-text(0.025,0.85,'(d) ice speed','Units','normalized','FontSize',12);
+text(0.025,0.85,'(d) blister volume and ice speed','Units','normalized','FontSize',12);
 xlim([tmin tmax]); grid on; grid minor;
+
+yyaxis right
+plot(ax_d, t, V_b, 'k-', 'LineWidth',1.5);
 
 xlines = [x1, x2, x3, x4];
 
@@ -152,7 +161,7 @@ zphi = ps.phi * reshape(vva.phi,gg.nI,gg.nJ);
 phb = pcolor(ax1, xx, yy, zhb);
 set(phb,'linestyle','none');
 cx = colorbar(); colormap(ax1, cmap);
-clim([-0.2 0.2]);
+clim([-1 1]);
 cx.Label.String = 'h_b [m]';
 hold on;
 [~, phb_contour] = contour(ax1, xx, yy, zphi, 'linecolor','k','linewidth',0.5);
@@ -216,7 +225,7 @@ pvel_delta = pcolor(ax6, xx, yy, zeros(gg.nI,gg.nJ));
 set(pvel_delta,'linestyle','none');
 cx = colorbar(); colormap(ax6, cmap);
 cx.Label.String = '\Delta U [m/yr]';
-clim([-50 50]);
+clim([-100 100]);
 ttext = text(ax6, 0.5, 0.9, ['t = ' num2str(tframe_d,'%.1f') ' d'], ...
     'Units','normalized','FontSize',14,'FontWeight','bold');
 title('(j) ice speed change'); ylabel('y (km)'); xlabel('x (km)');
