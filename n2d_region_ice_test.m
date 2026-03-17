@@ -8,7 +8,8 @@ oo.root = './';                                % filename root
 oo.code = './src';                             % code directory   
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name
-oo.casename = 'n2d_region_ice_Cinv_test2'; % casename
+oo.casename = 'n2d_region_ice_Cinv_test_epsreg0_02'; 
+                                               % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
 oo.dn = [oo.root, 'data/', oo.dataset, '/'];   % path to the data
@@ -110,7 +111,7 @@ oo.adjust_boundaries = 1;                         % enable option of changing co
 [pd,ps,pp,oo] = nevis_update_parameters_ice(pd,ps,pp,oo); % add parameters etc needed to solve for ice velocity
 gg = nevis_label_ice_test(gg, oo); % add boundary labels needed for ice velocity
 
-if ~isfield(pp,'eps_reg'), pp.eps_reg = 1e-1; end % regularisation on strain rates
+if ~isfield(pp,'eps_reg'), pp.eps_reg = 1e-2; end % regularisation on strain rates
 if ~isfield(pp,'Ub_reg'), pp.Ub_reg = 1e-16; end % regularisation on sliding speed (max-based, matches nevis_velocity)
 if ~isfield(pp,'N_slide_reg'), pp.N_slide_reg = 1e-16; end % regularisation on effective pressure (max-based, matches nevis_velocity)
 if ~isfield(pp,'taud_reg'), pp.taud_reg = 1e-16; end % regularisation on basal shear stress [ may not be needed ? ]

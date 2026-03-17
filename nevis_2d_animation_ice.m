@@ -23,7 +23,7 @@ cmap = [linspace(0,1,n)', linspace(0,1,n)', ones(n,1);
 
 %% Time range
 tmin_yr = 0.0;           % start time in years
-tmax_yr = tmin_yr + 0.4;  % end time in years
+tmax_yr = tmin_yr + 0.45;  % end time in years
 tmin = tmin_yr * 365;  % in days
 tmax = tmax_yr * 365;
 
@@ -50,6 +50,7 @@ hs_ts   = ps.x^2*ps.h * [tt.hs];
 he_ts   = ps.x^2*ps.h * [tt.he];
 S_ts    = ps.x*ps.S * [tt.S];
 A_total = ps.x^2 * sum(gg.Dx.*gg.Dy);
+U       = ps.u_b * [tt.U];
 
 h_b = ps.hb*[tt.pts_hb];       %
 p_b = ps.phi*[tt.pts_pb];      %
@@ -123,7 +124,9 @@ x2 = xline(tframe_d,'--k','LineWidth',1.5);
 xlabel('t [d]'); ylabel('N [MPa]');
 legend('averaged N','Location','southeast');
 text(0.025,0.85,'(b) effective pressure','Units','normalized','FontSize',12);
-xlim([tmin tmax]); grid on; grid minor;
+xlim([tmin tmax]); 
+ylim([0 1.1]);
+grid on; grid minor;
 
 % (c) Sheet thickness & channel
 ax_c = nexttile(leftLayout);
@@ -141,14 +144,17 @@ xlim([tmin tmax]); grid on; grid minor;
 % (d) Ice speed time series (if available)
 ax_d = nexttile(leftLayout);
 yyaxis left
-plot(ax_d, t, V_b, 'k-', 'LineWidth',1.5);
+plot(ax_d, t, U*pd.ty, 'b-', 'LineWidth',1.5);
 x4 = xline(tframe_d,'--k','LineWidth',1.5);
 xlabel('t [d]'); ylabel('U [m/yr]');
 text(0.025,0.85,'(d) blister volume and ice speed','Units','normalized','FontSize',12);
-xlim([tmin tmax]); grid on; grid minor;
+xlim([tmin tmax]); 
+ylim([0 200]); 
+grid on; grid minor;
 
 yyaxis right
-plot(ax_d, t, V_b, 'k-', 'LineWidth',1.5);
+plot(ax_d, t, V_b, 'r-', 'LineWidth',1.5);
+ylabel('Vb [m^3]');
 
 xlines = [x1, x2, x3, x4];
 
@@ -170,10 +176,11 @@ axis equal; axis tight;
 
 % (2) Cavity sheet thickness
 ax2 = nexttile(rightLayout);
+vva.hs(gg.nout) = NaN;
 zhs = ps.hs * reshape(vva.hs,gg.nI,gg.nJ);
 phs = pcolor(ax2, xx, yy, zhs);
 set(phs,'linestyle','none');
-cx = colorbar();
+cx = colorbar();colormap(ax2, cmap);
 cx.Label.String = 'h_s [m]';
 clim([0 0.1]);
 hold on;

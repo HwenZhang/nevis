@@ -132,7 +132,7 @@ opts_inv.u0_reg = 1e-1;      % velocity scale for relative misfit (dimensionless
 % opts_inv.gamma_schedule = [1e-6, 3e-7, 1e-7, 3e-8, 1e-9];
 opts_inv.alpha_schedule = [1e-3, 1e-4, 1e-9, 1e-12];
 opts_inv.gamma_schedule = [1e-6, 1e-7, 1e-8, 1e-9];
-opts_inv.max_iter_schedule = [25, 2, 2, 2];  % more iters when reg is strong
+opts_inv.max_iter_schedule = [25, 5, 5, 5];  % more iters when reg is strong
 % Iteration controls (per stage)
 opts_inv.max_iter_stage = 50;    % max iterations per continuation stage
 opts_inv.max_iter_total = 200;    % safety cap across all stages
@@ -493,12 +493,39 @@ fprintf('Iterative C-N inversion complete!\n');
 fprintf('Total outer iterations: %d\n', outer_iter);
 fprintf('========================================\n\n');
 
-%% Compute final C and print
 fprintf('Inversion complete. Final J = %.6e, exit flag = %d\n', J_hat, exitflag);
-
-% Dimensionalise C for interpretation, save results
 C_hat_dim = C_hat * (ps.tau / ps.u_b^(1/pp.n_slide));
 save('./data/C_inversion_results.mat', 'C_hat_dim', 'c_hat', 'history', 'opts_inv', 'J_hat', 'exitflag');
+
+%% Compute final C and print
+% Now we add back C2:
+% 1) compute sliding speed from inverted C and current N
+aa.C = C_hat;
+[u_inv, v_inv] = nevis_velocity(aa.H, u_obs_noisy, v_obs_noisy, N_current, aa, pp, gg, oo);
+U_slide = sqrt((gg.nmeanx2(:,gg.es2)*u_inv(gg.es2)).^2 + (gg.nmeany2(:,gg.fs2)*v_inv(gg.fs2)).^2);
+% 2) compute basal shear stress from velocity and current N
+tau_b = slide_fun_local(U_slide, N_current, C_hat, pp.mu*ones(size(aa.b)), pp).*U_slide;  % basal shear stress magnitude from sliding law
+% 3) partition basal shear stress into C and C2 contributions (25% for C and 75% for C2 for simplicity)
+% define a ratio of mu N to tau_b
+% ratio = pp.mu * N_current ./ (tau_b + pp.N_slide_reg);  % add reg to avoid div by zero
+% taub_c = tau_b.*(ratio - 1)./ratio;
+% taub_c2 = tau_b - taub_c;
+ratio = 0.25;
+taub_c = ratio * tau_b;
+taub_c2 = tau_b - taub_c;
+
+C_contrib = (U_slide./(taub_c.^pp.n_slide) - U_slide./(pp.mu.*N_current).^pp.n_slide).^(-1/pp.n_slide);
+C2_contrib = taub_c2./(U_slide.^(1/pp.n_slide));
+C_hat_final = C_contrib;  % final C field consistent with inverted velocity and current N
+C2_hat_final = C2_contrib;  % final C2 field consistent with inverted velocity and current N
+% Dimensionalise C for interpretation
+C1_hat_dim = C_contrib * (ps.tau / ps.u_b^(1/pp.n_slide));
+C2_hat_dim = C2_contrib * (ps.tau / ps.u_b^(1/pp.n_slide));
+% check if C1 and C2 are positive and reasonable
+fprintf('C1 contribution: min=%.2e, max=%.2e\n', min(C1_hat_dim), max(C1_hat_dim));
+fprintf('C2 contribution: min=%.2e, max=%.2e\n', min(C2_hat_dim), max(C2_hat_dim));
+
+save('./data/C_inversion_results.mat', 'C1_hat_dim', 'C2_hat_dim', '-append');
 
 figure('Name','Convergence','Position',[100 100 1200 400]);
 subplot(1,3,1);

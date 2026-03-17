@@ -33,11 +33,11 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus)
     oo.modified_mean_perms = 0;
     oo.display_residual = 1;
     oo.N_coupling = 1; % turn on effective pressure coupling                                   
-    oo.U_coupling = 0; % turn on basal sliding coupling
+    oo.U_coupling = 1; % turn on basal sliding coupling
     oo.boundary_method = 'stress_l_vel_tbl';
     oo.mask_boundary_method = 'stress_free';
-    oo.step_ice = 0.1;
-    oo.max_iter_new = 200;
+    % oo.step_ice = 0.1;
+    % oo.max_iter_new = 100;
 
     pd.alpha_b = 0;                                 % relaxation rate (s^-1)
     pd.kappa_b = 1e-10;                             % relaxation coeff
@@ -117,7 +117,7 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus)
     [pd,ps,pp,oo] = nevis_update_parameters_ice(pd,ps,pp,oo); % add parameters etc needed to solve for ice velocity
     gg = nevis_label_ice_test(gg, oo); % add boundary labels needed for ice velocity
 
-    if ~isfield(pp,'eps_reg'), pp.eps_reg = 1e-1; end % regularisation on strain rates
+    if ~isfield(pp,'eps_reg'), pp.eps_reg = 1e-2; end % regularisation on strain rates
     if ~isfield(pp,'Ub_reg'), pp.Ub_reg = 1e-16; end % regularisation on sliding speed (max-based, matches nevis_velocity)
     if ~isfield(pp,'N_slide_reg'), pp.N_slide_reg = 1e-16; end % regularisation on effective pressure (max-based, matches nevis_velocity)
     if ~isfield(pp,'taud_reg'), pp.taud_reg = 1e-16; end % regularisation on basal shear stress [ may not be needed ? ]

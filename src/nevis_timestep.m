@@ -27,7 +27,7 @@ if ~isfield(oo,'step_new'), oo.step_new = 1; end                    % step size 
 if ~isfield(oo,'max2_iter_new'), oo.max2_iter_new = 20; end         % maximum number of Newton iterations before step2 is used
 if ~isfield(oo,'step2_new'), oo.step2_new = 0.5*oo.step_new; end    % step2 size for Newton iteration
 if ~isfield(oo,'fac2_new'), oo.fac2_new = 1; end                    % factor for norm reduction above which step2 is used
-if ~isfield(oo,'step_ice'), oo.step_ice = 0.2; end                 % relaxation factor for ice velocity (R9,R10) Newton step
+if ~isfield(oo,'step_ice'), oo.step_ice = 1.0; end                  % relaxation factor for ice velocity (R9,R10) Newton step
 
 % DIAGNOSTIC OPTIONS
 if ~isfield(oo,'plot_residual'), oo.plot_residual = 0; end          % plot residuals at each iteration
@@ -260,21 +260,9 @@ info.norm_Fs = norm_Fs;
 info.norms_Fs = norms_Fs;
 info.stop_time = toc(info.start_time);
 
-% diagnose whether ice velocity (F9,F10) is the convergence bottleneck
-info.ice_dominated = false;
-if info.failed && oo.include_ice
-    last_norms = norms_Fs(min(iter_new, size(norms_Fs,1)), :);
-    hydro_idx = setdiff(iFs, [9 10]);
-    hydro_converged = all(last_norms(hydro_idx) <= Tols_F(hydro_idx));
-    ice_not_converged = any(last_norms([9 10]) > Tols_F([9 10]));
-    if hydro_converged && ice_not_converged
-        info.ice_dominated = true;
-    end
-    % also flag as ice-dominated if F9/F10 are the largest residuals
-    if max(last_norms([9 10])) > 10 * max(last_norms(hydro_idx))
-        info.ice_dominated = true;
-    end
-end
+% no ice_dominated diagnostic needed: SSA is diagnostic (no time derivative),
+% so the retry logic in nevis_timesteps always tries reducing step_ice first
+% when include_ice is true, before falling back to reducing dt.
 
 if info.failed
     vv1 = vv0;

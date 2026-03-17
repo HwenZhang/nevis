@@ -35,13 +35,13 @@ if ~isfield(oo,'dt_min'), oo.dt_min = 1e-6; end % mimimum
 % factor to change timestep by
 if ~isfield(oo,'dt_factor'), oo.dt_factor = 2; end       
 % minimum step_ice before falling back to dt reduction
-if ~isfield(oo,'step_ice'), oo.step_ice = 0.2; end
+if ~isfield(oo,'step_ice'), oo.step_ice = 1.0; end
 if ~isfield(oo,'step_ice_min'), oo.step_ice_min = 0.01; end
 if ~isfield(oo,'step_ice_factor'), oo.step_ice_factor = 0.5; end       
 % increase timestep for this number of iterations or less
-if ~isfield(oo,'small_iter'), oo.small_iter = 2; end            
+if ~isfield(oo,'small_iter'), oo.small_iter = 5; end            
 % decrease timestep for this number of iterations or more 
-if ~isfield(oo,'large_iter'), oo.large_iter = 45; end           
+if ~isfield(oo,'large_iter'), oo.large_iter = 25; end           
 
 % verbose screen output
 if ~isfield(oo,'verb'), oo.verb = 0; end                        
@@ -268,7 +268,6 @@ while t<t_stop+oo.dt_min
     decreased = 0;
     increased = 0;
     ice_retry_count = 0;  % track ice-specific retries
-    step_ice_save = oo.step_ice;  % save original step_ice for this timestep
     while ~accept
         dt = dt1; % suggested timestep
         % adjust timestep if this would take too close to t_save
@@ -280,20 +279,24 @@ while t<t_stop+oo.dt_min
         if ~info.failed
             accept = 1; 
             t = t + dt;
-            % vv1.hb = max(vv1.hb,0); % set negative hb to zero
             vv = vv1;
             vv.dt = dt;
             vv.t = t;
             comp_time = toc;
-            disp(['nevis_timesteps: Done [ ',num2str(comp_time),' s, ',num2str(info.iter_new-1),' iterations ]']);
-            % restore step_ice if it was reduced for retry
-            oo.step_ice = step_ice_save;
+            disp(['nevis_timesteps: Done [ ',num2str(comp_time),' s, ',num2str(info.iter_new-1),' iterations, step_ice = ',num2str(oo.step_ice),' ]']);
+            % adaptive step_ice across timesteps: increase if easy, keep if hard
+            if info.iter_new-1 <= oo.small_iter && oo.step_ice < 1
+                oo.step_ice = min(oo.step_ice / oo.step_ice_factor, 1.0);
+                if oo.verb, disp(['nevis_timesteps: Increasing step_ice to ',num2str(oo.step_ice)]); end
+            end
         end
-        % SSA-specific retry: if ice is the bottleneck, reduce step_ice instead of dt
-        if info.failed && info.ice_dominated && oo.step_ice > oo.step_ice_min
+        % SSA-specific retry: SSA is diagnostic (no time derivative), so reducing
+        % dt never helps SSA convergence. When ice is included and Newton fails,
+        % always try reducing step_ice first before falling back to dt reduction.
+        if info.failed && oo.include_ice && oo.step_ice > oo.step_ice_min
             oo.step_ice = max(oo.step_ice * oo.step_ice_factor, oo.step_ice_min);
             ice_retry_count = ice_retry_count + 1;
-            disp(['nevis_timesteps: Ice-dominated failure, reducing step_ice to ',num2str(oo.step_ice),' (retry ',num2str(ice_retry_count),')']);
+            disp(['nevis_timesteps: SSA retry, reducing step_ice to ',num2str(oo.step_ice),' (retry ',num2str(ice_retry_count),')']);
             continue;
         end
         if oo.change_timestep && info.iter_new-1 <= oo.small_iter && ~info.failed && dt1 < oo.dt_max && ~decreased
@@ -304,14 +307,12 @@ while t<t_stop+oo.dt_min
         elseif oo.change_timestep && ( info.iter_new-1 >= oo.large_iter || info.failed ) && dt1 > oo.dt_min && ~increased
             % too many iterations or failed (hydro-dominated) — reduce dt
             dt1 = max(dt1/oo.dt_factor,oo.dt_min); decreased = 1;
-            oo.step_ice = step_ice_save;  % reset step_ice before dt retry
             ice_retry_count = 0;
             if oo.verb, disp(['nevis_timesteps: Decrease suggested timestep to ',num2str(dt1)]); end
             continue;
         end
         % If no convergence after all retries
         if ~accept
-            oo.step_ice = step_ice_save;  % restore step_ice
             comp_time = toc;
             disp(['nevis_timesteps: Failed [ ',num2str(comp_time),' s, ',num2str(info.iter_new-1),' iterations, dt = ',num2str(dt),' ]']);
             return;
