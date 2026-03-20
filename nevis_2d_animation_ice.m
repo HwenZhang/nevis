@@ -6,7 +6,7 @@
 clc; clear; close all;
 
 %% Settings
-casename = 'n2d_region_ice_Cinv_test2_drainage';
+casename = 'n2d_region_ice_Cinv_test_epsreg0_02_C1C2partition_drainage';
 % casename = 'n2d_region_ice_Cinv_test2';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];
@@ -43,7 +43,7 @@ Q_in    = ps.Q * [tt.Q_in];
 Q_out   = ps.Q * [tt.Q_out];
 Q_out_Q = ps.Q * [tt.Q_outQ];
 Q_out_q = ps.Q * [tt.Q_outq];
-Q_out_b = ps.Q * [tt.Q_outb];
+Q_out_b = ps.Q * [tt.Qb_out];
 E       = (ps.m*ps.x^2) * [tt.E];
 N_ts    = (ps.phi) * [tt.N];  % effective pressure time series
 hs_ts   = ps.x^2*ps.h * [tt.hs];
@@ -91,8 +91,8 @@ leftLayout.Layout.TileSpan = [1, 2];
 leftLayout.TileSpacing = 'compact';
 leftLayout.Padding = 'compact';
 
-% Right panel: spatial fields (3 rows x 2 cols)
-rightLayout = tiledlayout(mainLayout, 3, 2);
+% Right panel: spatial fields (4 rows x 2 cols)
+rightLayout = tiledlayout(mainLayout, 4, 2);
 rightLayout.Layout.Tile = 3;
 rightLayout.Layout.TileSpan = [1, 3];
 rightLayout.TileSpacing = 'compact';
@@ -107,11 +107,11 @@ plot(ax_a, t, Q_b_dec,'r-', 'LineWidth',1.5);
 % plot(ax_a, t, Q_b_in,'b-', t, Q_b_dec,'r-', 'LineWidth',1.5);
 hold on;
 plot(ax_a, t, Q_out_Q + Q_out_q + Q_out_b,'-', 'Color',[0,0.25,0], 'LineWidth',2.5);
-% plot(ax_a, t, Q_out_q,'b--', 'LineWidth',1.5);
+plot(ax_a, t, Q_out_b,'b--', 'LineWidth',1.5);
 plot(ax_a, t, E,'k-.', 'LineWidth',1.5);
-x1 = xline(tframe_d,'--k','LineWidth',1.5);
+x1 = xline(tframe_d,'k--','LineWidth',1.5);
 xlabel('t [d]'); ylabel('Q [m^3/s]');
-legend('Q_{b,relax}','Q_{out}','Q_{in}','NumColumns',2,'Location','southeast');
+legend('Q_{b,relax}','Q_{out}','Q_{out,b}','Q_{in}','NumColumns',2,'Location','southeast');
 text(0.025,0.85,'(a) flux','Units','normalized','FontSize',12);
 xlim([tmin tmax]); set(gca,'YScale','log'); ylim([1e-2 1e4]);
 grid on; grid minor;
@@ -238,6 +238,34 @@ ttext = text(ax6, 0.5, 0.9, ['t = ' num2str(tframe_d,'%.1f') ' d'], ...
 title('(j) ice speed change'); ylabel('y (km)'); xlabel('x (km)');
 axis equal; axis tight;
 
+% (7) Plot principal stress magnitudes and directions as crosses
+ax7 = nexttile(rightLayout);
+stress_scale = ps.eta*ps.u/ps.x / 1e3; % convert to kPa
+[tauxx_s,tauyy_s,tauxy_s,~,~,~,~,~,~,sigma1_s,sigma2_s,t1_s,~] = nevis_stresses(aa.H,vva.u,vva.v,aa.phi_0-vva.phi,aa,pp,gg,oo);
+sigma1_kPa = sigma1_s * stress_scale;
+sigma1_kPa(gg.nout) = NaN;
+p_tau = pcolor(ax7, xx, yy, reshape(sigma1_kPa, gg.nI, gg.nJ));
+shading interp;
+set(p_tau,'linestyle','none'); colormap(ax7, jet);
+cx = colorbar(); cx.Label.String = '\sigma_1 [kPa]';
+clim([0 200]);
+hold on;
+skip7 = 8;
+ii7 = 1:skip7:gg.nI; jj7 = 1:skip7:gg.nJ;
+xq7 = xx(ii7,jj7); yq7 = yy(ii7,jj7);
+s1_s = stress_scale * reshape(sigma1_s, gg.nI, gg.nJ); s1_q = s1_s(ii7,jj7);
+s2_s = stress_scale * reshape(sigma2_s, gg.nI, gg.nJ); s2_q = s2_s(ii7,jj7);
+dx1_s = reshape(cos(t1_s), gg.nI, gg.nJ); dx1_q = dx1_s(ii7,jj7);
+dy1_s = reshape(sin(t1_s), gg.nI, gg.nJ); dy1_q = dy1_s(ii7,jj7);
+dx2_s = reshape(cos(t1_s+pi/2), gg.nI, gg.nJ); dx2_q = dx2_s(ii7,jj7);
+dy2_s = reshape(sin(t1_s+pi/2), gg.nI, gg.nJ); dy2_q = dy2_s(ii7,jj7);
+q_s1p = quiver(ax7, xq7, yq7,  s1_q.*dx1_q,  s1_q.*dy1_q, 0.5, 'r', 'LineWidth', 1);
+q_s1n = quiver(ax7, xq7, yq7, -s1_q.*dx1_q, -s1_q.*dy1_q, 0.5, 'r', 'LineWidth', 1, 'ShowArrowHead', 'off');
+q_s2p = quiver(ax7, xq7, yq7,  s2_q.*dx2_q,  s2_q.*dy2_q, 0.5, 'b', 'LineWidth', 1);
+q_s2n = quiver(ax7, xq7, yq7, -s2_q.*dx2_q, -s2_q.*dy2_q, 0.5, 'b', 'LineWidth', 1, 'ShowArrowHead', 'off');
+title('(k) \tau_{eff} + principal stresses'); ylabel('y (km)'); xlabel('x (km)');
+axis equal; axis tight;
+
 %% ===== Animation loop =====
 v = VideoWriter(['./results/videos/' casename],'MPEG-4');
 v.FrameRate = 3;
@@ -267,6 +295,24 @@ for i_idx = 1:length(index)
     vux = ps.u_b*pd.ty * reshape(uxn,gg.nI,gg.nJ);
     vuy = ps.u_b*pd.ty * reshape(vyn,gg.nI,gg.nJ);
     vUU = sqrt(vux.^2 + vuy.^2);
+
+    % Compute stresses for this frame
+    [~,~,~,~,~,~,~,~,~,sigma1_s,sigma2_s,t1_s,~] = nevis_stresses(aa.H,vva.u,vva.v,aa.phi_0-vva.phi,aa,pp,gg,oo);
+    sigma1_kPa = sigma1_s * stress_scale;
+    sigma1_kPa(gg.nout) = NaN;
+    p_tau.CData = reshape(sigma1_kPa, gg.nI, gg.nJ);
+
+    % Update principal stress quivers
+    s1_s = stress_scale * reshape(sigma1_s, gg.nI, gg.nJ); s1_q = s1_s(ii7,jj7);
+    s2_s = stress_scale * reshape(sigma2_s, gg.nI, gg.nJ); s2_q = s2_s(ii7,jj7);
+    dx1_s = reshape(cos(t1_s), gg.nI, gg.nJ); dx1_q = dx1_s(ii7,jj7);
+    dy1_s = reshape(sin(t1_s), gg.nI, gg.nJ); dy1_q = dy1_s(ii7,jj7);
+    dx2_s = reshape(cos(t1_s+pi/2), gg.nI, gg.nJ); dx2_q = dx2_s(ii7,jj7);
+    dy2_s = reshape(sin(t1_s+pi/2), gg.nI, gg.nJ); dy2_q = dy2_s(ii7,jj7);
+    q_s1p.UData =  s1_q.*dx1_q; q_s1p.VData =  s1_q.*dy1_q;
+    q_s1n.UData = -s1_q.*dx1_q; q_s1n.VData = -s1_q.*dy1_q;
+    q_s2p.UData =  s2_q.*dx2_q; q_s2p.VData =  s2_q.*dy2_q;
+    q_s2n.UData = -s2_q.*dx2_q; q_s2n.VData = -s2_q.*dy2_q;
 
     % Update right panels
     phb.CData = ps.hb * reshape(vva.hb,gg.nI,gg.nJ);

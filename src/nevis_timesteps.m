@@ -36,10 +36,10 @@ if ~isfield(oo,'dt_min'), oo.dt_min = 1e-6; end % mimimum
 if ~isfield(oo,'dt_factor'), oo.dt_factor = 2; end       
 % minimum step_ice before falling back to dt reduction
 if ~isfield(oo,'step_ice'), oo.step_ice = 1.0; end
-if ~isfield(oo,'step_ice_min'), oo.step_ice_min = 0.01; end
-if ~isfield(oo,'step_ice_factor'), oo.step_ice_factor = 0.5; end       
+if ~isfield(oo,'step_ice_min'), oo.step_ice_min = 0.1; end
+if ~isfield(oo,'step_ice_factor'), oo.step_ice_factor = 0.25; end       
 % increase timestep for this number of iterations or less
-if ~isfield(oo,'small_iter'), oo.small_iter = 5; end            
+if ~isfield(oo,'small_iter'), oo.small_iter = 3; end            
 % decrease timestep for this number of iterations or more 
 if ~isfield(oo,'large_iter'), oo.large_iter = 25; end           
 
@@ -284,23 +284,24 @@ while t<t_stop+oo.dt_min
             vv.t = t;
             comp_time = toc;
             disp(['nevis_timesteps: Done [ ',num2str(comp_time),' s, ',num2str(info.iter_new-1),' iterations, step_ice = ',num2str(oo.step_ice),' ]']);
-            % adaptive step_ice across timesteps: increase if easy, keep if hard
-            if info.iter_new-1 <= oo.small_iter && oo.step_ice < 1
-                oo.step_ice = min(oo.step_ice / oo.step_ice_factor, 1.0);
-                if oo.verb, disp(['nevis_timesteps: Increasing step_ice to ',num2str(oo.step_ice)]); end
+            % adaptive step_ice across timesteps: increase gradually if easy
+            if info.iter_new-1 <= 3*oo.small_iter && oo.step_ice < 1
+                oo.step_ice = min(oo.step_ice * 2, 1.0);  % at most double per timestep
+                disp(['nevis_timesteps: Increasing step_ice to ',num2str(oo.step_ice)]);
             end
         end
-        % SSA-specific retry: SSA is diagnostic (no time derivative), so reducing
-        % dt never helps SSA convergence. When ice is included and Newton fails,
-        % always try reducing step_ice first before falling back to dt reduction.
-        if info.failed && oo.include_ice && oo.step_ice > oo.step_ice_min
-            oo.step_ice = max(oo.step_ice * oo.step_ice_factor, oo.step_ice_min);
+        % SSA-specific retry: if SSA residuals are large, drop step_ice
+        % directly to step_ice_min and retry once (no iterative reduction).
+        if info.failed && info.ice_large && oo.step_ice > oo.step_ice_min
+            oo.step_ice = oo.step_ice_min;
             ice_retry_count = ice_retry_count + 1;
-            disp(['nevis_timesteps: SSA retry, reducing step_ice to ',num2str(oo.step_ice),' (retry ',num2str(ice_retry_count),')']);
+            disp(['nevis_timesteps: SSA retry, setting step_ice to ',num2str(oo.step_ice)]);
             continue;
         end
-        if oo.change_timestep && info.iter_new-1 <= oo.small_iter && ~info.failed && dt1 < oo.dt_max && ~decreased
-            % too few iterations
+        if oo.change_timestep && info.iter_new-1 <= oo.small_iter && ~info.failed && dt1 < oo.dt_max && ~decreased && ice_retry_count == 0 && oo.step_ice >= (1-1e-5) && abs(dt - dt1) < oo.dt_min
+            % too few iterations — only increase dt when step_ice is fully
+            % restored and dt was not trimmed to match t_save (easy
+            % convergence with a trimmed dt is artificial)
             dt1 = min(oo.dt_factor*dt1,oo.dt_max); increased = 1;
             if oo.verb, disp(['nevis_timesteps: Increase suggested timestep to ',num2str(dt1)]); end
             continue;
@@ -320,13 +321,13 @@ while t<t_stop+oo.dt_min
         % convergence, plot the velocity field for maintenance
         disp([num2str(norm(abs(aa.u_obs(gg.ebdy2)-vv1.u(gg.ebdy2)))/norm(vv1.u(gg.ebdy2)))]);
         % [u_inv, v_inv] = nevis_velocity(aa.H, vv1.u, vv1.v, aa.phi_0-vv1.phi, aa, pp, gg, oo);
-        [u_inv, v_inv] = nevis_velocity(aa.H, aa.u_obs, aa.v_obs, aa.phi_0-vv1.phi, aa, pp, gg, oo);
+        % [u_inv, v_inv] = nevis_velocity(aa.H, aa.u_obs, aa.v_obs, aa.phi_0-vv1.phi, aa, pp, gg, oo);
         if oo.visualize_vel
-            vv_vel_solve = vv;
-            vv_vel_solve.u = u_inv;
-            vv_vel_solve.v = v_inv;
+            % vv_vel_solve = vv;
+            % vv_vel_solve.u = u_inv;
+            % vv_vel_solve.v = v_inv;
             nevis_plot_velocity(gg,vv,1); 
-            nevis_plot_velocity(gg,vv_vel_solve,2);
+            % nevis_plot_velocity(gg,vv_vel_solve,2);
         end
     end
     

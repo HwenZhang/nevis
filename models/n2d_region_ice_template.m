@@ -8,7 +8,7 @@ oo.root = './';                                % filename root
 oo.code = './src';                             % code directory   
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name
-oo.casename = 'n2d_region_ice_Cinv_test_epsreg0_02'; 
+oo.casename = 'n2d_region_ice_Cinv0_5_epsreg0_01'; 
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
@@ -32,7 +32,9 @@ oo.boundary_method = 'stress_l_vel_tbl';
 % oo.boundary_method = 'stress_tblr';
 oo.mask_boundary_method = 'stress_free';
 oo.plot_residual = 0;
-oo.max_iter_new = 100;
+oo.max_iter_new = 50;
+% ratio of reducable basal shear stress(C1) to total basal shear stress (C_total) for the inversion test, e.g., 0.25 means that 25% of the basal shear stress is from C1 and can be reduced by lowering N, while 75% is from C2 and is unaffected by N.
+oo.partition_ratio = 0.5; 
 
 pd.alpha_b = 0;                                 % relaxation rate (s^-1)
 pd.kappa_b = 1e-10;                             % relaxation coeff
@@ -95,6 +97,7 @@ end
 gg = nevis_mask(gg,nout); 
 gg = nevis_mask_blister(gg,noutb);
 gg.n1m = gg.n1;                                   % label all edge nodes as boundary nodes for pressure
+gg.n1_blister = gg.n1m;
 
 %% label boundary nodes
 gg = nevis_label(gg,gg.n1m);
@@ -118,15 +121,21 @@ if ~isfield(pp,'taud_reg'), pp.taud_reg = 1e-16; end % regularisation on basal s
 if ~isfield(pp,'C2'), pp.C2 = 0; end % added power-law coefficient in sliding law
 
 %% load the slipperiness field for the inversion test
-load(['./data/C_inversion_results.mat'], 'C_hat_dim');
-
+inv = load(['./data/C_inversion_results.mat']);
+% partition the total slipperiness coefficient C_total into two components C1 and C2 based on the specified partition ratio, dimensionalize C1 and C2 with the inversion scales. The dimensional C1 and C2 will be nondimensionalized again with the forward model scales below
+[C1_hat_dim, C2_hat_dim] = nevis_inv_partition(inv.C_hat, oo.partition_ratio, inv.u_obs_noisy, inv.v_obs_noisy, inv.N_current, inv.aa, inv.pp, inv.gg, inv.oo, inv.ps);
 %% plot grid
 % nevis_plot_grid_ice(gg); return;                    % check to see what grid looks like
 
 %% initialize variables
 [aa,vv] = nevis_initialize(b,s,gg,pp,oo);         % default initialisation
 % C_hat_dim is dimensional; convert back to nondimensional C
-aa.C = C_hat_dim * (ps.u_b^(1/pp.n_slide) / ps.tau);
+% if using the original sliding law without the power-law term, use C_hat_dim; if using the sliding law with the power-law term, use C1_hat_dim and C2_hat_dim
+% aa.C = C_hat_dim * (ps.u_b^(1/pp.n_slide) / ps.tau);
+% [C1, C2] = nevis_inv_partition(C_hat_dim, 0.25, u_obs_noisy, v_obs_noisy, N_current, aa, pp, gg, oo);
+
+aa.C = C1_hat_dim * (ps.u_b^(1/pp.n_slide) / ps.tau);
+aa.C2 = C2_hat_dim * (ps.u_b^(1/pp.n_slide) / ps.tau); % added power-law coefficient in sliding law
 % plot the C field
 % figure;
 % pcolor(gg.nx, gg.ny, reshape(aa.C, gg.nI, gg.nJ)); shading flat; colorbar();

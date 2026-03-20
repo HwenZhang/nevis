@@ -30,6 +30,10 @@ oo.in = [oo.root, 'data/', oo.casename];
 oo.dn = [oo.root, 'data/', oo.dataset, '/'];
 addpath(oo.code);
 
+% set the surface runoff options
+racmo = 0;  % use RACMO runoff data (if 0, use simple sinusoidal function)
+distributed = 1;  % if 1, distribute runoff across the domain; if 0, input to discrete moulins
+
 % load saved spinup state
 load([oo.in, oo.fn], 'pp','pd','ps','gg','aa','oo');
 [pd,ps,pp,oo] = nevis_update_parameters_ice(pd,ps,pp,oo);
@@ -437,9 +441,9 @@ for outer_iter = 1:opts_inv.max_outer_iter
     outer_history.C_change(end+1,1) = C_change;
     
     C_hat_dim = C_hat * (ps.tau / ps.u_b^(1/pp.n_slide));
-    save(sprintf('./data/C_inversion_outer%d.mat', outer_iter), ...
+    save(sprintf('./data/C_inversion_runoff_30_outer%d.mat', outer_iter), ...
         'C_hat', 'C_hat_dim', 'N_current', 'outer_history', 'J_hat');
-    fprintf('  Saved intermediate results to C_inversion_outer%d.mat\n', outer_iter);
+    fprintf('  Saved intermediate results to C_inversion_runoff_30_outer%d.mat\n', outer_iter);
     
     % --- Update N using forward model with inverted C ---
     fprintf('Running forward model to update N...\n');
@@ -453,9 +457,9 @@ for outer_iter = 1:opts_inv.max_outer_iter
     vv_hydro.u = u_inv;
     vv_hydro.v = v_inv;
     vv_hydro.N = N_current;
-    save('./data/velocity_inverted.mat', 'vv_hydro');
+    save('./data/velocity_inverted_runoff_30.mat', 'vv_hydro');
 
-    [N_new, vv_hydro] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_hydro, pd.mu_s);
+    [N_new, vv_hydro] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_hydro, pd.mu_s, racmo, distributed);
     % N_new = N_old; 
 
     N_new(isnan(N_new)) = 0;
@@ -495,11 +499,11 @@ fprintf('========================================\n\n');
 
 fprintf('Inversion complete. Final J = %.6e, exit flag = %d\n', J_hat, exitflag);
 C_hat_dim = C_hat * (ps.tau / ps.u_b^(1/pp.n_slide));
-save('./data/C_inversion_results.mat', 'C_hat_dim', 'c_hat', 'history', 'opts_inv', 'J_hat', 'exitflag');
+save('./data/C_inversion_runoff_30_results.mat', 'C_hat_dim', 'c_hat', 'history', 'opts_inv', 'J_hat', 'exitflag');
 
 %% Compute final C and print
 % Now we add back C2:
-% 1) compute sliding speed from inverted C and current N
+% 1. compute sliding speed from inverted C and current N
 aa.C = C_hat;
 [u_inv, v_inv] = nevis_velocity(aa.H, u_obs_noisy, v_obs_noisy, N_current, aa, pp, gg, oo);
 U_slide = sqrt((gg.nmeanx2(:,gg.es2)*u_inv(gg.es2)).^2 + (gg.nmeany2(:,gg.fs2)*v_inv(gg.fs2)).^2);
@@ -525,7 +529,7 @@ C2_hat_dim = C2_contrib * (ps.tau / ps.u_b^(1/pp.n_slide));
 fprintf('C1 contribution: min=%.2e, max=%.2e\n', min(C1_hat_dim), max(C1_hat_dim));
 fprintf('C2 contribution: min=%.2e, max=%.2e\n', min(C2_hat_dim), max(C2_hat_dim));
 
-save('./data/C_inversion_results.mat', 'C1_hat_dim', 'C2_hat_dim', '-append');
+save('./data/C_inversion_runoff_30_results.mat', 'C1_hat_dim', 'C2_hat_dim', '-append');
 
 figure('Name','Convergence','Position',[100 100 1200 400]);
 subplot(1,3,1);

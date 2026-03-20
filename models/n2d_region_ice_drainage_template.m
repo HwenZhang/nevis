@@ -5,8 +5,8 @@ clc,clear
 format compact
 
 %% read in the initial condition
-casename = 'n2d_region_ice_Cinv_test2_drainage3'; % drainage system filename
-initname = 'n2d_region_ice_Cinv_test2';
+casename = 'n2d_region_ice_Cinv0_5_epsreg0_01_drainage'; % drainage system filename
+initname = 'n2d_region_ice_Cinv0_5_epsreg0_01';
 
 %% parameters
 data = load(['./results/' initname '/' initname]);
@@ -84,9 +84,9 @@ pp.ni_m = tmp.pp.ni_m; pp.sum_m = tmp.pp.sum_m; clear tmp;
 
 %% supraglacial lakes
 % multiple lakes from the catalogue
-pp.x_l = [40e3]/ps.x;                          % x-coord of lakes
-pp.y_l = [-15e3]/ps.x;                          % y-coord of lakes
-pp.V_l = [1e9]/(ps.Q0*ps.t);                    % volume of lakes         
+pp.x_l = [-20e3]/ps.x;                          % x-coord of lakes
+pp.y_l = [-20e3]/ps.x;                          % y-coord of lakes
+pp.V_l = [1e8]/(ps.Q0*ps.t);                    % volume of lakes         
 pp.t_drainage = pd.td/ps.t*[10];  % time of lake drainages (assumed to be the middle time of the Gaussian)
 pp.t_duration = pd.td/ps.t*[0.1];  % duration of lake drainages
 [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo);          % calculate lake catchments

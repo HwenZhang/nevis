@@ -1,7 +1,7 @@
 %% Import necessary libraries
 % casename = oo.casename;
-casename = 'n2d_moulin1e1_eps1e_02_kappa1e_10_mu1e1_V1e7_drainage';  % specify the case name
-
+casename = 'n2d_region_ice_Cinv_test';  % specify the case name
+oo.plot_residual = 0;
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];                         % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];             % path to the case results
@@ -28,14 +28,16 @@ qnet = ps.qs*(vv2.qs + vv2.qe + vv2.qQ + 0*vv2.Q);
 
 xx = (ps.x/10^3)*gg.nx; % x grid in km
 yy = (ps.x/10^3)*gg.ny;  
+xx0 = xx;
+yy0 = yy;
 xx(gg.nout) = NaN;
 yy(gg.nout) = NaN;
 
 %% read in the time series
 t = (ps.t/(24*60*60))*[tt.t];               % dimensional time series (days)
 tspan = (ps.t/pd.td)*oo.t_span;
-tmin = 0.0*365*pd.td/ps.t;
-tmax = 5.0*365*pd.td/ps.t;
+tmin = 0.55*365*pd.td/ps.t;
+tmax = 1.0*365*pd.td/ps.t;
 tmin_d = tmin*ps.t/pd.td; 
 tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
 
@@ -294,15 +296,16 @@ axis equal
 ax = nexttile(rightLayout);
 zhe = (ps.hb)*reshape(vva.hb,gg.nI,gg.nJ); 
 pblister = pcolor(ax,xx,yy,zhe); 
+shading interp
 set(pblister,'linestyle','none'); % shading interp
 cx = colorbar();
 cx.Label.String = 'h_b [ m ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
-clim([-0.005 0.005]);
+clim([-0.01 0.01]);
 % highlight all the nodes where hb<-0.005
 hold on
-[C_neg, h_neg] = contour(ax, xx, yy, zhe, [-0.005 -0.005], 'r-', 'LineWidth', 2);
+% [C_neg, h_neg] = contour(ax, xx, yy, zhe, [-0.005 -0.005], 'r-', 'LineWidth', 2);
 
 zpb = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ); 
 [Cb,pblister_contour] = contour(ax,xx,yy,zpb,'linecolor','k','linewidth',0.5);
@@ -420,8 +423,7 @@ for i_idx = 1:length(frame_indices)
     phs.CData = (ps.hs)*reshape(vva.hs,gg.nI,gg.nJ);
     phs_contour.ZData = (ps.phi)*reshape(vva.phi,gg.nI,gg.nJ);
 
-    h_neg.ZData = (ps.hb)*reshape(vva.hb,gg.nI,gg.nJ);
-    
+    % h_neg.ZData = (ps.hb)*reshape(vva.hb,gg.nI,gg.nJ);
     pblister.CData = (ps.hb)*reshape(vva.hb,gg.nI,gg.nJ); 
     pblister_contour.ZData = (ps.phi)*reshape(vva.pb,gg.nI,gg.nJ);
 

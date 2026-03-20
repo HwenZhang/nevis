@@ -1,4 +1,4 @@
-function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus)
+function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus, racmo, distributed_input)
     % Run the forward hydrology model with the current C and return the updated N
     % Inputs:
     %   C_dim:    dimensional slipperiness field [nIJ x 1]
@@ -242,9 +242,9 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus)
     % RACMO distributed input
     oo.surface_runoff = 1;                                          % If set to 1 turns on surface runoff input
                                                                     % 0 is prescribe moulin input with a function
-    oo.RACMO_runoff = 0;                                            % If set to 1 turns on RACMO surface runoff data
+    oo.RACMO_runoff = racmo;                                        % If set to 1 turns on RACMO surface runoff data
                                                                     % 0 is a simple sinusoidal function
-    oo.distributed_input = 1;                                       % If set to 1 distributes input across the domain
+    oo.distributed_input = distributed_input;                       % If set to 1 distributes input across the domain
                                                                     % 0 inputs to discrete moulins
 
     pp.meltE = @(t) (30/1000/pd.td/ps.m)*(1-exp(-t/(20*pd.td/ps.t))); 

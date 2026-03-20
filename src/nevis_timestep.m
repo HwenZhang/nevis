@@ -22,7 +22,7 @@ if ~isfield(oo,'Tol_Fs'), oo.Tol_Fs = oo.Tol_F*ones(1,num); end       % toleranc
 if length(oo.Tol_Fs)<num
     oo.Tol_Fs = [oo.Tol_Fs oo.Tol_Fs(end)*ones(1,num-length(oo.Tol_Fs))];
 end 
-if ~isfield(oo,'max_iter_new'), oo.max_iter_new = 100; end            % maximum number of Newton iterations
+if ~isfield(oo,'max_iter_new'), oo.max_iter_new = 50; end           % maximum number of Newton iterations
 if ~isfield(oo,'step_new'), oo.step_new = 1; end                    % step size for Newton iteration
 if ~isfield(oo,'max2_iter_new'), oo.max2_iter_new = 20; end         % maximum number of Newton iterations before step2 is used
 if ~isfield(oo,'step2_new'), oo.step2_new = 0.5*oo.step_new; end    % step2 size for Newton iteration
@@ -260,9 +260,12 @@ info.norm_Fs = norm_Fs;
 info.norms_Fs = norms_Fs;
 info.stop_time = toc(info.start_time);
 
-% no ice_dominated diagnostic needed: SSA is diagnostic (no time derivative),
-% so the retry logic in nevis_timesteps always tries reducing step_ice first
-% when include_ice is true, before falling back to reducing dt.
+% check whether SSA residuals (F9,F10) are above tolerance
+info.ice_large = false;
+if info.failed && oo.include_ice
+    last_norms = norms_Fs(min(iter_new, size(norms_Fs,1)), :);
+    info.ice_large = any(last_norms([9 10]) > 10*Tols_F([9 10]));
+end
 
 if info.failed
     vv1 = vv0;

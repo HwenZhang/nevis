@@ -49,7 +49,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
     if ~isfield(oo,'channel_k'), oo.channel_k = 0; end 
     
     if ~isfield(oo,'N_coupling'), oo.N_coupling = 1; end      % when 1 switch on N in sliding speed, when 0, N=0 is used in the sliding law
-    if ~isfield(oo,'U_coupling'), oo.U_coupling = 0; end      % update sliding speed in basal melt term
+    if ~isfield(oo,'U_coupling'), oo.U_coupling = 1; end      % update sliding speed in basal melt term
 
     %% OPTIONS FOR ICE
     % ITERATION OPTIONS
@@ -79,7 +79,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
     if ~isfield(pp,'alpha_u'), pp.alpha_u = 1; end % coefficient to calculate ice speed from velocity components
 
     % REQRUIED FIELDS
-    if ~isfield(aa,'C'), aa.C = pp.C*ones(gg.nIJ,1); end % dimensionless sliding coefficient 
+    if ~isfield(aa,'C'), aa.C = pp.C*ones(gg.nIJ,1); end % dimensionless sliding coefficient
+    if ~isfield(aa,'C2'), aa.C2 = pp.C2*ones(gg.nIJ,1); end % added power-law coefficient in sliding law
     if ~isfield(aa,'mu'), aa.mu = pp.mu*ones(gg.nIJ,1); end % dimensionless Coulomb friction coefficient
 
     %% fill in missing boundary fluxes
@@ -182,6 +183,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
     hb_reg1 = aa.hb_reg1;
     b = aa.b; % bed elevation on nodes [nIJ-by-1]
     C = aa.C; % basal friction coefficient on nodes [nIJ-by-1]
+    C2 = aa.C2; % added power-law coefficient in sliding law
     mu = aa.mu; % basal friction coefficient on nodes [nIJ-by-1]
     Txx = 0*ones(gg.nIJ,1); % membrane stress [only used on nbdyx] [nIJ-by-1]
     Tyy = 0*ones(gg.nIJ,1); % membrane stress [only used on nbdyy] [nIJ-by-1]
@@ -504,7 +506,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
         vv2.Qb_in = Qb_in.*gg.Dx.*gg.Dy;
         vv2.Qb_dec = sum(Qb_h.*gg.Dx.*gg.Dy,"omitnan");
         vv2.Q_out = 1/pp.c9*sum(R2(gg.nbdy).*gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy)); 
-        vv2.Qb_out = 1/pp.c43*sum(R8(gg.nbdy).*gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy)); 
+        vv2.Qb_out = 1/pp.c43*sum(R8(gg.nbdy_blister).*gg.Dx(gg.nbdy_blister).*gg.Dy(gg.nbdy_blister)); 
         vv2.Xi = Xi;
         vv2.he = he;
         vv2.hc = pp.c8*(gg.nmeanx*Sx.*gg.Dx+gg.nmeany*Sy.*gg.Dy+gg.nmeans*Ss.*gg.Ds+gg.nmeanr*Sr.*gg.Dr)./(gg.Dx.*gg.Dy);
@@ -523,8 +525,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
                                    pp.c5*( gg.nddx(gg.nbdy,:)*qex + gg.nddy(gg.nbdy,:)*qey)).*...
                                 gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy));  % outflow in sheet
 
-        vv2.Q_outb = -1/pp.c43*sum((pp.c45*(gg.nddx(gg.nbdy,:)*qbx + gg.nddy(gg.nbdy,:)*qby)).*...
-                                gg.Dx(gg.nbdy).*gg.Dy(gg.nbdy),"omitnan");   % outflow in blister
+        vv2.Q_outb = -1/pp.c43*sum((pp.c45*(gg.nddx(gg.nbdy_blister,:)*qbx + gg.nddy(gg.nbdy_blister,:)*qby)).*...
+                                gg.Dx(gg.nbdy_blister).*gg.Dy(gg.nbdy_blister));   % outflow in blister
         
         F1 = R1(gg.ns);  % cavity sheet
         F2 = R2(gg.nin); % total mass conservation
@@ -665,7 +667,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
         % H_times_etabar_matrix = sparse(nin,nin,H(nin).*etabar(nin),nIJ,nIJ); % [nIJ-by-nIJ]
         % H_times_etabar_matrix_c = sparse(cin,cin,gg.cmean(cin,ns)*(H(ns).*etabar(ns)),cIJ,cIJ); % [cIJ-by-cIJ]
 
-        Fx_res = - pp.c61*(emean2(ein2,ns2)*(taub_over_Us(Us(ns2),Reg_Ni(N(ns2),pp.N_slide_reg,oo.N_coupling),C(ns2),mu(ns2),pp,gg,oo))).*u(ein2) + ...
+        Fx_res = - pp.c61*(emean2(ein2,ns2)*(taub_over_Us(Us(ns2),Reg_Ni(N(ns2),pp.N_slide_reg,oo.N_coupling),C(ns2),C2(ns2),mu(ns2),pp,gg,oo))).*u(ein2) + ...
             pp.c62*(eddx(ein2,nin2)*(4*H(nin2).*etabar(nin2).*(nddx(nin2,ein2)*u(ein2))) + ...
                     eddx(ein2,nin2)*(2*H(nin2).*etabar(nin2).*(nddy(nin2,fin2)*v(fin2))) + ...
                     eddy(ein2,cin2)*(cmean2(cin2,ns2)*(H(ns2).*etabar(ns2)).*(cddy(cin2,ein2)*u(ein2))) + ...
@@ -702,7 +704,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
         %         -emean(ein,ns)*(taub(U(ns),N(ns),C(ns),mu(ns),pp,gg,oo)),length(ein),length(ein)) + ...
         %         pp.c62*(eddx(ein,nin)*(4*H_times_etabar_matrix(nin,nin)*nddx(nin,ein)) +...
         %                 eddy(ein,cin)*(H_times_etabar_matrix_c(cin,cin)*cddy(cin,ein)));
-        Fy_res = - pp.c61*fmean2(fin2,ns2)*(taub_over_Us(Us(ns2),Reg_Ni(N(ns2),pp.N_slide_reg,oo.N_coupling),C(ns2),mu(ns2),pp,gg,oo)).*v(fin2) + ...
+        Fy_res = - pp.c61*fmean2(fin2,ns2)*(taub_over_Us(Us(ns2),Reg_Ni(N(ns2),pp.N_slide_reg,oo.N_coupling),C(ns2),C2(ns2),mu(ns2),pp,gg,oo)).*v(fin2) + ...
             pp.c62*(fddy(fin2,nin2)*(4*H(nin2).*etabar(nin2).*(nddy(nin2,fin2)*v(fin2))) + ...
                     fddy(fin2,nin2)*(2*H(nin2).*etabar(nin2).*(nddx(nin2,ein2)*u(ein2))) + ...
                     fddx(fin2,cin2)*(cmean2(cin2,ns2)*(H(ns2).*etabar(ns2)).*(cddx(cin2,fin2)*v(fin2))) + ...
@@ -1305,7 +1307,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
         %     pp.c60*(emean2(ein2,ns2)*H(ns2)).*(eddx(ein2,ns2)*s(ns2));
 
         Dtaub_DN_vec = zeros(nIJ, 1);
-        Dtaub_DN_vec(ns2) = Dtaub_over_Us_DN(Us(ns2),Reg_Ni(N(ns2),pp.N_slide_reg,oo.N_coupling),C(ns2),mu(ns2),pp,gg,oo).*DReg_Ni_DN(N(ns2),pp.N_slide_reg,oo.N_coupling);
+        Dtaub_DN_vec(ns2) = Dtaub_over_Us_DN(Us(ns2),Reg_Ni(N(ns2),pp.N_slide_reg,oo.N_coupling),C(ns2),C2(ns2),mu(ns2),pp,gg,oo).*DReg_Ni_DN(N(ns2),pp.N_slide_reg,oo.N_coupling);
         
         temp = - c61*spdiags(u(ein2), 0, length(ein2), length(ein2))*...
                     (emean2(ein2,:)*...
@@ -1317,10 +1319,10 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
 
         % ein2 eqns, ein2 variables
         taub_Us_vec = zeros(nIJ, 1);
-        taub_Us_vec(ns2) = taub_over_Us(Us(ns2),Reg_Ni(N(ns2),pp.N_slide_reg,oo.N_coupling),C(ns2),mu(ns2),pp,gg,oo);
+        taub_Us_vec(ns2) = taub_over_Us(Us(ns2),Reg_Ni(N(ns2),pp.N_slide_reg,oo.N_coupling),C(ns2),C2(ns2),mu(ns2),pp,gg,oo);
         
         Dtaub_DUs_vec = zeros(nIJ, 1);
-        Dtaub_DUs_vec(ns2) = Dtaub_over_Us_DUs(Us(ns2),Reg_Ni(N(ns2),pp.N_slide_reg,oo.N_coupling),C(ns2),mu(ns2),pp,gg,oo);
+        Dtaub_DUs_vec(ns2) = Dtaub_over_Us_DUs(Us(ns2),Reg_Ni(N(ns2),pp.N_slide_reg,oo.N_coupling),C(ns2),C2(ns2),mu(ns2),pp,gg,oo);
         
         % ein2 eqns, ein2 variables
         DF9_u = - c61*spdiags(emean2(ein2,:)*taub_Us_vec, 0, length(ein2), length(ein2)) - ...
@@ -1723,22 +1725,23 @@ end
 % end
 
 %% sliding law
-function tau_b_over_Ub = taub_over_Us(Ub,N,C,mu,pp,gg,oo)
+function tau_b_over_Ub = taub_over_Us(Ub,N,C,C2,mu,pp,gg,oo)
 % cavity-based sliding law
 % tau_b ~ mu*N for large Ub, tau_b ~ C*Ub^(1/n) for small Ub 
     Ub_r = max(Ub,pp.Ub_reg);
-    tau_b_over_Ub = N.*Ub_r.^(1/pp.n_slide-1).*(mu.^(-pp.n_slide).*Ub_r+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide) + pp.C2*Ub_r.^(1/pp.n_slide-1);
+    tau_b_over_Ub = N.*Ub_r.^(1/pp.n_slide-1).*(mu.^(-pp.n_slide).*Ub_r+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide) + C2.*Ub_r.^(1/pp.n_slide-1);
 end
 
-function Dtaub_over_Us_DUs = Dtaub_over_Us_DUs(Ub,N,C,mu,pp,gg,oo)
+% derivatives of sliding law wrt Ub and N, needed for Jacobian
+function Dtaub_over_Us_DUs = Dtaub_over_Us_DUs(Ub,N,C,C2,mu,pp,gg,oo)
 % derivative of cavity-based sliding law wrt Ub
     Ub_r = max(Ub,pp.Ub_reg);
     term1 = (1/pp.n_slide-1)*N.*Ub_r.^(1/pp.n_slide-2).*(mu.^(-pp.n_slide).*Ub_r+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide);
     term2 = (1/pp.n_slide)*N.*Ub_r.^(1/pp.n_slide-1).*(mu.^(-pp.n_slide)).*(mu.^(-pp.n_slide).*Ub_r+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide-1);
-    Dtaub_over_Us_DUs = (Ub > pp.Ub_reg).*(term1 - term2 + pp.C2*(1/pp.n_slide-1)*Ub_r.^(1/pp.n_slide-2));
+    Dtaub_over_Us_DUs = (Ub > pp.Ub_reg).*(term1 - term2 + C2.*(1/pp.n_slide-1).*Ub_r.^(1/pp.n_slide-2));
 end
 
-function Dtaub_over_Us_DN = Dtaub_over_Us_DN(Ub,N,C,mu,pp,gg,oo)
+function Dtaub_over_Us_DN = Dtaub_over_Us_DN(Ub,N,C,C2,mu,pp,gg,oo)
 % derivative of cavity-based sliding law wrt N
     Ub_r = max(Ub,pp.Ub_reg);
     term1 = Ub_r.^(1/pp.n_slide-1).*(mu.^(-pp.n_slide).*Ub_r+C.^(-pp.n_slide).*N.^pp.n_slide).^(-1/pp.n_slide);
