@@ -117,6 +117,9 @@ if ~isfield(pp,'N_slide_reg'), pp.N_slide_reg = 1e-16; end % regularisation on e
 if ~isfield(pp,'taud_reg'), pp.taud_reg = 1e-16; end % regularisation on basal shear stress [ may not be needed ? ]
 if ~isfield(pp,'C2'), pp.C2 = 0; end % added power-law coefficient in sliding law
 
+nevis_plot_grid(gg);
+return;
+
 %% load the slipperiness field for the inversion test
 inv = load(['./data/C_inversion_results.mat']);
 % partition the total slipperiness coefficient C_total into two components C1 and C2 based on the specified partition ratio, dimensionalize C1 and C2 with the inversion scales. The dimensional C1 and C2 will be nondimensionalized again with the forward model scales below

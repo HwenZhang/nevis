@@ -45,14 +45,14 @@ figure;
     plot(cx(cout),cy(cout),'x','color',.9*[1 1 1]);
     
     % bound and internal
-    % plot(nx(nbdy),ny(nbdy),'r.','markersize',8); 
+    plot(nx(nbdy),ny(nbdy),'r.','markersize',8); 
     plot(nx(nin),ny(nin),'k.','markersize',8);
-    % plot(ex(ebdy),ey(ebdy),'r+');
-    % plot(ex(ein),ey(ein),'k+');
-    % plot(fx(fbdy),fy(fbdy),'g+');
-    % plot(fx(fin),fy(fin),'k+');
-    % plot(cx(cbdy),cy(cbdy),'rx');
-    % plot(cx(cin),cy(cin),'kx');
+    plot(ex(ebdy),ey(ebdy),'r+');
+    plot(ex(ein),ey(ein),'k+');
+    plot(fx(fbdy),fy(fbdy),'g+');
+    plot(fx(fin),fy(fin),'k+');
+    plot(cx(cbdy),cy(cbdy),'rx');
+    plot(cx(cin),cy(cin),'kx');
     
     % plot(nx(nbdy_blister),ny(nbdy_blister),'r.','markersize',8); 
     % plot(nx(nin_blister),ny(nin_blister),'k.','markersize',8);
@@ -82,6 +82,7 @@ figure;
     plot(nx(missing),ny(missing),'bo','markersize',8);
 
     plot(nx(ni),ny(ni),'go');
+    legend('nout','eout','fout','cout','nbdy','nin','ebdy','ein','fbdy','fin','cbdy','cin','ni');
     grid on
    
 end

@@ -6,7 +6,7 @@
 clc; clear; close all;
 
 %% Settings
-casename = 'n2d_regional_V1e9_eps1e_02_kappa1e_10_mu2e1_partition6e_01_drainage_highelev';
+casename = 'n2d_regional_eps1e_02_kappa1e_10_mu2e1_partition2e_01_spinup_test';
 % casename = 'n2d_region_ice_Cinv_test2';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];
@@ -40,7 +40,7 @@ t = (ps.t/pd.td) * [tt.t];  % dimensional time (days)
 Q_b_in  = pd.Q_0 * [tt.Qb_in];
 Q_b_dec = ps.h*ps.x^2/ps.t * [tt.Qb_dec];
 Q_in    = ps.Q * [tt.Q_in];
-Q_out   = ps.Q * [tt.Q_out];
+Q_out   = ps.Q * ([tt.Q_out]-pp.c6*[tt.E]);
 Q_out_Q = ps.Q * [tt.Q_outQ];
 Q_out_q = ps.Q * [tt.Q_outq];
 Q_out_b2 = ps.Q0 * [tt.Q_outb];
