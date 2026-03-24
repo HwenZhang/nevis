@@ -413,7 +413,7 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
     end
     
     % outside edge fluxes
-    % qbx(gg.eout_blister) = 0; qby(gg.fout_blister) = 0;
+    qbx(gg.eout_blister) = 0; qby(gg.fout_blister) = 0;
     qsx(gg.eout) = 0; qex(gg.eout) = 0; Qx(gg.eout) = 0; % x-edge
     qsy(gg.fout) = 0; qey(gg.fout) = 0; Qy(gg.fout) = 0; % y-edge  
     Qs(gg.cout) = 0; Qr(gg.cout) = 0; % corners
@@ -500,7 +500,6 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
     %% Residual
     if oo.evaluate_residual
         [R1,R2,R3,R4,R5,R6,R7,R8,R9,R10] = residuals();
-        
         vv2.R_bdy = R2(gg.nbdy);
         vv2.R_bdy_blister = R8(gg.nbdy_blister);
         vv2.Qb_in = Qb_in.*gg.Dx.*gg.Dy;
@@ -509,6 +508,8 @@ function [vv2,F,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,J] = nevis_backbone(dt,vv,vv0,aa,
         vv2.Qb_out = 1/pp.c43*sum(R8(gg.nbdy_blister).*gg.Dx(gg.nbdy_blister).*gg.Dy(gg.nbdy_blister)); 
         vv2.Xi = Xi;
         vv2.he = he;
+        vv2.hv = hv;
+        vv2.hm = hm;
         vv2.hc = pp.c8*(gg.nmeanx*Sx.*gg.Dx+gg.nmeany*Sy.*gg.Dy+gg.nmeans*Ss.*gg.Ds+gg.nmeanr*Sr.*gg.Dr)./(gg.Dx.*gg.Dy);
         vv2.Q_in = sum(Qx(gg.ebdy))+sum(Qy(gg.fbdy))+sum(Qs(gg.cbdy))+sum(Qr(gg.cbdy)) ...
                  + pp.c4/pp.c9*(sum(qsx(gg.ebdy).*(gg.emean(gg.ebdy,:)*gg.Dy))+...

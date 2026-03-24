@@ -6,7 +6,7 @@
 clc; clear; close all;
 
 %% Settings
-casename = 'n2d_region_ice_Cinv_test_epsreg0_02_C1C2partition_drainage';
+casename = 'n2d_regional_eps1e_02_kappa1e_10_mu2e1_partition2e_01_spinup_test';
 % casename = 'n2d_region_ice_Cinv_test2';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];
@@ -43,7 +43,7 @@ Q_in    = ps.Q * [tt.Q_in];
 Q_out   = ps.Q * [tt.Q_out];
 Q_out_Q = ps.Q * [tt.Q_outQ];
 Q_out_q = ps.Q * [tt.Q_outq];
-Q_out_b = ps.Q * [tt.Qb_out];
+Q_out_b2 = ps.Q0 * [tt.Q_outb];
 E       = (ps.m*ps.x^2) * [tt.E];
 N_ts    = (ps.phi) * [tt.N];  % effective pressure time series
 hs_ts   = ps.x^2*ps.h * [tt.hs];
@@ -106,8 +106,8 @@ ax_a = nexttile(leftLayout);
 plot(ax_a, t, Q_b_dec,'r-', 'LineWidth',1.5);
 % plot(ax_a, t, Q_b_in,'b-', t, Q_b_dec,'r-', 'LineWidth',1.5);
 hold on;
-plot(ax_a, t, Q_out_Q + Q_out_q + Q_out_b,'-', 'Color',[0,0.25,0], 'LineWidth',2.5);
-plot(ax_a, t, Q_out_b,'b--', 'LineWidth',1.5);
+plot(ax_a, t, Q_out_Q + Q_out_q,'-', 'Color',[0,0.25,0], 'LineWidth',2.5);
+plot(ax_a, t, Q_out_b2,'b--', 'LineWidth',1.5);
 plot(ax_a, t, E,'k-.', 'LineWidth',1.5);
 x1 = xline(tframe_d,'k--','LineWidth',1.5);
 xlabel('t [d]'); ylabel('Q [m^3/s]');

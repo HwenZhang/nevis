@@ -174,6 +174,8 @@ while t<t_stop+oo.dt_min
     tt(ti).phi = mean(vv.phi(gg.ns));                         % mean potential, scaled with ps.phi
     tt(ti).N = mean(aa.phi_0(gg.ns)-vv.phi(gg.ns));           % mean effective pressure, scaled with ps.phi
     tt(ti).hs = sum(vv.hs(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));% total cavity sheet volume, scaled with ps.h*ps.x^2
+    tt(ti).hv = sum(vv2.hv(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));
+    tt(ti).hm = sum(vv2.hm(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns));
 
     tt(ti).Vb = sum(vv.hb(gg.ns_blister).*gg.Dx(gg.ns_blister).*gg.Dy(gg.ns_blister));% total blister volume, scaled with ps.hb*ps.x^2
     disp(['Volume of the blister is ' num2str(tt(ti).Vb) '.']);
@@ -364,7 +366,7 @@ while t<t_stop+oo.dt_min
         end
         
         % update boundary nodes for blister
-        % ni1 = gg.nbdy(vv2.R_bdy_blister<0); % Dirichlet nodes with inflow
+        % ni1 = gg.nbdy_blister(vv2.R_bdy_blister<0); % Dirichlet nodes with inflow
         % ni2 = gg.n1m((vv.pb(gg.n1m)+aa.phi_a(gg.n1m)-aa.phi_0(gg.n1m))>pp.p_a_reg); % boundary nodes with too high pressure
         % if ~isempty(ni1) || ~isempty(ni2)
         %     if ~isempty(ni1)
@@ -376,7 +378,6 @@ while t<t_stop+oo.dt_min
         %     vv.nbdy_blister = union(setdiff(gg.nbdy_blister,ni1),ni2);
         %     gg = nevis_label_blister(gg,vv.nbdy_blister,oo);
         % end
-
     end 
     
     disp(['nevis_timesteps: t = ',num2str(t),' [ / ',num2str(t_stop),' ]']);

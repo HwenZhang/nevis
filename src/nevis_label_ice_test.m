@@ -187,29 +187,29 @@ function gg = nevis_label_ice(gg,oo)
     cin = setdiff(cs,cbdy); 
     
     %% diagnostic plot
-    figure; clf;
-    hold on;
-    % external
-    plot(nx(nout),ny(nout),'.','color',.9*[1 1 1],'markersize',8);
-    plot(ex(eout),ey(eout),'+','color',.9*[1 1 1]);
-    plot(fx(fout),fy(fout),'+','color',.9*[1 1 1]);
-    plot(cx(cout),cy(cout),'x','color',.9*[1 1 1]);
-    % boundary: velocity (Dirichlet)
-    plot(ex(ebdy),ey(ebdy),'r+','markersize',6);
-    plot(fx(fbdy),fy(fbdy),'b+','markersize',6);
-    % boundary: stress (Neumann)
-    plot(nx(nbdyx),ny(nbdyx),'bd','markersize',6);
-    plot(nx(nbdyy),ny(nbdyy),'gd','markersize',6);
-    % interior
-    plot(nx(nin),ny(nin),'k.','markersize',4);
-    plot(ex(ein),ey(ein),'k+','markersize',3);
-    plot(fx(fin),fy(fin),'k+','markersize',3);
-    legend('nout','eout','fout','cout','ebdy (vel)','fbdy (vel)',...
-           'nbdyx (stress)','nbdyy (stress)','nin','ein','fin',...
-           'Location','bestoutside');
-    title('Ice velocity boundary labels');
-    axis equal; box on;
-    hold off;
+    % figure; clf;
+    % hold on;
+    % % external
+    % plot(nx(nout),ny(nout),'.','color',.9*[1 1 1],'markersize',8);
+    % plot(ex(eout),ey(eout),'+','color',.9*[1 1 1]);
+    % plot(fx(fout),fy(fout),'+','color',.9*[1 1 1]);
+    % plot(cx(cout),cy(cout),'x','color',.9*[1 1 1]);
+    % % boundary: velocity (Dirichlet)
+    % plot(ex(ebdy),ey(ebdy),'r+','markersize',6);
+    % plot(fx(fbdy),fy(fbdy),'b+','markersize',6);
+    % % boundary: stress (Neumann)
+    % plot(nx(nbdyx),ny(nbdyx),'bd','markersize',6);
+    % plot(nx(nbdyy),ny(nbdyy),'gd','markersize',6);
+    % % interior
+    % plot(nx(nin),ny(nin),'k.','markersize',4);
+    % plot(ex(ein),ey(ein),'k+','markersize',3);
+    % plot(fx(fin),fy(fin),'k+','markersize',3);
+    % legend('nout','eout','fout','cout','ebdy (vel)','fbdy (vel)',...
+    %        'nbdyx (stress)','nbdyy (stress)','nin','ein','fin',...
+    %        'Location','bestoutside');
+    % title('Ice velocity boundary labels');
+    % axis equal; box on;
+    % hold off;
 
     % [ possibly want to redefine mean operators here ? ]
 
