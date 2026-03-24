@@ -9,7 +9,7 @@ oo.root = './';                                % filename root
 oo.code = './src';                             % code directory   
 oo.results = 'results';                        % path to the results folders
 oo.dataset = 'nevis_regional';                 % dataset name
-oo.casename = 'n2d_regional_eps1e_02_kappa1e_10_mu2e1_partition2e_01_spinup_test';                     % casename
+oo.casename = 'n2d_regional_test_eps1e_02_kappa1e_10_mu2e1_partition2e_01_spinup';                     % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
 oo.dn = [oo.root, 'data/', oo.dataset, '/'];   % path to the data
@@ -34,11 +34,12 @@ oo.boundary_method = 'stress_l_vel_tbl';
 oo.mask_boundary_method = 'stress_free';
 oo.plot_residual = 0;
 oo.max_iter_new = 50;
+oo.step_ice = 0.1;
 % ratio of reducable basal shear stress(C1) to total basal shear stress (C_total) for the inversion test, e.g., 0.25 means that 25% of the basal shear stress is from C1 and can be reduced by lowering N, while 75% is from C2 and is unaffected by N.
 oo.partition_ratio = 0.2;
 
 pd.alpha_b = 0;                                 % relaxation rate (s^-1)
-pd.kappa_b = 1e-10;                           % relaxation coeff
+pd.kappa_b = 1e-99;                           % relaxation coeff
 
 % alter default parmaeters 
 pd.mu = 20.0;                                    % water viscosity (Pa s)
@@ -226,7 +227,7 @@ oo.save_pts_all = 1;
 % Add GPS station points downstream of the moulin every 5km
 pp.ni_gps = nevis_gps_array([40e3,40e3,20e3,0,-40e3]/ps.x, [-15e3,-5e3,-15e3,-25e3,-30e3]/ps.x, gg, oo); % GPS station points
 oo.pts_ni = [pp.ni_l' pp.ni_m' pp.ni_gps];    
-oo.t_span = [(1:1:365*1)*pd.td/ps.t];
+oo.t_span = [(1:1:120*1)*pd.td/ps.t];
 % oo.t_span = [(1:1:59)*pd.td/ps.t (59.5:0.001:60.5)*pd.td/ps.t (61:1:120)*pd.td/ps.t];
 
 %% save initial parameters

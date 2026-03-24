@@ -6,7 +6,7 @@
 clc; clear; close all;
 
 %% Settings
-casename = 'n2d_regional_eps1e_02_kappa1e_10_mu2e1_partition2e_01_spinup_test';
+casename = 'n2d_regional_V1e9_eps1e_02_kappa1e_10_mu2e1_partition6e_01_drainage_highelev';
 % casename = 'n2d_region_ice_Cinv_test2';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];
@@ -103,7 +103,7 @@ tframe_d = vva.t*ps.t/pd.td;
 
 % (a) Fluxes
 ax_a = nexttile(leftLayout);
-plot(ax_a, t, Q_b_dec,'r-', 'LineWidth',1.5);
+% plot(ax_a, t, Q_b_dec,'r-', 'LineWidth',1.5);
 % plot(ax_a, t, Q_b_in,'b-', t, Q_b_dec,'r-', 'LineWidth',1.5);
 hold on;
 plot(ax_a, t, Q_out_Q + Q_out_q,'-', 'Color',[0,0.25,0], 'LineWidth',2.5);
@@ -111,7 +111,7 @@ plot(ax_a, t, Q_out_b2,'b--', 'LineWidth',1.5);
 plot(ax_a, t, E,'k-.', 'LineWidth',1.5);
 x1 = xline(tframe_d,'k--','LineWidth',1.5);
 xlabel('t [d]'); ylabel('Q [m^3/s]');
-legend('Q_{b,relax}','Q_{out}','Q_{out,b}','Q_{in}','NumColumns',2,'Location','southeast');
+legend('Q_{out}','Q_{out,b}','Q_{in}','NumColumns',2,'Location','southeast');
 text(0.025,0.85,'(a) flux','Units','normalized','FontSize',12);
 xlim([tmin tmax]); set(gca,'YScale','log'); ylim([1e-2 1e4]);
 grid on; grid minor;
@@ -263,7 +263,35 @@ q_s1p = quiver(ax7, xq7, yq7,  s1_q.*dx1_q,  s1_q.*dy1_q, 0.5, 'r', 'LineWidth',
 q_s1n = quiver(ax7, xq7, yq7, -s1_q.*dx1_q, -s1_q.*dy1_q, 0.5, 'r', 'LineWidth', 1, 'ShowArrowHead', 'off');
 q_s2p = quiver(ax7, xq7, yq7,  s2_q.*dx2_q,  s2_q.*dy2_q, 0.5, 'b', 'LineWidth', 1);
 q_s2n = quiver(ax7, xq7, yq7, -s2_q.*dx2_q, -s2_q.*dy2_q, 0.5, 'b', 'LineWidth', 1, 'ShowArrowHead', 'off');
-title('(k) \tau_{eff} + principal stresses'); ylabel('y (km)'); xlabel('x (km)');
+title('(k) \sigma_1 + principal stresses'); ylabel('y (km)'); xlabel('x (km)');
+axis equal; axis tight;
+
+% Save initial stress state for computing change
+sigma1_0 = sigma1_s;
+sigma2_0 = sigma2_s;
+t1_0 = t1_s;
+
+% (8) Plot principal stress change
+ax8 = nexttile(rightLayout);
+dsigma1_kPa = zeros(size(sigma1_s)) * stress_scale;
+dsigma1_kPa(gg.nout) = NaN;
+p_dtau = pcolor(ax8, xx, yy, reshape(dsigma1_kPa, gg.nI, gg.nJ));
+shading interp;
+set(p_dtau,'linestyle','none'); colormap(ax8, cmap);
+cx = colorbar(); cx.Label.String = '\Delta\sigma_1 [kPa]';
+clim([-100 100]);
+hold on;
+skip8 = skip7;
+ii8 = ii7; jj8 = jj7;
+xq8 = xx(ii8,jj8); yq8 = yy(ii8,jj8);
+ds1_q = zeros(size(s1_q)); ds2_q = zeros(size(s2_q));
+dx1_q0 = dx1_q; dy1_q0 = dy1_q;
+dx2_q0 = dx2_q; dy2_q0 = dy2_q;
+q_ds1p = quiver(ax8, xq8, yq8,  ds1_q.*dx1_q0,  ds1_q.*dy1_q0, 0.5, 'r', 'LineWidth', 1);
+q_ds1n = quiver(ax8, xq8, yq8, -ds1_q.*dx1_q0, -ds1_q.*dy1_q0, 0.5, 'r', 'LineWidth', 1, 'ShowArrowHead', 'off');
+q_ds2p = quiver(ax8, xq8, yq8,  ds2_q.*dx2_q0,  ds2_q.*dy2_q0, 0.5, 'b', 'LineWidth', 1);
+q_ds2n = quiver(ax8, xq8, yq8, -ds2_q.*dx2_q0, -ds2_q.*dy2_q0, 0.5, 'b', 'LineWidth', 1, 'ShowArrowHead', 'off');
+title('(l) \Delta\sigma_1 + principal stress change'); ylabel('y (km)'); xlabel('x (km)');
 axis equal; axis tight;
 
 %% ===== Animation loop =====
@@ -313,6 +341,21 @@ for i_idx = 1:length(index)
     q_s1n.UData = -s1_q.*dx1_q; q_s1n.VData = -s1_q.*dy1_q;
     q_s2p.UData =  s2_q.*dx2_q; q_s2p.VData =  s2_q.*dy2_q;
     q_s2n.UData = -s2_q.*dx2_q; q_s2n.VData = -s2_q.*dy2_q;
+
+    % Update stress change panel (ax8)
+    dsigma1_kPa = (sigma1_s - sigma1_0) * stress_scale;
+    dsigma1_kPa(gg.nout) = NaN;
+    p_dtau.CData = reshape(dsigma1_kPa, gg.nI, gg.nJ);
+    ds1_s = stress_scale * reshape(sigma1_s - sigma1_0, gg.nI, gg.nJ); ds1_q = ds1_s(ii8,jj8);
+    ds2_s = stress_scale * reshape(sigma2_s - sigma2_0, gg.nI, gg.nJ); ds2_q = ds2_s(ii8,jj8);
+    ddx1_s = reshape(cos(t1_s), gg.nI, gg.nJ); ddx1_q = ddx1_s(ii8,jj8);
+    ddy1_s = reshape(sin(t1_s), gg.nI, gg.nJ); ddy1_q = ddy1_s(ii8,jj8);
+    ddx2_s = reshape(cos(t1_s+pi/2), gg.nI, gg.nJ); ddx2_q = ddx2_s(ii8,jj8);
+    ddy2_s = reshape(sin(t1_s+pi/2), gg.nI, gg.nJ); ddy2_q = ddy2_s(ii8,jj8);
+    q_ds1p.UData =  ds1_q.*ddx1_q; q_ds1p.VData =  ds1_q.*ddy1_q;
+    q_ds1n.UData = -ds1_q.*ddx1_q; q_ds1n.VData = -ds1_q.*ddy1_q;
+    q_ds2p.UData =  ds2_q.*ddx2_q; q_ds2p.VData =  ds2_q.*ddy2_q;
+    q_ds2n.UData = -ds2_q.*ddx2_q; q_ds2n.VData = -ds2_q.*ddy2_q;
 
     % Update right panels
     phb.CData = ps.hb * reshape(vva.hb,gg.nI,gg.nJ);
