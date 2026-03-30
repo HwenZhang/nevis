@@ -1,172 +1,357 @@
 #!/bin/bash
+# ============================================================
+#  NEVIS HPC-style Job Runner
+#  - File-based job state (portable, debuggable: see .jobs/)
+#  - Auto retry on failure
+#  - Timestamped per-job logs
+#  - Spinup → drainage dependency chain
+#  - Clean signal handling
+#  - Works on macOS bash 3.x and Linux bash 4+
+# ============================================================
+set -uo pipefail
 
-# Move generated scripts to the root directory
-# mv ./generated_scripts/spinup/* ./
+# --- Configuration (override via environment) ---
+MAX_PARALLEL=${MAX_PARALLEL:-8}       # concurrent MATLAB jobs
+MAX_RETRIES=${MAX_RETRIES:-2}         # retry failed jobs up to N times
+SKIP_SPINUP=${SKIP_SPINUP:-true}      # skip spinup, run drainage directly
+POLL_INTERVAL=${POLL_INTERVAL:-5}     # seconds between reap cycles
+JOB_TIMEOUT=${JOB_TIMEOUT:-0}         # per-job wall-clock limit (0 = none)
 
-# mv ./generated_scripts/ice_dynamics/spinup/* ./
-mv ./generated_scripts/ice_dynamics/drainage/* ./
+# --- Directories ---
+LOG_DIR="logs"
+STATE_DIR=".jobs"
+DONE_DIR="parameter_sweep"
+QUEUE_FILE="$STATE_DIR/queue"
 
-# mv ./generated_scripts/drainage/* ./
-# mv ./generated_scripts/output/* ./
-# mv ./generated_scripts/convergence_tests/* ./
-# mv ./generated_scripts/case_studys/* ./
+# --- Counters ---
+total_jobs=0
+completed_jobs=0
+failed_jobs=0
 
-# --- Configuration ---
-# Set the maximum number of parallel jobs. Default is 12.
-MAX_PARALLEL_JOBS=${MAX_PARALLEL_JOBS:-9}
-SKIP_SPINUP=${SKIP_SPINUP:-true} 
+# ============================================================
+#  Logging
+# ============================================================
+_ts() { date '+%Y-%m-%d %H:%M:%S'; }
+log()      { printf '[%s]      %s\n' "$(_ts)" "$*"; }
+log_ok()   { printf '[%s]  OK  %s\n' "$(_ts)" "$*"; }
+log_warn() { printf '[%s] WARN %s\n' "$(_ts)" "$*"; }
+log_err()  { printf '[%s] FAIL %s\n' "$(_ts)" "$*" >&2; }
 
-# --- Global Variables ---
-# This variable will hold the PIDs of the running subshells and must be accessible by cleanup
-running_pids=""
+# ============================================================
+#  File-based state helpers
+#  State dir layout:
+#    .jobs/<name>.state    PENDING | RUNNING | DONE | FAILED | KILLED
+#    .jobs/<name>.pid      PID of running MATLAB process
+#    .jobs/<name>.retries  number of retries consumed so far
+#    .jobs/<name>.start    epoch second when last launched
+# ============================================================
+state_set()   { echo "$2" > "$STATE_DIR/${1}.state"; }
+state_get()   { cat "$STATE_DIR/${1}.state" 2>/dev/null || echo "NONE"; }
+retries_get() { cat "$STATE_DIR/${1}.retries" 2>/dev/null || echo "0"; }
+retries_set() { echo "$2" > "$STATE_DIR/${1}.retries"; }
+pid_set()     { echo "$2" > "$STATE_DIR/${1}.pid"; }
+pid_get()     { cat "$STATE_DIR/${1}.pid" 2>/dev/null || echo ""; }
+start_set()   { echo "$2" > "$STATE_DIR/${1}.start"; }
+start_get()   { cat "$STATE_DIR/${1}.start" 2>/dev/null || echo "0"; }
 
-# --- Functions ---
+# ============================================================
+#  Queue (one job name per line in a file)
+# ============================================================
+queue_push() { echo "$1" >> "$QUEUE_FILE"; }
 
-# Cleanup function to kill all child processes on exit
-cleanup() {
-    echo -e "\nInterrupt received. Killing all background jobs..."
-    
-    # Terminate the specific MATLAB processes spawned by this script's subshells.
-    # This is a more targeted and robust approach.
-    if [ -n "$(echo $running_pids | xargs)" ]; then
-        echo "Terminating running MATLAB jobs..."
-        for pid_job in $running_pids; do
-            subshell_pid=$(echo $pid_job | cut -d: -f1)
-            job_name=$(echo $pid_job | cut -d: -f2)
-            
-            # Find the matlab process that is a child of our subshell
-            matlab_pid=$(pgrep -P $subshell_pid)
-            
-            if [ -n "$matlab_pid" ]; then
-                echo "Killing MATLAB process with PID $matlab_pid (from job $job_name)"
-                # Kill the entire process group starting with the MATLAB process
-                kill -9 -$matlab_pid 2>/dev/null || kill -9 $matlab_pid 2>/dev/null
-            fi
-            # Also kill the subshell itself
-            kill -9 $subshell_pid 2>/dev/null
-        done
+queue_pop() {
+    # Sets REPLY to next job name; returns 1 if empty.
+    if [ ! -s "$QUEUE_FILE" ]; then
+        REPLY=""
+        return 1
     fi
-
-    # As a final safeguard, a general pkill for any orphaned processes.
-    echo "Final cleanup check for any remaining MATLAB processes..."
-    pkill matlab
-
-    echo "Cleanup complete."
-    exit 1
+    REPLY=$(head -1 "$QUEUE_FILE")
+    # portable: temp-file approach works on both macOS and Linux
+    tail -n +2 "$QUEUE_FILE" > "$QUEUE_FILE.tmp" && mv "$QUEUE_FILE.tmp" "$QUEUE_FILE"
+    return 0
 }
 
-# Function to run a single MATLAB script
-run_matlab_script() {
-    local script=$1
-    echo "Launching ${script}.m"
-    
-    local start_time=$(date +%s)
-    # By using 'exec', the shell process is replaced by the matlab process.
-    # This makes PID tracking and cleanup much more reliable.
-    exec matlab -batch "${script}" > "logs/${script}.log" 2>&1
-    # The code from here on will not be executed because of 'exec'
+queue_size() {
+    if [ -s "$QUEUE_FILE" ]; then
+        wc -l < "$QUEUE_FILE" | tr -d ' '
+    else
+        echo 0
+    fi
 }
 
-# --- Main Script ---
+# ============================================================
+#  Running-job helpers (derived from state dir)
+# ============================================================
+get_running_names() {
+    local names=""
+    for f in "$STATE_DIR"/*.state; do
+        [ -f "$f" ] || continue
+        if [ "$(cat "$f")" = "RUNNING" ]; then
+            local n
+            n=$(basename "${f%.state}")
+            names="$names $n"
+        fi
+    done
+    echo "$names"
+}
 
-# Set trap for interruption signals
+running_count() {
+    local c=0
+    for _ in $(get_running_names); do
+        c=$((c + 1))
+    done
+    echo "$c"
+}
+
+# ============================================================
+#  Cleanup (signal handler)
+# ============================================================
+cleanup() {
+    echo ""
+    log_warn "Signal received — stopping all running jobs..."
+    for name in $(get_running_names); do
+        local pid
+        pid=$(pid_get "$name")
+        if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+            kill "$pid" 2>/dev/null || true
+            sleep 1
+            kill -9 "$pid" 2>/dev/null || true
+            log "  Killed $name (PID $pid)"
+            state_set "$name" "KILLED"
+        fi
+    done
+    # Safety net for any orphaned MATLAB processes
+    pkill -f 'matlab.*-batch' 2>/dev/null || true
+    log "Cleanup complete."
+    print_summary
+    exit 130
+}
 trap cleanup INT TERM
 
-echo "Starting NEVIS job runner..."
+# ============================================================
+#  Launch a single job
+# ============================================================
+launch_job() {
+    local name="$1"
+    local attempt
+    attempt=$(retries_get "$name")
+    local logfile="${LOG_DIR}/${name}.log"
 
-# Create logs directory
-mkdir -p logs
-
-# --- Task Queue Preparation ---
-if [ "$SKIP_SPINUP" = "true" ]; then
-    all_spinup_scripts=""
-    all_drainage_scripts=$(ls n[12]d*drainage.m 2>/dev/null | sed 's/\.m$//')
-    all_standalone_scripts=$(ls n[12]d*.m 2>/dev/null | grep -v -e "_spinup.m" -e "_drainage.m" | sed 's/\.m$//')
-    
-    initial_queue="$all_standalone_scripts $all_drainage_scripts"
-    total_jobs=$(echo $initial_queue | wc -w)
-    echo "Skipping spinup. Running drainage directly."
-else
-    all_spinup_scripts=$(ls n[12]d*spinup.m 2>/dev/null | sed 's/\.m$//')
-    all_drainage_scripts=$(ls n[12]d*drainage.m 2>/dev/null | sed 's/\.m$//')
-    all_standalone_scripts=$(ls n[12]d*.m 2>/dev/null | grep -v -e "_spinup.m" -e "_drainage.m" | sed 's/\.m$//')
-    
-    initial_queue="$all_standalone_scripts $all_spinup_scripts"
-    total_jobs=$(echo $initial_queue $all_drainage_scripts | wc -w)
-fi
-
-if [ $total_jobs -eq 0 ]; then
-    echo "No MATLAB scripts found. Exiting."
-    exit 1
-fi
-
-# --- Job Execution Engine ---
-pending_queue="$initial_queue"
-completed_jobs=0
-
-echo "Found a total of $total_jobs jobs to run."
-echo "Running up to $MAX_PARALLEL_JOBS cases in parallel..."
-
-while [ $completed_jobs -lt $total_jobs ]; do
-    # --- 1. Launch new jobs if there are free slots ---
-    num_running=$(echo $running_pids | wc -w)
-    while [ $num_running -lt $MAX_PARALLEL_JOBS ] && [ -n "$(echo $pending_queue | xargs)" ]; do
-        next_job=$(echo $pending_queue | awk '{print $1}')
-        pending_queue=$(echo $pending_queue | awk '{$1=""; print $0}' | xargs)
-
-        # Launch the job in a subshell that will 'exec' matlab
-        (run_matlab_script "$next_job") &
-        pid=$!
-        running_pids="$running_pids $pid:$next_job"
-        echo "Launched job: $next_job (PID: $pid)"
-        num_running=$(echo $running_pids | wc -w)
-    done
-
-    # --- 2. Wait and check for completed jobs ---
-    if [ -z "$(echo $running_pids | xargs)" ]; then
-        if [ $completed_jobs -lt $total_jobs ]; then
-             echo "Warning: Job execution stalled. Check for pending drainage cases whose spinups may have failed."
-        fi
-        # break
+    if [ "$attempt" -gt 0 ]; then
+        printf '\n\n===== RETRY %d/%d  %s =====\n\n' "$attempt" "$MAX_RETRIES" "$(_ts)" >> "$logfile"
+        log "Starting $name  [retry $attempt/$MAX_RETRIES]"
+    else
+        log "Starting $name"
     fi
-    
-    sleep 5
 
-    # --- 3. Process finished jobs and update queues ---
-    new_running_pids=""
-    for pid_job in $running_pids; do
-        pid=$(echo $pid_job | cut -d: -f1)
-        job_name=$(echo $pid_job | cut -d: -f2)
+    state_set "$name" "RUNNING"
+    start_set "$name" "$(date +%s)"
 
-        if kill -0 $pid 2>/dev/null; then
-            new_running_pids="$new_running_pids $pid_job"
+    # Launch MATLAB; stdout+stderr → per-job log
+    matlab -batch "$name" >> "$logfile" 2>&1 &
+    local pid=$!
+    pid_set "$name" "$pid"
+
+    log "  PID=$pid  log=$logfile"
+}
+
+# ============================================================
+#  Reap finished / timed-out jobs
+# ============================================================
+reap_jobs() {
+    local now
+    now=$(date +%s)
+
+    for name in $(get_running_names); do
+        local pid
+        pid=$(pid_get "$name")
+        [ -z "$pid" ] && continue
+
+        # --- timeout check ---
+        if [ "$JOB_TIMEOUT" -gt 0 ] && kill -0 "$pid" 2>/dev/null; then
+            local started elapsed
+            started=$(start_get "$name")
+            elapsed=$((now - started))
+            if [ "$elapsed" -gt "$JOB_TIMEOUT" ]; then
+                log_warn "$name timed out (${elapsed}s > ${JOB_TIMEOUT}s) — killing"
+                kill "$pid" 2>/dev/null || true
+                sleep 1
+                kill -9 "$pid" 2>/dev/null || true
+                state_set "$name" "FAILED"
+                completed_jobs=$((completed_jobs + 1))
+                failed_jobs=$((failed_jobs + 1))
+                log_err "$name  (timeout after ${elapsed}s)"
+                continue
+            fi
+        fi
+
+        # --- still running? ---
+        if kill -0 "$pid" 2>/dev/null; then
+            continue
+        fi
+
+        # --- finished: collect exit code ---
+        wait "$pid" 2>/dev/null
+        local exit_code=$?
+        local started elapsed
+        started=$(start_get "$name")
+        elapsed=$((now - started))
+
+        if [ "$exit_code" -eq 0 ]; then
+            # ---- success ----
+            state_set "$name" "DONE"
+            completed_jobs=$((completed_jobs + 1))
+            log_ok "$name  (${elapsed}s)  [$completed_jobs/$total_jobs]"
+            mv "${name}.m" "$DONE_DIR/" 2>/dev/null || true
+            on_job_success "$name"
         else
-            wait $pid
-            exit_code=$?
-            ((completed_jobs++))
-            echo "Job finished: $job_name (Completed: $completed_jobs/$total_jobs)"
-            # move the finished .m scripts to ./parameter_sweep
-            mv n[12]d*${job_name}.m "parameter_sweep/" 2>/dev/null || true
-
-            if [[ "$job_name" == *spinup ]] && [ $exit_code -eq 0 ]; then
-                base_name=${job_name%_spinup}
-                matching_drainage_cases=$(echo "$all_drainage_scripts" | grep "^${base_name}" || true)
-                
-                if [ -n "$matching_drainage_cases" ]; then
-                    echo "Spinup for $base_name succeeded. Queueing corresponding drainage case(s):"
-                    echo "$matching_drainage_cases"
-                    pending_queue="$matching_drainage_cases $pending_queue"
-                fi
-            elif [ $exit_code -ne 0 ]; then
-                if [ "$SKIP_SPINUP" = "false" ]; then
-                    echo "Job $job_name failed with exit code $exit_code. Corresponding drainage case(s) will be skipped."
-                else
-                    echo "Job $job_name failed with exit code $exit_code."
-                fi
+            # ---- failure: retry or give up ----
+            local retries
+            retries=$(retries_get "$name")
+            if [ "$retries" -lt "$MAX_RETRIES" ]; then
+                retries=$((retries + 1))
+                retries_set "$name" "$retries"
+                state_set "$name" "PENDING"
+                queue_push "$name"
+                log_warn "$name failed (exit=$exit_code, ${elapsed}s) — retry $retries/$MAX_RETRIES queued"
+            else
+                state_set "$name" "FAILED"
+                completed_jobs=$((completed_jobs + 1))
+                failed_jobs=$((failed_jobs + 1))
+                log_err "$name  (exit=$exit_code, ${elapsed}s, retries exhausted)"
             fi
         fi
     done
-    running_pids=$(echo $new_running_pids | xargs)
+}
+
+# ============================================================
+#  Dependency chain: successful spinup → queue matching drainage
+# ============================================================
+on_job_success() {
+    local name="$1"
+    case "$name" in *_spinup) ;; *) return 0 ;; esac
+
+    # Extract core parameters shared between spinup and drainage:
+    #   n2d_regional_eps1e_02_kappa1e_11_..._spinup
+    #   n2d_regional_V2e8_eps1e_02_kappa1e_11_..._drainage_highelev
+    local core="${name%_spinup}"
+    core="${core#*_eps}"
+    core="eps${core}"
+
+    for f in n[12]d*_drainage*.m; do
+        [ -f "$f" ] || continue
+        local dname="${f%.m}"
+        if echo "$dname" | grep -qF "$core"; then
+            queue_push "$dname"
+            retries_set "$dname" "0"
+            state_set "$dname" "PENDING"
+            total_jobs=$((total_jobs + 1))
+            log "  Queued drainage: $dname  (total=$total_jobs)"
+        fi
+    done
+}
+
+# ============================================================
+#  Summary
+# ============================================================
+print_summary() {
+    echo ""
+    echo "════════════════════════════════════════════════════"
+    echo "  JOB SUMMARY"
+    echo "════════════════════════════════════════════════════"
+    local n_done=0 n_fail=0 n_kill=0 n_other=0
+    for sf in "$STATE_DIR"/*.state; do
+        [ -f "$sf" ] || continue
+        local jname st
+        jname=$(basename "${sf%.state}")
+        st=$(cat "$sf")
+        case "$st" in
+            DONE)    n_done=$((n_done+1));   printf '  ✓ %s\n' "$jname" ;;
+            FAILED)  n_fail=$((n_fail+1));   printf '  ✗ %s  → %s/%s.log\n' "$jname" "$LOG_DIR" "$jname" ;;
+            KILLED)  n_kill=$((n_kill+1));   printf '  ⊘ %s  (killed)\n' "$jname" ;;
+            *)       n_other=$((n_other+1)); printf '  ? %s  (%s)\n' "$jname" "$st" ;;
+        esac
+    done
+    echo "────────────────────────────────────────────────────"
+    printf '  Done: %d   Failed: %d   Killed: %d\n' "$n_done" "$n_fail" "$n_kill"
+    echo "════════════════════════════════════════════════════"
+}
+
+# ============================================================
+#  MAIN
+# ============================================================
+log "NEVIS Job Runner"
+log "Config: parallel=$MAX_PARALLEL  retries=$MAX_RETRIES  timeout=${JOB_TIMEOUT}s  skip_spinup=$SKIP_SPINUP"
+
+# --- Move generated scripts ---
+# mv ./generated_scripts/spinup/* ./ 2>/dev/null || true
+mv ./generated_scripts/ice_dynamics/spinup/* ./ 2>/dev/null || true
+mv ./generated_scripts/ice_dynamics/drainage/* ./ 2>/dev/null || true
+
+# --- Prepare directories & clean previous state ---
+mkdir -p "$LOG_DIR" "$STATE_DIR" "$DONE_DIR"
+rm -f "$STATE_DIR"/*.state "$STATE_DIR"/*.pid "$STATE_DIR"/*.retries "$STATE_DIR"/*.start
+: > "$QUEUE_FILE"
+
+# --- Discover and enqueue scripts ---
+if [ "$SKIP_SPINUP" = "true" ]; then
+    for f in n[12]d*.m; do
+        [ -f "$f" ] || continue
+        name="${f%.m}"
+        case "$name" in *_spinup) continue ;; esac
+        queue_push "$name"
+        retries_set "$name" "0"
+        state_set "$name" "PENDING"
+        total_jobs=$((total_jobs + 1))
+    done
+    log "Skipping spinup — queued $total_jobs jobs directly"
+else
+    for f in n[12]d*.m; do
+        [ -f "$f" ] || continue
+        name="${f%.m}"
+        case "$name" in *_drainage*) continue ;; esac
+        queue_push "$name"
+        retries_set "$name" "0"
+        state_set "$name" "PENDING"
+        total_jobs=$((total_jobs + 1))
+    done
+    log "Queued $total_jobs initial jobs (drainage follows after spinup)"
+fi
+
+if [ "$total_jobs" -eq 0 ]; then
+    log_err "No MATLAB scripts found matching n[12]d*.m — exiting."
+    exit 1
+fi
+echo ""
+
+# --- Main loop ---
+while [ "$completed_jobs" -lt "$total_jobs" ]; do
+    # Fill available slots from queue
+    while [ "$(running_count)" -lt "$MAX_PARALLEL" ] && [ "$(queue_size)" -gt 0 ]; do
+        if queue_pop; then
+            launch_job "$REPLY"
+        else
+            break
+        fi
+    done
+
+    sleep "$POLL_INTERVAL"
+    reap_jobs
+
+    # Stall detection
+    if [ "$(running_count)" -eq 0 ] && [ "$(queue_size)" -eq 0 ] && [ "$completed_jobs" -lt "$total_jobs" ]; then
+        log_warn "Stall: no running jobs, empty queue, $((total_jobs - completed_jobs)) jobs unfinished"
+        log_warn "Possible cause: drainage waiting for a spinup that failed"
+        break
+    fi
 done
 
-echo "All MATLAB scripts completed."
+print_summary
+
+if [ "$failed_jobs" -gt 0 ]; then
+    log_err "$failed_jobs job(s) failed — check logs in $LOG_DIR/"
+    exit 1
+fi
+
+log_ok "All $completed_jobs jobs completed successfully"
+exit 0

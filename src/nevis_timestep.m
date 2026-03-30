@@ -29,6 +29,21 @@ if ~isfield(oo,'step2_new'), oo.step2_new = 0.5*oo.step_new; end    % step2 size
 if ~isfield(oo,'fac2_new'), oo.fac2_new = 1; end                    % factor for norm reduction above which step2 is used
 if ~isfield(oo,'step_ice'), oo.step_ice = 1.0; end                  % relaxation factor for ice velocity (R9,R10) Newton step
 
+% ITERATIVE SOLVER OPTIONS (use GMRES+ILU instead of UMFPACK direct solve to avoid memory leaks)
+if ~isfield(oo,'iterative_solver'), oo.iterative_solver = 0; end     % 0 = direct, 1 = GMRES with ILU preconditioner
+if ~isfield(oo,'direct_solver'), oo.direct_solver = 'lu'; end        % 'lu' = UMFPACK via explicit lu() (factors freed on exit)
+                                                                      % 'qr' = SuiteSparseQR via qr() (avoids UMFPACK entirely)
+if ~isfield(oo,'gmres_restart'), oo.gmres_restart = 50; end          % GMRES restart parameter
+if ~isfield(oo,'gmres_tol'), oo.gmres_tol = 1e-6; end               % GMRES relative tolerance (on true residual)
+if ~isfield(oo,'gmres_safety'), oo.gmres_safety = 10; end            % safety factor: internal tol = gmres_tol/gmres_safety
+                                                                      %   compensates for left-preconditioning discrepancy
+                                                                      %   (GMRES converges on preconditioned residual,
+                                                                      %    but relres reports true residual which is larger)
+if ~isfield(oo,'gmres_tol_accept'), oo.gmres_tol_accept = 1e-5; end  % accept GMRES result if relres below this (inexact Newton)
+if ~isfield(oo,'gmres_maxit'), oo.gmres_maxit = 300; end            % GMRES maximum iterations
+if ~isfield(oo,'ilu_type'), oo.ilu_type = 'ilutp'; end              % ILU type: 'nofill', 'crout', 'ilutp'
+if ~isfield(oo,'ilu_droptol'), oo.ilu_droptol = 1e-3; end           % ILU drop tolerance
+
 % DIAGNOSTIC OPTIONS
 if ~isfield(oo,'plot_residual'), oo.plot_residual = 0; end          % plot residuals at each iteration
 if ~isfield(oo,'display_residual'), oo.display_residual = 0; end    % display maximum of residuals at each iteration
@@ -37,6 +52,7 @@ if ~isfield(oo,'verb'), oo.verb = 0; end                            % verbose sc
 
 % ITERATION
 vv0 = vv;
+vv2 = struct();  % initialise so output is always assigned (even on early abort)
 %% struct for solution info
 info = struct;
 info.failed = 0;            % failure indicator
@@ -52,6 +68,24 @@ max_iter_new = oo.max_iter_new;
 norm_Fs = NaN*ones(max_iter_new+1,1);
 norms_Fs = NaN*ones(max_iter_new+1,num);
 for iter_new = 1:max_iter_new+1
+
+    %% safeguard: check solution variables BEFORE any backbone call
+    % (backbone internals can overflow/crash if inputs are extreme)
+    vars_ok = isfinite_bounded(vv.phi) && isfinite_bounded(vv.hs) && ...
+              isfinite_bounded(vv.Sx) && isfinite_bounded(vv.Sy) && ...
+              isfinite_bounded(vv.Ss) && isfinite_bounded(vv.Sr);
+    if oo.include_blister
+        vars_ok = vars_ok && isfinite_bounded(vv.hb) && isfinite_bounded(vv.pb);
+    end
+    if oo.include_ice
+        vars_ok = vars_ok && isfinite_bounded(vv.u) && isfinite_bounded(vv.v);
+    end
+    % if ~vars_ok
+    %     fprintf('**Aborting (iter %d): solution variables contain non-finite or extreme values\n', iter_new);
+    %     fprintf('  max|phi|=%.2e, max|hs|=%.2e, max|hb|=%.2e, max|pb|=%.2e\n', ...
+    %         max(abs(vv.phi)), max(abs(vv.hs)), max(abs(vv.hb)), max(abs(vv.pb)));
+    %     info.failed = 1; break;
+    % end
 
     %% evaluate residual
     tstart = tic;
@@ -154,6 +188,41 @@ for iter_new = 1:max_iter_new+1
         info.failed = 1; break, 
     end
 
+    %% check for divergence — abort early instead of waiting for NaN/crash
+    % 1) abort if F contains NaN/Inf
+    if any(~isfinite(F))
+        fprintf('**Aborting (iter %d): F contains non-finite values (NaN: %d, Inf: %d)\n', ...
+            iter_new, sum(isnan(F)), sum(isinf(F)));
+        info.failed = 1; break;
+    end
+    % 2) abort if norm_F is astronomically large (prevents overflow in Jacobian)
+    if norm_F > 1e50
+        fprintf('**Aborting (iter %d): norm_F = %.2e is dangerously large\n', iter_new, norm_F);
+        info.failed = 1; break;
+    end
+    % 3) abort if norm_F has grown for 3+ consecutive iterations
+    if iter_new >= 4
+        n_consec_increase = 0;
+        for kk = iter_new:-1:2
+            if norm_Fs(kk) > norm_Fs(kk-1)
+                n_consec_increase = n_consec_increase + 1;
+            else
+                break;
+            end
+        end
+        if n_consec_increase >= 3
+            fprintf('**Aborting: Newton diverging — norm_F increased %d consecutive iterations (%.2e -> %.2e)\n', ...
+                n_consec_increase, norm_Fs(iter_new-n_consec_increase), norm_F);
+            info.failed = 1; break;
+        end
+    end
+    % 4) abort if norm_F has grown by more than 1e8 relative to initial
+    if iter_new >= 2 && norm_F > 1e8 * norm_Fs(1)
+        fprintf('**Aborting: Newton diverging — norm_F = %.2e exceeds 1e8 × initial (%.2e)\n', ...
+            norm_F, norm_Fs(1));
+        info.failed = 1; break;
+    end
+
     %% calculate Jacobian         
     tstart = tic;
     oo.evaluate_variables = 0; oo.evaluate_residual = 0; oo.evaluate_jacobian = 1; 
@@ -188,15 +257,53 @@ for iter_new = 1:max_iter_new+1
     end
 
     % if condest(J) >=1e20, disp(' Aborting Newton step : J is nearly singular'); info.failed = 1; break; end
-    dX = -J\F;
 
-    % fprintf('  norm_F = %.6e, norm_dv = %.6e, cond(J) = %.2e, rank = %d/%d\n', ...
-    % norm(F), norm(dX), condest(J), sprank(J), size(J,1));
-    % ILU (ILUTP）
-    % iluOpts = struct('type','ilutp','droptol',1e-3);
-    % [M1, M2] = ilu(J, iluOpts);
-    % % GMRES
-    % [dX, ~, ~, ~] = gmres(J, -F, 50, 1e-6, 300, M1, M2);
+    % Check J for NaN/Inf/extreme values before linear solve
+    % (extreme finite values in J cause UMFPACK to crash with SIGTRAP)
+    [~,~,Jv] = find(J);
+    max_J = max(abs(Jv));
+    if any(~isfinite(Jv))
+        fprintf('  Aborting (iter %d): J contains NaN/Inf (max|J|=%.2e)\n', iter_new, max_J);
+        info.failed = 1; break;
+    end
+    if max_J > 1e100
+        fprintf('  Aborting (iter %d): J has extreme values (max|J|=%.2e) — would crash UMFPACK\n', iter_new, max_J);
+        info.failed = 1; break;
+    end
+    if oo.iterative_solver
+        %% iterative solve: ILU-preconditioned GMRES (avoids UMFPACK memory leak)
+        try
+            iluOpts = struct('type', oo.ilu_type, 'droptol', oo.ilu_droptol);
+            [M1, M2] = ilu(J, iluOpts);
+        catch ME_ilu
+            % ILU can fail on near-singular matrices; fall back to explicit LU
+            if oo.verb, fprintf('  ILU failed (iter %d): %s — falling back to direct (%s)\n', iter_new, ME_ilu.message, oo.direct_solver); end
+            [dX, lu_ok] = solve_direct(J, F, oo.direct_solver);
+            if ~lu_ok, fprintf('**Aborting (iter %d): direct solve failed\n', iter_new); info.failed = 1; break; end
+            M1 = [];  % skip GMRES below
+        end
+        if ~isempty(M1)
+            warnState = warning('off', 'MATLAB:gmres:tooSmallTolerance');
+            [dX, gmres_flag, gmres_relres, gmres_iter] = gmres(J, -F, oo.gmres_restart, oo.gmres_tol/oo.gmres_safety, oo.gmres_maxit, M1, M2);
+            warning(warnState);
+            if gmres_flag == 0 || gmres_relres <= oo.gmres_tol
+                % converged, or true relres meets target — use dX as-is
+                if oo.verb && gmres_flag ~= 0, fprintf('  GMRES flag=%d, relres=%.2e <= gmres_tol=%.1e — accepting\n', gmres_flag, gmres_relres, oo.gmres_tol); end
+            elseif gmres_relres <= oo.gmres_tol_accept
+                % not fully converged but good enough for inexact Newton
+                if oo.verb, fprintf('  GMRES flag=%d, relres=%.2e — accepting (tol_accept=%.1e)\n', gmres_flag, gmres_relres, oo.gmres_tol_accept); end
+            else
+                % poor approximation — fall back to direct solve
+                if oo.verb, fprintf('  GMRES flag=%d, relres=%.2e — falling back to direct (%s)\n', gmres_flag, gmres_relres, oo.direct_solver); end
+                [dX, lu_ok] = solve_direct(J, F, oo.direct_solver);
+                if ~lu_ok, fprintf('**Aborting (iter %d): direct solve failed\n', iter_new); info.failed = 1; break; end
+            end
+        end
+    else
+        %% direct solve (avoids UMFPACK internal caching / memory leak)
+        [dX, lu_ok] = solve_direct(J, F, oo.direct_solver);
+        if ~lu_ok, fprintf('**Aborting (iter %d): direct solve failed\n', iter_new); info.failed = 1; break; end
+    end
 
     if any(isnan(dX)), disp(' Aborting Newton step : NaN returned'); info.failed = 1; break; end;
     step = oo.step_new;
@@ -269,6 +376,42 @@ end
 
 if info.failed
     vv1 = vv0;
+    % ensure vv2 is populated even on failure (caller may inspect it)
+    if isempty(fieldnames(vv2))
+        try
+            oo.evaluate_variables = 1; oo.evaluate_residual = 0; oo.evaluate_jacobian = 0;
+            [vv2,~,~,~,~,~,~,~,~,~,~,~,~] = nevis_backbone(dt,vv0,vv0,aa,pp,gg,oo);
+        catch
+            % leave vv2 as empty struct if backbone also fails
+        end
+    end
 end
     
+end
+
+function ok = isfinite_bounded(x)
+% Check that vector x has no NaN, no Inf, and no extreme values (>1e100)
+% that would cause overflow in quadratic/power-law expressions inside backbone
+    ok = all(isfinite(x)) && (isempty(x) || max(abs(x)) < 1e50);
+end
+
+function [dX, ok] = solve_direct(J, F, method)
+% Direct solve with explicit factorization; factors are local variables
+% and freed on function return (avoids UMFPACK internal caching leaks).
+%   method = 'lu' : sparse LU via UMFPACK  (fast, standard)
+%   method = 'qr' : sparse QR via SPQR     (no UMFPACK, more fill-in)
+    ok = true;
+    try
+        if strcmp(method, 'qr')
+            [Q, R, E] = qr(J);
+            dX = -E * (R \ (Q' * F));
+        else  % 'lu' (default)
+            [L, U, P, Q] = lu(J);
+            dX = -Q * (U \ (L \ (P * F)));
+        end
+    catch ME
+        fprintf('  solve_direct (%s): %s\n', method, ME.message);
+        dX = NaN(size(F));
+        ok = false;
+    end
 end

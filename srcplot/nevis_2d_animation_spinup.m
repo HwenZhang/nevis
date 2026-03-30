@@ -269,7 +269,17 @@ cx.Label.Position = [2.2 0.5];
 
 hold on
 [C4,pqnet_contour] = contour(ax,xx,yy,zphi,'linecolor','k','linewidth',0.5);
-
+% quiver: water flows down the gradient of phi
+[dphidx, dphidy] = gradient(zphi, xx(1,:), yy(:,1));
+qskip = 3; % subsample for readability
+idx_q = 1:qskip:size(xx,1);
+jdx_q = 1:qskip:size(xx,2);
+qmag = sqrt(dphidx.^2 + dphidy.^2);
+qmag(qmag==0) = 1;
+hquiver = quiver(ax, xx(idx_q,jdx_q), yy(idx_q,jdx_q), ...
+    -dphidx(idx_q,jdx_q)./qmag(idx_q,jdx_q), ...
+    -dphidy(idx_q,jdx_q)./qmag(idx_q,jdx_q), ...
+    0.4, 'k', 'LineWidth', 0.6);
 title('net flux','FontSize',14);
 ylabel('y (km)')
 axis equal
@@ -419,6 +429,14 @@ for i_idx = 1:length(frame_indices)
 
     pqnet.CData = reshape(qnet,gg.nI,gg.nJ); 
     pqnet_contour.ZData = (ps.phi)*reshape(vva.phi,gg.nI,gg.nJ);
+
+    % update quiver arrows
+    zphi_new = (ps.phi)*reshape(vva.phi,gg.nI,gg.nJ);
+    [dphidx, dphidy] = gradient(zphi_new, xx(1,:), yy(:,1));
+    qmag = sqrt(dphidx.^2 + dphidy.^2);
+    qmag(qmag==0) = 1;
+    hquiver.UData = -dphidx(idx_q,jdx_q)./qmag(idx_q,jdx_q);
+    hquiver.VData = -dphidy(idx_q,jdx_q)./qmag(idx_q,jdx_q);
 
     phs.CData = (ps.hs)*reshape(vva.hs,gg.nI,gg.nJ);
     phs_contour.ZData = (ps.phi)*reshape(vva.phi,gg.nI,gg.nJ);

@@ -6,7 +6,7 @@
 clc; clear; close all;
 
 %% Settings
-casename = 'n2d_regional_eps1e_02_kappa1e_10_mu2e1_partition2e_01_spinup_test';
+casename = 'n2d_regional_analytic_V2e8_eps1e_02_kappa1e_10_mu2e1_partition8e_01_k01e_01_drainage_highelev';
 % casename = 'n2d_region_ice_Cinv_test2';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];
@@ -149,7 +149,7 @@ x4 = xline(tframe_d,'--k','LineWidth',1.5);
 xlabel('t [d]'); ylabel('U [m/yr]');
 text(0.025,0.85,'(d) blister volume and ice speed','Units','normalized','FontSize',12);
 xlim([tmin tmax]); 
-ylim([0 200]); 
+ylim([40 100]); 
 grid on; grid minor;
 
 yyaxis right
@@ -162,13 +162,13 @@ xlines = [x1, x2, x3, x4];
 
 % (1) Blister sheet thickness hb
 ax1 = nexttile(rightLayout);
-zhb = ps.hb * reshape(vva.hb,gg.nI,gg.nJ);
+zhb = reshape(ps.hb*vva.hb + ps.h*vva.hs,gg.nI,gg.nJ);
 zphi = ps.phi * reshape(vva.phi,gg.nI,gg.nJ);
 phb = pcolor(ax1, xx, yy, zhb);
 set(phb,'linestyle','none');
 cx = colorbar(); colormap(ax1, cmap);
-clim([-1 1]);
-cx.Label.String = 'h_b [m]';
+clim([-0.5 0.5]);
+cx.Label.String = 'h_b + h_s [m]';
 hold on;
 [~, phb_contour] = contour(ax1, xx, yy, zphi, 'linecolor','k','linewidth',0.5);
 title('(e) blister sheet h_b'); ylabel('y (km)');
@@ -180,9 +180,9 @@ vva.hs(gg.nout) = NaN;
 zhs = ps.hs * reshape(vva.hs,gg.nI,gg.nJ);
 phs = pcolor(ax2, xx, yy, zhs);
 set(phs,'linestyle','none');
-cx = colorbar();colormap(ax2, cmap);
+cx = colorbar();
 cx.Label.String = 'h_s [m]';
-clim([0 0.1]);
+clim([0 0.15]);
 hold on;
 [~, phs_contour] = contour(ax2, xx, yy, zphi, 'linecolor','k','linewidth',0.5);
 title('(f) cavity sheet'); ylabel('y (km)');
@@ -232,7 +232,7 @@ pvel_delta = pcolor(ax6, xx, yy, zeros(gg.nI,gg.nJ));
 set(pvel_delta,'linestyle','none');
 cx = colorbar(); colormap(ax6, cmap);
 cx.Label.String = '\Delta U [m/yr]';
-clim([-100 100]);
+clim([-50 50]);
 ttext = text(ax6, 0.5, 0.9, ['t = ' num2str(tframe_d,'%.1f') ' d'], ...
     'Units','normalized','FontSize',14,'FontWeight','bold');
 title('(j) ice speed change'); ylabel('y (km)'); xlabel('x (km)');
@@ -279,7 +279,7 @@ p_dtau = pcolor(ax8, xx, yy, reshape(dsigma1_kPa, gg.nI, gg.nJ));
 shading interp;
 set(p_dtau,'linestyle','none'); colormap(ax8, cmap);
 cx = colorbar(); cx.Label.String = '\Delta\sigma_1 [kPa]';
-clim([-100 100]);
+clim([-25 25]);
 hold on;
 skip8 = skip7;
 ii8 = ii7; jj8 = jj7;
@@ -287,10 +287,10 @@ xq8 = xx(ii8,jj8); yq8 = yy(ii8,jj8);
 ds1_q = zeros(size(s1_q)); ds2_q = zeros(size(s2_q));
 dx1_q0 = dx1_q; dy1_q0 = dy1_q;
 dx2_q0 = dx2_q; dy2_q0 = dy2_q;
-q_ds1p = quiver(ax8, xq8, yq8,  ds1_q.*dx1_q0,  ds1_q.*dy1_q0, 0.5, 'r', 'LineWidth', 1);
-q_ds1n = quiver(ax8, xq8, yq8, -ds1_q.*dx1_q0, -ds1_q.*dy1_q0, 0.5, 'r', 'LineWidth', 1, 'ShowArrowHead', 'off');
-q_ds2p = quiver(ax8, xq8, yq8,  ds2_q.*dx2_q0,  ds2_q.*dy2_q0, 0.5, 'b', 'LineWidth', 1);
-q_ds2n = quiver(ax8, xq8, yq8, -ds2_q.*dx2_q0, -ds2_q.*dy2_q0, 0.5, 'b', 'LineWidth', 1, 'ShowArrowHead', 'off');
+% q_ds1p = quiver(ax8, xq8, yq8,  ds1_q.*dx1_q0,  ds1_q.*dy1_q0, 0.5, 'r', 'LineWidth', 1);
+% q_ds1n = quiver(ax8, xq8, yq8, -ds1_q.*dx1_q0, -ds1_q.*dy1_q0, 0.5, 'r', 'LineWidth', 1, 'ShowArrowHead', 'off');
+% q_ds2p = quiver(ax8, xq8, yq8,  ds2_q.*dx2_q0,  ds2_q.*dy2_q0, 0.5, 'b', 'LineWidth', 1);
+% q_ds2n = quiver(ax8, xq8, yq8, -ds2_q.*dx2_q0, -ds2_q.*dy2_q0, 0.5, 'b', 'LineWidth', 1, 'ShowArrowHead', 'off');
 title('(l) \Delta\sigma_1 + principal stress change'); ylabel('y (km)'); xlabel('x (km)');
 axis equal; axis tight;
 
@@ -352,10 +352,10 @@ for i_idx = 1:length(index)
     ddy1_s = reshape(sin(t1_s), gg.nI, gg.nJ); ddy1_q = ddy1_s(ii8,jj8);
     ddx2_s = reshape(cos(t1_s+pi/2), gg.nI, gg.nJ); ddx2_q = ddx2_s(ii8,jj8);
     ddy2_s = reshape(sin(t1_s+pi/2), gg.nI, gg.nJ); ddy2_q = ddy2_s(ii8,jj8);
-    q_ds1p.UData =  ds1_q.*ddx1_q; q_ds1p.VData =  ds1_q.*ddy1_q;
-    q_ds1n.UData = -ds1_q.*ddx1_q; q_ds1n.VData = -ds1_q.*ddy1_q;
-    q_ds2p.UData =  ds2_q.*ddx2_q; q_ds2p.VData =  ds2_q.*ddy2_q;
-    q_ds2n.UData = -ds2_q.*ddx2_q; q_ds2n.VData = -ds2_q.*ddy2_q;
+    % q_ds1p.UData =  ds1_q.*ddx1_q; q_ds1p.VData =  ds1_q.*ddy1_q;
+    % q_ds1n.UData = -ds1_q.*ddx1_q; q_ds1n.VData = -ds1_q.*ddy1_q;
+    % q_ds2p.UData =  ds2_q.*ddx2_q; q_ds2p.VData =  ds2_q.*ddy2_q;
+    % q_ds2n.UData = -ds2_q.*ddx2_q; q_ds2n.VData = -ds2_q.*ddy2_q;
 
     % Update right panels
     phb.CData = ps.hb * reshape(vva.hb,gg.nI,gg.nJ);
