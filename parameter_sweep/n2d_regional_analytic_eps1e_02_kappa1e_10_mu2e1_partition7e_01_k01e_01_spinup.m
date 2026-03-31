@@ -247,8 +247,16 @@ oo.save_timesteps = 1;
 oo.save_pts_all = 1; 
 
 % Add GPS station points downstream of the moulin every 5km
-pp.ni_gps = nevis_gps_array([40e3,40e3,20e3,0,-40e3]/ps.x, [-15e3,-5e3,-15e3,-25e3,-30e3]/ps.x, gg, oo); % GPS station points
-oo.pts_ni = [pp.ni_l' pp.ni_m' pp.ni_gps];    
+% pp.ni_gps = nevis_gps_array([40e3,40e3,20e3,0,-40e3]/ps.x, [-15e3,-5e3,-15e3,-25e3,-30e3]/ps.x, gg, oo);
+stations = load(['./data/' 'station_timeseries_2022']);
+stations = stations.station_data;
+pp.x_gps = [stations.x_m]/ps.x;
+pp.y_gps = [stations.y_m]/ps.x;
+pp.ni_gps = nevis_gps_array(pp.x_gps, pp.y_gps, gg, oo); % GPS station points
+
+% sum up the locations of interest (moulins, lakes, GPS)
+oo.pts_ni = [pp.ni_l' pp.ni_m' pp.ni_gps];
+ 
 oo.t_span = [(1:1:365*1)*pd.td/ps.t];
 % oo.t_span = [(1:1:59)*pd.td/ps.t (59.5:0.001:60.5)*pd.td/ps.t (61:1:120)*pd.td/ps.t];
 

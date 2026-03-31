@@ -6,8 +6,8 @@
 clc; clear; close all;
 
 %% Settings
-casename = 'n2d_regional_analytic_V2e8_eps1e_02_kappa1e_10_mu2e1_partition8e_01_k01e_01_drainage_highelev';
-% casename = 'n2d_region_ice_Cinv_test2';
+casename = 'n2d_regional_analytic_V2e8_eps1e_02_kappa5e_11_mu5e0_partition1e0_k01e_01_drainage_highelev';
+casename = 'n2d_regional_racmo_eps1e_02_kappa1e_10_mu2e1_partition8e_01_k01e_01_spinup';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];
 oo.rn = [oo.root,oo.results,oo.fn];
@@ -231,11 +231,12 @@ ax6 = nexttile(rightLayout);
 pvel_delta = pcolor(ax6, xx, yy, zeros(gg.nI,gg.nJ));
 set(pvel_delta,'linestyle','none');
 cx = colorbar(); colormap(ax6, cmap);
-cx.Label.String = '\Delta U [m/yr]';
-clim([-50 50]);
+% cx.Label.String = '\Delta U [m/yr]';
+cx.Label.String = '%';
+clim([-2 2]);
 ttext = text(ax6, 0.5, 0.9, ['t = ' num2str(tframe_d,'%.1f') ' d'], ...
     'Units','normalized','FontSize',14,'FontWeight','bold');
-title('(j) ice speed change'); ylabel('y (km)'); xlabel('x (km)');
+title('(j) ice speed change %'); ylabel('y (km)'); xlabel('x (km)');
 axis equal; axis tight;
 
 % (7) Plot principal stress magnitudes and directions as crosses
@@ -279,7 +280,7 @@ p_dtau = pcolor(ax8, xx, yy, reshape(dsigma1_kPa, gg.nI, gg.nJ));
 shading interp;
 set(p_dtau,'linestyle','none'); colormap(ax8, cmap);
 cx = colorbar(); cx.Label.String = '\Delta\sigma_1 [kPa]';
-clim([-25 25]);
+clim([-50 50]);
 hold on;
 skip8 = skip7;
 ii8 = ii7; jj8 = jj7;
@@ -371,7 +372,7 @@ for i_idx = 1:length(index)
     pvel.CData = vUU;
     vel_field.UData = vux(1:skip:end,1:skip:end);
     vel_field.VData = vuy(1:skip:end,1:skip:end);
-    pvel_delta.CData = vUU - vUU0;
+    pvel_delta.CData = (vUU - vUU0)./vUU0;
 
     % Update time markers
     tframe_d = vva.t*ps.t/pd.td;
