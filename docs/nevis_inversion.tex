@@ -1,0 +1,407 @@
+\documentclass[a4paper,11pt,fleqn]{article}
+\title{NEVIS Basal Friction Inversion: Mathematical Formulation}
+\author{Hanwen Zhang}
+\date{\today}
+\addtolength{\voffset}{-2cm}
+\addtolength{\textheight}{4.2cm}
+\addtolength{\hoffset}{-2cm}
+\addtolength{\textwidth}{4cm}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{verbatim}
+\usepackage{fancyhdr}
+\usepackage{natbib}
+\usepackage{parskip}
+\usepackage{hyperref}
+
+\setlength{\headheight}{10pt}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancyhf{}
+\cfoot{\thepage}
+
+\fancypagestyle{first}{
+\setlength{\headheight}{20pt}
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancyhf{}
+\rhead{{\small H Zhang, March 2026}}
+\cfoot{\thepage}
+}
+
+\newcommand{\ve}[1]{\boldsymbol{#1}}
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\half}{\tfrac{1}{2}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\bm}[1]{\boldsymbol{#1}}
+
+\begin{document}
+
+\thispagestyle{first}
+
+\maketitle
+
+\tableofcontents
+
+%% ============================================================
+\section{Overview}
+%% ============================================================
+
+This document describes the mathematical formulation and algorithmic details of two MATLAB scripts used in the NEVIS ice-sheet model:
+\begin{enumerate}
+    \item \texttt{nevis\_inv\_C.m} --- Adjoint-based inversion for the spatially varying basal friction coefficient $C(x,y)$.
+    \item \texttt{nevis\_inv\_partition.m} --- Post-processing tool that partitions the recovered total coefficient into pressure-dependent ($C_1$) and pressure-independent ($C_2$) components.
+\end{enumerate}
+
+The goal is to recover $C(x,y)$ such that the modelled surface velocity field best matches satellite-observed velocities, subject to regularisation constraints. This is a standard PDE-constrained optimisation problem solved via the adjoint method.
+
+%% ============================================================
+\section{Forward Model: Shallow-Shelf Approximation (SSA)}
+\label{sec:forward}
+%% ============================================================
+
+The forward model solves the 2-D Shallow-Shelf Approximation (SSA) momentum balance for the velocity field $\ve{u} = (u,v)$ on a staggered finite-difference grid. The non-dimensional governing equations on interior edges read:
+\be
+\label{eq:x_mom}
+c_{60}\, \overline{H}^e \pd{s}{x} = c_{62}\left[\pd{}{x}\left(4H\bar\eta\pd{u}{x} + 2H\bar\eta\pd{v}{y}\right) + \pd{}{y}\left(H\bar\eta\left(\pd{u}{y}+\pd{v}{x}\right)\right)\right] - c_{61}\,\overline{S(U)}^e\, u,
+\ee
+\be
+\label{eq:y_mom}
+c_{60}\, \overline{H}^f \pd{s}{y} = c_{62}\left[\pd{}{y}\left(4H\bar\eta\pd{v}{y} + 2H\bar\eta\pd{u}{x}\right) + \pd{}{x}\left(H\bar\eta\left(\pd{u}{y}+\pd{v}{x}\right)\right)\right] - c_{61}\,\overline{S(U)}^f\, v,
+\ee
+where:
+\begin{itemize}
+    \item $H$ is ice thickness, $s$ is surface elevation, $b$ is bed elevation;
+    \item $c_{60}$, $c_{61}$, $c_{62}$ are dimensionless prefactors for driving stress, basal friction, and membrane stress respectively;
+    \item $\overline{(\cdot)}^e$, $\overline{(\cdot)}^f$ denote renormalised averaging operators from nodes to $x$-edges and $y$-edges;
+    \item $S(U) \equiv \tau_b / U_b$ is the sliding function (Section~\ref{sec:sliding_law});
+    \item $\bar\eta$ is the depth-averaged effective viscosity (Section~\ref{sec:viscosity}).
+\end{itemize}
+
+These equations are solved via Picard (fixed-point) iteration: at each iterate, the viscosity $\bar\eta$ and sliding function $S(U)$ are frozen at the current velocity, yielding a linear system
+\be
+\label{eq:linear_system}
+\mathbf{A}(\ve{u}^k)\,\ve{u}^{k+1} = \ve{b},
+\ee
+iterated until $\|\ve{u}^{k+1}-\ve{u}^k\| < \texttt{tol\_vel}$.
+
+%% ============================================================
+\subsection{Sliding law}
+\label{sec:sliding_law}
+%% ============================================================
+
+The basal sliding law relates basal shear stress $\tau_b$ to sliding speed $U_b = |\ve{u}_b|$, effective pressure $N$, and the friction coefficient $C$:
+\be
+\label{eq:sliding_law}
+\frac{\tau_b}{U_b} = S(U_b, N, C) = N_r\, U_r^{1/n - 1}\, \left(\mu^{-n}\, U_r + C^{-n}\, N_r^n\right)^{-1/n} + C_2\, U_r^{1/n - 1},
+\ee
+where $n$ is the sliding exponent (typically $n = 3$), $\mu$ is the Coulomb friction coefficient, and:
+\begin{align}
+    U_r &= \max(U_b,\, U_b^{\mathrm{reg}}), \label{eq:Ur_reg} \\
+    N_r &= \max(N,\, N^{\mathrm{reg}}), \label{eq:Nr_reg}
+\end{align}
+are max-based regularisations with $U_b^{\mathrm{reg}} = 10^{-16}$ and $N^{\mathrm{reg}} = 10^{-16}$.
+
+In the current implementation, $C_2 = 0$, so the law captures a transition from rate-weakening Coulomb friction at high $U_b$ to rate-strengthening Weertman friction at low $U_b$.
+
+%% ============================================================
+\subsection{Viscosity}
+\label{sec:viscosity}
+%% ============================================================
+
+The depth-averaged effective viscosity follows Glen's flow law:
+\be
+\label{eq:viscosity}
+\bar\eta = A^{-1/n_g}\, \left(\eps_{\mathrm{reg}}^2 + \dot\eps_{xx}^2 + \dot\eps_{yy}^2 + \dot\eps_{xx}\dot\eps_{yy} + \dot\eps_{xy}^2\right)^{(1/n_g - 1)/2},
+\ee
+where $n_g$ is Glen's exponent, $A$ is the rate factor, and $\eps_{\mathrm{reg}}$ prevents singularities at zero strain rate. The strain rates are:
+\begin{align}
+    \dot\eps_{xx} = \pd{u}{x}, \quad
+    \dot\eps_{yy} = \pd{v}{y}, \quad
+    \dot\eps_{xy} = \half\left(\pd{u}{y} + \pd{v}{x}\right).
+\end{align}
+
+%% ============================================================
+\section{Inverse Problem}
+\label{sec:inverse}
+%% ============================================================
+
+\subsection{Control variable and cost function}
+
+The control variable is $c = \ln C$ defined on all $n_{IJ}$ grid nodes. The transformation $C = e^c$ ensures positivity. The cost function to be minimised is:
+\be
+\label{eq:cost}
+J(c) = J_{\mathrm{mis}}(c) + J_{\mathrm{reg}}(c) + J_{\mathrm{damp}}(c).
+\ee
+
+\paragraph{Velocity misfit (speed-based).}
+When using speed-based misfit (the default), the misfit on nodes is:
+\be
+\label{eq:Jmis_speed}
+J_{\mathrm{mis}} = \half \sum_{j \in \Omega_{\mathrm{obs}}} \left(\frac{U_j^{\mathrm{mod}} - U_j^{\mathrm{obs}}}{U_j^{\mathrm{obs}} + u_0}\right)^2,
+\ee
+where $U_j^{\mathrm{mod}} = \sqrt{\bar u_j^2 + \bar v_j^2}$ is the modelled speed at node $j$ (computed via renormalised node-averages of edge velocities), $U_j^{\mathrm{obs}}$ is the observed speed, $u_0$ is a regularisation velocity scale, and $\Omega_{\mathrm{obs}}$ is the set of nodes with valid observations (excluding Dirichlet boundary edges and NaN data points).
+
+Alternatively, when using component-wise misfit:
+\be
+\label{eq:Jmis_comp}
+J_{\mathrm{mis}} = \half \sum_{i \in e_{\mathrm{in}}} \left(\frac{u_i - u_i^{\mathrm{obs}}}{|u_i^{\mathrm{obs}}| + u_0}\right)^2 + \half \sum_{i \in f_{\mathrm{in}}} \left(\frac{v_i - v_i^{\mathrm{obs}}}{|v_i^{\mathrm{obs}}| + u_0}\right)^2.
+\ee
+
+\paragraph{Tikhonov regularisation.}
+Smoothness is enforced via spatial gradients of $c$:
+\be
+\label{eq:Jreg}
+J_{\mathrm{reg}} = \half \alpha\, \ve{c}^\top L^\top L\, \ve{c},
+\ee
+where $L = [L_x;\, L_y]$ is the discrete gradient operator built from finite-difference operators on interior edges. An \emph{adaptive weighting} modifies $L$ to reduce regularisation in shear zones (regions of large velocity gradients):
+\be
+w_i = \frac{1}{1 + \beta\,|\nabla u|_i / \overline{|\nabla u|}},
+\ee
+where $\beta$ is a tuning parameter. The weighted operator is $L_x = \mathrm{diag}(w_e)\, L_x^{\mathrm{base}}$ (and similarly for $L_y$), so that large velocity gradients suppress regularisation locally, allowing sharper $C$-variations in shear margins.
+
+\paragraph{Damping to prior.}
+\be
+\label{eq:Jdamp}
+J_{\mathrm{damp}} = \half \gamma\, \|\ve{c} - \ve{c}_0\|^2,
+\ee
+where $\ve{c}_0 = \ln \ve{C}_0$ is the prior (default: $C_0 = 1$ everywhere, i.e.\ $c_0 = 0$).
+
+%% ============================================================
+\subsection{Adjoint method for gradient computation}
+\label{sec:adjoint}
+%% ============================================================
+
+The gradient $\nabla_c J$ is computed efficiently via the adjoint method. The forward problem defines an implicit constraint $\ve{F}(\ve{u}, c) = \ve{0}$, where $\ve{F}$ is the discretised SSA residual (\ref{eq:x_mom}--\ref{eq:y_mom}).
+
+\paragraph{Step 1: Forward solve.}
+Given current $c$ (hence $C = e^c$), solve the nonlinear SSA system via Picard iteration to obtain $\ve{u}(c) = (u, v)$. Observed velocity is used as a warm start for fast convergence.
+
+\paragraph{Step 2: Adjoint RHS.}
+Compute the partial derivative of the misfit with respect to velocity:
+\be
+\pd{J_{\mathrm{mis}}}{\ve{u}} = \left[\pd{J_{\mathrm{mis}}}{u};\; \pd{J_{\mathrm{mis}}}{v}\right].
+\ee
+For the speed-based misfit this requires the chain rule through $U = \sqrt{\bar u^2 + \bar v^2}$:
+\begin{align}
+    \pd{J}{U_j} &= \frac{U_j^{\mathrm{mod}} - U_j^{\mathrm{obs}}}{(U_j^{\mathrm{obs}} + u_0)^2} \cdot m_j, \\
+    \pd{J}{u_i} &= \sum_j \overline{N}_{ji}^x \cdot \pd{J}{U_j} \cdot \frac{\bar u_j}{\max(U_j,\eps)}, \\
+    \pd{J}{v_i} &= \sum_j \overline{N}_{ji}^y \cdot \pd{J}{U_j} \cdot \frac{\bar v_j}{\max(U_j,\eps)},
+\end{align}
+where $m_j$ is the observation mask and $\overline{N}^{x,y}$ are renormalised mean operators.
+
+\paragraph{Step 3: Assemble the full Jacobian.}
+The Picard linearisation freezes $S(U)$ and $\bar\eta$ at the current $\ve{u}$, yielding the Picard Jacobian $\mathbf{A}$. For an exact adjoint (required to pass the Taylor test), two Newton corrections are added:
+
+\medskip
+\noindent\textit{(a) Sliding Newton correction.} The friction term $F_{\mathrm{fric},x}(i) = -c_{61}\,\overline{S(U)}^e_i\, u_i$ has a dependence on $\ve{u}$ through $S(U(u,v))$. The correction blocks are:
+\be
+\delta A_{uu} = -c_{61}\,\mathrm{diag}(u)\;\overline{(\cdot)}^{e}\;\mathrm{diag}\!\left(\frac{\dd S}{\dd U}\cdot\frac{\bar u}{U_{\mathrm{safe}}}\right)\overline{(\cdot)}^{n \leftarrow e},
+\ee
+and analogously for $\delta A_{uv}$, $\delta A_{vu}$, $\delta A_{vv}$, where:
+\be
+\frac{\dd S}{\dd U} = \frac{\dd}{\dd U_r}\left[N_r\, U_r^{1/n-1}\left(\mu^{-n}U_r + C^{-n}N_r^n\right)^{-1/n}\right] \cdot \mathbb{1}_{U \geq U_b^{\mathrm{reg}}}.
+\ee
+Expanding:
+\begin{align}
+    \frac{\dd S}{\dd U_r} &= \underbrace{\left(\frac{1}{n}-1\right) N_r\, U_r^{1/n-2}\, B^{-1/n}}_{\text{term 1}} - \underbrace{\frac{1}{n}\,\mu^{-n}\, N_r\, U_r^{1/n-1}\, B^{-1/n-1}}_{\text{term 2}} + \underbrace{\left(\frac{1}{n}-1\right) C_2\, U_r^{1/n-2}}_{\text{term 3}},
+\end{align}
+where $B = \mu^{-n}U_r + C^{-n}N_r^n$.
+
+\medskip
+\noindent\textit{(b) Viscosity Newton correction.} When $n_g \neq 1$, the viscosity $\bar\eta$ depends on velocity through the strain rates. Defining $I_2 = \eps_{\mathrm{reg}}^2 + \dot\eps_{xx}^2 + \dot\eps_{yy}^2 + \dot\eps_{xx}\dot\eps_{yy} + \dot\eps_{xy}^2$ and $\beta_\eta = \frac{1/n_g - 1}{2}\,\bar\eta / I_2$, the correction involves:
+\be
+\pd{\bar\eta}{u_k} = \beta_\eta\,\pd{I_2}{u_k}, \qquad \pd{I_2}{u_k} = (2\dot\eps_{xx} + \dot\eps_{yy})\pd{\dot\eps_{xx}}{u_k} + \dot\eps_{xy}\pd{\dot\eps_{xy}}{u_k},
+\ee
+with analogous expressions for $\partial\bar\eta/\partial v_k$. These are assembled into blocks $\delta A^{\eta}_{uu}$, $\delta A^{\eta}_{uv}$, $\delta A^{\eta}_{vu}$, $\delta A^{\eta}_{vv}$ and added to the full Jacobian:
+\be
+\mathbf{A}_{\mathrm{full}} = \mathbf{A}_{\mathrm{Picard}} + \delta\mathbf{A}_{\mathrm{slide}} + \delta\mathbf{A}_{\mathrm{visc}}.
+\ee
+
+\paragraph{Step 4: Adjoint solve.}
+Solve the adjoint linear system:
+\be
+\label{eq:adjoint_solve}
+\mathbf{A}_{\mathrm{full}}^\top \bm{\lambda} = -\pd{J_{\mathrm{mis}}}{\ve{u}},
+\ee
+where $\bm{\lambda} = (\lambda_u, \lambda_v)$ is the adjoint (Lagrange multiplier) vector.
+
+\paragraph{Step 5: Gradient w.r.t.\ $C$.}
+The partial derivative of the residual with respect to $C$ at node $j$ comes from the friction term:
+\be
+\pd{F_x}{C_j} = -c_{61}\, u_i\;\overline{(\cdot)}_{ij}^e\;\pd{S}{C}\bigg|_j, \qquad
+\pd{F_y}{C_j} = -c_{61}\, v_i\;\overline{(\cdot)}_{ij}^f\;\pd{S}{C}\bigg|_j,
+\ee
+where:
+\be
+\pd{S}{C} = N_r\, U_r^{1/n-1}\, C^{-n-1}\, N_r^n\, B^{-1/n-1}.
+\ee
+
+The gradient w.r.t.\ $C$ is then:
+\be
+\pd{J}{C_j} = \lambda_u^\top \pd{F_x}{C_j} + \lambda_v^\top \pd{F_y}{C_j}.
+\ee
+
+\paragraph{Step 6: Chain rule to log-space.}
+Since $c = \ln C$, we apply the chain rule:
+\be
+\pd{J}{c_j} = C_j \pd{J}{C_j} + \alpha\,(L^\top L\, \ve{c})_j + \gamma\,(c_j - c_{0,j}).
+\ee
+
+%% ============================================================
+\subsection{Gradient verification}
+\label{sec:taylor_test}
+%% ============================================================
+
+The adjoint gradient is verified via a Taylor test. For a random perturbation direction $\delta c$ with $\|\delta c\| = 1$:
+\begin{align}
+    e_1(h) &= |J(c_0 + h\,\delta c) - J(c_0)| = O(h), \\
+    e_2(h) &= |J(c_0 + h\,\delta c) - J(c_0) - h\,\nabla_c J \cdot \delta c| = O(h^2).
+\end{align}
+When the gradient is correct, the ratio $e_2(h/10)/e_2(h) \approx 100$ (second-order convergence). Additionally, per-component central finite differences $g_j^{\mathrm{FD}} = [J(c + h\,\ve{e}_j) - J(c - h\,\ve{e}_j)]/(2h)$ are checked against $g_j^{\mathrm{adj}}$ at 20 random nodes.
+
+%% ============================================================
+\subsection{Optimisation algorithm}
+\label{sec:optimisation}
+%% ============================================================
+
+The minimisation uses MATLAB's \texttt{fminunc} with the L-BFGS quasi-Newton algorithm (memory size 20). A \emph{continuation strategy} progressively relaxes the regularisation:
+\begin{enumerate}
+    \item Start with strong regularisation ($\alpha_1, \gamma_1$) and run $k_1$ iterations.
+    \item Reduce $\alpha, \gamma$ to the next schedule value and continue from the previous solution.
+    \item Repeat until the schedule is exhausted or convergence criteria are met.
+\end{enumerate}
+
+The default schedule is:
+\begin{center}
+\begin{tabular}{c|cccc}
+    Stage & 1 & 2 & 3 & 4 \\ \hline
+    $\alpha$ & $10^{-3}$ & $10^{-4}$ & $10^{-9}$ & $10^{-12}$ \\
+    $\gamma$ & $10^{-6}$ & $10^{-7}$ & $10^{-8}$ & $10^{-9}$ \\
+    max iterations & 25 & 5 & 5 & 5 \\
+\end{tabular}
+\end{center}
+
+Early stopping is triggered if:
+\begin{itemize}
+    \item $J < J_{\mathrm{tol}} = 10^{-3}$;
+    \item first-order optimality $< \delta J_{\mathrm{tol}} = 10^{-6}$;
+    \item cumulative iterations exceed $\texttt{max\_iter\_total} = 200$.
+\end{itemize}
+
+%% ============================================================
+\section{Observation Data and Preprocessing}
+\label{sec:data}
+%% ============================================================
+
+\begin{enumerate}
+    \item \textbf{Velocity data}: MEaSUREs satellite velocity mosaic, loaded in dimensional units (m/yr) and non-dimensionalised by $[u_b] \cdot t_y$ (characteristic basal velocity $\times$ seconds per year). Edge velocities are projected onto nodes via averaging operators.
+    
+    \item \textbf{Effective pressure}: Computed from spinup hydrology as $N = \phi_0 - \phi$, where $\phi_0$ is the overburden potential and $\phi$ is the hydraulic potential from the subglacial drainage model.
+    
+    \item \textbf{NaN handling}: Observations with NaN values are masked out (observation mask set to 0, NaN replaced with 0). The observation mask also excludes Dirichlet boundary edges, whose velocity is prescribed and not controlled by $C$.
+\end{enumerate}
+
+%% ============================================================
+\section{Post-Processing: $C_1$--$C_2$ Partition}
+\label{sec:partition}
+%% ============================================================
+
+After the inversion recovers a total friction coefficient $C_{\mathrm{total}}$, the function \texttt{nevis\_inv\_partition} decomposes basal friction into:
+\begin{itemize}
+    \item $C_1$ --- \textbf{pressure-dependent}: contributes to the Coulomb--Weertman sliding law. Modulated by effective pressure $N$; can be reduced by lowering $N$ (e.g., through subglacial water pressure increase).
+    \item $C_2$ --- \textbf{pressure-independent} (hard-bed/rate-strengthening): a power-law drag independent of $N$.
+\end{itemize}
+
+\subsection{Algorithm}
+
+Given a prescribed partition ratio $r \in [0,1]$:
+
+\medskip\noindent\textbf{Step 1.} Run the forward model with $C = C_{\mathrm{total}}$ to obtain the velocity field $\ve{u}$ and the nodal sliding speed $U$:
+\be
+U = \sqrt{\bar u^2 + \bar v^2}.
+\ee
+
+\noindent\textbf{Step 2.} Compute the total basal shear stress from the sliding law (\ref{eq:sliding_law}):
+\be
+\tau_b = S(U,\, N,\, C_{\mathrm{total}})\;\cdot\; U.
+\ee
+
+\noindent\textbf{Step 3.} Partition the shear stress:
+\be
+\tau_{b,1} = r\,\tau_b, \qquad \tau_{b,2} = (1-r)\,\tau_b.
+\ee
+
+\noindent\textbf{Step 4.} Invert analytically for $C_1$ and $C_2$.
+
+For $C_1$, noting that $\tau_{b,1} = N_r\,U_r^{1/n}\left(\mu^{-n}U_r + C_1^{-n}N_r^n\right)^{-1/n}$, we solve:
+\be
+\label{eq:C1_solve}
+C_1 = \left(\frac{U}{\tau_{b,1}^n} - \frac{U}{(\mu N)^n}\right)^{-1/n},
+\ee
+clamped below at $10^{-16}$ for numerical stability.
+
+For $C_2$, the power-law relationship $\tau_{b,2} = C_2\, U^{1/n}$ gives:
+\be
+\label{eq:C2_solve}
+C_2 = \frac{\tau_{b,2}}{U^{1/n}}.
+\ee
+
+\noindent\textbf{Step 5.} Dimensionalise:
+\be
+C_{1}^{\mathrm{dim}} = C_1 \cdot \frac{[\tau]}{[u_b]^{1/n}}, \qquad
+C_{2}^{\mathrm{dim}} = C_2 \cdot \frac{[\tau]}{[u_b]^{1/n}},
+\ee
+where $[\tau]$ and $[u_b]$ are the characteristic stress and velocity scales from the nondimensionalisation.
+
+\subsection{Interpretation}
+
+A partition ratio $r = 0.25$ means 25\% of the basal resistance is from the pressure-sensitive (Coulomb) mechanism and can be weakened by increasing subglacial water pressure, while the remaining 75\% is from hard-bed drag that is insensitive to $N$. This decomposition allows coupled hydrology--ice dynamics simulations to correctly represent the fraction of friction that responds to transient water pressure changes (e.g., during melt seasons or lake drainage events).
+
+%% ============================================================
+\section{Summary of Key Parameters}
+\label{sec:parameters}
+%% ============================================================
+
+\begin{center}
+\begin{tabular}{lll}
+    \hline
+    Symbol & Default & Description \\ \hline
+    $n$ (\texttt{n\_slide}) & 3 & Sliding law exponent \\
+    $n_g$ (\texttt{n\_glen}) & 3 & Glen's flow law exponent \\
+    $\mu$ & model-dependent & Coulomb friction coefficient \\
+    $C_2$ & 0 & Power-law friction coefficient \\
+    $\eps_{\mathrm{reg}}$ & $10^{-1}$ & Strain-rate regularisation \\
+    $U_b^{\mathrm{reg}}$ & $10^{-16}$ & Sliding speed regularisation \\
+    $N^{\mathrm{reg}}$ & $10^{-16}$ & Effective pressure regularisation \\
+    $u_0$ & $10^{-1}$ & Velocity scale for relative misfit \\
+    $\beta$ & 0.1 & Adaptive regularisation tuning \\
+    $\alpha$ & schedule & Tikhonov smoothness weight \\
+    $\gamma$ & schedule & Prior damping weight \\
+    \hline
+\end{tabular}
+\end{center}
+
+%% ============================================================
+\section{Implementation Notes}
+%% ============================================================
+
+\begin{itemize}
+    \item All computations are performed in non-dimensional form. The NEVIS framework provides characteristic scales $[u_b]$, $[\tau]$, $[\phi]$, $t_y$ for non-dimensionalisation.
+    
+    \item The staggered grid stores $u$ on $x$-edges, $v$ on $y$-edges, and scalars (e.g., $C$, $N$, $H$) on nodes. Renormalised mean operators ensure consistent averaging between grid types.
+    
+    \item The Picard solver uses a maximum of 100 iterations with tolerance $10^{-6}$. Observed velocity serves as a warm start for the forward solve inside each objective evaluation, ensuring fast convergence.
+    
+    \item Boundary conditions: Dirichlet velocity BCs on domain boundary edges (\texttt{ebdy2}, \texttt{fbdy2}) are set from observed velocity. Stress-free conditions are applied at ice-mask boundaries.
+    
+    \item The output $C_{\mathrm{total}}$ is saved to \texttt{C\_inversion\_results.mat} together with all fields needed to re-partition $C_1$/$C_2$ at arbitrary ratios without re-running the forward model.
+\end{itemize}
+
+\end{document}
