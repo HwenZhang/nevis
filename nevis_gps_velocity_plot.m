@@ -74,6 +74,7 @@ t_mid = 0.5*(t(1:end-1) + t(2:end));
 n_clust = length(clusters_to_plot);
 f = figure('Position', [100, 100, 1200, 250*n_clust]);
 tl = tiledlayout(f, n_clust, 2, 'TileSpacing','compact', 'Padding','compact');
+title(tl, ['GPS velocity comparison: model vs observations (' casename ')'], 'FontSize', 14, 'Interpreter', 'none');
 
 for ic = 1:n_clust
     kc = clusters_to_plot(ic);
@@ -184,3 +185,5 @@ for ic = 1:n_clust
     grid on; grid minor;
     legend(ax_w, 'Location','northeast', 'FontSize', 8);
 end
+
+saveas(f, ['./' casename '_gps_comparison.png']);
