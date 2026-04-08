@@ -21,6 +21,10 @@ for i = 1:length(python_data.filenames)
     vva = load(filename, 'vv');
     vv = vva.vv;
     aa = nevis_inputs(vv.t, aa, vv, pp, gg, oo);
+    pp.deltap_reg = 5.0e7/ps.phi;
+    vv2 = nevis_backbone(inf, vv, vv, aa, pp, gg, oo);
+    vv2 = nevis_nodedischarge(vv2, aa, pp, gg, oo);
+    qnet = ps.qs * (vv2.qs + vv2.qe + vv2.qQ + 0 * vv2.Q);
 
     % velocity on nodes
     uxn = gg.nmeanx2(:,gg.es2) * vv.u(gg.es2);
@@ -48,6 +52,7 @@ for i = 1:length(python_data.filenames)
     ice_fields.nout = gg.nout;
     ice_fields.nI = gg.nI;
     ice_fields.nJ = gg.nJ;
+    ice_fields.qnet = qnet;
     ice_fields.t_days = vv.t * ps.t / pd.td;
 
     save(filename, 'ice_fields', '-append');
