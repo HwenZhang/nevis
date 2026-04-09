@@ -6,8 +6,8 @@
 clc; clear; close all;
 
 %% Settings
-% casename = 'n2d_regional_racmo_V1e1_eps1e_02_kappa5e_11_mu5e0_partition5e_01_k01e_01_drainage_highelev';
-casename = 'n2d_regional_racmo_eps1e_02_kappa5e_11_mu5e0_partition5e_01_k01e_01_spinup';
+casename = 'n2d_regional_racmo_V1e1_eps1e_02_kappa5e_11_mu5e0_partition5e_01_k01e_01_drainage_highelev';
+% casename = 'n2d_regional_racmo_eps1e_02_kappa5e_11_mu5e0_partition5e_01_k01e_01_spinup';
 load(['./results/' casename '/' casename])
 oo.fn = ['/',casename];
 oo.rn = [oo.root,oo.results,oo.fn];
