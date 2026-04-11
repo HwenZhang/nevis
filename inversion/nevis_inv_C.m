@@ -23,7 +23,7 @@ oo.code = './src';
 oo.results = 'results';
 oo.dataset = 'nevis_regional';
 % note: this is a standard case used to initialise the 
-oo.casename = 'n2d_region_ice_inversion_test'; 
+oo.casename = 'n2d_region_ice_inversion_ns3'; 
 oo.fn = ['/',oo.casename];
 oo.rn = [oo.root,oo.results,oo.fn];
 oo.in = [oo.root, 'data/', oo.casename];
@@ -33,6 +33,7 @@ addpath(oo.code);
 % set the surface runoff options
 racmo = 0;  % use RACMO runoff data (if 0, use simple sinusoidal function)
 distributed = 1;  % if 1, distribute runoff across the domain; if 0, input to discrete moulins
+partition_ratio = 0.5;
 
 % load saved spinup state
 load([oo.in, oo.fn], 'pp','pd','ps','gg','aa','oo');
@@ -92,7 +93,7 @@ fprintf('Excluded %d ebdy + %d fbdy Dirichlet edges from misfit\n', ...
     length(gg.ebdy2), length(gg.fbdy2));
 
 % effective pressure for forward model (use spinup or assume N=1)
-oo.initname = 'n2d_region_ice_inversion_test';
+oo.initname = 'n2d_region_ice_inversion_ns3';
 init_cond = load(['./data/' oo.initname '/' '0365.mat']); 
                            % load initial condition
 vv = init_cond.vv;         % load state variables from the initial 
@@ -114,7 +115,7 @@ opts_inv.u0_reg = 1e-1;      % velocity scale for relative misfit (dimensionless
 % opts_inv.gamma_schedule = [1e-6, 3e-7, 1e-7, 3e-8, 1e-9];
 opts_inv.alpha_schedule = [1e-3, 1e-4, 1e-9, 1e-12];
 opts_inv.gamma_schedule = [1e-6, 1e-7, 1e-8, 1e-9];
-opts_inv.max_iter_schedule = [25, 5, 5, 5];  % more iters when reg is strong
+opts_inv.max_iter_schedule = [60, 50, 30, 30];  % more iters when reg is strong
 % Iteration controls (per stage)
 opts_inv.max_iter_stage = 50;    % max iterations per continuation stage
 opts_inv.max_iter_total = 200;    % safety cap across all stages
@@ -173,7 +174,6 @@ obs_mask_f(isnan(v_obs_noisy)) = 0;
 % Replace NaN in obs with 0 (masked anyway)
 u_obs_noisy(isnan(u_obs_noisy)) = 0;
 v_obs_noisy(isnan(v_obs_noisy)) = 0;
-
 
 % Replace NaN in N_current (softplus Reg_Ni handles N<0 gracefully in sliding law)
 N_current(isnan(N_current)) = 0;
@@ -370,12 +370,43 @@ end
 
 c_hat = c_stage;
 C_hat = exp(c_hat);
-C_hat_dim = C_hat * (ps.u_b^(1/pp.n_slide) / ps.tau);  % dimensional C [Pa s/m]
+C_hat_dim = C_hat * (ps.tau / ps.u_b^(1/pp.n_slide));  % dimensional C [Pa s/m]
 fprintf('\nInversion complete: final J=%.6e, exitflag=%d\n', J_hat, exitflag);
 
 %% save the relelvant fields so that we can reconstruct the C field with arbitrary C1/C2 partitioning in the post-processing step without rerunning the forward model
-save('./data/C_inversion_results.mat', 'C_hat', 'u_obs_noisy', 'v_obs_noisy', 'N_current', 'aa', 'pp', 'gg', 'oo', 'ps', 'exitflag');
+save('./data/C_inversion_results_ns3.mat', 'C_hat', 'u_obs_noisy', 'v_obs_noisy', 'N_current', 'aa', 'pp', 'gg', 'oo', 'ps', 'exitflag', 'partition_ratio');
 % save('./data/C_inversion_C2_results.mat', 'c_hat', 'C1_hat', 'C2_hat', 'C1_hat_dim', 'C2_hat_dim', 'history', 'opts_inv', 'J_hat', 'exitflag');
+
+%% run a forward case with the inverted C so it can be reused later
+% Inversion uses mu=inf (pure Weertman); forward uses mu=0.25 (Coulomb+Weertman)
+% with C partitioned into C1 (Coulomb) and C2 (power-law) via partition_ratio
+mu_s_fwd = 0.25;
+fprintf('Running forward model (mu_s=%.2f, partition_ratio=%.2f) and saving reusable case n2d_region_ice_inversion_ns3...\n', mu_s_fwd, partition_ratio);
+aa_fwd = aa;
+aa_fwd.C = C_hat;
+u_fwd = u_obs_noisy;
+v_fwd = v_obs_noisy;
+u_fwd(isnan(u_fwd) & ~ismember((1:gg.eIJ)', gg.eout2)) = 0;
+v_fwd(isnan(v_fwd) & ~ismember((1:gg.fIJ)', gg.fout2)) = 0;
+[u_fwd, v_fwd] = nevis_velocity(aa.H, u_fwd, v_fwd, N_current, aa_fwd, pp, gg, oo);
+
+inv = struct('C_hat', C_hat, ...
+             'C_hat_dim', C_hat_dim, ...
+             'u_obs_noisy', u_obs_noisy, ...
+             'v_obs_noisy', v_obs_noisy, ...
+             'N_current', N_current, ...
+             'aa', aa, ...
+             'pp', pp, ...
+             'gg', gg, ...
+             'oo', oo, ...
+             'ps', ps, ...
+             'partition_ratio', partition_ratio);
+
+vv_forward = struct('u', u_fwd, 'v', v_fwd, 'N', N_current);
+[N_forward, vv_forward] = nevis_run_fwd_hydrology(inv, vv_forward, mu_s_fwd, racmo, distributed, 'n2d_region_ice_inversion_ns3');
+vv_forward.N = N_forward;
+save('./data/velocity_inverted_ns3.mat', 'vv_forward', 'C_hat', 'C_hat_dim', 'inv');
+fprintf('Saved reusable forward case to ./results/n2d_region_ice_inversion_ns3\n');
 
 %% ============================================================
 %  5. Plot results
@@ -524,259 +555,6 @@ text(ax, 0.02, 0.9, txt, 'Units', 'normalized', 'VerticalAlignment', 'top', 'Fon
 set(findall(fig, '-property', 'FontName'), 'FontName', 'Helvetica');
 set(findall(fig, '-property', 'FontSize'), 'FontSize', 10);
 drawnow;
-
-%% ============================================================
-%  5c. Basal friction distribution
-%  ============================================================
-% % Compute tau_b on nodes using the same sliding law as nevis_velocity (slide_fun)
-% U_nodes_fric = sqrt((gg.nmeanx2(:,gg.es2)*u_inv(gg.es2)).^2 + ...
-%                     (gg.nmeany2(:,gg.fs2)*v_inv(gg.fs2)).^2);  % [nIJ x 1]
-% Ub_fric  = max(U_nodes_fric, pp.Ub_reg);      % regularised speed
-% Nr_fric  = max(N_current,    pp.N_slide_reg);  % regularised N
-% C_fric   = C_hat;                             % inverted C
-% mu_fric  = pp.mu * ones(gg.nIJ, 1);           % Coulomb coefficient
-% 
-% % tau_b / Ub  (dimensionless)
-% taub_over_Ub = Nr_fric .* Ub_fric.^(1/pp.n_slide-1) .* ...
-%     (mu_fric.^(-pp.n_slide) .* Ub_fric + C_fric.^(-pp.n_slide) .* Nr_fric.^pp.n_slide).^(-1/pp.n_slide) ...
-%     + pp.C2 * Ub_fric.^(1/pp.n_slide-1);
-% 
-% % tau_b  [dimensional: Pa]
-% tau_b_dim = pp.c61 * taub_over_Ub .* U_nodes_fric * ps.phi;   % [Pa]
-% tau_b_kPa = tau_b_dim / 1e3;                                   % [kPa]
-% 
-% % Driving stress [kPa] (for comparison)
-% dsdx_fric = gg.nmeanx2(:,gg.es2) * (gg.eddx(gg.es2,:) * aa.s);
-% dsdy_fric = gg.nmeany2(:,gg.fs2) * (gg.fddy(gg.fs2,:) * aa.s);
-% tau_d_kPa = pp.c60 * aa.H .* sqrt(dsdx_fric.^2 + dsdy_fric.^2) * ps.phi / 1e3;  % [kPa]
-% 
-% figure('Name','Basal Friction Distribution','Position',[100 100 1600 400]);
-% 
-% % (a) Basal friction tau_b [kPa]
-% subplot(1,4,1);
-% z = reshape(tau_b_kPa, gg.nI, gg.nJ); z(gg.nout) = NaN;
-% pcolor(gg.nx, gg.ny, z); shading flat; colorbar;
-% clim([0 200]);
-% title('\tau_b [kPa]'); xlabel('x'); ylabel('y'); axis equal tight;
-% 
-% % (b) Driving stress tau_d [kPa]
-% subplot(1,4,2);
-% z = reshape(tau_d_kPa, gg.nI, gg.nJ); z(gg.nout) = NaN;
-% pcolor(gg.nx, gg.ny, z); shading flat; colorbar;
-% clim([0 200]);
-% title('\tau_d [kPa]'); xlabel('x'); ylabel('y'); axis equal tight;
-% 
-% % (c) Friction fraction tau_b / tau_d
-% subplot(1,4,3);
-% fric_frac = tau_b_kPa ./ max(tau_d_kPa, 0.1);  % avoid div by zero
-% fric_frac(gg.nout) = NaN;
-% z = reshape(fric_frac, gg.nI, gg.nJ); z(gg.nout) = NaN;
-% pcolor(gg.nx, gg.ny, z); shading flat; colorbar;
-% clim([0 2]);
-% title('\tau_b / \tau_d'); xlabel('x'); ylabel('y'); axis equal tight;
-% 
-% % (d) Coulomb cap mu*N [kPa]  (maximum possible friction)
-% subplot(1,4,4);
-% coulomb_cap_kPa = pp.mu * Nr_fric * ps.phi / 1e3;  % [kPa]
-% z = reshape(coulomb_cap_kPa, gg.nI, gg.nJ); z(gg.nout) = NaN;
-% pcolor(gg.nx, gg.ny, z); shading flat; colorbar;
-% clim([0 200]);
-% title('\mu N [kPa] (Coulomb cap)'); xlabel('x'); ylabel('y'); axis equal tight;
-% 
-% colormap(jet);
-% drawnow;
-
-fprintf('\n=== Basal Friction Summary ===\n');
-nin2 = gg.nin2;
-fprintf('  tau_b [kPa]:  mean=%.1f, median=%.1f, max=%.1f\n', ...
-    mean(tau_b_kPa(nin2)), median(tau_b_kPa(nin2)), max(tau_b_kPa(nin2)));
-fprintf('  tau_d [kPa]:  mean=%.1f, median=%.1f, max=%.1f\n', ...
-    mean(tau_d_kPa(nin2)), median(tau_d_kPa(nin2)), max(tau_d_kPa(nin2)));
-fprintf('  tau_b/tau_d:  mean=%.2f, median=%.2f\n', ...
-    mean(fric_frac(nin2)), median(fric_frac(nin2)));
-fprintf('  mu*N [kPa]:   mean=%.1f, median=%.1f\n', ...
-    mean(coulomb_cap_kPa(nin2)), median(coulomb_cap_kPa(nin2)));
-fprintf('  Nodes at Coulomb limit (tau_b > 0.9*mu*N): %d / %d\n', ...
-    sum(tau_b_kPa(nin2) > 0.9*coulomb_cap_kPa(nin2)), length(nin2));
-
-% --- Print summary of possible causes ---
-fprintf('\n=== Possible Causes of Speed Under-prediction ===\n');
-
-% Check 1: C hitting bounds
-c_hat_range = [min(c_hat(nin)), max(c_hat(nin))];
-fprintf('1. c = log(C) range: [%.2f, %.2f]\n', c_hat_range(1), c_hat_range(2));
-if c_hat_range(2) > 10
-    fprintf('   ⚠️  C is very large (>%.0e) — may need upper bound or stronger regularization\n', exp(10));
-end
-if c_hat_range(1) < -10
-    fprintf('   ⚠️  C is very small (<%.0e) — may need lower bound\n', exp(-10));
-end
-
-% Check 2: N too high in slow regions
-if ~isempty(too_low)
-    N_too_low = N_current(too_low) * ps.phi;  % dimensional [Pa]
-    fprintf('2. N in slow-bias region: mean=%.2f MPa, max=%.2f MPa\n', ...
-        mean(N_too_low)/1e6, max(N_too_low)/1e6);
-    if mean(N_too_low) > 1e6
-        fprintf('   ⚠️  N > 1 MPa in under-predicted region → sliding law suppresses speed\n');
-        fprintf('   Fix: check if N_obs is realistic, or reduce N\n');
-    end
-end
-
-% Check 3: Regularization too strong
-% Compute J components from final solution (use cleaned obs to avoid NaN)
-Lc = L * c_hat;
-Jmis_final = 0.5 * (sum((obs_mask_e(gg.ein2) .* (u_inv(gg.ein2) - u_obs_noisy(gg.ein2)) ./ (abs(u_obs_noisy(gg.ein2)) + opts_inv.u0_reg)).^2) + ...
-                     sum((obs_mask_f(gg.fin2) .* (v_inv(gg.fin2) - v_obs_noisy(gg.fin2)) ./ (abs(v_obs_noisy(gg.fin2)) + opts_inv.u0_reg)).^2));
-Jreg_final = 0.5 * opts_inv.alpha * (Lc' * Lc);
-Jdamp_final = 0.5 * opts_inv.gamma * sum((c_hat - c_prior).^2);
-fprintf('3. Final alpha=%.2e, gamma=%.2e\n', opts_inv.alpha, opts_inv.gamma);
-fprintf('   Jmis=%.2e, Jreg=%.2e, Jdamp=%.2e\n', ...
-    Jmis_final, Jreg_final, Jdamp_final);
-if Jreg_final > 0.5 * Jmis_final
-    fprintf('   ⚠️  Jreg > 0.5*Jmis — regularization may be too strong\n');
-end
-
-% Check 5: Sliding regime diagnostic
-% Coulomb-Weertman law:
-%   C large → Coulomb limit:  tau_b ≈ mu*N (MAXIMUM friction for given N)
-%   C small → Weertman limit: tau_b ≈ C*Ub^(1/n) (friction decreases with C)
-%   d(tau_b/Ub)/dC > 0 ALWAYS: increasing C always increases friction
-%   To reduce friction → decrease C
-fprintf('\n5. Sliding regime diagnostic (mu=%.2f, n_slide=%d):\n', pp.mu, pp.n_slide);
-n_sl = pp.n_slide;
-U_nodes = sqrt((gg.nmeanx2(:,gg.es2)*u_inv(gg.es2)).^2 + (gg.nmeany2(:,gg.fs2)*v_inv(gg.fs2)).^2);
-Ub_n = max(U_nodes, pp.Ub_reg);      % max-based (matches nevis_velocity)
-Nr_n = max(N_current, pp.N_slide_reg); % max-based (matches nevis_velocity)
-
-% Regime ratio R = C^{-n}*N^n / (mu^{-n}*Ub)
-%   R >> 1 → Weertman limit (C small, tau_b ≈ C*Ub^{1/n}, friction controllable)
-%   R << 1 → Coulomb limit  (C large, tau_b ≈ mu*N, friction at maximum)
-regime_ratio = (C_hat.^(-n_sl) .* Nr_n.^n_sl) ./ (pp.mu.^(-n_sl) .* Ub_n);
-fprintf('   Regime ratio R = C^{-n}N^n / (mu^{-n}Ub):  R>>1=Weertman, R<<1=Coulomb\n');
-fprintf('     All interior: median=%.2e, mean=%.2e\n', ...
-    median(regime_ratio(gg.nin2)), mean(regime_ratio(gg.nin2)));
-
-if ~isempty(too_low)
-    fprintf('     Slow-bias region: median=%.2e, mean=%.2e\n', ...
-        median(regime_ratio(too_low)), mean(regime_ratio(too_low)));
-    
-    n_coulomb = sum(regime_ratio(too_low) < 0.1);  % C large → max friction
-    n_weertman = sum(regime_ratio(too_low) > 10);   % C small → friction = C*Ub^{1/n}
-    n_transition = length(too_low) - n_coulomb - n_weertman;
-    
-    fprintf('     Coulomb limit  (R<0.1, C large): %d / %d (%.0f%%)\n', ...
-        n_coulomb, length(too_low), 100*n_coulomb/length(too_low));
-    fprintf('     Weertman limit (R>10,  C small): %d / %d (%.0f%%)\n', ...
-        n_weertman, length(too_low), 100*n_weertman/length(too_low));
-    fprintf('     Transition     (0.1<R<10):       %d / %d (%.0f%%)\n', ...
-        n_transition, length(too_low), 100*n_transition/length(too_low));
-    
-    fprintf('\n     C at slow-bias nodes: median=%.3e, range=[%.3e, %.3e]\n', ...
-        median(C_hat(too_low)), min(C_hat(too_low)), max(C_hat(too_low)));
-    
-    if n_coulomb > 0.3 * length(too_low)
-        fprintf('   ⚠️  Many slow nodes have LARGE C → Coulomb limit (tau_b ≈ mu*N)\n');
-        fprintf('      Large C = MAXIMUM friction. To speed up, C should DECREASE.\n');
-        fprintf('      The optimizer drove C the WRONG direction!\n');
-        fprintf('      → Likely cause: adjoint gradient has wrong sign. Run Taylor test.\n');
-    end
-    
-    if n_weertman > 0.3 * length(too_low)
-        fprintf('   ℹ️  Many slow nodes have SMALL C → Weertman limit (tau_b ≈ C*Ub^{1/n})\n');
-        fprintf('      Friction is already low (controlled by C), but speed still too slow.\n');
-        % Compute actual friction at Weertman-limit nodes
-        weertman_idx = too_low(regime_ratio(too_low) > 10);
-        tau_b_weertman = C_hat(weertman_idx) .* Ub_n(weertman_idx).^(1/n_sl) * ps.phi;
-        fprintf('      tau_b in Weertman region: mean=%.0f kPa, max=%.0f kPa\n', ...
-            mean(tau_b_weertman)/1e3, max(tau_b_weertman)/1e3);
-        fprintf('      → Speed limited by something other than friction:\n');
-        fprintf('        (a) Membrane stress too weak (eps=%.4f too small)\n', eps);
-        fprintf('        (b) Driving stress locally low\n');
-        fprintf('        (c) Boundary conditions constraining flow\n');
-    end
-    
-    % Driving stress for context
-    dsdx_e = gg.eddx * aa.s;
-    dsdy_f = gg.fddy * aa.s;
-    dsdx_n = gg.nmeanx2(:,gg.es2) * dsdx_e(gg.es2);
-    dsdy_n = gg.nmeany2(:,gg.fs2) * dsdy_f(gg.fs2);
-    tau_d = pp.c60 * aa.H .* sqrt(dsdx_n.^2 + dsdy_n.^2) * ps.phi;
-    tau_coulomb_cap = pp.mu * Nr_n * ps.phi;
-    
-    fprintf('\n     Force comparison at slow-bias nodes:\n');
-    fprintf('       Driving stress:  mean=%.0f kPa, max=%.0f kPa\n', ...
-        mean(tau_d(too_low))/1e3, max(tau_d(too_low))/1e3);
-    fprintf('       Coulomb cap mu*N: mean=%.0f kPa, max=%.0f kPa\n', ...
-        mean(tau_coulomb_cap(too_low))/1e3, max(tau_coulomb_cap(too_low))/1e3);
-    if mean(tau_coulomb_cap(too_low)) < mean(tau_d(too_low))
-        fprintf('       mu*N < tau_d → Coulomb cap below driving stress → fast flow IS possible\n');
-        fprintf('       If speed still too low with large C, gradient sign is likely wrong.\n');
-    else
-        fprintf('       mu*N > tau_d → even Coulomb cap exceeds driving stress\n');
-        fprintf('       Reduce N or mu to allow fast flow.\n');
-    end
-end
-
-% Check 6: Membrane stress diagnostic
-fprintf('\n6. Membrane stress check:\n');
-fprintf('   eps (membrane/driving ratio) = %.4f\n', eps);
-fprintf('   c60 (driving) = %.4e\n', pp.c60);
-fprintf('   c61 (friction) = %.4e\n', pp.c61);
-fprintf('   c62 (membrane) = %.4e\n', pp.c62);
-fprintf('   c62/c60 = %.4e (effective membrane importance)\n', pp.c62/pp.c60);
-fprintf('   c62/c61 = %.4e (membrane vs friction ratio)\n', pp.c62/pp.c61);
-
-% Estimate force balance at worst nodes
-if ~isempty(too_low)
-    % Driving stress
-    dsdx_e_diag = gg.eddx * aa.s;
-    dsdy_f_diag = gg.fddy * aa.s;
-    dsdx_n_diag = gg.nmeanx2(:,gg.es2) * dsdx_e_diag(gg.es2);
-    dsdy_n_diag = gg.nmeany2(:,gg.fs2) * dsdy_f_diag(gg.fs2);
-    tau_d_nondim = pp.c60 * aa.H .* sqrt(dsdx_n_diag.^2 + dsdy_n_diag.^2);
-    
-    % Friction stress (Coulomb limit)
-    Nr_diag = max(N_current, pp.N_slide_reg);  % max-based (matches slide_fun_local)
-    tau_f_nondim = pp.c61 * pp.mu * Nr_diag;
-    
-    % Membrane stress (rough estimate: c62 * H * eta * d2u/dx2)
-    % Just estimate order of magnitude
-    epsxx = gg.nddx(:,gg.es2) * u_inv(gg.es2);
-    epsyy = gg.nddy(:,gg.fs2) * v_inv(gg.fs2);
-    eta = pp.A_glen^(-1/pp.n_glen) * (pp.eps_reg^2 + epsxx.^2 + epsyy.^2 + epsxx.*epsyy).^((1/pp.n_glen-1)/2);
-    tau_m_nondim = pp.c62 * aa.H .* eta .* sqrt(epsxx.^2 + epsyy.^2);
-    
-    fprintf('   At slow-bias nodes (nondimensional):\n');
-    fprintf('     tau_driving:  mean=%.3e, max=%.3e\n', mean(tau_d_nondim(too_low)), max(tau_d_nondim(too_low)));
-    fprintf('     tau_friction: mean=%.3e, max=%.3e (Coulomb cap)\n', mean(tau_f_nondim(too_low)), max(tau_f_nondim(too_low)));
-    fprintf('     tau_membrane: mean=%.3e, max=%.3e\n', mean(tau_m_nondim(too_low)), max(tau_m_nondim(too_low)));
-    fprintf('     tau_d - tau_f (imbalance): mean=%.3e\n', mean(tau_d_nondim(too_low) - tau_f_nondim(too_low)));
-    
-    if mean(tau_m_nondim(too_low)) < 0.1 * mean(tau_d_nondim(too_low) - tau_f_nondim(too_low))
-        fprintf('   ⚠️  Membrane stress << driving-friction imbalance\n');
-        fprintf('      The model cannot transfer momentum laterally.\n');
-        fprintf('      eps=%.4f is too small. Try eps=0.1 or higher.\n', eps);
-    end
-end
-% Check 4: Boundary effects
-fprintf('4. ebdy2: %d edges, fbdy2: %d edges\n', length(gg.ebdy2), length(gg.fbdy2));
-if ~isempty(too_low)
-    % Check if slow nodes are near boundary
-    x_too_low = gg.nx(too_low);
-    y_too_low = gg.ny(too_low);
-    x_range = [min(gg.nx(nin)), max(gg.nx(nin))];
-    y_range = [min(gg.ny(nin)), max(gg.ny(nin))];
-    near_bdy = (x_too_low < x_range(1) + 0.1*(x_range(2)-x_range(1))) | ...
-               (x_too_low > x_range(2) - 0.1*(x_range(2)-x_range(1))) | ...
-               (y_too_low < y_range(1) + 0.1*(y_range(2)-y_range(1))) | ...
-               (y_too_low > y_range(2) - 0.1*(y_range(2)-y_range(1)));
-    fprintf('   Slow-bias nodes near boundary: %d / %d (%.0f%%)\n', ...
-        sum(near_bdy), length(too_low), 100*sum(near_bdy)/length(too_low));
-    if sum(near_bdy) > 0.5 * length(too_low)
-        fprintf('   ⚠️  Most under-predictions near boundary → BC problem\n');
-    end
-end
 
 %% ============================================================
 %  Objective function and adjoint gradient

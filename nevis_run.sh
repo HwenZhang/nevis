@@ -13,7 +13,7 @@ set -uo pipefail
 # --- Configuration (override via environment) ---
 MAX_PARALLEL=${MAX_PARALLEL:-8}       # concurrent MATLAB jobs
 MAX_RETRIES=${MAX_RETRIES:-2}         # retry failed jobs up to N times
-SKIP_SPINUP=${SKIP_SPINUP:-true}      # skip spinup, run drainage directly
+SKIP_SPINUP=${SKIP_SPINUP:-false}      # skip spinup, run drainage directly
 POLL_INTERVAL=${POLL_INTERVAL:-5}     # seconds between reap cycles
 JOB_TIMEOUT=${JOB_TIMEOUT:-0}         # per-job wall-clock limit (0 = none)
 
@@ -286,7 +286,7 @@ log "Config: parallel=$MAX_PARALLEL  retries=$MAX_RETRIES  timeout=${JOB_TIMEOUT
 # --- Move generated scripts ---
 # mv ./generated_scripts/spinup/* ./ 2>/dev/null || true
 mv ./generated_scripts/ice_dynamics/spinup/* ./ 2>/dev/null || true
-# mv ./generated_scripts/ice_dynamics/drainage/* ./ 2>/dev/null || true
+mv ./generated_scripts/ice_dynamics/drainage/* ./ 2>/dev/null || true
 
 # --- Prepare directories & clean previous state ---
 mkdir -p "$LOG_DIR" "$STATE_DIR" "$DONE_DIR"

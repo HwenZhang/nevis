@@ -1,13 +1,84 @@
-function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus, racmo, distributed_input)
+function [N_new, vv_temp] = nevis_run_fwd_hydrology(varargin)
     % Run the forward hydrology model with the current C and return the updated N
     % Inputs:
-    %   C_dim:    dimensional slipperiness field [nIJ x 1]
+    %   New interface:
+    %     inv:     inversion state needed for partitioning C into C1/C2
     %   vv_prev:  (optional) state variables from previous outer iteration
     %             If provided, use as initial condition instead of spinup
+    %   Legacy interface:
+    %     C_dim:   dimensional slipperiness field [nIJ x 1]
     % Outputs:
     %   N_new: updated effective pressure field from hydrology model
     %   vv_temp: final state variables (pass to next iteration)
+
+    use_partition = false;
+    inv = struct;
+
+    if nargin >= 1 && isstruct(varargin{1})
+        if nargin < 3
+            error('nevis_run_fwd_hydrology(inv, vv_prev, mus, racmo, distributed_input, output_casename) requires at least 3 inputs.');
+        end
+        inv = varargin{1};
+        vv_prev = varargin{2};
+        mus = varargin{3};
+        if nargin >= 4
+            racmo = varargin{4};
+        else
+            racmo = 0;
+        end
+        if nargin >= 5
+            distributed_input = varargin{5};
+        else
+            distributed_input = 1;
+        end
+        if nargin >= 6
+            output_casename = varargin{6};
+        else
+            output_casename = [];
+        end
+        use_partition = true;
+    else
+        if nargin < 4
+            error('nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus, racmo, distributed_input, output_casename) requires at least 4 inputs.');
+        end
+        C_dim = varargin{1};
+        vv_prev = varargin{3};
+        mus = varargin{4};
+        if nargin >= 5
+            racmo = varargin{5};
+        else
+            racmo = 0;
+        end
+        if nargin >= 6
+            distributed_input = varargin{6};
+        else
+            distributed_input = 1;
+        end
+        if nargin >= 7
+            output_casename = varargin{7};
+        else
+            output_casename = [];
+        end
+    end
     
+    if isempty(output_casename)
+        output_casename = 'n2d_region_ice_inversion_test';
+    end
+    if isempty(vv_prev) || ~isfield(vv_prev, 'N')
+        error('nevis_run_fwd_hydrology requires vv_prev.N as the initial effective pressure field.');
+    end
+    if use_partition
+        required_fields = {'C_hat', 'u_obs_noisy', 'v_obs_noisy', 'N_current', 'aa', 'pp', 'gg', 'oo', 'ps'};
+        for k = 1:numel(required_fields)
+            if ~isfield(inv, required_fields{k})
+                error('nevis_run_fwd_hydrology missing inv.%s required for partitioning.', required_fields{k});
+            end
+        end
+        if ~isfield(inv, 'partition_ratio') || isempty(inv.partition_ratio)
+            inv.partition_ratio = 1.0;
+        end
+    end
+
     format compact
 
     %% read in the initial condition
@@ -15,11 +86,12 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus, 
     oo.code = './src';                             % code directory   
     oo.results = 'results';                        % path to the results folders
     oo.dataset = 'nevis_regional';                 % dataset name
-    oo.casename = 'n2d_region_ice_inversion_test'; % casename
+    oo.casename = output_casename;                 % casename
     oo.fn = ['/',oo.casename];                     % filename (same as casename)
     oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
     oo.dn = [oo.root, 'data/', oo.dataset, '/'];   % path to the data
     addpath(oo.code);                              % add path to code
+    addpath([oo.root, 'inversion']);               % add path to inversion helpers
     mkdir(oo.rn);                                  % create directory for results 
 
     %% parameters
@@ -36,11 +108,12 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus, 
     oo.U_coupling = 1; % turn on basal sliding coupling
     oo.boundary_method = 'stress_l_vel_tbl';
     oo.mask_boundary_method = 'stress_free';
-    % oo.step_ice = 0.1;
+    oo.step_ice = 0.01;
     % oo.max_iter_new = 100;
 
     pd.alpha_b = 0;                                 % relaxation rate (s^-1)
     pd.kappa_b = 1e-10;                             % relaxation coeff
+    pd.mu_s = mus;
 
     % alter default parmaeters 
     pd.mu = 20.0;                                   % water viscosity (Pa s)
@@ -128,12 +201,20 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus, 
 
     %% plot grid
     % nevis_plot_grid_ice(gg); return;                    % check to see what grid looks like
-
+    
     %% initialize variables
     [aa,vv] = nevis_initialize(b,s,gg,pp,oo);         % default initialisation
-    % C_dim is dimensional; convert back to nondimensional C
-    aa.C = C_dim * (ps.u_b^(1/pp.n_slide) / ps.tau);
-    % check if C_hat == aa.C
+    if use_partition
+        oo.partition_ratio = inv.partition_ratio;
+        [C1_hat_dim, C2_hat_dim] = nevis_inv_partition(inv.C_hat, oo.partition_ratio, inv.u_obs_noisy, inv.v_obs_noisy, inv.N_current, inv.aa, inv.pp, inv.gg, inv.oo, inv.ps);
+        aa.C = C1_hat_dim * (ps.u_b^(1/pp.n_slide) / ps.tau);
+        aa.C2 = C2_hat_dim * (ps.u_b^(1/pp.n_slide) / ps.tau);
+        pp.C2 = aa.C2;
+    else
+        aa.C = C_dim * (ps.u_b^(1/pp.n_slide) / ps.tau);
+        aa.C2 = zeros(size(aa.C));
+        pp.C2 = aa.C2;
+    end
     
     % if nargin >= 2 && ~isempty(vv_prev)
     %     % --- Continue from previous outer iteration state ---
@@ -159,7 +240,6 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus, 
 
     % --- Fresh start from spinup state ---
     % fprintf('  Starting from k_f=0.9 initial condition\n');
-    load(['./data/velocity_inverted.mat'], 'vv_hydro');
     % pd.k_f = 0.9;                                     % percent overburden (k-factor) 
     % vv.phi = aa.phi_a+pd.k_f*(aa.phi_0-aa.phi_a);     % initial pressure  k_f*phi_0
     % N = aa.phi_0-vv.phi;                              % N for initial cavity sheet size 
@@ -199,6 +279,8 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus, 
     vv.v = gg.fmean2*vn_filled;
     vv.u(gg.eout2) = NaN;
     vv.v(gg.fout2) = NaN;
+    vv.u = vv_prev.u;
+    vv.v = vv_prev.v;
     aa.u_obs = vv.u;
     aa.v_obs = vv.v;
 
@@ -208,9 +290,9 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_prev, mus, 
 
     % Option 2: initialise the velocity field using a simplified SSA model
     % N = ones(gg.nIJ,1); 
-    u = vv.u;
-    v = vv.v;
-    [vv.u,vv.v] = nevis_velocity(aa.H,u,v,N,aa,pp,gg,oo);
+    % u = vv.u;
+    % v = vv.v;
+    % [vv.u,vv.v] = nevis_velocity(aa.H,u,v,N,aa,pp,gg,oo);
     % [tauxx,tauyy,tauxy,Txx,Tyy,Txy,tau_b] = nevis_stresses(aa.H,u,v,N,aa,pp,gg,oo);
     % [tau1,tau2,theta] = nevis_principal_stress(Txx,Tyy,gg.nmeanc*Txy);
     aa.u_obs = vv.u;

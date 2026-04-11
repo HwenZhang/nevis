@@ -23,7 +23,7 @@ oo.code = './src';
 oo.results = 'results';
 oo.dataset = 'nevis_regional';
 % note: this is a standard case used to initialise the 
-oo.casename = 'n2d_region_ice_inversion_test'; 
+oo.casename = 'n2d_region_ice_inversion_ns3'; 
 oo.fn = ['/',oo.casename];
 oo.rn = [oo.root,oo.results,oo.fn];
 oo.in = [oo.root, 'data/', oo.casename];
@@ -33,6 +33,7 @@ addpath(oo.code);
 % set the surface runoff options
 racmo = 0;  % use RACMO runoff data (if 0, use simple sinusoidal function)
 distributed = 1;  % if 1, distribute runoff across the domain; if 0, input to discrete moulins
+partition_ratio = 0.5;
 
 % load saved spinup state
 load([oo.in, oo.fn], 'pp','pd','ps','gg','aa','oo');
@@ -92,7 +93,7 @@ fprintf('Excluded %d ebdy + %d fbdy Dirichlet edges from misfit\n', ...
     length(gg.ebdy2), length(gg.fbdy2));
 
 % effective pressure for forward model (use spinup or assume N=1)
-oo.initname = 'n2d_region_ice_inversion_test';
+oo.initname = 'n2d_region_ice_inversion_ns3';
 init_cond = load(['./data/' oo.initname '/' '0365.mat']); 
                            % load initial condition
 vv = init_cond.vv;         % load state variables from the initial 
@@ -114,7 +115,7 @@ opts_inv.u0_reg = 1e-1;      % velocity scale for relative misfit (dimensionless
 % opts_inv.gamma_schedule = [1e-6, 3e-7, 1e-7, 3e-8, 1e-9];
 opts_inv.alpha_schedule = [1e-3, 1e-4, 1e-9, 1e-12];
 opts_inv.gamma_schedule = [1e-6, 1e-7, 1e-8, 1e-9];
-opts_inv.max_iter_schedule = [25, 5, 5, 5];  % more iters when reg is strong
+opts_inv.max_iter_schedule = [60, 50, 30, 30];  % more iters when reg is strong
 % Iteration controls (per stage)
 opts_inv.max_iter_stage = 50;    % max iterations per continuation stage
 opts_inv.max_iter_total = 200;    % safety cap across all stages
@@ -173,7 +174,6 @@ obs_mask_f(isnan(v_obs_noisy)) = 0;
 % Replace NaN in obs with 0 (masked anyway)
 u_obs_noisy(isnan(u_obs_noisy)) = 0;
 v_obs_noisy(isnan(v_obs_noisy)) = 0;
-
 
 % Replace NaN in N_current (softplus Reg_Ni handles N<0 gracefully in sliding law)
 N_current(isnan(N_current)) = 0;
@@ -370,12 +370,43 @@ end
 
 c_hat = c_stage;
 C_hat = exp(c_hat);
-C_hat_dim = C_hat * (ps.u_b^(1/pp.n_slide) / ps.tau);  % dimensional C [Pa s/m]
+C_hat_dim = C_hat * (ps.tau / ps.u_b^(1/pp.n_slide));  % dimensional C [Pa s/m]
 fprintf('\nInversion complete: final J=%.6e, exitflag=%d\n', J_hat, exitflag);
 
 %% save the relelvant fields so that we can reconstruct the C field with arbitrary C1/C2 partitioning in the post-processing step without rerunning the forward model
-save('./data/C_inversion_results.mat', 'C_hat', 'u_obs_noisy', 'v_obs_noisy', 'N_current', 'aa', 'pp', 'gg', 'oo', 'ps', 'exitflag');
+save('./data/C_inversion_results_ns3.mat', 'C_hat', 'u_obs_noisy', 'v_obs_noisy', 'N_current', 'aa', 'pp', 'gg', 'oo', 'ps', 'exitflag', 'partition_ratio');
 % save('./data/C_inversion_C2_results.mat', 'c_hat', 'C1_hat', 'C2_hat', 'C1_hat_dim', 'C2_hat_dim', 'history', 'opts_inv', 'J_hat', 'exitflag');
+
+%% run a forward case with the inverted C so it can be reused later
+% Inversion uses mu=inf (pure Weertman); forward uses mu=0.25 (Coulomb+Weertman)
+% with C partitioned into C1 (Coulomb) and C2 (power-law) via partition_ratio
+mu_s_fwd = 0.25;
+fprintf('Running forward model (mu_s=%.2f, partition_ratio=%.2f) and saving reusable case n2d_region_ice_inversion_ns3...\n', mu_s_fwd, partition_ratio);
+aa_fwd = aa;
+aa_fwd.C = C_hat;
+u_fwd = u_obs_noisy;
+v_fwd = v_obs_noisy;
+u_fwd(isnan(u_fwd) & ~ismember((1:gg.eIJ)', gg.eout2)) = 0;
+v_fwd(isnan(v_fwd) & ~ismember((1:gg.fIJ)', gg.fout2)) = 0;
+[u_fwd, v_fwd] = nevis_velocity(aa.H, u_fwd, v_fwd, N_current, aa_fwd, pp, gg, oo);
+
+inv = struct('C_hat', C_hat, ...
+             'C_hat_dim', C_hat_dim, ...
+             'u_obs_noisy', u_obs_noisy, ...
+             'v_obs_noisy', v_obs_noisy, ...
+             'N_current', N_current, ...
+             'aa', aa, ...
+             'pp', pp, ...
+             'gg', gg, ...
+             'oo', oo, ...
+             'ps', ps, ...
+             'partition_ratio', partition_ratio);
+
+vv_forward = struct('u', u_fwd, 'v', v_fwd, 'N', N_current);
+[N_forward, vv_forward] = nevis_run_fwd_hydrology(inv, vv_forward, mu_s_fwd, racmo, distributed, 'n2d_region_ice_inversion_ns3');
+vv_forward.N = N_forward;
+save('./data/velocity_inverted_ns3.mat', 'vv_forward', 'C_hat', 'C_hat_dim', 'inv');
+fprintf('Saved reusable forward case to ./results/n2d_region_ice_inversion_ns3\n');
 
 %% ============================================================
 %  5. Plot results
