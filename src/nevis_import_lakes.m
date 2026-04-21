@@ -27,6 +27,7 @@ function lakes = nevis_import_lakes(yr)
     % filter out lakes which drain through moulins and hydrofractures, 1=HF, 2=moulin, 3=overflow
     overflow_inds = find(environs_lakes.drainage_type_num == 1 | environs_lakes.drainage_type_num == 2); % environs_lakes.drainage_type_num == 2
 
+    % assign lake drainage type number
     lakes.id = environs_lakes.laketypeing_dates(overflow_inds,1);
     lakes.x_m = 1e3*environs_lakes.X_km(overflow_inds)';
     lakes.y_m = 1e3*environs_lakes.Y_km(overflow_inds)';
@@ -42,9 +43,9 @@ function lakes = nevis_import_lakes(yr)
     lakes.max_surface_area_m2 = environs_lakes.max_surface_area(overflow_inds)';  % in m^2
 
     for i = 1:n_lakes
-        row = overflow_inds(i);  % 第一维度：哪个湖
-        col_start = lakes.drainage_time_start(i);  % 第二维度：排水开始时间
-        col_end = lakes.drainage_time_end(i);  % 第二维度：排水结束时间
+        row = overflow_inds(i);  % lake index in the original dataset
+        col_start = lakes.drainage_time_start(i);  % time for drainage start, corresponds to the third column of laketypeing_dates
+        col_end = lakes.drainage_time_end(i);  % time for drainage end, corresponds to the fourth column of laketypeing_dates
         % disp(['Processing lake ID: ', num2str(lakes.id(i)), ', Index: ', num2str(i), '/', num2str(n_lakes)]);
 
         % disp(['  Drainage time: ', num2str(col_start), ' to ', num2str(col_end)]);
@@ -55,6 +56,9 @@ function lakes = nevis_import_lakes(yr)
     end
         
     lakes.drainage_duration_days = lakes.drainage_time_end - lakes.drainage_time_start;
+    % Override HF drainage duration to 2 hours
+    hf_mask = lakes.drainage_type_num == 1;
+    lakes.drainage_duration_days(hf_mask) = 2/24;
     lakes.volume_m3 = lakes.volume_pre_drainage_m3;
     % lakes.volume_m3 = lakes.volume_pre_drainage_m3 - lakes.volume_post_drainage_m3;
     % disp(lakes.volume_m3);

@@ -1,30 +1,71 @@
-%% Compute viscous, elastic, and total stress components at lake and GPS nodes
-%  Outputs a .mat file with time series of SSA viscous stress tensor
-%  components, Kirchhoff-Love basal-fiber elastic bending stresses derived
-%  from blister thickness, their summed total stresses, principal stresses,
-%  basal shear stress, and driving stresses at lake and GPS nodes.
-clc; clear; close all;
+function outfile = nevis_gps_stresses(casename, tmin_yr, tmax_yr)
+% Compute viscous, elastic, and total stress components at lake and GPS nodes.
+% Outputs a .mat file with time series of SSA viscous stress tensor
+% components, Kirchhoff-Love basal-fiber elastic bending stresses derived
+% from blister thickness, their summed total stresses, principal stresses,
+% basal shear stress, and driving stresses at lake and GPS nodes.
 
-%% Settings
-casename = 'n2d_regional_racmo_eps1e_02_kappa5e_11_mu5e0_partition5e_01_k01e_01_spinup';
-load(['./results/' casename '/' casename])
-oo.fn = ['/',casename];
-oo.rn = [oo.root,oo.results,oo.fn];
-oo.code = '../nevis/src';
-filepath = [oo.rn,'/'];
-addpath(oo.code);
+if nargin < 1 || isempty(casename)
+    error('nevis_gps_stresses:MissingCasename', ...
+        'casename is required, e.g. nevis_gps_stresses(''my_case'').');
+end
+if nargin < 2 || isempty(tmin_yr)
+    tmin_yr = 0.0;
+end
+if nargin < 3 || isempty(tmax_yr)
+    tmax_yr = tmin_yr + 1.0;
+end
+
+script_dir = fileparts(mfilename('fullpath'));
+result_dir = fullfile(script_dir, 'results', casename);
+result_file = fullfile(result_dir, [casename '.mat']);
+source_dir = fullfile(script_dir, 'src');
+data_dir = fullfile(script_dir, 'data');
 formatSpec = '%04d';
 
+if ~exist(result_file, 'file')
+    error('nevis_gps_stresses:MissingResultFile', ...
+        'Missing result file: %s', result_file);
+end
+if ~exist(source_dir, 'dir')
+    error('nevis_gps_stresses:MissingSourceDir', ...
+        'Missing source directory: %s', source_dir);
+end
+if ~exist(data_dir, 'dir')
+    mkdir(data_dir);
+end
+
+loaded = load(result_file);
+required_fields = {'aa', 'gg', 'oo', 'pd', 'pp', 'ps'};
+for i_field = 1:numel(required_fields)
+    if ~isfield(loaded, required_fields{i_field})
+        error('nevis_gps_stresses:MissingField', ...
+            'Result file %s is missing field %s.', result_file, required_fields{i_field});
+    end
+end
+
+aa = loaded.aa;
+gg = loaded.gg;
+oo = loaded.oo;
+pd = loaded.pd;
+pp = loaded.pp;
+ps = loaded.ps;
+
+oo.fn = ['/' casename];
+oo.rn = result_dir;
+oo.code = source_dir;
+addpath(source_dir);
+filepath = [result_dir filesep];
+
 %% Time range
-tmin_yr = 0.0;
-tmax_yr = tmin_yr + 1;
-tmin = tmin_yr * 365;  % days
+tmin = tmin_yr * 365;
 tmax = tmax_yr * 365;
 
-tspan_d = (ps.t/pd.td) * oo.t_span;
+tspan_d = (ps.t / pd.td) * oo.t_span;
 index = find(tspan_d >= tmin & tspan_d <= tmax);
 if isempty(index)
-    error('No frames found in the specified time range [%.1f, %.1f] days', tmin, tmax);
+    error('nevis_gps_stresses:EmptyTimeRange', ...
+        'No frames found in the specified time range [%.1f, %.1f] days', tmin, tmax);
 end
 fprintf('Found %d frames in time range [%.1f, %.1f] days\n', length(index), tmin, tmax);
 
@@ -33,7 +74,7 @@ has_lakes = isfield(pp, 'ni_l') && ~isempty(pp.ni_l);
 has_gps = isfield(pp, 'ni_gps') && ~isempty(pp.ni_gps);
 
 if ~has_lakes && ~has_gps
-    error('No lake or GPS node indices found in pp.');
+    error('nevis_gps_stresses:MissingTargets', 'No lake or GPS node indices found in pp.');
 end
 
 ni_l = [];
@@ -41,10 +82,10 @@ n_lakes = 0;
 lake_x_km = [];
 lake_y_km = [];
 if has_lakes
-    ni_l = pp.ni_l(:);                         % node indices of lake locations
+    ni_l = pp.ni_l(:);
     n_lakes = length(ni_l);
-    lake_x_km = (ps.x/1e3) * gg.nx(ni_l);     % lake x-coordinates in km
-    lake_y_km = (ps.x/1e3) * gg.ny(ni_l);     % lake y-coordinates in km
+    lake_x_km = (ps.x / 1e3) * gg.nx(ni_l);
+    lake_y_km = (ps.x / 1e3) * gg.ny(ni_l);
 end
 
 ni_gps = [];
@@ -52,15 +93,15 @@ n_gps = 0;
 gps_x_km = [];
 gps_y_km = [];
 if has_gps
-    ni_gps = pp.ni_gps(:);                    % node indices of GPS stations
+    ni_gps = pp.ni_gps(:);
     n_gps = length(ni_gps);
-    gps_x_km = (ps.x/1e3) * gg.nx(ni_gps);    % GPS x-coordinates in km
-    gps_y_km = (ps.x/1e3) * gg.ny(ni_gps);    % GPS y-coordinates in km
+    gps_x_km = (ps.x / 1e3) * gg.nx(ni_gps);
+    gps_y_km = (ps.x / 1e3) * gg.ny(ni_gps);
 end
 
 %% Scaling factors
-stress_membrane = ps.eta * ps.u / ps.x;     % membrane stress scale [Pa]
-stress_basal    = pd.rho_i * pd.g * ps.z^2 / ps.x;  % basal/driving stress scale [Pa]
+stress_membrane = ps.eta * ps.u / ps.x;
+stress_basal = pd.rho_i * pd.g * ps.z^2 / ps.x;
 if isfield(pd, 'nu')
     poisson_ice = pd.nu;
 else
@@ -70,7 +111,7 @@ stress_elastic_scale = pd.Ye * ps.z * ps.hb / (2 * (1 - poisson_ice^2) * ps.x^2)
 
 %% Pre-allocate output arrays
 n_frames = length(index);
-t_days   = zeros(1, n_frames);
+t_days = zeros(1, n_frames);
 
 % Lake fields [Pa]
 tauxx_lake = zeros(n_lakes, n_frames);
@@ -141,39 +182,30 @@ for i_idx = 1:n_frames
         fprintf('Processing frame %d / %d ...\n', i_idx, n_frames);
     end
 
-    % Load timestep
-    vva = load([filepath num2str(i_t, formatSpec)], 'vv');
-    vva = vva.vv;
+    timestep_data = load([filepath num2str(i_t, formatSpec)], 'vv');
+    vva = timestep_data.vv;
     aa = nevis_inputs(vva.t, aa, vva, pp, gg, oo);
 
-    % Time in days
     t_days(i_idx) = vva.t * ps.t / pd.td;
-
-    % Effective pressure (dimensional, Pa)
     N_field = ps.phi * (aa.phi_0 - vva.phi);
 
-    % Compute all stress components
     [tauxx, tauyy, tauxy, Txx, Tyy, Txy, tau_b, taudx, taudy, ...
      sigma1, sigma2, t1, t2] = nevis_stresses(aa.H, vva.u, vva.v, ...
-                                               aa.phi_0 - vva.phi, aa, pp, gg, oo);
+                                              aa.phi_0 - vva.phi, aa, pp, gg, oo);
 
-    % Ice speed at nodes [m/yr]
-    uxn = gg.nmeanx2(:,gg.es2) * vva.u(gg.es2);
-    vyn = gg.nmeany2(:,gg.fs2) * vva.v(gg.fs2);
-    Un  = sqrt(uxn.^2 + vyn.^2);
+    uxn = gg.nmeanx2(:, gg.es2) * vva.u(gg.es2);
+    vyn = gg.nmeany2(:, gg.fs2) * vva.v(gg.fs2);
+    Un = sqrt(uxn.^2 + vyn.^2);
 
-    Txy_n = gg.nmeanc(:,gg.cs2) * Txy(gg.cs2);
+    Txy_n = gg.nmeanc(:, gg.cs2) * Txy(gg.cs2);
+    taudx_n = gg.nmeanx2(:, gg.es2) * taudx(gg.es2);
+    taudy_n = gg.nmeany2(:, gg.fs2) * taudy(gg.fs2);
+    tauxy_n = gg.nmeanc(:, gg.cs2) * tauxy(gg.cs2);
 
-    % Driving stress: defined on edges, interpolate to nodes for point extraction
-    taudx_n = gg.nmeanx2(:,gg.es2) * taudx(gg.es2);
-    taudy_n = gg.nmeany2(:,gg.fs2) * taudy(gg.fs2);
-    tauxy_n = gg.nmeanc(:,gg.cs2) * tauxy(gg.cs2);
-
-    % Kirchhoff-Love basal-fiber bending stress from blister thickness.
     hb_xx = gg.nddx * (gg.eddx * vva.hb);
     hb_yy = gg.nddy * (gg.fddy * vva.hb);
     hb_xy = 0.5 * (gg.cddy * (gg.eddx * vva.hb) + gg.cddx * (gg.fddy * vva.hb));
-    hb_xy_n = gg.nmeanc(:,gg.cs2) * hb_xy(gg.cs2);
+    hb_xy_n = gg.nmeanc(:, gg.cs2) * hb_xy(gg.cs2);
 
     curvature_scale = ps.hb / ps.x^2;
     kappa_xx = curvature_scale * hb_xx;
@@ -266,7 +298,7 @@ for i_idx = 1:n_frames
 end
 
 %% Save results
-outfile = ['./data/gps_stresses_' casename '.mat'];
+outfile = fullfile(data_dir, ['gps_stresses_' casename '.mat']);
 save(outfile, ...
     'casename', 't_days', ...
     'ni_l', 'n_lakes', 'lake_x_km', 'lake_y_km', ...
@@ -300,3 +332,5 @@ fprintf('Saved GPS stress data to: %s\n', outfile);
 fprintf('  %d lake nodes x %d frames\n', n_lakes, n_frames);
 fprintf('  %d GPS stations x %d frames\n', n_gps, n_frames);
 fprintf('  Time range: %.1f to %.1f days\n', t_days(1), t_days(end));
+
+end

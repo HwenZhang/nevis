@@ -92,5 +92,5 @@ end
 function tau_b_over_Ub = slide_fun(Ub,N,C,mu,pp,gg,oo)
 % cavity-based sliding law
 % tau_b ~ mu*N for large Ub, tau_b ~ C*Ub^(1/n) for small Ub 
-    tau_b_over_Ub = max(N,pp.N_slide_reg).*max(Ub,pp.Ub_reg).^(1/pp.n_slide-1).*(mu.^(-pp.n_slide).*max(Ub,pp.Ub_reg)+C.^(-pp.n_slide).*max(N,pp.N_slide_reg).^pp.n_slide).^(-1/pp.n_slide) + pp.C2*max(Ub,pp.Ub_reg).^(1/pp.n_slide-1);
+    tau_b_over_Ub = max(N,pp.N_slide_reg).*max(Ub,pp.Ub_reg).^(1/pp.n_slide-1).*(mu.^(-pp.n_slide).*max(Ub,pp.Ub_reg)+C.^(-pp.n_slide).*max(N,pp.N_slide_reg).^pp.n_slide).^(-1/pp.n_slide) + pp.C2.*max(Ub,pp.Ub_reg).^(1/pp.n_slide-1);
 end
