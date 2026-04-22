@@ -347,10 +347,7 @@ class NevisIceAnimation:
                 label=r'$Q_\mathrm{in}$')
         self.vline_a = ax.axvline(td, color='k', ls='--', lw=1)
         ax.set_xlim(self.tmin, self.tmax)
-        flux_max = np.nanmax(np.concatenate([
-            np.atleast_1d(q_out), np.atleast_1d(self.Q_lake_in), np.atleast_1d(self.E_ts)
-        ]))
-        ax.set_ylim(0, 1.05 * flux_max if flux_max > 0 else 1)
+        ax.set_ylim(0, 8000)
         ax.set_xlabel(r'time $(d)$')
         ax.set_ylabel(r'$Q$ (m$^3$/s)')
         ax.legend(ncol=1, loc='upper right', fontsize=9)
