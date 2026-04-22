@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - master
+      - ice
     paths:
       - "webpage/**"
       - ".github/workflows/deploy-webpage.yml"
