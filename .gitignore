@@ -37,6 +37,8 @@ octave-workspace
 *.avi
 *.mp4
 *.pdf
+!webpage/**/*.mp4
+!webpage/**/*.pdf
 
 # data
 /data/

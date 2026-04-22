@@ -6,8 +6,11 @@ This directory contains the self-contained static site for GitHub Pages.
 
 - `index.html`: landing page
 - `website.css`: page styles
-- `assets/video/`: browser-friendly and original MP4 files
+- `assets/video/`: browser-friendly MP4 for web delivery
 - `assets/docs/`: embedded preprint PDF
+
+Keep large source-resolution videos outside `webpage/` so the Pages artifact stays
+small enough for normal repository use.
 
 ## Publishing
 
