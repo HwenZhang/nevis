@@ -446,7 +446,7 @@ class NevisGpsClusterComparisonPlotter:
             y_min, y_max = 0.0, 1.0
 
         ax.plot(self.t, runoff_plot, '-', color='k', lw=1.2, label='surface runoff input')
-        ax.plot(self.t, lake_inflow_plot, '-', color='tab:blue', lw=1.2, label='drainage input')
+        ax.plot(self.t, lake_inflow_plot, '-', color='tab:blue', lw=1.2, label='lake drainage input')
         ax.plot(self.t, q_out_plot, '-', color='tab:green', lw=1.2, label='outflow rate')
         ax.annotate(
             'Inflow and outflow rates',

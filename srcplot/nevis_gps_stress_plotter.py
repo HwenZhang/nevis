@@ -654,6 +654,8 @@ class NevisGpsStressPlotter:
         sigma1_clim=None,
         stress_panel_plan=None,
         reference_time_days=190.0,
+        timeseries_tmin_days=None,
+        timeseries_tmax_days=None,
         save_path=None,
         force_recompute=False,
     ):
@@ -685,7 +687,16 @@ class NevisGpsStressPlotter:
         event_end = t_drainage[event_ids] + 0.5 * t_duration[event_ids]
         tmin = float(np.min(event_start) - 0.5 * margin_days)
         tmax = float(np.max(event_end) + margin_days)
-        stress, raw = self._ensure_stress_window(required_fields, tmin, tmax, force_recompute=force_recompute)
+        timeseries_xmin = tmin if timeseries_tmin_days is None else float(timeseries_tmin_days)
+        timeseries_xmax = tmax if timeseries_tmax_days is None else float(timeseries_tmax_days)
+        stress_window_min = min(tmin, timeseries_xmin)
+        stress_window_max = max(tmax, timeseries_xmax)
+        stress, raw = self._ensure_stress_window(
+            required_fields,
+            stress_window_min,
+            stress_window_max,
+            force_recompute=force_recompute,
+        )
         ps = raw['ps']
         pd_r = raw['pd']
         pp = raw['pp']
@@ -700,6 +711,9 @@ class NevisGpsStressPlotter:
         plot_mask = (t_days >= tmin) & (t_days <= tmax)
         if not np.any(plot_mask):
             raise ValueError(self._empty_window_error_message(tmin, tmax, t_days))
+        timeseries_plot_mask = (t_days >= timeseries_xmin) & (t_days <= timeseries_xmax)
+        if not np.any(timeseries_plot_mask):
+            raise ValueError(self._empty_window_error_message(timeseries_xmin, timeseries_xmax, t_days))
 
         def compute_panel_limits(panel_values):
             finite_values = panel_values[np.isfinite(panel_values)]
@@ -810,8 +824,8 @@ class NevisGpsStressPlotter:
             (gps_y_km >= ylim[0]) & (gps_y_km <= ylim[1])
         )
 
-        viscous_limits = compute_panel_limits(sigma1_viscous[event_ids][:, plot_mask])
-        elastic_limits = compute_panel_limits(sigma1_elastic[event_ids][:, plot_mask])
+        viscous_limits = compute_panel_limits(sigma1_viscous[event_ids][:, timeseries_plot_mask])
+        elastic_limits = compute_panel_limits(sigma1_elastic[event_ids][:, timeseries_plot_mask])
         colors = [self.EVENT_COLORS[i % len(self.EVENT_COLORS)] for i in range(len(event_ids))]
         event_color_by_id = {
             int(event_idx): color for event_idx, color in zip(event_ids, colors)
@@ -884,14 +898,14 @@ class NevisGpsStressPlotter:
                     solid_capstyle='butt',
                 )
                 ax.plot(
-                    t_days[plot_mask],
-                    panel_data[event_idx, plot_mask],
+                    t_days[timeseries_plot_mask],
+                    panel_data[event_idx, timeseries_plot_mask],
                     color=color,
                     lw=1.0,
                     zorder=2,
                 )
             self._add_panel_annotation(ax, panel_title, fontsize=7)
-            ax.set_xlim(tmin, tmax)
+            ax.set_xlim(timeseries_xmin, timeseries_xmax)
             ax.set_ylim(*panel_limits)
             ax.set_xlabel(r'day of year', fontsize=5, labelpad=1)
             ax.set_ylabel(r'$\sigma_1$ [kPa]')
@@ -915,8 +929,8 @@ class NevisGpsStressPlotter:
         )
         main_legend = timeseries_axes[0].legend(
             handles=legend_handles,
-            loc='upper right',
-            bbox_to_anchor=(1, 1),
+            loc='lower left',
+            bbox_to_anchor=(0, 0),
             ncol=2,
             frameon=True,
             framealpha=0.9,
@@ -934,11 +948,11 @@ class NevisGpsStressPlotter:
                     facecolor='#d9edf7',
                     edgecolor='none',
                     alpha=0.55,
-                    label='modelled\ndrainage\nwindow',
+                    label='drainage\nwindow',
                 )
             ],
             loc='upper right',
-            bbox_to_anchor=(1, 0.60),
+            bbox_to_anchor=(1, 1.0),
             ncol=1,
             frameon=True,
             framealpha=0.9,
@@ -1373,7 +1387,7 @@ class NevisGpsStressPlotter:
                 facecolor='#d9edf7',
                 edgecolor='none',
                 alpha=0.55,
-                label=r'modelled drainage',
+                label=r'drainage',
             )
         )
         axes[0].legend(
