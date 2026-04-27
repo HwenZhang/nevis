@@ -213,31 +213,31 @@ class NevisGpsClusterComparisonPlotter:
                 if series_time.size > 1 and series_time[0] <= target_day <= series_time[-1]:
                     speed_at_target = float(np.interp(target_day, series_time, series_speed))
                     speed_at_target = 150
-                    ax.annotate(
-                        'runoff only',
-                        xy=(target_day, speed_at_target),
-                        xytext=(248.0, min(speed_at_target + 45.0, 335.0)),
-                        fontsize=7,
-                        ha='left',
-                        va='bottom',
-                        arrowprops=dict(arrowstyle='->', lw=0.8, color='k'),
-                        bbox=dict(boxstyle='round,pad=0.2', fc='white', ec='none', alpha=0.85),
-                    )
+                    # ax.annotate(
+                    #     'runoff only',
+                    #     xy=(target_day, speed_at_target),
+                    #     xytext=(248.0, min(speed_at_target + 45.0, 335.0)),
+                    #     fontsize=7,
+                    #     ha='left',
+                    #     va='bottom',
+                    #     arrowprops=dict(arrowstyle='->', lw=0.8, color='k'),
+                    #     bbox=dict(boxstyle='round,pad=0.2', fc='white', ec='none', alpha=0.85),
+                    # )
 
         band_mask = (self.t_drainage >= self.tmin) & (self.t_drainage <= self.tmax)
         if np.any(band_mask):
             band_centers = self.t_drainage[band_mask]
             band_center = float(band_centers[np.argmin(np.abs(band_centers - target_day))])
-            ax.annotate(
-                'HF+moulin inputs+runoff',
-                xy=(196, 150.0),
-                xytext=(band_center - 60.0, 195.0),
-                fontsize=6,
-                ha='left',
-                va='bottom',
-                arrowprops=dict(arrowstyle='->', lw=0.8, color='k'),
-                bbox=dict(boxstyle='round,pad=0.2', fc='white', ec='none', alpha=0.0),
-            )
+            # ax.annotate(
+            #     'HF+moulin inputs+runoff',
+            #     xy=(196, 150.0),
+            #     xytext=(band_center - 60.0, 195.0),
+            #     fontsize=6,
+            #     ha='left',
+            #     va='bottom',
+            #     arrowprops=dict(arrowstyle='->', lw=0.8, color='k'),
+            #     bbox=dict(boxstyle='round,pad=0.2', fc='white', ec='none', alpha=0.0),
+            # )
 
     def _plot_horizontal_speed(self, ax, members, members_obs, label, col, col_light, col_dark, panel_id=''):
         for i_d in range(len(self.t_drainage)):
@@ -442,6 +442,7 @@ class NevisGpsClusterComparisonPlotter:
         if positive_values.size > 0:
             y_min = 0.0
             y_max = float(np.nanmax(positive_values)) * 1.1
+            y_max = 8000
         else:
             y_min, y_max = 0.0, 1.0
 

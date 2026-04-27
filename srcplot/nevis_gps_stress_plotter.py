@@ -20,7 +20,7 @@ class NevisGpsStressPlotter:
         (0.85, 0.45, 1.0),
         (1.0, 0.85, 0.30),
     ]
-    GPS_CLUSTER_LABELS = ['C1', 'C2', 'C3', 'C4', 'C5']
+    GPS_CLUSTER_LABELS = ['S1', 'S2', 'S3', 'S4', 'S5']
     STRESS_GROUPS = [
         (
             r'Membrane stress [kPa]',
@@ -929,13 +929,13 @@ class NevisGpsStressPlotter:
         )
         main_legend = timeseries_axes[0].legend(
             handles=legend_handles,
-            loc='lower left',
-            bbox_to_anchor=(0, 0),
+            loc='lower right',
+            bbox_to_anchor=(1, 0),
             ncol=2,
             frameon=True,
             framealpha=0.9,
             edgecolor='none',
-            fontsize=5,
+            fontsize=4,
             columnspacing=0.8,
             labelspacing=0.3,
             handletextpad=0.4,
@@ -983,15 +983,15 @@ class NevisGpsStressPlotter:
                 label_side='right' if col_index == 0 else 'right',
                 labelpad=2 if col_index == 0 else None,
             )
-            if field_name != 'sigma1':
-                self._add_sigma1_quiver(
-                    ax, xx, yy,
-                    reference_frame[field_name],
-                    reference_frame[angle_key_map[field_name]],
-                    xlim, ylim,
-                    scale_factor=quiver_scale_map[field_name],
-                    linewidth=0.15,
-                )
+            # if field_name != 'sigma1':
+            #     self._add_sigma1_quiver(
+            #         ax, xx, yy,
+            #         reference_frame[field_name],
+            #         reference_frame[angle_key_map[field_name]],
+            #         xlim, ylim,
+            #         scale_factor=quiver_scale_map[field_name],
+            #         linewidth=0.15,
+            #     )
 
             for lake_idx, event_idx in enumerate(event_ids):
                 ax.scatter(
@@ -1058,15 +1058,15 @@ class NevisGpsStressPlotter:
                     label_side='right' if col_index == 0 else 'right',
                     labelpad=2 if col_index == 0 else None,
                 )
-                if field_name != 'sigma1':
-                    self._add_sigma1_quiver(
-                        ax, xx, yy,
-                        frame[field_name],
-                        frame[angle_key_map[field_name]],
-                        xlim, ylim,
-                        scale_factor=quiver_scale_map[field_name],
-                        linewidth=0.15,
-                    )
+                # if field_name != 'sigma1':
+                #     self._add_sigma1_quiver(
+                #         ax, xx, yy,
+                #         frame[field_name],
+                #         frame[angle_key_map[field_name]],
+                #         xlim, ylim,
+                #         scale_factor=quiver_scale_map[field_name],
+                #         linewidth=0.15,
+                #     )
 
                 for lake_idx, event_idx_lake in enumerate(event_ids):
                     ax.scatter(
