@@ -39,11 +39,82 @@ Note that all cases consist of two stages: spinup and drainage. The spinup stage
 
 5. Detailed implementation of the model is in `./src` folder. Users can refer to the attached documentation `./docs/nevis.pdf` for more information about the model.
 
+# Ice-dynamics extension
+The repository now also includes an ice-dynamics extension that couples the hydrology/blister model to a depth-averaged shallow-shelf-style ice velocity solver. The main solver is `./src/nevis_velocity.m`, with supporting routines for stress calculation, ice boundary labelling, surface motion, and coupled time stepping:
+```
+./src/nevis_velocity.m                 # SSA-style ice velocity solve
+./src/nevis_stresses.m                 # membrane, basal, and driving stress diagnostics
+./src/nevis_principal_stress.m         # principal stress magnitudes and directions
+./src/nevis_update_parameters_ice.m    # ice-dynamics parameter setup
+./src/nevis_label_ice.m                # ice velocity boundary labels
+./src/nevis_label_ice_test.m           # regional/test boundary labels
+./src/nevis_timesteps_ice.m            # coupled hydrology/blister/ice time stepping
+./src/nevis_export_ice_fields.m        # export fields used by animation scripts
+```
+
+The ice-dynamics examples and templates live in `./models`. The main regional templates are:
+```
+./models/n2d_region_ice_template.m
+./models/n2d_region_ice_drainage_template.m
+```
+
+These scripts set up the regional Morlighem/MEaSUREs geometry and velocity data, initialise the hydrology and blister fields, solve for ice velocity, and then run either spinup or drainage simulations. Parameter-sweep scripts for this workflow can be generated from:
+```
+./srcgen/ice_dynamics_scripts.ipynb
+```
+
+Generated ice-dynamics scripts are placed under:
+```
+./generated_scripts/ice_dynamics/
+```
+
+Typical workflow:
+1. Prepare or update the regional data files in `./data/nevis_regional/`.
+2. Generate spinup and drainage scripts with `./srcgen/ice_dynamics_scripts.ipynb`, or start from the templates in `./models`.
+3. Run the spinup case first; its final state is used as the initial condition for drainage cases.
+4. Run the drainage case, which can include prescribed lake drainage, distributed surface runoff, GPS extraction points, and coupled changes in effective pressure and sliding.
+5. Use the Python/MATLAB plotting tools in `./srcplot` and `./analysis` for stress, GPS, velocity, and animation diagnostics.
+
+# Inversion workflow
+The repository also includes adjoint-based inversion scripts for estimating the spatial basal friction/slipperiness field from observed surface velocity. These scripts are kept in:
+```
+./inversion/
+```
+
+The main entry points are:
+```
+./inversion/nevis_inv_C.m              # C-field inversion using observed MEaSUREs velocity
+./inversion/nevis_inv_C1.m             # alternate C-field inversion setup
+./inversion/nevis_inv_runoff_30_C2.m   # runoff/C2-related inversion experiment
+./inversion/nevis_inv_partition.m      # partition inverted friction into coupled/uncoupled components
+```
+By default, we suggest to use `nevis_inv_C.m` for the main inversion workflow, which is designed to be work for the Weertman type sliding law `tau_b = C * u_b^m`. The inverted field `C(x,y)` corresponds to a time-independent basal friction that can be furture partitioned into pressure-sensitive and pressure-insensitive components for coupled forward simulations by `nevis_inv_partition.m`.
+
+The inversion solves for the control variable `c = log(C)` on model nodes. It compares modelled and observed velocity, applies spatial regularisation and damping, and can optionally run finite-difference/Taylor checks of the adjoint gradient. The inverted field can then be used by the ice-dynamics spinup and drainage scripts through files such as:
+```
+./data/C_inversion_results.mat
+./data/velocity_inverted.mat
+```
+
+Typical workflow:
+1. Run or load a regional spinup state used to initialise the inversion grid and hydrology variables.
+2. Load observed MEaSUREs velocity from `./data/nevis_regional/`.
+3. Run `./inversion/nevis_inv_C.m` to invert for `C(x,y)`.
+4. Save the resulting friction field and diagnostic variables to `./data/`.
+5. Use `nevis_inv_partition` or the ice-dynamics templates to partition the inverted field into pressure-sensitive and pressure-insensitive sliding components for coupled forward simulations.
+
+For mathematical details of the inversion formulation and gradient checks, see:
+```
+./docs/nevis_inversion.tex
+```
+
 # License
 This repository is licensed under the CC BY-NC 4.0 License. See the [LICENSE](./LICENSE) file for more information.
 
 # References
 Please cite the following paper when using this code.
+
+Stevens, L. A. (2026). Ice-sheet hydro-fracture not advanced inland by lower-elevation lake drainages in Kalaallit Nunaat (v1.0.0). Zenodo. [doi.org/10.5281/zenodo.19387821](https://doi.org/10.5281/zenodo.19387821)
 
 Zhang, H., Stevens, L. A., Hewitt, I. J., & Stuart, H. (in prep). A unified blister and subglacial hydrology
 framework for supraglacial lake drainage events. Journal of Geophysical Research: Earth Surface.
