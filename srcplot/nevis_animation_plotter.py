@@ -514,16 +514,7 @@ class NevisIceAnimation:
             self.lake_labels.append(txt)
 
         # GNSS station markers
-        self.gps_markers = []
-        for kc in [1, 2, 3, 4, 5]:
-            mask = self.gps_cluster == kc
-            if not np.any(mask):
-                continue
-            marker = ax.scatter(self.gps_x_km[mask], self.gps_y_km[mask],
-                                s=30, marker='s', zorder=6,
-                                color=self.cluster_colors[kc-1], edgecolors='k',
-                                linewidths=1.0, label=self.cluster_labels[kc-1])
-            self.gps_markers.append(marker)
+        self.gps_markers = self._plot_gnss_station_markers(ax, include_labels=True)
         ax.set_xlim(np.nanmin(self.xx), np.nanmax(self.xx))
         ax.set_ylim(np.nanmin(self.yy), np.nanmax(self.yy))
         ax.set_aspect('equal')
@@ -532,6 +523,22 @@ class NevisIceAnimation:
         ax.legend(fontsize=10, loc='center left', ncol=1)
         ax.text(0.02, 0.95, r'(a) $h_b$ and $\phi$ contour', transform=ax.transAxes,
                 ha='left', va='top', fontsize=14, fontweight='bold')
+
+    def _plot_gnss_station_markers(self, ax, include_labels=False):
+        markers = []
+        for kc in [1, 2, 3, 4, 5]:
+            mask = self.gps_cluster == kc
+            if not np.any(mask):
+                continue
+            label = self.cluster_labels[kc-1] if include_labels else None
+            marker = ax.scatter(
+                self.gps_x_km[mask], self.gps_y_km[mask],
+                s=30, marker='s', zorder=6,
+                color=self.cluster_colors[kc-1], edgecolors='k',
+                linewidths=1.0, label=label
+            )
+            markers.append(marker)
+        return markers
 
     # ── Left bottom: ice velocity ──
     def _setup_velocity_panel(self):
@@ -546,6 +553,7 @@ class NevisIceAnimation:
         self.quiv = ax.quiver(self.xx[::sk, ::sk], self.yy[::sk, ::sk],
                               ref['vux'][::sk, ::sk], ref['vuy'][::sk, ::sk],
                               scale=4000, width=0.003, color='k', alpha=0.6)
+        self.gps_velocity_markers = self._plot_gnss_station_markers(ax)
         ax.set_xlim(np.nanmin(self.xx), np.nanmax(self.xx))
         ax.set_ylim(np.nanmin(self.yy), np.nanmax(self.yy))
         ax.set_aspect('equal')
