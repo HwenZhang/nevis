@@ -174,22 +174,44 @@ class NevisIceAnimation:
             )
         return ', '.join(labels)
 
-    def _sample_frame_indices_by_time_dt(self, frame_indices, frame_times):
+    def _playback_days_per_second(self):
+        if self.playback_days_per_second is not None:
+            if self.playback_days_per_second <= 0:
+                raise ValueError('playback_days_per_second must be positive')
+            return float(self.playback_days_per_second)
+        if self.FPS <= 0:
+            raise ValueError('fps must be positive')
+        return float(self.FPS)
+
+    def _output_fps(self):
+        playback_days_per_second = self._playback_days_per_second()
+        target_times = getattr(self, 'frame_target_times_days', None)
+        if target_times is not None and len(target_times) > 1:
+            target_span = float(target_times[-1] - target_times[0])
+            if target_span > 0:
+                return (len(target_times) - 1) * playback_days_per_second / target_span
+
+        target_dt = self._target_frame_dt_days()
+        if target_dt is None:
+            return float(self.FPS)
+        return playback_days_per_second / target_dt
+
+    def _sample_frame_schedule_by_time_dt(self, frame_indices, frame_times):
         target_dt = self._target_frame_dt_days()
         if target_dt is None or len(frame_indices) <= 2:
-            return frame_indices, frame_times
+            return frame_indices, frame_times, frame_times
 
         order = np.argsort(frame_times)
         frame_indices = frame_indices[order]
         frame_times = frame_times[order]
 
-        target_times = np.arange(self.tmin, self.tmax + 0.5 * target_dt, target_dt)
-        target_times = target_times[
-            (target_times >= frame_times[0] - 0.5 * target_dt)
-            & (target_times <= frame_times[-1] + 0.5 * target_dt)
-        ]
+        target_start = max(float(self.tmin), float(frame_times[0]))
+        target_stop = min(float(self.tmax), float(frame_times[-1]))
+        target_times = np.arange(target_start, target_stop + 0.5 * target_dt, target_dt)
         if target_times.size == 0:
             target_times = np.array([frame_times[0]])
+        elif target_times[-1] < target_stop:
+            target_times = np.append(target_times, target_stop)
 
         picked = np.searchsorted(frame_times, target_times, side='left')
         picked = np.clip(picked, 0, len(frame_times) - 1)
@@ -198,8 +220,11 @@ class NevisIceAnimation:
         use_left = np.abs(frame_times[left] - target_times) < np.abs(frame_times[picked] - target_times)
         picked[use_left] = left[use_left]
 
-        picked = np.unique(picked)
-        return frame_indices[picked].astype(int), frame_times[picked].astype(float)
+        return (
+            frame_indices[picked].astype(int),
+            frame_times[picked].astype(float),
+            target_times.astype(float),
+        )
 
     def _frame_filename(self, frame_index):
         return os.path.join('results', self.casename, f'{int(frame_index) + 1:04d}.mat')
@@ -217,13 +242,13 @@ class NevisIceAnimation:
 
         frame_times = np.asarray(tspan_d[frame_indices], dtype=float)
         n_before_resample = len(frame_indices)
-        frame_indices, frame_times = self._sample_frame_indices_by_time_dt(frame_indices, frame_times)
+        frame_indices, frame_times, frame_target_times = self._sample_frame_schedule_by_time_dt(
+            frame_indices, frame_times
+        )
 
         self.frame_indices = frame_indices
         self.frame_times_days = frame_times
-        self.frame_index_to_position = {
-            int(frame_index): i for i, frame_index in enumerate(self.frame_indices)
-        }
+        self.frame_target_times_days = frame_target_times
         self.all_filenames = [self._frame_filename(idx) for idx in self.frame_indices]
 
         if self.frame_dt_days is None and self.playback_days_per_second is None:
@@ -231,15 +256,17 @@ class NevisIceAnimation:
                   f'[{self.tmin:.0f}, {self.tmax:.0f}] days')
         else:
             target_dt = self._target_frame_dt_days()
+            n_unique_files = len(np.unique(self.frame_indices))
             print(
-                f'Frame sampling: kept {len(self.frame_indices)} of {n_before_resample} '
-                f'result files with target {target_dt:.2f} days/frame '
+                f'Frame sampling: scheduled {len(self.frame_indices)} animation frames '
+                f'from {n_unique_files} of {n_before_resample} result files '
+                f'with target {target_dt:.2f} days/frame '
                 f'({self._frame_sampling_label()})'
             )
 
     def _export_ice_fields(self):
         need_export = []
-        for fn in self.all_filenames:
+        for fn in dict.fromkeys(self.all_filenames):
             try:
                 keys = sio.whosmat(fn)
                 names = [k[0] for k in keys]
@@ -331,6 +358,7 @@ class NevisIceAnimation:
         self.ts_axes = [self.ax_a, self.ax_b, self.ax_c]
         # load reference frame
         self.ref = self._load_frame(self.all_filenames[0])
+        self.ref_time_days = float(self.frame_target_times_days[0])
         # populate panels
         self._setup_blister_panel()
         self._setup_velocity_panel()
@@ -339,7 +367,7 @@ class NevisIceAnimation:
         self._setup_gps_panel()
         # Timestamp below spatial panels
         self.time_text = self.fig.text(
-            0.15, 0.86, f't = {self.ref["t_days"]:.1f} d',
+            0.15, 0.86, f't = {self.ref_time_days:.1f} d',
             fontsize=14, fontweight='bold', ha='center', va='center')
         # hide x labels for non-bottom right panels
         for ax_ in [self.ax_b]:
@@ -348,7 +376,7 @@ class NevisIceAnimation:
         self.keep_collections = {self.bg_terrain, self.pc_hb, self.lake_sc, *self.gps_markers}
         self.vlines = [self.vline_a, self.vline_d, self.vline_e]
         self.fig.subplots_adjust(left=0.04, right=0.96, top=0.96, bottom=0.06)
-        print(f'Initial frame: t = {self.ref["t_days"]:.1f} d')
+        print(f'Initial frame: t = {self.ref_time_days:.1f} d')
 
     # ── helpers: drainage shading ──
     def _add_drainage_shading(self, ax, legend_label=None):
@@ -362,7 +390,7 @@ class NevisIceAnimation:
 
     # ── (c) Fluxes ──
     def _setup_flux_panel(self):
-        ax = self.ax_a; td = self.ref['t_days']
+        ax = self.ax_a; td = self.ref_time_days
         self._add_drainage_shading(ax, legend_label='drainage window')
         q_out = self.Q_out_Q + self.Q_out_q
         ax.plot(self.t_ts, q_out, '-', color=(0.00, 0.45, 0.00), lw=2.4,
@@ -382,7 +410,7 @@ class NevisIceAnimation:
 
     # ── (d) Ice speed + blister volume ──
     def _setup_speed_panel(self):
-        ax = self.ax_b; td = self.ref['t_days']
+        ax = self.ax_b; td = self.ref_time_days
         self._add_drainage_shading(ax)
         ax.plot(self.t_ts, self.U_ts * self.pd_ty, 'b-', lw=1.2,
                 label=r'$U$ (m/yr)')
@@ -401,7 +429,7 @@ class NevisIceAnimation:
 
     # ── (e) horizontal speed at GNSS sites ──
     def _setup_gps_panel(self):
-        ax = self.ax_c; td = self.ref['t_days']
+        ax = self.ax_c; td = self.ref_time_days
         self._add_drainage_shading(ax)
         self.vline_e = ax.axvline(td, color='k', ls='--', lw=1)
         legend_handles = []
@@ -530,11 +558,19 @@ class NevisIceAnimation:
     # ──────────────────────────────────────────────────────────────
     # Animation
     # ──────────────────────────────────────────────────────────────
-    def _update(self, result_frame_index):
-        result_frame_index = int(result_frame_index)
-        frame_i = self.frame_index_to_position[result_frame_index]
-        f = self._load_frame(self._frame_filename(result_frame_index))
-        td = f['t_days']
+    def _load_scheduled_frame(self, frame_i):
+        result_frame_index = int(self.frame_indices[frame_i])
+        if getattr(self, '_cached_result_frame_index', None) == result_frame_index:
+            return self._cached_frame
+        self._cached_result_frame_index = result_frame_index
+        self._cached_frame = self._load_frame(self._frame_filename(result_frame_index))
+        return self._cached_frame
+
+    def _update(self, frame_i):
+        frame_i = int(frame_i)
+        result_frame_index = int(self.frame_indices[frame_i])
+        f = self._load_scheduled_frame(frame_i)
+        td = float(self.frame_target_times_days[frame_i])
         # time markers
         for vl in self.vlines:
             vl.set_xdata([td, td])
@@ -557,7 +593,8 @@ class NevisIceAnimation:
         if frame_i % 20 == 0:
             print(
                 f'  animation frame {frame_i}/{len(self.all_filenames)}, '
-                f'result file {result_frame_index + 1:04d}.mat, t={td:.1f} d'
+                f'result file {result_frame_index + 1:04d}.mat, '
+                f'target t={td:.1f} d, data t={f["t_days"]:.1f} d'
             )
         return []
 
@@ -566,12 +603,21 @@ class NevisIceAnimation:
         os.makedirs('./results/videos', exist_ok=True)
         if output_filename is None:
             output_filename = f'./results/videos/{self.casename}_python.mp4'
+        output_fps = self._output_fps()
         anim = FuncAnimation(self.fig, self._update,
-                             frames=self.frame_indices, blit=False)
-        writer = FFMpegWriter(fps=self.FPS,
+                             frames=len(self.frame_indices), blit=False,
+                             interval=1000.0 / output_fps)
+        writer = FFMpegWriter(fps=output_fps,
                               metadata=dict(title=self.casename),
                               bitrate=20000)
         anim.save(output_filename, writer=writer)
-        print(f'Video saved: {output_filename}')
+        target_dt = self._target_frame_dt_days()
+        if target_dt is None:
+            print(f'Video saved: {output_filename} ({output_fps:.2f} fps)')
+        else:
+            print(
+                f'Video saved: {output_filename} '
+                f'({output_fps:.2f} fps, ~{self._playback_days_per_second():.2f} days/s)'
+            )
         plt.close(self.fig)
         return anim

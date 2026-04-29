@@ -1,199 +1,213 @@
-# GPS Station 位置数据与时间序列提取指南
+# GPS Station Location Data and Time Series Extraction Guide
 
-## 1. GPS Station 位置数据地点
+## 1. GPS Station Location Data
 
-### 位置数据文件
-- **`station_names.mat`** - Station名称数据
-  - 包含所有GPS station的标记名称（如SQ11, SQ12, MHIH, MLOW等）
-  - 在脚本中加载后转换为大写：`station_names = upper(station_names);`
+### Location Data Files
 
-- **`polarstereo_stations_2022_short.mat`** - Station坐标数据（**关键文件**）
-  - Polar Stereographic投影系统中的站点位置
-  - 脚本加载：`load polarstereo_stations_2022_short.mat`
-  - 这是最主要的位置数据来源
+- **`station_names.mat`** - Station name data
+  - Contains the marker names for all GPS stations, such as SQ11, SQ12, MHIH, and MLOW.
+  - After loading, the script converts names to uppercase: `station_names = upper(station_names);`
 
-### 坐标系统信息
-脚本中的坐标参考系统：
+- **`polarstereo_stations_2022_short.mat`** - Station coordinate data (**key file**)
+  - Contains station locations in the Polar Stereographic projection.
+  - Loaded in scripts with: `load polarstereo_stations_2022_short.mat`
+  - This is the main source of station location data.
+
+### Coordinate System Information
+
+The coordinate reference system used in the scripts is:
+
 ```matlab
-% XY相对于M1 moulin (Steven et al. 2015)
+% XY relative to the M1 moulin (Stevens et al. 2015)
 origin = [68.72, -49.53]; % M1 moulin (lat, lon)
-radius = 6378137.0;        % 地球半径 (m)
-eccen = 0.08181919;        % 离心率
-lat_true = 70;             % 真实纬度
-lon_posy = -45;            % 参考经度
+radius = 6378137.0;        % Earth radius (m)
+eccen = 0.08181919;        % Eccentricity
+lat_true = 70;             % Latitude of true scale
+lon_posy = -45;            % Reference longitude
 
-% 使用polarstereo_fwd进行坐标转换
+% Convert coordinates with polarstereo_fwd
 [moulin_x, moulin_y] = polarstereo_fwd(origin(1), origin(2), radius, eccen, lat_true, lon_posy);
-moulin_x_km = moulin_x./1e3;   % 转换为km
-moulin_y_km = moulin_y./1e3;   % 转换为km
+moulin_x_km = moulin_x./1e3;   % Convert to km
+moulin_y_km = moulin_y./1e3;   % Convert to km
 ```
 
-### Station分组分类
-根据脚本中的数据结构，21个station分为4个地理区域：
+### Station Groups
 
-| 地区代码 | Station索引 | Station名称 | 用途 |
-|---------|----------|-----------|------|
-| 100s | 4-9 | SQ11-16 | Within-basin (950s区域) |
-| 200s | 10-16 | SQ21-27 | Within-basin (1150s区域) |
-| 300s | 17-21 | SQ31-37 | Within-basin (1350s区域) |
-| Tiepoints | 1-3 | MHIH, MLOW, QIET | Out-of-basin (1050s-1100s区域) |
+Based on the script data structure, the 21 stations are divided into four geographic groups:
 
-## 2. 时间序列数据提取方法
+| Region Code | Station Indices | Station Names | Purpose |
+| --- | --- | --- | --- |
+| 100s | 4-9 | SQ11-16 | Within-basin, 950s region |
+| 200s | 10-16 | SQ21-27 | Within-basin, 1150s region |
+| 300s | 17-21 | SQ31-37 | Within-basin, 1350s region |
+| Tiepoints | 1-3 | MHIH, MLOW, QIET | Out-of-basin, 1050s-1100s region |
 
-### 2.1 主要数据文件
+## 2. Time Series Data Extraction
 
-#### paperfig5脚本使用的文件（DOY 150-254）：
+### 2.1 Main Data Files
+
+#### Files used by the `paperfig5` script, DOY 150-254:
+
 ```matlab
-% 垂直速度与床开放 (c_dot) 时间序列
-load('daily_epsilon_zz_2022R_BF2_30min_BF2_UP4_sZERO_clean_w36_t12_260119.mat')  % loose约束, 36小时窗口
-load('daily_epsilon_zz_2022R_BF2_30min_BF2_UP4_sZERO_clean_w18_t6_260119.mat')   % tight约束, 18小时窗口
+% Vertical velocity and bed opening (c_dot) time series
+load('daily_epsilon_zz_2022R_BF2_30min_BF2_UP4_sZERO_clean_w36_t12_260119.mat')  % loose constraint, 36-hour window
+load('daily_epsilon_zz_2022R_BF2_30min_BF2_UP4_sZERO_clean_w18_t6_260119.mat')   % tight constraint, 18-hour window
 
-% 应变率 (strain rates) 时间序列
-load('daily_strain_rates_2022R_30min_BF2_UP4_sZERO_clean_w36_t12_260119.mat')    % loose约束
-load('daily_strain_rates_2022R_30min_BF2_UP4_sZERO_clean_w18_t6_260119.mat')     % tight约束
+% Strain-rate time series
+load('daily_strain_rates_2022R_30min_BF2_UP4_sZERO_clean_w36_t12_260119.mat')    % loose constraint
+load('daily_strain_rates_2022R_30min_BF2_UP4_sZERO_clean_w18_t6_260119.mat')     % tight constraint
 ```
 
-#### suppfig01a/b/c脚本使用的文件（DOY 150-340，整个季节）：
+#### Files used by the `suppfig01a/b/c` scripts, DOY 150-340, full season:
+
 ```matlab
-% 垂直速度、水平速度、床开放时间序列 (30分钟分辨率)
-load('daily_epsilon_zz_2022R_BF2_30min_150_340_w36_t18_260318.mat')  % loose约束，36小时窗口
-load('daily_epsilon_zz_2022R_BF2_30min_150_340_w18_t6_260318.mat')   % tight约束，18小时窗口
+% Vertical velocity, horizontal velocity, and bed opening time series at 30-minute resolution
+load('daily_epsilon_zz_2022R_BF2_30min_150_340_w36_t18_260318.mat')  % loose constraint, 36-hour window
+load('daily_epsilon_zz_2022R_BF2_30min_150_340_w18_t6_260318.mat')   % tight constraint, 18-hour window
 ```
 
-**脚本对应关系：**
-- `suppfig01a_horizontal_vels_runoff_2022_260318.m` - 水平速度 $u_s$ vs 流出量
-- `suppfig01b_vertical_vels_runoff_2022_260318.m` - 垂直速度 $w_s$ vs 流出量
-- `suppfig01c_separation_runoff_2022_260318.m` - 床开放量 $h$ vs 流出量
+**Script mapping:**
 
-### 2.2 时间序列数据结构与提取
+- `suppfig01a_horizontal_vels_runoff_2022_260318.m` - Horizontal velocity $u_s$ vs runoff
+- `suppfig01b_vertical_vels_runoff_2022_260318.m` - Vertical velocity $w_s$ vs runoff
+- `suppfig01c_separation_runoff_2022_260318.m` - Bed opening $h$ vs runoff
 
-#### daily_epsilon_zz结构（速度与变形数据）
+### 2.2 Time Series Data Structures and Extraction
+
+#### `daily_epsilon_zz` structure, velocity and deformation data
+
 ```matlab
-daily_epsilon_zz(i).t22                         % 时间向量 (DOY, day of year)
-daily_epsilon_zz(i).c_dot_delta_t               % 日均垂直速度变化
-daily_epsilon_zz(i).c_dot_delta_t_cumulative    % 累积床开放量 (m)
-daily_epsilon_zz(i).u_s                         % 水平速度 (m/yr)
-daily_epsilon_zz(i).w_s                         % 垂直速度 (m/yr) [正值=上升]
-daily_epsilon_zz(i).u_s_combo                   % 融合loose/tight的水平速度
-daily_epsilon_zz(i).w_s_combo                   % 融合loose/tight的垂直速度
-daily_epsilon_zz(i).c_dot_delta_t_combo         % 融合loose/tight的垂直速度变化
-daily_epsilon_zz(i).c_dot_delta_t_cumulative_combo  % 融合loose/tight的累积床开放
-daily_epsilon_zz(i).epsilon_dot_lon             % 纵向应变率 (1/yr)
-daily_epsilon_zz(i).epsilon_dot_trans           % 横向应变率 (1/yr)
-daily_epsilon_zz(i).epsilon_dot_zz              % 垂直应变率 (1/yr)
+daily_epsilon_zz(i).t22                         % Time vector (DOY, day of year)
+daily_epsilon_zz(i).c_dot_delta_t               % Daily mean vertical velocity change
+daily_epsilon_zz(i).c_dot_delta_t_cumulative    % Cumulative bed opening (m)
+daily_epsilon_zz(i).u_s                         % Horizontal velocity (m/yr)
+daily_epsilon_zz(i).w_s                         % Vertical velocity (m/yr), positive = uplift
+daily_epsilon_zz(i).u_s_combo                   % Horizontal velocity merged from loose/tight constraints
+daily_epsilon_zz(i).w_s_combo                   % Vertical velocity merged from loose/tight constraints
+daily_epsilon_zz(i).c_dot_delta_t_combo         % Vertical velocity change merged from loose/tight constraints
+daily_epsilon_zz(i).c_dot_delta_t_cumulative_combo  % Cumulative bed opening merged from loose/tight constraints
+daily_epsilon_zz(i).epsilon_dot_lon             % Longitudinal strain rate (1/yr)
+daily_epsilon_zz(i).epsilon_dot_trans           % Transverse strain rate (1/yr)
+daily_epsilon_zz(i).epsilon_dot_zz              % Vertical strain rate (1/yr)
 ```
 
-**提取方法（单个station）：**
+**Extraction method for one station:**
+
 ```matlab
-% 对于station i (1-21)
+% For station i (1-21)
 time = daily_epsilon_zz(i).t22;
 
-% 水平速度相关
-horiz_vel = daily_epsilon_zz(i).u_s;           % 原始36小时窗口
-horiz_vel_tight = daily_epsilon_zz(i).u_s_combo;  % 融合loose/tight的版本
+% Horizontal velocity
+horiz_vel = daily_epsilon_zz(i).u_s;              % Raw 36-hour window
+horiz_vel_tight = daily_epsilon_zz(i).u_s_combo;  % Merged loose/tight version
 
-% 垂直速度相关
-vert_vel = daily_epsilon_zz(i).w_s;            % 原始36小时窗口
-vert_vel_tight = daily_epsilon_zz(i).w_s_combo;   % 融合loose/tight的版本
+% Vertical velocity
+vert_vel = daily_epsilon_zz(i).w_s;               % Raw 36-hour window
+vert_vel_tight = daily_epsilon_zz(i).w_s_combo;   % Merged loose/tight version
 
-% 床开放相关
-bed_opening = daily_epsilon_zz(i).c_dot_delta_t_cumulative;  % 累积值
+% Bed opening
+bed_opening = daily_epsilon_zz(i).c_dot_delta_t_cumulative;  % Cumulative value
 
-% 应变率相关
-lon_strain = daily_epsilon_zz(i).epsilon_dot_lon;   % 纵向应变率
-trans_strain = daily_epsilon_zz(i).epsilon_dot_trans; % 横向应变率
+% Strain rates
+lon_strain = daily_epsilon_zz(i).epsilon_dot_lon;       % Longitudinal strain rate
+trans_strain = daily_epsilon_zz(i).epsilon_dot_trans;   % Transverse strain rate
 
-% 示例：SQ13 (索引6) 的完整轨迹
+% Example: full trajectory for SQ13 (index 6)
 time_SQ13 = daily_epsilon_zz(6).t22;
-u_s_SQ13 = daily_epsilon_zz(6).u_s_combo;      % 水平速度
-w_s_SQ13 = daily_epsilon_zz(6).w_s_combo;      % 垂直速度
-h_SQ13 = daily_epsilon_zz(6).c_dot_delta_t_cumulative_combo;  % 床开放
+u_s_SQ13 = daily_epsilon_zz(6).u_s_combo;      % Horizontal velocity
+w_s_SQ13 = daily_epsilon_zz(6).w_s_combo;      % Vertical velocity
+h_SQ13 = daily_epsilon_zz(6).c_dot_delta_t_cumulative_combo;  % Bed opening
 ```
 
-#### daily_strain_rates结构（应变率时间序列）
+#### `daily_strain_rates` structure, strain-rate time series
+
 ```matlab
-daily_strain_rates.time                    % 时间向量
-daily_strain_rates.station_names           % Station名称
-daily_strain_rates.lon_yr_100s(i,j,:)     % 100s区域station i-j的纵向应变率
-daily_strain_rates.lon_yr_200s(i,j,:)     % 200s区域station i-j的纵向应变率
-daily_strain_rates.lon_yr_300s(i,j,:)     % 300s区域station i-j的纵向应变率
-daily_strain_rates.delta_lon_yr_100s(i,j,:)  % 对应的误差估计
-daily_strain_rates.delta_lon_yr_200s(i,j,:)  % 对应的误差估计
-daily_strain_rates.delta_lon_yr_300s(i,j,:)  % 对应的误差估计
+daily_strain_rates.time                    % Time vector
+daily_strain_rates.station_names           % Station names
+daily_strain_rates.lon_yr_100s(i,j,:)      % Longitudinal strain rate for station pair i-j in the 100s region
+daily_strain_rates.lon_yr_200s(i,j,:)      % Longitudinal strain rate for station pair i-j in the 200s region
+daily_strain_rates.lon_yr_300s(i,j,:)      % Longitudinal strain rate for station pair i-j in the 300s region
+daily_strain_rates.delta_lon_yr_100s(i,j,:)  % Corresponding uncertainty estimate
+daily_strain_rates.delta_lon_yr_200s(i,j,:)  % Corresponding uncertainty estimate
+daily_strain_rates.delta_lon_yr_300s(i,j,:)  % Corresponding uncertainty estimate
 ```
 
-**提取方法（station对的应变率）：**
+**Extraction method for strain rate between a station pair:**
+
 ```matlab
-% 获取时间向量
+% Get the time vector
 strain_time = daily_strain_rates_combo.time;
 
-% 提取特定station对的纵向应变率及误差
-% 示例：100s区域的SQ11-12对 (索引4,5)
+% Extract longitudinal strain rate and uncertainty for a specific station pair
+% Example: SQ11-12 pair in the 100s region (indices 4,5)
 strain_SQ11_12 = squeeze(daily_strain_rates_combo.lon_yr_100s(4,5,:));
 error_SQ11_12 = squeeze(daily_strain_rates_combo.delta_lon_yr_100s(4,5,:));
 
-% 基准化处理（从特定DOY开始计算偏差）
-ID_t0 = find(strain_time >= 165.01, 1, 'first');  % 找参考时间索引
+% Normalize relative to a reference DOY
+ID_t0 = find(strain_time >= 165.01, 1, 'first');  % Reference-time index
 strain_normalized = strain_SQ11_12 - strain_SQ11_12(ID_t0);
 
-% 用于绘图的误差包络
+% Uncertainty envelope for plotting
 tt = [strain_time; flipud(strain_time)];
 ee = [strain_SQ11_12 + 3.*error_SQ11_12;
       flipud(strain_SQ11_12 - 3.*error_SQ11_12)];
 ```
 
-### 2.3 数据融合策略（Loose vs Tight约束）
+### 2.3 Loose vs Tight Constraint Merging Strategy
 
-两个脚本都使用了"松散"和"紧密"约束的组合策略：
+Both scripts use a merged strategy combining loose and tight constraints:
 
 ```matlab
-% Loose约束：36小时滑动窗口，需要18小时数据
-daily_epsilon_zz_loose = ...  % 更平滑，长期趋势
+% Loose constraint: 36-hour sliding window, requiring 18 hours of data
+daily_epsilon_zz_loose = ...  % Smoother, better for long-term trends
 
-% Tight约束：18小时滑动窗口，需要6小时数据
-daily_epsilon_zz_tight = ...  % 更灵敏，捕捉短期变化
+% Tight constraint: 18-hour sliding window, requiring 6 hours of data
+daily_epsilon_zz_tight = ...  % More responsive, better for short-term changes
 
-% 在冰湖排放期间使用tight约束（时间更高分辨率）
-% 在其他时期使用loose约束（更稳定）
-tight_100s = 187:196;           % DOY 187-196使用tight
-tight_200s = 206:217;           % DOY 206-217使用tight
-tight_300s = 206:212;           % DOY 206-212使用tight
-tight_MLOW = 207:217;           % MLOW station的tight期间
-tight_MHIH = 207:217;           % MHIH station的tight期间
+% Use the tight constraint during lake drainage events for higher time resolution.
+% Use the loose constraint outside those intervals for stability.
+tight_100s = 187:196;           % Use tight constraint for DOY 187-196
+tight_200s = 206:217;           % Use tight constraint for DOY 206-217
+tight_300s = 206:212;           % Use tight constraint for DOY 206-212
+tight_MLOW = 207:217;           % Tight interval for MLOW
+tight_MHIH = 207:217;           % Tight interval for MHIH
 ```
 
-### 2.4 关键变量时间范围
-- **paperfig5脚本**: DOY 150-254 (5月30日 - 9月10日，仅夏季融雪期)
-- **suppfig01a脚本** (水平速度): DOY 150-340 (5月30日 - 12月6日，整个季节)
-- **suppfig01b脚本** (垂直速度): DOY 150-340 (5月30日 - 12月6日，整个季节)
-- **suppfig01c脚本** (床开放): DOY 150-340 (5月30日 - 12月6日，整个季节)
-- **RACMO时间向量**: 1.5:1:334.5 (全年DOY)
+### 2.4 Key Variable Time Ranges
 
-**数据质量注意：**
-- SQ13 (索引6): 数据到DOY 197截止（站点翻倒）
-- SQ15 (索引8): 数据到DOY 210截止（站点翻倒）
-- SQ14 (索引7): 在DOY 210之后使用SQ15进行横向应变率计算
+- **`paperfig5` script**: DOY 150-254, May 30 to September 10, summer melt season only
+- **`suppfig01a` script**, horizontal velocity: DOY 150-340, May 30 to December 6, full season
+- **`suppfig01b` script**, vertical velocity: DOY 150-340, May 30 to December 6, full season
+- **`suppfig01c` script**, bed opening: DOY 150-340, May 30 to December 6, full season
+- **RACMO time vector**: 1.5:1:334.5, full-year DOY
 
-## 3. 实际数据提取示例
+**Data quality notes:**
 
-### 示例1：提取单个station的完整速度时间序列（suppfig01a/b风格）
+- SQ13, index 6: data end at DOY 197 because the station tipped over.
+- SQ15, index 8: data end at DOY 210 because the station tipped over.
+- SQ14, index 7: after DOY 210, SQ15 is used for the transverse strain-rate calculation.
+
+## 3. Practical Data Extraction Examples
+
+### Example 1: Extract the full velocity time series for a single station, `suppfig01a/b` style
+
 ```matlab
-% 加载数据
+% Load data
 load station_names.mat
 load('daily_epsilon_zz_2022R_BF2_30min_150_340_w36_t18_260318.mat')
 load('../RACMO/racmo_station_2022_index.mat')
 
-% 获取SQ13 (索引6) 的所有可用参数
+% Get all available parameters for SQ13 (index 6)
 station_index = 6;
 time = daily_epsilon_zz(station_index).t22;
-horiz_vel = daily_epsilon_zz(station_index).u_s_combo;    % 水平速度
-vert_vel = daily_epsilon_zz(station_index).w_s_combo;     % 垂直速度
-bed_sep = daily_epsilon_zz(station_index).c_dot_delta_t_cumulative_combo;  % 床开放
+horiz_vel = daily_epsilon_zz(station_index).u_s_combo;    % Horizontal velocity
+vert_vel = daily_epsilon_zz(station_index).w_s_combo;     % Vertical velocity
+bed_sep = daily_epsilon_zz(station_index).c_dot_delta_t_cumulative_combo;  % Bed opening
 
-% 从RACMO获取该位置的流出量
-runoff_SQ13 = runoff_2022_nevis(:, ID(6,1)) ./ 10;  % 转换为cm
+% Get runoff at this location from RACMO
+runoff_SQ13 = runoff_2022_nevis(:, ID(6,1)) ./ 10;  % Convert to cm
 
-% 绘制水平/垂直速度与流出量的关系
+% Plot horizontal/vertical velocity against runoff
 subplot(2,1,1)
 yyaxis left
 plot(time, horiz_vel, 'LineWidth', 1.3);
@@ -211,13 +225,14 @@ bar(racmo_time, runoff_SQ13, 'FaceAlpha', 0.3);
 ylabel('Runoff [cm w.e.]');
 ```
 
-### 示例2：批量提取所有100s区域stations的水平速度（suppfig01a风格）
+### Example 2: Extract horizontal velocities for all 100s-region stations, `suppfig01a` style
+
 ```matlab
 load('daily_epsilon_zz_2022R_BF2_30min_150_340_w36_t18_260318.mat')
 load('../RACMO/racmo_station_2022_index.mat')
 load station_names.mat
 
-% 100s区域: 索引4-9 (SQ11-16)
+% 100s region: indices 4-9 (SQ11-16)
 figure; hold on;
 for i=4:9
     plot(daily_epsilon_zz(i).t22, daily_epsilon_zz(i).u_s_combo, 'LineWidth', 1.3);
@@ -227,18 +242,19 @@ ylabel('Horizontal Velocity $u_s$ [m/yr]');
 xlabel('Day of Year, 2022');
 grid on;
 
-% 添加RACMO平均流出量
+% Add mean RACMO runoff
 yyaxis right
 bar(racmo_time, nanmean(runoff_2022_nevis(:,ID(4:9,1)),2)./10, 'FaceAlpha', 0.25);
 ylabel('Runoff at 950s [cm w.e.]');
 ```
 
-### 示例3：提取单个station的床开放演化（suppfig01c风格）
+### Example 3: Extract bed-opening evolution for individual stations, `suppfig01c` style
+
 ```matlab
 load('daily_epsilon_zz_2022R_BF2_30min_150_340_w36_t18_260318.mat')
 load('../RACMO/racmo_station_2022_index.mat')
 
-% 比较所有tiepoint stations (MHIH, MLOW, QIET)的床开放
+% Compare bed opening for all tiepoint stations (MHIH, MLOW, QIET)
 figure; hold on;
 plot(daily_epsilon_zz(1).t22, daily_epsilon_zz(1).c_dot_delta_t_cumulative_combo, 'LineWidth', 1.3);  % MHIH
 plot(daily_epsilon_zz(2).t22, daily_epsilon_zz(2).c_dot_delta_t_cumulative_combo, 'LineWidth', 1.3);  % MLOW
@@ -249,26 +265,27 @@ ylabel('Bed Separation, $h$ [m]');
 xlabel('Day of Year, 2022');
 grid on;
 
-% 添加RACMO平均流出量
+% Add mean RACMO runoff
 yyaxis right
 bar(racmo_time, nanmean(runoff_2022_nevis(:,ID(1:3,1)),2)./10, 'FaceAlpha', 0.25);
 ylabel('Runoff at 1100s [cm w.e.]');
 ```
 
-### 示例4：提取应变率以及相应的误差包络（paperfig5风格）
+### Example 4: Extract strain rate and the corresponding uncertainty envelope, `paperfig5` style
+
 ```matlab
 load('daily_strain_rates_2022R_30min_BF2_UP4_sZERO_clean_w36_t12_260119.mat')
 
-% 提取100s区域的多个station对
+% Extract several station pairs in the 100s region
 strain_time = daily_strain_rates_2023.time;
-ID_t0 = find(strain_time >= 165.01, 1, 'first');  % 找参考时间索引
+ID_t0 = find(strain_time >= 165.01, 1, 'first');  % Reference-time index
 
-% SQ11-12对 (索引4,5)
+% SQ11-12 pair (indices 4,5)
 strain_SQ11_12 = squeeze(daily_strain_rates_2023.lon_yr_100s(4,5,:));
 error_SQ11_12 = squeeze(daily_strain_rates_2023.delta_lon_yr_100s(4,5,:));
 strain_normalized = strain_SQ11_12 - strain_SQ11_12(ID_t0);
 
-% 绘制含误差包络的应变率
+% Plot strain rate with an uncertainty envelope
 figure; hold on;
 tt = [strain_time; flipud(strain_time)];
 ee_upper = strain_normalized + 3.*error_SQ11_12;
@@ -281,66 +298,68 @@ ylabel('Longitudinal Strain Rate (normalized)');
 xlabel('Day of Year');
 ```
 
-## 4. 数据目录结构
+## 4. Data Directory Structure
 
-所有这些`.mat`文件位置：
-```
+All of these `.mat` files are located under:
+
+```text
 /Users/hwenzhang/matlabprojects/nevis/data/GNSS_2022/
-├── station_names.mat
-├── polarstereo_stations_2022_short.mat
-├── daily_epsilon_zz_2022R_BF2_30min_*.mat (多个版本)
-│   ├── *_BF2_UP4_sZERO_clean_w36_t12_260119.mat  (paperfig5, DOY150-254)
-│   ├── *_BF2_UP4_sZERO_clean_w18_t6_260119.mat   (paperfig5, DOY150-254)
-│   ├── *_150_340_w36_t18_260318.mat              (suppfig01a/b/c, DOY150-340)
-│   └── *_150_340_w18_t6_260318.mat               (suppfig01a/b/c, DOY150-340)
-├── daily_strain_rates_2022R_30min_*.mat (多个版本)
-│   ├── *_BF2_UP4_sZERO_clean_w36_t12_260119.mat  (paperfig5, DOY150-254)
-│   └── *_BF2_UP4_sZERO_clean_w18_t6_260119.mat   (paperfig5, DOY150-254)
-├── paperfig5_2022_distillations_260116.m
-├── suppfig01a_horizontal_vels_runoff_2022_260318.m  ★ 水平速度
-├── suppfig01b_vertical_vels_runoff_2022_260318.m    ★ 垂直速度
-├── suppfig01c_separation_runoff_2022_260318.m       ★ 床开放
-└── ... (其他支持文件)
+|-- station_names.mat
+|-- polarstereo_stations_2022_short.mat
+|-- daily_epsilon_zz_2022R_BF2_30min_*.mat (multiple versions)
+|   |-- *_BF2_UP4_sZERO_clean_w36_t12_260119.mat  (paperfig5, DOY150-254)
+|   |-- *_BF2_UP4_sZERO_clean_w18_t6_260119.mat   (paperfig5, DOY150-254)
+|   |-- *_150_340_w36_t18_260318.mat              (suppfig01a/b/c, DOY150-340)
+|   `-- *_150_340_w18_t6_260318.mat               (suppfig01a/b/c, DOY150-340)
+|-- daily_strain_rates_2022R_30min_*.mat (multiple versions)
+|   |-- *_BF2_UP4_sZERO_clean_w36_t12_260119.mat  (paperfig5, DOY150-254)
+|   `-- *_BF2_UP4_sZERO_clean_w18_t6_260119.mat   (paperfig5, DOY150-254)
+|-- paperfig5_2022_distillations_260116.m
+|-- suppfig01a_horizontal_vels_runoff_2022_260318.m  * horizontal velocity
+|-- suppfig01b_vertical_vels_runoff_2022_260318.m    * vertical velocity
+|-- suppfig01c_separation_runoff_2022_260318.m       * bed opening
+`-- ... (other support files)
 ```
 
-## 5. 关键说明
+## 5. Key Notes
 
-- **Station索引 (i)**: 1-21，对应不同的GPS接收器
-- **Station对索引 (i,j)**: 用于计算相邻station间的应变率
-- **DOY (Day of Year)**: 2022年的儒略日(1-365)
-- **时间分辨率**: 30分钟（0.5小时）
-- **坐标系**: Polar Stereographic (极地立体投影)
-- **参考原点**: M1 moulin at [68.72°N, 49.53°W]
+- **Station index (`i`)**: 1-21, corresponding to individual GPS receivers.
+- **Station-pair index (`i,j`)**: Used to calculate strain rates between neighboring stations.
+- **DOY (Day of Year)**: Julian day of 2022, from 1 to 365.
+- **Time resolution**: 30 minutes, or 0.5 hours.
+- **Coordinate system**: Polar Stereographic.
+- **Reference origin**: M1 moulin at [68.72 deg N, 49.53 deg W].
 
-## 6. 脚本功能汇总
+## 6. Script Function Summary
 
-| 脚本名称 | 数据类型 | 时间范围 | 主要变量 | 关键特点 |
-|---------|---------|--------|---------|--------|
-| **paperfig5_2022_distillations_260116.m** | 应变率 | DOY150-254 | $\dot{\epsilon}_{lon}$ | 纵向应变率 + 误差包络 |
-| **suppfig01a_horizontal_vels_runoff_2022_260318.m** | 水平速度 | DOY150-340 | $u_s$ | 水平速度与流出量关系 |
-| **suppfig01b_vertical_vels_runoff_2022_260318.m** | 垂直速度 | DOY150-340 | $w_s$ | 垂直速度与流出量关系 |
-| **suppfig01c_separation_runoff_2022_260318.m** | 床开放 | DOY150-340 | $h$ | 累积床开放与流出量关系 |
+| Script Name | Data Type | Time Range | Main Variable | Key Feature |
+| --- | --- | --- | --- | --- |
+| **paperfig5_2022_distillations_260116.m** | Strain rate | DOY150-254 | $\dot{\epsilon}_{lon}$ | Longitudinal strain rate plus uncertainty envelope |
+| **suppfig01a_horizontal_vels_runoff_2022_260318.m** | Horizontal velocity | DOY150-340 | $u_s$ | Horizontal velocity versus runoff |
+| **suppfig01b_vertical_vels_runoff_2022_260318.m** | Vertical velocity | DOY150-340 | $w_s$ | Vertical velocity versus runoff |
+| **suppfig01c_separation_runoff_2022_260318.m** | Bed opening | DOY150-340 | $h$ | Cumulative bed opening versus runoff |
 
-## 7. Loose vs Tight约束的应用
+## 7. Loose vs Tight Constraint Usage
 
-脚本中的约束切换逻辑：
+The scripts use the following constraint-switching logic:
 
 ```matlab
-% Loose约束：36小时滑动窗口（平滑，稳定）
-w36_loop = 36;      % 小时
-t18_data = 18;      % 需要的最少数据小时数
+% Loose constraint: 36-hour sliding window (smooth, stable)
+w36_loop = 36;      % hours
+t18_data = 18;      % minimum required data hours
 
-% Tight约束：18小时滑动窗口（灵敏，捕捉快速变化）
-w18_loop = 18;      % 小时
-t6_data = 6;        % 需要的最少数据小时数
+% Tight constraint: 18-hour sliding window (responsive, captures rapid changes)
+w18_loop = 18;      % hours
+t6_data = 6;        % minimum required data hours
 
-% 应用规则：
-% - 平时使用loose (平滑趋势)
-% - 冰湖排放期间 (DOY 187-217) 使用tight (高分辨率)
-% - 这样结合了两者的优点
+% Usage rule:
+% - Use loose constraints during ordinary periods for smoothed trends.
+% - Use tight constraints during lake drainage events (DOY 187-217) for higher resolution.
+% - This combines the advantages of both approaches.
 ```
 
-**各区域的tight约束期间：**
+**Tight-constraint intervals by region:**
+
 - **100s** (4-9): DOY 187-196
 - **200s** (10-16): DOY 206-217
 - **300s** (17-21): DOY 206-212
@@ -348,35 +367,35 @@ t6_data = 6;        % 需要的最少数据小时数
 - **MHIH** (1): DOY 207-217
 - **QIET** (3): DOY 207-217
 
-## 8. 参考坐标如何转化为 nevis 坐标（基于 MEaSUREs 脚本）
+## 8. Converting Reference Coordinates to nevis Coordinates, Based on the MEaSUREs Script
 
-下面是 `measures_for_nevis_BMv5.m` 里用到的完整坐标转换链路。
+This section summarizes the full coordinate-conversion chain used in `measures_for_nevis_BMv5.m`.
 
-### 8.1 参考系设置
+### 8.1 Reference System Setup
 
-脚本使用 Greenland 常见的 Polar Stereographic 参数：
+The script uses common Greenland Polar Stereographic parameters:
 
 ```matlab
-radius = 6378137.0;   % a, WGS84 半径 (m)
-eccen = 0.08181919;   % e, WGS84 离心率
-lat_true = 70;        % 标准纬线 (deg)
-lon_posy = -45;       % +Y 对应经线 (deg)
+radius = 6378137.0;   % a, WGS84 radius (m)
+eccen = 0.08181919;   % e, WGS84 eccentricity
+lat_true = 70;        % Standard parallel (deg)
+lon_posy = -45;       % Meridian corresponding to +Y (deg)
 ```
 
-用 `polarstereo_fwd` 将经纬度转到投影平面坐标 $(x, y)$（单位 m）。
+`polarstereo_fwd` converts latitude/longitude to projected-plane coordinates $(x, y)$ in meters.
 
-### 8.2 以 M1 moulin 作为 nevis 原点
+### 8.2 Using the M1 Moulin as the nevis Origin
 
-核心思想是：
+The key idea is:
 
-1. 先把 M1 的经纬度投影为 $(x_{M1}, y_{M1})$。
-2. 任意点投影得到 $(x, y)$ 后，做平移：
+1. Project the M1 latitude/longitude to $(x_{M1}, y_{M1})$.
+2. For any projected point $(x, y)$, translate by subtracting the M1 coordinates:
 
 $$
 x_{nevis} = x - x_{M1}, \qquad y_{nevis} = y - y_{M1}
 $$
 
-在脚本中对应：
+In the script:
 
 ```matlab
 [moulin_x,moulin_y] = polarstereo_fwd(moulin_lat,moulin_lon,radius,eccen,lat_true,lon_posy);
@@ -384,20 +403,20 @@ X_rel = X - moulin_x;
 Y_rel = Y - moulin_y;
 ```
 
-所以 nevis 坐标系本质上是“同一投影参数下的局部平移坐标系”，其原点定义为 M1。
+Thus, the nevis coordinate system is a locally translated coordinate system using the same projection parameters, with the origin defined at M1.
 
-### 8.3 Lake 与 BedMachine 数据如何进入 nevis 坐标
+### 8.3 How Lake and BedMachine Data Enter nevis Coordinates
 
-- `lake.mat` 的经纬度先通过 `polarstereo_fwd` 投影，再减去 M1 的投影坐标。
-- `BM5_lake6.mat` 的 `X, Y` 已是投影平面坐标，直接减去 `moulin_x, moulin_y` 得到 `X_rel, Y_rel`。
+- Latitude/longitude from `lake.mat` is first projected with `polarstereo_fwd`, then shifted by subtracting the M1 projected coordinates.
+- `X, Y` in `BM5_lake6.mat` are already projected-plane coordinates, so `moulin_x, moulin_y` are subtracted directly to obtain `X_rel, Y_rel`.
 
-这一步之后，所有地形量（`Bed`, `Surface`, `Bederr`）都和 `X_rel, Y_rel` 对齐，可直接作为 nevis 几何输入。
+After this step, all topographic fields (`Bed`, `Surface`, `Bederr`) are aligned with `X_rel, Y_rel` and can be used directly as nevis geometry input.
 
-### 8.4 MEaSUREs 速度如何映射到 nevis 网格
+### 8.4 Mapping MEaSUREs Velocity to the nevis Grid
 
-在脚本里，`mosaicV1.xx_moulin`、`mosaicV1.yy_moulin` 已经是以 moulin 为原点的相对坐标（与 nevis 坐标同一物理定义）。
+In the script, `mosaicV1.xx_moulin` and `mosaicV1.yy_moulin` are already relative coordinates with the moulin as the origin, matching the physical definition of nevis coordinates.
 
-接着通过插值映射到 nevis 模型网格节点：
+The data are then interpolated onto the nevis model grid nodes:
 
 ```matlab
 F  = scatteredInterpolant(X_rel_mosaic, Y_rel_mosaic, double(mosaic_speed));
@@ -409,11 +428,11 @@ mosaic_nevis_noSK_x = Fx(gg.nx.*ps.x, gg.ny.*ps.x);
 mosaic_nevis_noSK_y = Fy(gg.nx.*ps.x, gg.ny.*ps.x);
 ```
 
-其中 `gg.nx, gg.ny` 是无量纲网格坐标，乘 `ps.x`（默认 10000）还原为米后参与插值。
+Here, `gg.nx` and `gg.ny` are nondimensional grid coordinates. Multiplying by `ps.x`, default value 10000, converts them back to meters before interpolation.
 
-### 8.5 nevis 坐标反算回经纬度
+### 8.5 Converting nevis Coordinates Back to Latitude/Longitude
 
-若你有某点的 nevis 坐标 $(x_{nevis}, y_{nevis})$，先加回 M1 平移，再用 `polarstereo_inv`：
+If a point has nevis coordinates $(x_{nevis}, y_{nevis})$, first add back the M1 translation and then call `polarstereo_inv`:
 
 $$
 x = x_{nevis} + x_{M1}, \qquad y = y_{nevis} + y_{M1}
@@ -425,7 +444,7 @@ y_ps = y_nevis + moulin_y;
 [lat, lon] = polarstereo_inv(x_ps, y_ps, radius, eccen, lat_true, lon_posy);
 ```
 
-### 8.6 使用时的两个注意点
+### 8.6 Two Usage Notes
 
-1. **单位一致性**：脚本里大部分是米（m），绘图时常除以 `1e3` 转 km；字段名有时写 `X_km` 但变量实际可能仍是 m，使用前建议核对数值量级。
-2. **参数必须一致**：`a, e, lat_true, lon_posy` 在正向和反向转换中必须完全一致，否则会出现系统性位置偏差。
+1. **Unit consistency**: Most values in the script are in meters (m). Plotting often divides by `1e3` to convert to km. Some field names include `X_km`, even though the stored values may still be in meters, so check value magnitudes before use.
+2. **Projection parameters must match**: `a`, `e`, `lat_true`, and `lon_posy` must be identical in forward and inverse transformations. Otherwise, systematic position offsets will occur.

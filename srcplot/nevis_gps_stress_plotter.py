@@ -210,6 +210,7 @@ class NevisGpsStressPlotter:
 
         matlab_code = (
             f"cd('{self._quote_matlab_string(self.repo_root)}'); "
+            f"addpath('{self._quote_matlab_string(self.repo_root / 'analysis')}'); "
             f"nevis_gps_stress('{self._quote_matlab_string(self.casename)}', "
             f"{self.stress_tmin_yr:.12g}, {self.stress_tmax_yr:.12g});"
         )
@@ -239,7 +240,7 @@ class NevisGpsStressPlotter:
         if missing:
             raise KeyError(
                 'Missing fields in GPS stress file: ' + ', '.join(missing) +
-                f'. Re-run nevis_gps_stress for {self.casename}.'
+                f'. Re-run analysis/nevis_gps_stress for {self.casename}.'
             )
         return self._stress, self._raw
 

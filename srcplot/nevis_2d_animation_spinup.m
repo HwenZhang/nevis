@@ -98,159 +98,10 @@ if isfield(tt,'pts_phi') && ~isempty([tt.pts_phi])
                (aa.phi_0(oo.pts_ni)*[tt.t].^0-aa.phi_a(oo.pts_ni)*[tt.t].^0);
 end
 
-f = figure('Position', [100, 100, 1600, 800]);
-mainLayout = tiledlayout(f, 1, 5);
-mainLayout.TileSpacing = 'compact';
-mainLayout.Padding = 'compact';
-
-leftLayout = tiledlayout(mainLayout, 6, 1);
-leftLayout.Layout.Tile = 1;
-leftLayout.Layout.TileSpan = [1, 2];
-
-leftLayout.TileSpacing = 'compact';
-leftLayout.Padding = 'compact';
-
-rightLayout = tiledlayout(mainLayout, 3, 2);
-rightLayout.Layout.Tile = 3;
-rightLayout.Layout.TileSpan = [1, 3];
-
+f = figure('Position', [100, 100, 1200, 900]);
+rightLayout = tiledlayout(f, 3, 2);
 rightLayout.TileSpacing = 'compact';
 rightLayout.Padding = 'compact';
-
-% panel (a)
-ax = nexttile(leftLayout);
-plot(ax,t,Q_b_in,'b-',t,Q_b_dec,'r-',LineWidth=1.5);
-hold on;
-% plot(ax,t,Q_out+Q_out_b,color=[0,0.5,0],LineStyle='-',LineWidth=1.5);
-
-plot(ax,t,Q_out_b,color=[1,0,0],LineStyle='--',LineWidth=1.5);
-plot(ax,t,Q_out_Q,color=[0,0.5,0],LineStyle='--',LineWidth=1.5);
-plot(ax,t,Q_out_q,color=[0,0,1],LineStyle='--',LineWidth=1.5);
-
-plot(ax,t,E,color=[0,0,0],LineStyle='-.',LineWidth=1.5);
-
-x1 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
-
-xlabel('t [ d ]');
-ylabel('Q [ m^3/s ]');
-h=legend('Q_{b,in}','Q_{b,relax}','Q_{outb}','\Delta Q_{outQ}','\Delta Q_{outq}','Q_{in}','NumColumns',2);
-h.Location='southeast';
-text(0.025,0.8,'(a) flux','Units','normalized','FontSize',14)
-
-xlim([tmin_d tmax_d])
-set(gca, 'YScale', 'log')
-ylim([1e-2 1e4])
-% yticks([1e-2,1e1,1e2,1e3,1e4])
-grid on
-grid minor
-
-% panel (b)
-ax = nexttile(leftLayout);
-if isfield(tt,'pts_phi') && ~isempty([tt.pts_phi])  
-    plot(ax,t,pts_N(1,:),'-',LineWidth=1.5);
-end
-hold on
-plot(ax,t,N/1e6,'-',LineWidth=1.5);
-x2 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
-xlabel('t [ d ]');
-ylabel('N [ MPa ]');
-h = legend('N at the blister','averaged N');
-text(0.025,0.8,'(b) effective pressure','Units','normalized','FontSize',14)
-h.Location='southeast';
-xlim([tmin_d tmax_d])
-% ylim([0 2])
-grid on    
-grid minor
-
-% panel (c)
-ax = nexttile(leftLayout);
-yyaxis left
-    plot(ax,t,hs./A,'b-',t,he./A,'k-',LineWidth=1.5);
-    xlabel('t [ d ]');
-    ylabel('Average h [ m ]');
-    ylim([0 0.3])
-    text(0.025,0.8,'(c) averaged h and S','Units','normalized','FontSize',14)
-yyaxis right
-    plot(ax,t,S/A,'r-',LineWidth=1.5);
-    hold on
-    x3 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
-    ylabel('Channel h [ m ]');
-    h=legend('h_{cav}','h_{e}','S','NumColumns',2);
-    h.Location='southeast';
-    xlim([tmin_d tmax_d])
-    % ylim([0 0.05])
-    grid on
-    grid minor
-
-% panel (d)
-ax = nexttile(leftLayout);
-yyaxis left
-    plot(ax,t,hs_b,'b-',LineWidth=1.5);    
-    % plot(t,hs./A,'b-',t,he./A,'b--',LineWidth=1.5);
-    xlabel('t [ d ]');
-    ylabel('h at blister [ m ]');
-    % ylim([0.02 0.03])
-    text(0.025,0.8,'(d) h and S at the lake','Units','normalized','FontSize',14)
-
-yyaxis right
-    plot(ax,t,0.25*(Sx_b+Sy_b+Ss_b+Sr_b),'r-',LineWidth=1.5);
-    hold on
-    x4 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
-    ylabel('S at blister [ m^2 ]');
-    xlim([tmin_d tmax_d])
-    h=legend('h_{cav}','S','NumColumns',2);
-    h.Location='southeast';
-    % ylim([0 0.05])
-    grid on
-    grid minor
-
-% panel (e)
-ax = nexttile(leftLayout);
-% hb_analytical = 3*V_b./(pi*R_b.^2);
-yyaxis left
-    plot(ax,t,h_b(1,:),'b-',LineWidth=1.5);
-    hold on
-    % plot(ax,t,hb_analytical,'b--',LineWidth=1.5);
-    xlabel('t [ d ]');
-    ylabel('h [ m ]');
-    text(0.025,0.8,'(e) h_b and p_b at the lake','Units','normalized','FontSize',14)
-
-yyaxis right
-    plot(ax,t,p_b(1,:)/1e6,'r-',LineWidth=1.5); % pressure at the blister
-    hold on
-    x5 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
-    xlabel('t [ d ]');
-    ylabel('p_b [ MPa ]');
-    xlim([tmin_d tmax_d])
-    grid on
-    grid minor
-
-% panel (f)
-ax = nexttile(leftLayout); 
-yyaxis left
-    plot(ax,t,p_b(1,:)/1e6,'b-',LineWidth=1.5); % blister pressure + \rho_i g h
-    hold on
-    % plot(ax,t,pb_analytical/1e6,'b--',LineWidth=1.5); % blister pressure + \rho_i g h
-    plot(ax,t,p_w/1e6,'b-.',LineWidth=1.5); 
-
-    xlim([tmin_d tmax_d])
-    ylim([0 15])
-    text(0.025,0.8,'(f) pressure','Units','normalized','FontSize',14)
-    xlabel('t [ d ]');
-    ylabel('N [ MPa ]');
-    
-    grid on
-    grid minor  
-yyaxis right
-% Rb_analytical = (3/pi*V_b./h_b).^(1/2);
-    plot(ax,t,V_b,'r-',LineWidth=1.5);
-    hold on
-    % plot(ax,t,Rb_analytical,'r--',LineWidth=1.5);
-    % ylim([0 1.1e8])
-    ylabel('V_b [ m ]');
-    legend('p_b','p_w','V_b','NumColumns',2,location='southeast')
-
-    x6 = xline(tframe*ps.t/pd.td,'--k','LineWidth',1.5); % dashed line
 
 %% right sublayout
 
@@ -260,9 +111,10 @@ zq = reshape(qnet,gg.nI,gg.nJ);
 zphi = (ps.phi)*reshape(vva.phi,gg.nI,gg.nJ); 
 pqnet = pcolor(ax,xx,yy,zq);
 set(pqnet,'linestyle','none'); % shading interp
+ax.ColorScale = 'log';
 cx = colorbar();
 colormap(parula)
-clim([0 5e-1])
+clim([1e-6 5e-1])
 cx.Label.String = 'q_{all} [ m^2 s^{-1} ]'; 
 cx.Label.Units = 'normalized'; 
 cx.Label.Position = [2.2 0.5]; 
@@ -270,16 +122,32 @@ cx.Label.Position = [2.2 0.5];
 hold on
 [C4,pqnet_contour] = contour(ax,xx,yy,zphi,'linecolor','k','linewidth',0.5);
 % quiver: water flows down the gradient of phi
-[dphidx, dphidy] = gradient(zphi, xx(1,:), yy(:,1));
-qskip = 3; % subsample for readability
-idx_q = 1:qskip:size(xx,1);
-jdx_q = 1:qskip:size(xx,2);
+xx_grid = reshape(xx0, gg.nI, gg.nJ);
+yy_grid = reshape(yy0, gg.nI, gg.nJ);
+nout_mask = reshape(false(size(xx0)), gg.nI, gg.nJ);
+nout_mask(gg.nout) = true;  % exterior nodes
+zphi_clean = zphi;
+zphi_clean(nout_mask) = NaN;
+% fill NaN so gradient doesn't propagate them to interior neighbors
+zphi_fill = fillmissing(zphi_clean, 'nearest');
+% ndgrid: dim1=x (rows), dim2=y (cols)
+% gradient(F, h_col, h_row) returns [dF/dcol, dF/drow] = [dF/dy, dF/dx]
+xvec = xx_grid(:,1);  % x varies along dim 1
+yvec = yy_grid(1,:);  % y varies along dim 2
+[dphidy, dphidx] = gradient(zphi_fill, yvec, xvec);
+qskip = 6; % subsample for readability
+idx_q = 1:qskip:gg.nI;
+jdx_q = 1:qskip:gg.nJ;
 qmag = sqrt(dphidx.^2 + dphidy.^2);
-qmag(qmag==0) = 1;
-hquiver = quiver(ax, xx(idx_q,jdx_q), yy(idx_q,jdx_q), ...
-    -dphidx(idx_q,jdx_q)./qmag(idx_q,jdx_q), ...
-    -dphidy(idx_q,jdx_q)./qmag(idx_q,jdx_q), ...
-    0.4, 'k', 'LineWidth', 0.6);
+qmag(qmag < eps) = 1;
+qu = -dphidx(idx_q,jdx_q)./qmag(idx_q,jdx_q);
+qv = -dphidy(idx_q,jdx_q)./qmag(idx_q,jdx_q);
+% hide arrows at exterior nodes
+nout_sub = nout_mask(idx_q, jdx_q);
+qu(nout_sub) = NaN;
+qv(nout_sub) = NaN;
+hquiver = quiver(ax, xx_grid(idx_q,jdx_q), yy_grid(idx_q,jdx_q), ...
+    qu, qv, 0.6, 'w', 'LineWidth', 1.0);
 title('net flux','FontSize',14);
 ylabel('y (km)')
 axis equal
@@ -432,11 +300,17 @@ for i_idx = 1:length(frame_indices)
 
     % update quiver arrows
     zphi_new = (ps.phi)*reshape(vva.phi,gg.nI,gg.nJ);
-    [dphidx, dphidy] = gradient(zphi_new, xx(1,:), yy(:,1));
+    zphi_new(nout_mask) = NaN;
+    zphi_fill = fillmissing(zphi_new, 'nearest');
+    [dphidy, dphidx] = gradient(zphi_fill, yvec, xvec);
     qmag = sqrt(dphidx.^2 + dphidy.^2);
-    qmag(qmag==0) = 1;
-    hquiver.UData = -dphidx(idx_q,jdx_q)./qmag(idx_q,jdx_q);
-    hquiver.VData = -dphidy(idx_q,jdx_q)./qmag(idx_q,jdx_q);
+    qmag(qmag < eps) = 1;
+    qu = -dphidx(idx_q,jdx_q)./qmag(idx_q,jdx_q);
+    qv = -dphidy(idx_q,jdx_q)./qmag(idx_q,jdx_q);
+    qu(nout_sub) = NaN;
+    qv(nout_sub) = NaN;
+    hquiver.UData = qu;
+    hquiver.VData = qv;
 
     phs.CData = (ps.hs)*reshape(vva.hs,gg.nI,gg.nJ);
     phs_contour.ZData = (ps.phi)*reshape(vva.phi,gg.nI,gg.nJ);
@@ -451,12 +325,6 @@ for i_idx = 1:length(frame_indices)
 
     set(ttext,{'string'},{['t=' num2str(vva.t*ps.t/(24*60*60),'%.1f'), ' d']})  %notice the column vector of new values
 
-    x1.Value = vva.t*ps.t/pd.td;
-    x2.Value = vva.t*ps.t/pd.td;
-    x3.Value = vva.t*ps.t/pd.td;
-    x4.Value = vva.t*ps.t/pd.td;
-    x5.Value = vva.t*ps.t/pd.td;
-    x6.Value = vva.t*ps.t/pd.td;
     disp(vva.t*ps.t/pd.td);
     refreshdata
     drawnow

@@ -62,7 +62,7 @@ def plot_gps_stress_timeseries(
 
     if not stress_path.exists():
         raise FileNotFoundError(
-            f'Missing {stress_path}. Run nevis_gps_stresses.m first to generate the GPS stress timeseries file.'
+            f'Missing {stress_path}. Run analysis/nevis_gps_stresses.m first to generate the GPS stress timeseries file.'
         )
 
     stress = sio.loadmat(stress_path, squeeze_me=True)

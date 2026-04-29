@@ -23,6 +23,7 @@ codegen/
 
 # Simulink autosave extension
 *.autosave
+*.prj
 
 # Simulink cache files
 *.slxc
@@ -65,3 +66,6 @@ octave-workspace
 /presentation/
 /results/
 .DS_Store
+
+# all __pycache__
+__pycache__/
