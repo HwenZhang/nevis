@@ -7,7 +7,9 @@ oo.root = '';           % filename root
 oo.fn = mfilename;      % filename
 oo.code = '../nevis';   % code directory
 addpath(oo.code);
-load('topo_b');         % load topogrpahy
+script_dir = fileparts(mfilename('fullpath'));
+repo_root = fileparts(script_dir);
+load(fullfile(repo_root, 'data', 'topo_b.mat'));  % load topography
 oo.reversey = 1;
 
 %% parameters
