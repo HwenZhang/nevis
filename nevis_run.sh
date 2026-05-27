@@ -285,8 +285,10 @@ log "Config: parallel=$MAX_PARALLEL  retries=$MAX_RETRIES  timeout=${JOB_TIMEOUT
 
 # --- Move generated scripts ---
 # mv ./generated_scripts/spinup/* ./ 2>/dev/null || true
-mv ./generated_scripts/ice_dynamics/spinup/* ./ 2>/dev/null || true
-mv ./generated_scripts/ice_dynamics/drainage/* ./ 2>/dev/null || true
+mv ./generated_scripts/spinup/* ./ 2>/dev/null || true
+mv ./generated_scripts/drainage/* ./ 2>/dev/null || true
+# mv ./generated_scripts/ice_dynamics/spinup/* ./ 2>/dev/null || true
+# mv ./generated_scripts/ice_dynamics/drainage/* ./ 2>/dev/null || true
 
 # --- Prepare directories & clean previous state ---
 mkdir -p "$LOG_DIR" "$STATE_DIR" "$DONE_DIR"

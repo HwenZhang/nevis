@@ -110,8 +110,13 @@ for iter_new = 1:max_iter_new+1
     norm_F6 = norm(F6,inf);
     norm_F7 = norm(F7,inf);
     norm_F8 = norm(F8,inf);
-    norm_F9 = norm(F9,inf);
-    norm_F10 = norm(F10,inf);
+    if oo.include_ice
+        norm_F9 = norm(F9,inf);
+        norm_F10 = norm(F10,inf);
+    else
+        norm_F9 = 0;
+        norm_F10 = 0;
+    end
 
     norms_F = [norm_F1 norm_F2 norm_F3 norm_F4 norm_F5 norm_F6 norm_F7 norm_F8 norm_F9 norm_F10];
 
@@ -150,8 +155,13 @@ for iter_new = 1:max_iter_new+1
         [m6,i6] = max(abs(F6));
         [m7,i7] = max(abs(F7));
         [m8,i8] = max(abs(F8));
-        [m9,i9] = max(abs(F9));
-        [m10,i10] = max(abs(F10));
+        if oo.include_ice
+            [m9,i9] = max(abs(F9));
+            [m10,i10] = max(abs(F10));
+        else
+            m9 = 0; i9 = 0;
+            m10 = 0; i10 = 0;
+        end
         disp([ iter_new m1 m2 m3 m4 m5 m6 m7 m8 m9 m10]);
         disp([ 0 i1 i2 i3 i4 i5 i6 i7 i8 i9 i10]); 
     end

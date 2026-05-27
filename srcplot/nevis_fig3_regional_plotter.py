@@ -67,12 +67,28 @@ class NevisFig3Plotter:
     def load_terrain(self):
         """Load terrain data from file"""
         mat_path = os.path.join('./data/nevis_regional/morlighem_for_nevis_140km.mat')
-        raw = sio.loadmat(mat_path, squeeze_me=True)
+        raw = sio.loadmat(mat_path, squeeze_me=True, struct_as_record=False)
         morlighem_for_nevis_140km = raw['morlighem_for_nevis_140km']
-        self.X_terrain = morlighem_for_nevis_140km['X_km'].item()
-        self.Y_terrain = morlighem_for_nevis_140km['Y_km'].item()
-        self.B_terrain = morlighem_for_nevis_140km['B_km'].item()
-        self.S_terrain = morlighem_for_nevis_140km['S_km'].item()
+
+        def get_terrain_field(*names):
+            for name in names:
+                if hasattr(morlighem_for_nevis_140km, name):
+                    return np.asarray(getattr(morlighem_for_nevis_140km, name), dtype=np.float64)
+                if getattr(morlighem_for_nevis_140km, 'dtype', None) is not None and morlighem_for_nevis_140km.dtype.names:
+                    if name in morlighem_for_nevis_140km.dtype.names:
+                        value = morlighem_for_nevis_140km[name]
+                        if isinstance(value, np.ndarray) and value.shape == ():
+                            value = value.item()
+                        return np.asarray(value, dtype=np.float64)
+            available = getattr(morlighem_for_nevis_140km, '_fieldnames', None)
+            if available is None and getattr(morlighem_for_nevis_140km, 'dtype', None) is not None:
+                available = morlighem_for_nevis_140km.dtype.names
+            raise KeyError(f"Missing terrain field; tried {names}, available fields are {available}")
+
+        self.X_terrain = get_terrain_field('X_m', 'X_km')
+        self.Y_terrain = get_terrain_field('Y_m', 'Y_km')
+        self.B_terrain = get_terrain_field('B_m', 'B_km')
+        self.S_terrain = get_terrain_field('S_m', 'S_km')
 
     def load_data(self):
         """Load and process all data"""

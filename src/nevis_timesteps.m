@@ -21,7 +21,7 @@ if ~isfield(pp,'phi_s'), pp.phi_s = -inf; end
 
 % ================= TIMESTEPPING OPTIONS =================
 % update ice velocity
-if ~isfield(oo,'include_ice'), oo.include_ice = 1; end
+if ~isfield(oo,'include_ice'), oo.include_ice = 0; end
 if ~isfield(oo,'cavity_coupling'), oo.cavity_coupling = 0; end  % update sliding speed in cavity opening term
 if ~isfield(oo,'melt_coupling'), oo.melt_coupling = 0; end      % update sliding speed in basal melt term
 
@@ -217,8 +217,8 @@ while t<t_stop+oo.dt_min
                sum(vv.Sr(gg.cin).*(gg.cmean(gg.cin,:)*gg.Dr)); 
     % total elastic sheet volume, scaled with ps.h*ps.x^2
     tt(ti).he = sum(vv2.he(gg.ns).*gg.Dx(gg.ns).*gg.Dy(gg.ns)); 
-    Us = ((gg.nmeanx2(:,gg.es2)*vv.u(gg.es2)).^2+(gg.nmeany2(:,gg.fs2)*vv.v(gg.fs2)).^2 ).^(1/2);
     if oo.include_ice
+        Us = ((gg.nmeanx2(:,gg.es2)*vv.u(gg.es2)).^2+(gg.nmeany2(:,gg.fs2)*vv.v(gg.fs2)).^2 ).^(1/2);
         tt(ti).U = mean(Us);                                % mean ice velocity, scaled with ps.u
         disp(['Mean velocity of the ice sheet is ' num2str(60*tt(ti).U) ' m/yr.']);
     end
@@ -321,10 +321,10 @@ while t<t_stop+oo.dt_min
             return;
         end
         % convergence, plot the velocity field for maintenance
-        disp([num2str(norm(abs(aa.u_obs(gg.ebdy2)-vv1.u(gg.ebdy2)))/norm(vv1.u(gg.ebdy2)))]);
+        % disp([num2str(norm(abs(aa.u_obs(gg.ebdy2)-vv1.u(gg.ebdy2)))/norm(vv1.u(gg.ebdy2)))]);
         % [u_inv, v_inv] = nevis_velocity(aa.H, vv1.u, vv1.v, aa.phi_0-vv1.phi, aa, pp, gg, oo);
         % [u_inv, v_inv] = nevis_velocity(aa.H, aa.u_obs, aa.v_obs, aa.phi_0-vv1.phi, aa, pp, gg, oo);
-        if oo.visualize_vel
+        if oo.include_ice && oo.visualize_vel
             % vv_vel_solve = vv;
             % vv_vel_solve.u = u_inv;
             % vv_vel_solve.v = v_inv;

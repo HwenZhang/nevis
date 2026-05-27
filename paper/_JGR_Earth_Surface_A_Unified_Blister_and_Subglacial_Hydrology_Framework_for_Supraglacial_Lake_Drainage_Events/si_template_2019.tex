@@ -1,0 +1,125 @@
+\documentclass[draft,jgrga]{agutexSI2019}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  SUPPORTING INFORMATION TEMPLATE
+%
+%% ------------------------------------------------------------------------ %%
+%
+%
+%Please use this template when formatting and submitting your Supporting Information.
+
+%This template serves as both a “table of contents” for the supporting information for your article and as a summary of files.
+%
+%
+%OVERVIEW
+%
+%Please note that all supporting information will be peer reviewed with your manuscript. It will not be copyedited if the paper is accepted.
+%In general, the purpose of the supporting information is to enable authors to provide and archive auxiliary information such as data tables, method information, figures, video, or computer software, in digital formats so that other scientists can use it.
+%The key criteria are that the data:
+% 1. supplement the main scientific conclusions of the paper but are not essential to the conclusions (with the exception of
+%    including %data so the experiment can be reproducible);
+% 2. are likely to be usable or used by other scientists working in the field;
+% 3. are described with sufficient precision that other scientists can understand them, and
+% 4. are not exe files.
+%
+%USING THIS TEMPLATE
+%
+%***All references should be included in the reference list of the main paper so that they can be indexed, linked, and counted as citations.  The reference section does not count toward length limits.
+%
+%All Supporting text and figures should be included in this document. Insert supporting information content into each appropriate section of the template. To add additional captions, simply copy and paste each sample as needed.
+
+%Tables may be included, but can also be uploaded separately, especially if they are larger than 1 page, or if necessary for retaining table formatting. Data sets, large tables, video files, and audio files should be uploaded separately. Include their captions in this document and list the file name with the caption. You will be prompted to upload these files on the Upload Files tab during the submission process, using file type “Supporting Information (SI)”
+
+%IMPORTANT NOTE ON FIGURES AND TABLES
+% Placeholders for figures and tables appear after the \end{article} command, after references.
+% DO NOT USE \psfrag or \subfigure commands.
+%
+\usepackage{graphicx}
+\usepackage{amsmath}
+%
+%  Uncomment the following command to allow illustrations to print
+%   when using Draft:
+ \setkeys{Gin}{draft=false}
+ \raggedbottom
+%
+% You may need to use one of these options for graphicx depending on the driver program you are using. 
+%
+% [xdvi], [dvipdf], [dvipsone], [dviwindo], [emtex], [dviwin],
+% [pctexps],  [pctexwin],  [pctexhp],  [pctex32], [truetex], [tcidvi],
+% [oztex], [textures]
+
+\begin{document}
+
+\title{Supporting Information for "A Unified Blister and Subglacial Hydrology Framework for Supraglacial Lake Drainage Events"}
+
+\authors{Hanwen Zhang\affil{1}, Laura A.\ Stevens\affil{1}, Ian J.\ Hewitt\affil{2}, Harry Stuart\affil{2}}
+
+\affiliation{1}{Department of Earth Sciences, University of Oxford, South Parks Road, Oxford OX1 3AN, UK}
+\affiliation{2}{Mathematical Institute, University of Oxford, Woodstock Road, Oxford OX2 6GG, UK}
+
+\newtheorem{lemma}{Lemma} 
+\newtheorem{corollary}{Corollary}
+\newcommand{\Grad}{\boldsymbol{\nabla}}
+\newcommand{\Div}{\Grad\cdot}
+\newcommand{\Curl}{\Grad\times}
+\newcommand{\pdiff}[2]{\frac{\partial{#1}}{\partial{#2}}}
+\newcommand{\diff}[2]{\frac{\text{d}{#1}}{\text{d}{#2}}}
+\newcommand{\difftwo}[2]{\frac{\text{d}^2{#1}}{\text{d}{#2}^2}}
+\newcommand{\pdifftwo}[2]{\frac{\partial^2{#1}}{\partial{#2}^2}}
+\newcommand{\vel}{\boldsymbol{v}}
+\newcommand{\Vel}{\boldsymbol{V}}
+\newcommand{\bvec}[1]{\hat{\boldsymbol{#1}}}
+\newcommand{\eye}{\boldsymbol{I}}
+\newcommand{\DV}[1]{\boldsymbol{D}\left({#1}\right)}
+\newcommand{\gravity}{\boldsymbol{g}}
+\newcommand{\eq}[1]{{#1}^{eq}}
+\newcommand{\xdiff}[2]{{#1}^{\left({#2}\right)}}
+\newcommand{\scale}[1]{\left[{#1}\right]}
+\newcommand{\zeroth}{^{(0)}}
+\newcommand{\first}{^{(1)}}
+\newcommand{\order}[1]{\mathcal{O}\left(\omega^{#1}\right)}
+\newcommand{\RNum}[1]{\uppercase\expandafter{\romannumeral #1\relax}}
+\newcommand{\secref}[1]{Section.\ref{#1}}
+\newcommand{\figref}[1]{Figure.\ref{#1}}
+\newcommand{\tabref}[1]{Table.\ref{#1}}
+\newcommand{\appref}[1]{Appendix.\ref{#1}}
+\newcommand{\eqnref}[1]{Equation.\ref{#1}}
+
+\begin{article}
+
+\noindent\textbf{Additional Supporting Information (Files uploaded separately)}
+\begin{enumerate}
+\item Captions for Videos S1-S5.
+\end{enumerate}
+
+\noindent\textbf{Introduction}
+
+The supporting information includes videos of the modelled blister propagation in Sect. 5: A regional study in western Greenland.
+
+\noindent\textbf{Videos S1-S5} %Type or paste caption here.
+
+\textbf{Videos illustrating the hydrological responses to a lake drainage event in western Greenland.}
+(\textbf{a}) Water flux magnitude (background blue colour) and $0.1$-m contour (blue line) of the blister thickness following the lake drainage event at $t=0$ d. Black lines are contours of the hydraulic potential $\phi$. Positions of the lake and hypothetical monitoring stations are marked with coloured dots and triangles. (\textbf{b}) Time series of the fluxes. The blue line is the lake input, with maximum $Q_{l}\sim3000\ \text{m}^3 \ \text{s}^{-1}$. The orange line is the background water outflow of the cavity-channel system. The green line is the blister outflow. The vertical dashed line represents time of the current frame. (\textbf{c}) Time series of the blister thickness at different locations along the blister path. The grey line is the ratio of the blister volume to the volume of the drained lake ($V_b/V_l$). The table below provides values of the effective viscosity and the leakage coefficient for the simulations in the regional study.
+
+%upload your video(s) to AGU's journal submission site and select, "Supporting Information %(SI)" as the file type. Following naming convention: ms01.
+% \bibliography{zhang2025subglacial} 
+\end{article}
+
+\begin{table}[ht!]
+    \centering
+    \begin{tabular}{lcc}
+        \hline
+        Video Name \hspace{0.25cm} & Effective viscosity $\mu_{eff}$ (Pa s) \hspace{0.25cm} & Leakage coefficient $\kappa$ \\   
+        \hline
+        Video S1 & $20$ & $0$ \\
+        Video S2 & $10$ & $1\times10^{-10}$\\
+        Video S3 & $10$ & $1\times10^{-11}$\\
+        Video S4 & $10$ & $5\times10^{-12}$\\
+        Video S5 & $10$ & $0$\\
+        \hline    
+    \end{tabular}
+    \label{tab:video_info}
+\end{table}
+
+\end{document}

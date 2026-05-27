@@ -1,0 +1,220 @@
+
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[T1]{fontenc}
+\usepackage{enumitem}
+\usepackage{silence}
+\usepackage{apacite}
+
+\title{Review: A Unified Blister and Subglacial Hydrology Framework for Supraglacial Lake Drainage Events}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Summary}
+
+The authors have further developed an existing subglacial hydrology model to include blister
+dynamics in addition to meltwater flow through the distributed and channelized components of
+the modeling framework. Subglacial blisters form following supraglacial lake drainage events,
+which are observed across Greenland. The rapid input of water to the bed causes localized uplift
+of the glacier and can alter the ice flow velocity, both of which are observed in satellite and field
+observations.
+
+In the new modeling framework, blister dynamics are controlled by effective viscosity and a
+leakage length scale. The introduction of these terms to the PDE system describing water flow
+through the subglacial environment allows for water from the blister to enter into the distributed
+and channelized components of the system, and also for the blister itself to propagate down
+glacier introducing a new meltwater pathway in the model. The parameter space of the new
+modeling framework is explored using an idealized setup applied to both a winter and
+summertime representation of the subglacial environment. Additionally, the model is applied to a
+regional case study, and is able to produce dynamics consistent with observations following a
+lake drainage event in western Greenland.
+
+\section*{Overall Statement}
+
+Generally speaking, this manuscript is well constructed, well written, and the work described
+represents a significant development of subglacial hydrology modeling. I believe that it warrants
+publication and my suggested revisions are all quite minor.
+
+\section*{General Comments}
+
+The introduction section could use more description of the physics relevant to this work and
+more specific/detailed definitions. As it is currently written, the introduction is quite short and to
+the point. As it is also well written, this is not a bad thing, but I believe that it would benefit the
+reader to have more context regarding the physics governing water flow through the subglacial
+environment and how this connects to ice flow dynamics. I would also suggest spending some
+time here providing more detail about the field and satellite observations that provide evidence of
+blister dynamics. These additions would help to emphasize why the modeling development here
+by the authors, which is quite a substantial advancement, is addressing a significant knowledge
+gap.
+
+The methods section does not clearly indicate which equations in the model description are
+established in previous published work on blister modeling versus novel components of this
+subglacial hydrology modeling framework with incorporated blister physics. It is stated that the
+new terms linking the existing subglacial hydrology model to the blister dynamics are $\Sigma_m$
+and $Q_m$. However, there are many more equations in this section, and it’s not entirely clear if they all
+are based on Hewitt (2013), are novel to this work, or are pulling from additional sources. The
+work presented here is very interesting and is a useful advancement for the capabilities of
+subglacial hydrology models to better represent observations. However, this could be more
+clearly emphasized by highlighting the new components here and how they connect to
+established modeling frameworks. Additional citations throughout this section could also be
+helpful in this distinction.
+
+\section*{Specific Comments}
+
+\subsection*{Key Points}
+
+Currently stated key points are clear and accurate, but they do not emphasize the main
+achievements of the work. I suggest reworking to highlight the advancement of subglacial
+modeling capabilities represented in this work, and the new modeling framework's ability to
+reproduce field observations. Shift the focus from the methods to the results. I would suggest
+specifically mentioning the ability of the model to reproduce observed behavior of changes of
+glacier dynamics following lake drainage events.
+
+\subsection*{Abstract}
+
+Line 26: Suggested addition to highlight differences: propagate $\rightarrow$ propagate slowly
+
+\subsection*{Plain Language Summary}
+
+Very clear and nicely written.
+
+\subsection*{Introduction}
+
+\begin{itemize}[leftmargin=*]
+\item Line 54: Perhaps it is worth mentioning that supraglacial lake drainage events have been
+observed in both summer and winter seasons (e.g. Dean et al., 2026). If the reader does not
+already know this, it is not clear why there would be observed blister propagations in winter.
+
+\item Line 56: What type of length scale do blisters propagate over: 100s of meters, kilometers?
+
+\item Line 63: Generally a more detailed explanation of the physics of blisters in the subglacial system
+would be useful in this first paragraph. The introduction quickly jumps from a quick overview of
+why blisters are important to previous modeling efforts of blister dynamics. I think that the rest
+of the paper would be well served if a bit more time was spent in the introduction highlighting
+the gap that this work is filling in our ability to model the subglacial environment. Perhaps a
+summary of field/satellite observations providing evidence of blister dynamics and/or a more
+fleshed out explanation of the dynamics between ice flow and the subglacial environment could
+help to highlight why it is important to incorporate blisters into subglacial hydrology models.
+
+\item Line 76: I suggest adding a final sentence to this paragraph noting that these models do not
+include a sophisticated representation of other components of the subglacial water flow, or note
+if any do.
+
+\item Line 83: This sentence gets to the heart of the paper. I think the point could be made stronger if a
+bit more explanation was done early on in the introduction regarding why we should care about
+blister dynamics and therefore their incorporation into subglacial hydrology models.
+\end{itemize}
+
+\subsection*{Method}
+
+\begin{itemize}[leftmargin=*]
+\item Line 165: Do the necessary observations to constrain this value exist or is the $h_0$ parameter
+currently unknown and will require new/more field observations to determine?
+
+\item Line 172: ``the Poisson’s ratio'' is a bit awkward, suggest changing to ``Poisson’s ratio'' or ``the
+Poisson ratio''
+\end{itemize}
+
+\subsection*{Results}
+
+\begin{itemize}[leftmargin=*]
+\item Line 220--223: This is a bit confusing. Are channels allowed to grow in this model setup and they
+have not developed because the model is representing a wintertime subglacial drainage system,
+or are they intentionally prevented from evolving? After saturating the local cavity sheet, the
+blister could initiate channel growth, but it doesn’t? I would think that 10 days is enough time to
+see some initiation of channel growth, even if most of the melt remains within the blister.
+
+\item Line 238: This sentence is a bit awkward, and it is long. I suggest breaking it in two.
+
+\item Line 251: Super cool!
+
+\item Line 253: Do the number of channels in the network influence the blister dynamics? No need to run
+any additional tests, I would just be curious to know more if this is something the authors already
+looked into.
+\end{itemize}
+
+\subsection*{Discussion}
+
+\begin{itemize}[leftmargin=*]
+\item Line 272: It would be helpful to remind the reader here what $\kappa$ represents in the lengthscale
+equation.
+
+\item Line 291: Effective viscosity is mentioned in the abstract, and then not again until here except in
+equation (3) of the methods. Since it is an important parameter in governing blister propagation,
+it would be helpful to go into more detail describing what the parameter is and how its value is
+determined, either here or in the methods when it is first introduced.
+
+\item Line 298: Is this range pulled from the literature?
+
+\item Line 304: What is a bending dominated regime?
+
+\item Line 310: Is this inferred value range consistent with previous parameterizations of effective
+viscosity?
+
+\item Line 318: It would be helpful to define bending-dominated versus gravity-dominated regimes.
+
+\item Line 311--318: This paragraph could use more detail in general. The results are interesting, but
+this explanation feels rushed.
+
+\item Line 325: I had assumed that leakage referenced water moving from the blister to the distributed
+component of the subglacial drainage system, but it seems that it also includes movement into
+the channelized system. A definition would make things more clear.
+\end{itemize}
+
+\subsection*{Regional Study}
+
+Line 390: Cool!
+
+\subsection*{Conclusion}
+
+Concise and nicely written.
+
+\subsection*{Figures}
+
+\begin{itemize}[leftmargin=*]
+\item Figure 1: It would be helpful to reference this figure in the introduction text when explaining
+what blisters are.
+
+\item Figure 2: Really cool figure! Panels (b--d) Water flux magnitude is listed as the spatially mapped
+variable in the background of the panels. It would be helpful to explicitly state which water flux
+this is as several are referenced in the text and plotted previous panel. Total water flux in the
+subglacial environment? Panel (f) displays the blister thickness at different locations over time.
+This is very helpful to have, but would be more clear with a more detailed explanation of the
+setup. I think a brief explanation in the text (line 225) of what the hypothetical monitoring
+stations are would be useful.
+
+\item Figure 3: Final sentence in caption is a bit awkward. Suggest removing.
+
+\item Figure 6: Very nice figure!
+\end{itemize}
+
+\subsection*{Appendix A}
+
+No comments.
+
+\subsection*{Appendix B}
+
+Line 496: Are these cases chosen because they represent end members of possible behavior of
+the system?
+
+\subsection*{Appendix C}
+
+No comments.
+
+\section*{References}
+
+\begin{itemize}
+\item Dean, C.W., Scharien, R., Willis, I. and McDougall, K.A., 2025. \textit{A decade of winter supraglacial
+lake drainage across Northeast Greenland using C-band SAR}. EGUsphere, 2025, pp.1--38.
+
+\item Hewitt, I.J., 2013. \textit{Seasonal changes in ice sheet motion due to melt water lubrication}.
+Earth and Planetary Science Letters, 371, pp.16--25.
+\end{itemize}
+
+\end{document}
