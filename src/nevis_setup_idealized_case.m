@@ -15,7 +15,8 @@ casename = oo.casename;
 rn = oo.rn;
 fn = oo.fn;
 oo.dataset = cfg.casename;
-oo.dn = cfg.data_root;
+oo.case_root = cfg.case_root;
+oo.dn = cfg.case_root;
 
 gcfg = cfg.geometry;
 L = gcfg.length_m;
@@ -55,18 +56,28 @@ pp.x_l = lcfg.x_fraction * L / ps.x;
 pp.y_l = lcfg.y_fraction * W / ps.x;
 pp.V_l = lcfg.volume_m3 / (ps.Q0 * ps.t);
 pp.t_drainage = lcfg.drainage_day * pd.td / ps.t;
+if isfield(lcfg, 'drainage_after_start_days') && ~isempty(lcfg.drainage_after_start_days)
+    pp.t_drainage = vv.t + lcfg.drainage_after_start_days * pd.td / ps.t;
+end
 pp.t_duration = lcfg.duration_days * pd.td / ps.t;
 [pp.ni_l, pp.sum_l] = nevis_lakes(pp.x_l, pp.y_l, gg, oo);
 
 pp = idealized_moulin_input(cfg, pp, pd, ps, gg, oo);
+pp = idealized_station_points(cfg, pp, ps, gg, oo, L);
 
 oo.dt = cfg.run.dt_days * pd.td / ps.t;
-oo.t_span = cfg.run.t_span_days * pd.td / ps.t;
-oo.pts_ni = unique([pp.ni_l(:); pp.ni_m(:)]', 'stable');
+if isfield(cfg.run, 't_span_after_start_days') && ~isempty(cfg.run.t_span_after_start_days)
+    oo.t_span = vv.t + cfg.run.t_span_after_start_days * pd.td / ps.t;
+else
+    oo.t_span = cfg.run.t_span_days * pd.td / ps.t;
+end
+ni_gps = get_opt(pp, 'ni_gps', []);
+oo.pts_ni = unique([pp.ni_l(:); pp.ni_m(:); ni_gps(:)]', 'stable');
 
 oo.casename = casename;
 oo.dataset = cfg.casename;
-oo.dn = cfg.data_root;
+oo.case_root = cfg.case_root;
+oo.dn = cfg.case_root;
 oo.rn = rn;
 oo.fn = fn;
 
@@ -122,6 +133,19 @@ switch mode
             ((pd.u_b / pd.l_r) + (pd.K_c .* ((ps.phi * N) .^ 3))))) ./ ps.h);
     case 'function'
         [vv, aa] = icfg.function(aa, vv, pd, ps, pp, gg, oo, cfg);
+    case 'result_timestep'
+        init_file = fullfile(oo.root, oo.results, icfg.result_case, ...
+            icfg.timestep_file);
+        if exist(init_file, 'file') ~= 2
+            error('nevis_setup_idealized_case:MissingInitialTimestep', ...
+                'Initial timestep file not found: %s', init_file);
+        end
+        data = load(init_file, 'vv');
+        if ~isfield(data, 'vv')
+            error('nevis_setup_idealized_case:MissingInitialVV', ...
+                'Initial timestep file must contain variable vv: %s', init_file);
+        end
+        vv = data.vv;
     otherwise
         error('nevis_setup_idealized_case:UnsupportedInitialHydrology', ...
             'Unsupported cfg.initial_hydrology.mode: %s', icfg.mode);
@@ -176,6 +200,26 @@ else
     pp.input_function = @(t) normalize_moulin_input(q(:) .* ...
         (1 - exp(-t / (ramp_days * pd.td / ps.t))), pp) ./ ...
         (ps.m * ps.x ^ 2);
+end
+end
+
+function pp = idealized_station_points(cfg, pp, ps, gg, oo, L)
+if ~isfield(cfg, 'stations') || isempty(cfg.stations)
+    pp.ni_gps = [];
+    return
+end
+switch lower(cfg.stations.mode)
+    case 'downstream_lake'
+        if isempty(pp.x_l)
+            pp.ni_gps = [];
+            return
+        end
+        x = pp.x_l(1):cfg.stations.spacing_m / ps.x:L / ps.x;
+        y = pp.y_l(1) * ones(size(x));
+        pp.ni_gps = nevis_gps_array(x, y, gg, oo);
+    otherwise
+        error('nevis_setup_idealized_case:UnsupportedStations', ...
+            'Unsupported cfg.stations.mode: %s', cfg.stations.mode);
 end
 end
 

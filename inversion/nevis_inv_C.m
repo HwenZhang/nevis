@@ -1,4 +1,14 @@
-%% NEVIS C-field inversion script
+function [inv, vv_hydro, summary] = nevis_inv_C(config_file)
+%NEVIS_INV_C Invert a regional NEVIS C field from an inversion config.
+%
+% Usage:
+%   [inv, vv_hydro, summary] = nevis_inv_C('./cases/nevis_inversion.m');
+% Prefer nevis_run_inversion(config_file) for user-facing workflows where
+% cfg.sliding_law selects the inversion backend.
+%
+% The config declares all data inputs and output locations. Missing files are
+% errors; this function does not fall back to legacy ./data files.
+%
 % Invert for the spatial basal friction coefficient C(x,y) using adjoint method
 % Given: observed surface velocity (u_obs, v_obs), 
 %        ice geometry (H, s, b),
@@ -13,40 +23,66 @@
 % Author: Hanwen Zhang
 % Date: Feb 2026
 
-clc; clear; close all; format compact;
+if nargin < 1 || isempty(config_file)
+    error('nevis_inv_C:MissingConfig', ...
+        'Call nevis_inv_C with an inversion config file.');
+end
+
+format compact;
+cfg = load_inversion_config(config_file);
+root = cfg.root;
+code = cfg.code;
+addpath(code);
+addpath(fullfile(root, 'inversion'));
 
 %% ============================================================
 %  1. Load spinup results and set up NEVIS framework
 %  ============================================================
-oo.root = './';
-oo.code = './src';
-oo.results = 'results';
-oo.dataset = 'nevis_regional';
-% note: this is a standard case used to initialise the 
-oo.casename = 'n2d_region_ice_inversion_ns3'; 
-oo.fn = ['/',oo.casename];
-oo.rn = [oo.root,oo.results,oo.fn];
-oo.in = [oo.root, 'data/', oo.casename];
-oo.dn = [oo.root, 'data/', oo.dataset, '/'];
-addpath(oo.code);
+state_file = resolve_project_path(cfg.source.state_file, cfg);
+if exist(state_file, 'file') ~= 2
+    error('nevis_inv_C:MissingSourceState', ...
+        'Configured inversion source state not found: %s', state_file);
+end
+state = load(state_file, 'pp', 'pd', 'ps', 'gg', 'aa', 'oo');
+required_state = {'pp', 'pd', 'ps', 'gg', 'aa', 'oo'};
+for k_req = 1:numel(required_state)
+    if ~isfield(state, required_state{k_req})
+        error('nevis_inv_C:MissingSourceVariable', ...
+            'Source state "%s" must contain variable %s.', ...
+            state_file, required_state{k_req});
+    end
+end
+pp = state.pp;
+pd = state.pd;
+ps = state.ps;
+gg = state.gg;
+aa = state.aa;
+oo = state.oo;
+
+oo.root = root;
+oo.code = code;
+oo.results = cfg.results;
+oo.dataset = cfg.dataset.name;
+oo.dataset_root = cfg.dataset.root;
+oo.dn = cfg.dataset.root;
+oo.casename = cfg.source.casename;
+oo.fn = ['/', oo.casename];
+oo.rn = fullfile(oo.root, oo.results, oo.casename);
 
 % set the surface runoff options
-racmo = 0;  % use RACMO runoff data (if 0, use simple sinusoidal function)
-distributed = 1;  % if 1, distribute runoff across the domain; if 0, input to discrete moulins
-partition_ratio = 0.5;
-
-% load saved spinup state
-load([oo.in, oo.fn], 'pp','pd','ps','gg','aa','oo');
+racmo = cfg.forward_hydrology.racmo_runoff;
+distributed = cfg.forward_hydrology.distributed_input;
+partition_ratio = cfg.partition_ratio;
 [pd,ps,pp,oo] = nevis_update_parameters_ice(pd,ps,pp,oo);
 
 % Picard iteration settings for velocity solver
-oo.iter_max = 100;      % increase from default 10 — essential for convergence
-oo.tol_vel = 1e-6;      % convergence tolerance
-oo.display_norms = 0;   % set to 1 for debugging
-oo.verb = 0;            % suppress Picard iteration messages from nevis_velocity
-oo.display_norms = 0;
-oo.boundary_method = 'stress_l_vel_tbl';
-oo.mask_boundary_method = 'stress_free';  % allow outlet glaciers to flow freely at mask boundary
+oo.iter_max = cfg.solver.iter_max;
+oo.tol_vel = cfg.solver.tol_vel;
+oo.display_norms = cfg.solver.display_norms;
+oo.verb = cfg.solver.verb;
+oo.boundary_method = cfg.solver.boundary_method;
+oo.mask_boundary_method = cfg.solver.mask_boundary_method;
+oo.partition_ratio = partition_ratio;
 
 fprintf('\n=== Key dimensionless parameters ===\n');
 fprintf('pp.n_glen  = %d\n', pp.n_glen);
@@ -60,22 +96,39 @@ fprintf('pp.C (default) = %.4e\n', pp.C);
 fprintf('pp.C2      = %.4e\n', pp.C2);
 fprintf('================================\n\n');
 
-% add regularisation parameters to pp if not already present (for backward compatibility)
-pp.eps_reg = 1e-1;      % regularisation on strain rates
-pp.Ub_reg = 1e-16;      % regularisation on sliding speed (max-based, matches nevis_velocity)
-pp.N_slide_reg = 1e-16; % regularisation on effective pressure (max-based, matches nevis_velocity)
-pp.taud_reg = 1e-16;    % regularisation on basal shear stress [ may not be needed ? ]
-pp.C2 = 0;              % added power-law coefficient in sliding law
+pp.eps_reg = cfg.regularization.eps_reg;
+pp.Ub_reg = cfg.regularization.Ub_reg;
+pp.N_slide_reg = cfg.regularization.N_slide_reg;
+pp.taud_reg = cfg.regularization.taud_reg;
+pp.C2 = cfg.regularization.C2;
 
 %% ============================================================
 %  2. Load or generate observed velocity
 %  ============================================================
 % Option A: load observed velocity from data file
 gg = nevis_label_ice_test(gg, oo);
-load([oo.dn 'measures_for_nevis_140km.mat']);  % [m/yr]
-dd = measures_for_nevis_140km;
-u_obs = dd.u_obs_dim / (ps.u_b * pd.ty);  % non-dimensionalise
-v_obs = dd.v_obs_dim / (ps.u_b * pd.ty);
+velocity_file = resolve_dataset_path(cfg.velocity.file, cfg);
+if exist(velocity_file, 'file') ~= 2
+    error('nevis_inv_C:MissingVelocityFile', ...
+        'Configured velocity file not found: %s', velocity_file);
+end
+velocity_data = load(velocity_file);
+velocity_var = cfg.velocity.variable;
+if ~isfield(velocity_data, velocity_var)
+    error('nevis_inv_C:MissingVelocityVariable', ...
+        'Velocity file "%s" does not contain variable "%s".', ...
+        velocity_file, velocity_var);
+end
+dd = velocity_data.(velocity_var);
+u_field = cfg.velocity.u_field;
+v_field = cfg.velocity.v_field;
+if ~isfield(dd, u_field) || ~isfield(dd, v_field)
+    error('nevis_inv_C:MissingVelocityFields', ...
+        'Velocity variable must contain fields "%s" and "%s".', ...
+        u_field, v_field);
+end
+u_obs = dd.(u_field) / (ps.u_b * pd.ty);  % non-dimensionalise
+v_obs = dd.(v_field) / (ps.u_b * pd.ty);
 u_obs = gg.emean2*u_obs(:);               % project edge vel onto nodes
 v_obs = gg.fmean2*v_obs(:);
 u_obs(gg.eout2) = NaN;
@@ -93,10 +146,19 @@ fprintf('Excluded %d ebdy + %d fbdy Dirichlet edges from misfit\n', ...
     length(gg.ebdy2), length(gg.fbdy2));
 
 % effective pressure for forward model (use spinup or assume N=1)
-oo.initname = 'n2d_region_ice_inversion_ns3';
-init_cond = load(['./data/' oo.initname '/' '0365.mat']); 
-                           % load initial condition
-vv = init_cond.vv;         % load state variables from the initial 
+init_file = resolve_project_path(cfg.initial_hydrology.file, cfg);
+if exist(init_file, 'file') ~= 2
+    error('nevis_inv_C:MissingInitialHydrology', ...
+        'Configured initial hydrology file not found: %s', init_file);
+end
+init_var = cfg.initial_hydrology.variable;
+init_cond = load(init_file, init_var);
+if ~isfield(init_cond, init_var)
+    error('nevis_inv_C:MissingInitialHydrologyVariable', ...
+        'Initial hydrology file "%s" does not contain variable "%s".', ...
+        init_file, init_var);
+end
+vv = init_cond.(init_var);
 % N_obs = max(aa.phi_0 - vv.phi, pp.N_slide_reg);
 N_obs = aa.phi_0 - vv.phi;
 % no noise for real observations
@@ -106,30 +168,9 @@ v_obs_noisy = v_obs;
 %% ============================================================
 %  3. Inversion settings
 %  ============================================================
-opts_inv.u0_reg = 1e-1;      % velocity scale for relative misfit (dimensionless)
-
-% Continuation schedule (coarse -> fine): start strongly regularized, then relax
-% opts_inv.alpha_schedule = [1e-3, 3e-4, 1e-4, 3e-5, 1e-5, 3e-6, 1e-7];
-% opts_inv.gamma_schedule = [1e-6, 3e-7, 1e-7, 3e-8, 1e-8, 3e-9, 1e-10];
-% opts_inv.alpha_schedule = [1e-3, 3e-4, 1e-4, 3e-5, 1e-6];
-% opts_inv.gamma_schedule = [1e-6, 3e-7, 1e-7, 3e-8, 1e-9];
-opts_inv.alpha_schedule = [1e-3, 1e-4, 1e-9, 1e-12];
-opts_inv.gamma_schedule = [1e-6, 1e-7, 1e-8, 1e-9];
-opts_inv.max_iter_schedule = [60, 50, 30, 30];  % more iters when reg is strong
-% Iteration controls (per stage)
-opts_inv.max_iter_stage = 50;    % max iterations per continuation stage
-opts_inv.max_iter_total = 200;    % safety cap across all stages
-
-% Convergence thresholds (per stage)
-opts_inv.J_tol = 1e-3;
-opts_inv.dJ_tol = 1e-6;
-
-% Initialize alpha/gamma with first schedule values (needed for initial test call)
+opts_inv = cfg.opts_inv;
 opts_inv.alpha = opts_inv.alpha_schedule(1);
 opts_inv.gamma = opts_inv.gamma_schedule(1);
-opts_inv.verbose = false;
-opts_inv.check_grad = false;  % set true to run Taylor test & per-component FD check
-opts_inv.speed_misfit = true; % true: misfit on speed |u|; false: misfit on components (u,v)
 
 % History
 history.stage = [];
@@ -137,10 +178,7 @@ history.iter  = [];
 history.J     = [];
 history.normg = [];
 
-% initial guess for C (perturbed from truth for synthetic test)
-% load(['./data/C_inversion_results.mat'], 'C_hat_dim');
-% C_init = 0.01*C_hat_dim * (ps.u_b^(1/pp.n_slide) / ps.tau);
-C_init = ones(gg.nIJ,1);  % uniform prior
+C_init = build_initial_C(cfg.prior, gg);
 c_prior = log(C_init);
 
 % build gradient operator L for regularisation (using grid finite differences)
@@ -190,7 +228,7 @@ grad_mag_f = abs(dvdy_f(gg.fin2));  % velocity gradient at y-edges
 
 % Adaptive weight: w = 1 / (1 + beta * |grad(u)|/mean(|grad(u)|))
 % High gradient -> small w -> less regularization
-beta_adaptive = 0.1;  % tuning parameter (increase to reduce reg more in shear zones)
+beta_adaptive = cfg.regularization.adaptive_beta;
 w_e = 1 ./ (1 + beta_adaptive * grad_mag_e / mean(grad_mag_e));
 w_f = 1 ./ (1 + beta_adaptive * grad_mag_f / mean(grad_mag_f));
 
@@ -212,101 +250,6 @@ fprintf('  J(c0) = %.6e, norm(g) = %.6e\n', J0, norm(g0));
 if isnan(J0) || isinf(J0)
     error('Objective still undefined. Check forward model.');
 end
-
-%% check the gradient calculator
-if opts_inv.check_grad
-    % === Gradient verification (finite-difference Taylor test) ===
-    fprintf('\n--- Gradient verification (Taylor test) ---\n');
-    % Pick a random perturbation direction
-    rng(42);
-    dc = randn(size(c0));
-    dc = dc / norm(dc);  % unit direction
-    
-    % Directional derivative from adjoint
-    dJdc_adj = g0' * dc;
-    
-    % Taylor test: J(c0 + h*dc) = J(c0) + h*dJ/dc*dc + O(h^2)
-    % First-order:  |J(c0+h*dc) - J0|           should be O(h)
-    % With gradient: |J(c0+h*dc) - J0 - h*g'*dc| should be O(h^2)
-    h_vals = [1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7];
-    fprintf('  %12s  %14s  %14s  %10s  %10s\n', ...
-        'h', '|J(c+h*dc)-J0|', '|...-h*g''dc|', 'ratio_1st', 'ratio_2nd');
-    err1_prev = NaN; 
-    err2_prev = NaN;
-    r2_vals = [];
-    for ih = 1:length(h_vals)
-        h = h_vals(ih);
-        J_pert = obj_fun(c0 + h * dc);
-        err1 = abs(J_pert - J0);
-        err2 = abs(J_pert - J0 - h * dJdc_adj);
-        if ih > 1
-            r1 = err1_prev / err1;
-            r2 = err2_prev / err2;
-            r2_vals(end+1) = r2; %#ok<AGROW>
-        else
-            r1 = NaN; r2 = NaN;
-        end
-        fprintf('  %12.1e  %14.6e  %14.6e  %10.2f  %10.2f\n', ...
-            h, err1, err2, r1, r2);
-        err1_prev = err1; err2_prev = err2;
-    end
-    fprintf('  Expected ratios: ~10 (1st order), ~100 (2nd order)\n');
-    fprintf('  If ratio_2nd ≈ 100, adjoint gradient is correct.\n');
-    fprintf('  If ratio_2nd ≈ 10 or erratic, gradient has a bug.\n');
-    
-    % Estimate gradient relative error from Taylor test
-    % At smallest h: err2 ≈ h*|ε|, err1 ≈ h*|g·dc|
-    % So relative error ≈ err2/err1
-    grad_rel_err = err2_prev / max(err1_prev, 1e-30);
-    fprintf('\n  Estimated gradient relative error: %.2f%%\n', 100*grad_rel_err);
-    
-    if grad_rel_err < 0.05
-        fprintf('  ✅ Gradient accurate to ~%.1f%% (acceptable for L-BFGS)\n', 100*grad_rel_err);
-        if grad_rel_err > 0.005
-            fprintf('     Note: small residual error likely from Picard solver tolerance.\n');
-            fprintf('     To reduce: tighten oo.tol_vel (currently %.1e).\n\n', oo.tol_vel);
-        else
-            fprintf('\n');
-        end
-    elseif grad_rel_err < 0.20
-        fprintf('  ⚠️  Gradient has ~%.0f%% error. Usable but suboptimal.\n', 100*grad_rel_err);
-        fprintf('     Consider tightening oo.tol_vel or checking adjoint.\n\n');
-    else
-        fprintf('  ❌ GRADIENT ERROR TOO LARGE: %.0f%%\n', 100*grad_rel_err);
-        error('Gradient relative error > 20%%. Fix the adjoint or tighten Picard tolerance before proceeding.');
-    end
-    
-    % Also check a few individual components via central differences
-    fprintf('--- Per-component gradient check (central FD, 20 random nodes) ---\n');
-    n_check = 20;
-    idx_check = randperm(length(c0), n_check);
-    h_fd = 1e-5;
-    fprintf('  %6s  %14s  %14s  %14s  %10s\n', ...
-        'node', 'g_adjoint', 'g_FD_central', 'abs_diff', 'rel_diff');
-    g_match = true;
-    for ic = 1:n_check
-        idx = idx_check(ic);
-        c_plus = c0; c_plus(idx) = c_plus(idx) + h_fd;
-        c_minus = c0; c_minus(idx) = c_minus(idx) - h_fd;
-        J_plus = obj_fun(c_plus);
-        J_minus = obj_fun(c_minus);
-        g_fd = (J_plus - J_minus) / (2 * h_fd);
-        g_adj = g0(idx);
-        abs_diff = abs(g_adj - g_fd);
-        rel_diff = abs_diff / max(abs(g_adj), abs(g_fd) + 1e-30);
-        fprintf('  %6d  %14.6e  %14.6e  %14.6e  %10.4f\n', ...
-            idx, g_adj, g_fd, abs_diff, rel_diff);
-        if rel_diff > 0.1 && abs_diff > 1e-8
-            g_match = false;
-        end
-    end
-    if g_match
-        fprintf('  ✅ Gradient matches finite differences (all rel_diff < 10%%)\n\n');
-    else
-        fprintf('  ❌ GRADIENT MISMATCH DETECTED\n');
-        error('Gradient verification failed (per-component FD check): adjoint gradient does not match central finite differences (rel_diff > 10%%). Fix the adjoint before proceeding.');
-    end
-end % check_grad
 
 fprintf('Starting C-field inversion (continuation) with current N...\n');
 
@@ -374,14 +317,21 @@ C_hat_dim = C_hat * (ps.tau / ps.u_b^(1/pp.n_slide));  % dimensional C [Pa s/m]
 fprintf('\nInversion complete: final J=%.6e, exitflag=%d\n', J_hat, exitflag);
 
 %% save the relelvant fields so that we can reconstruct the C field with arbitrary C1/C2 partitioning in the post-processing step without rerunning the forward model
-save('./data/C_inversion_results_ns3.mat', 'C_hat', 'u_obs_noisy', 'v_obs_noisy', 'N_current', 'aa', 'pp', 'gg', 'oo', 'ps', 'exitflag', 'partition_ratio');
+inversion_file = resolve_dataset_path(cfg.output.inversion_file, cfg);
+hydrology_file = resolve_dataset_path(cfg.output.initial_hydrology_file, cfg);
+ensure_parent_dir(inversion_file);
+ensure_parent_dir(hydrology_file);
+save(inversion_file, 'C_hat', 'C_hat_dim', 'u_obs_noisy', 'v_obs_noisy', ...
+    'N_current', 'aa', 'pp', 'gg', 'oo', 'ps', 'exitflag', ...
+    'partition_ratio', 'history', 'opts_inv', 'J_hat', 'cfg');
 % save('./data/C_inversion_C2_results.mat', 'c_hat', 'C1_hat', 'C2_hat', 'C1_hat_dim', 'C2_hat_dim', 'history', 'opts_inv', 'J_hat', 'exitflag');
+fprintf('Saved inversion result to %s\n', inversion_file);
 
 %% run a forward case with the inverted C so it can be reused later
 % Inversion uses mu=inf (pure Weertman); forward uses mu=0.25 (Coulomb+Weertman)
 % with C partitioned into C1 (Coulomb) and C2 (power-law) via partition_ratio
-mu_s_fwd = 0.25;
-fprintf('Running forward model (mu_s=%.2f, partition_ratio=%.2f) and saving reusable case n2d_region_ice_inversion_ns3...\n', mu_s_fwd, partition_ratio);
+mu_s_fwd = cfg.forward_hydrology.mu_s;
+fprintf('Preparing reusable hydrology state (mu_s=%.2f, partition_ratio=%.2f).\n', mu_s_fwd, partition_ratio);
 aa_fwd = aa;
 aa_fwd.C = C_hat;
 u_fwd = u_obs_noisy;
@@ -402,15 +352,28 @@ inv = struct('C_hat', C_hat, ...
              'ps', ps, ...
              'partition_ratio', partition_ratio);
 
-vv_forward = struct('u', u_fwd, 'v', v_fwd, 'N', N_current);
-[N_forward, vv_forward] = nevis_run_fwd_hydrology(inv, vv_forward, mu_s_fwd, racmo, distributed, 'n2d_region_ice_inversion_ns3');
-vv_forward.N = N_forward;
-save('./data/velocity_inverted_ns3.mat', 'vv_forward', 'C_hat', 'C_hat_dim', 'inv');
-fprintf('Saved reusable forward case to ./results/n2d_region_ice_inversion_ns3\n');
+vv_hydro = struct('u', u_fwd, 'v', v_fwd, 'N', N_current);
+if cfg.forward_hydrology.enabled
+    output_casename = cfg.forward_hydrology.output_casename;
+    [N_forward, vv_hydro] = nevis_run_fwd_hydrology(inv, vv_hydro, ...
+        mu_s_fwd, racmo, distributed, output_casename);
+    vv_hydro.N = N_forward;
+end
+save(hydrology_file, 'vv_hydro', 'C_hat', 'C_hat_dim', 'inv', 'cfg');
+fprintf('Saved reusable initial hydrology to %s\n', hydrology_file);
+
+summary = struct;
+summary.config_file = config_file;
+summary.inversion_file = inversion_file;
+summary.initial_hydrology_file = hydrology_file;
+summary.final_J = J_hat;
+summary.exitflag = exitflag;
+summary.partition_ratio = partition_ratio;
 
 %% ============================================================
 %  5. Plot results
 %  ============================================================
+if cfg.plot.enabled
 C_prior = C_init;
 % C_prior = exp(C_prior);
 % compute final velocity (warm start from obs)
@@ -555,6 +518,9 @@ text(ax, 0.02, 0.9, txt, 'Units', 'normalized', 'VerticalAlignment', 'top', 'Fon
 set(findall(fig, '-property', 'FontName'), 'FontName', 'Helvetica');
 set(findall(fig, '-property', 'FontSize'), 'FontSize', 10);
 drawnow;
+end
+
+end
 
 %% ============================================================
 %  Objective function and adjoint gradient
@@ -942,4 +908,151 @@ function tau_b_over_Ub = slide_fun_local(Ub, N, C, mu, pp)
     tau_b_over_Ub = Nr .* Ur.^(1/n-1) .* ...
         (mu.^(-n).*Ur + C.^(-n).*Nr.^n).^(-1/n) + ...
         pp.C2 * Ur.^(1/n-1);
+end
+
+function cfg = load_inversion_config(config_file)
+    if exist(config_file, 'file') ~= 2
+        error('nevis_inv_C:MissingConfig', ...
+            'Inversion config not found: %s', config_file);
+    end
+
+    [~, ~, ext] = fileparts(config_file);
+    switch lower(ext)
+        case '.m'
+            run(config_file);
+            if exist('cfg', 'var') ~= 1
+                error('nevis_inv_C:MissingCfg', ...
+                    'M-file inversion config must assign variable cfg.');
+            end
+        case '.mat'
+            data = load(config_file);
+            if ~isfield(data, 'cfg')
+                error('nevis_inv_C:MissingCfg', ...
+                    'MAT inversion config must contain variable cfg.');
+            end
+            cfg = data.cfg;
+        case '.json'
+            cfg = jsondecode(fileread(config_file));
+        otherwise
+            error('nevis_inv_C:UnsupportedConfig', ...
+                'Unsupported inversion config extension: %s', ext);
+    end
+
+    cfg.config_file = config_file;
+    validate_inversion_config(cfg);
+end
+
+function validate_inversion_config(cfg)
+    required = {'name', 'root', 'code', 'results', 'dataset', 'source', ...
+        'velocity', 'initial_hydrology', 'output', 'solver', ...
+        'regularization', 'opts_inv', 'prior', 'forward_hydrology', ...
+        'plot', 'partition_ratio'};
+    for i = 1:numel(required)
+        if ~isfield(cfg, required{i}) || isempty(cfg.(required{i}))
+            error('nevis_inv_C:MissingConfigField', ...
+                'Missing inversion config field cfg.%s.', required{i});
+        end
+    end
+    require_fields(cfg.dataset, {'name', 'root', 'manifest'}, 'cfg.dataset');
+    require_fields(cfg.source, {'casename', 'state_file'}, 'cfg.source');
+    require_fields(cfg.velocity, {'file', 'variable', 'u_field', 'v_field'}, 'cfg.velocity');
+    require_fields(cfg.initial_hydrology, {'file', 'variable'}, 'cfg.initial_hydrology');
+    require_fields(cfg.output, {'inversion_file', 'initial_hydrology_file'}, 'cfg.output');
+    require_fields(cfg.solver, {'iter_max', 'tol_vel', 'display_norms', ...
+        'verb', 'boundary_method', 'mask_boundary_method'}, 'cfg.solver');
+    require_fields(cfg.regularization, {'eps_reg', 'Ub_reg', ...
+        'N_slide_reg', 'taud_reg', 'C2', 'adaptive_beta'}, ...
+        'cfg.regularization');
+    require_fields(cfg.opts_inv, {'u0_reg', 'alpha_schedule', ...
+        'gamma_schedule', 'max_iter_schedule', 'max_iter_stage', ...
+        'max_iter_total', 'J_tol', 'dJ_tol', 'verbose', 'check_grad', ...
+        'speed_misfit'}, 'cfg.opts_inv');
+    require_fields(cfg.prior, {'mode'}, 'cfg.prior');
+    require_fields(cfg.forward_hydrology, {'enabled', 'mu_s', ...
+        'racmo_runoff', 'distributed_input', 'output_casename'}, ...
+        'cfg.forward_hydrology');
+    require_fields(cfg.plot, {'enabled'}, 'cfg.plot');
+
+    if numel(cfg.opts_inv.alpha_schedule) ~= numel(cfg.opts_inv.gamma_schedule)
+        error('nevis_inv_C:ScheduleSizeMismatch', ...
+            'cfg.opts_inv.alpha_schedule and gamma_schedule must have the same length.');
+    end
+    if isempty(cfg.opts_inv.max_iter_schedule)
+        error('nevis_inv_C:MissingConfigField', ...
+            'cfg.opts_inv.max_iter_schedule must not be empty.');
+    end
+end
+
+function require_fields(s, names, label)
+    for i = 1:numel(names)
+        if ~isfield(s, names{i}) || isempty(s.(names{i}))
+            error('nevis_inv_C:MissingConfigField', ...
+                'Missing inversion config field %s.%s.', label, names{i});
+        end
+    end
+end
+
+function C_init = build_initial_C(prior, gg)
+    switch lower(prior.mode)
+        case 'uniform'
+            require_fields(prior, {'C'}, 'cfg.prior');
+            C_init = prior.C * ones(gg.nIJ, 1);
+        otherwise
+            error('nevis_inv_C:UnsupportedPrior', ...
+                'Unsupported cfg.prior.mode: %s', prior.mode);
+    end
+end
+
+function path_out = resolve_dataset_path(path_in, cfg)
+    if isempty(path_in)
+        path_out = '';
+        return
+    end
+    if is_absolute_path(path_in)
+        path_out = path_in;
+    else
+        path_out = fullfile(cfg.dataset.root, path_in);
+    end
+    root_canon = canonical_path(cfg.dataset.root);
+    path_canon = canonical_path(path_out);
+    if ~startsWith([path_canon filesep], [root_canon filesep])
+        error('nevis_inv_C:PathOutsideDataset', ...
+            'Configured dataset path is outside cfg.dataset.root: %s', path_out);
+    end
+end
+
+function path_out = resolve_project_path(path_in, cfg)
+    if isempty(path_in)
+        path_out = '';
+        return
+    end
+    if is_absolute_path(path_in)
+        path_out = path_in;
+    else
+        path_out = fullfile(cfg.root, path_in);
+    end
+end
+
+function ensure_parent_dir(path_in)
+    parent = fileparts(path_in);
+    if ~isempty(parent) && exist(parent, 'dir') ~= 7
+        mkdir(parent);
+    end
+end
+
+function tf = is_absolute_path(path_in)
+    tf = startsWith(path_in, filesep) || ...
+        ~isempty(regexp(path_in, '^[A-Za-z]:[\\/]', 'once'));
+end
+
+function path_out = canonical_path(path_in)
+    if exist(path_in, 'file') || exist(path_in, 'dir')
+        path_out = char(java.io.File(path_in).getCanonicalPath());
+    else
+        [parent, name, ext] = fileparts(path_in);
+        if isempty(parent)
+            parent = '.';
+        end
+        path_out = fullfile(char(java.io.File(parent).getCanonicalPath()), [name ext]);
+    end
 end

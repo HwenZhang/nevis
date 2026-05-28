@@ -31,7 +31,7 @@ class NevisIceFlowPlotter:
     """
 
     def __init__(self, casename, results_dir='results',
-                 matlab_path="/Applications/MATLAB_R2025b.app/bin/matlab",
+                 matlab_path="/Applications/MATLAB_R2026a.app/bin/matlab",
                  right_column_mode='uplift',
                  show_quivers=True,
                  flux_quiver_reference=None):

@@ -27,10 +27,15 @@ names = fieldnames(values);
 for i = 1:numel(names)
     name = names{i};
     value = values.(name);
+    if ~isa(value, 'function_handle')
+        target.(name) = value;
+    end
+end
+for i = 1:numel(names)
+    name = names{i};
+    value = values.(name);
     if isa(value, 'function_handle')
         target.(name) = value(target);
-    else
-        target.(name) = value;
     end
 end
 end

@@ -18,7 +18,9 @@ The repository contains the essential files for running the model and visualisin
 ├── src/                       # Essential source files
 ├── srcgen/                    # Python scripts to generate MATLAB scripts for parameter sweep
 ├── srcplot/                   # Python/MATLAB scripts for visualisation
-└── generated_scripts/         # MATLAB scripts that can be run directly
+├── generated_scripts/         # MATLAB scripts that can be run directly
+├── inversion                  # inversion scripts to calculate background C
+├── webpage                    # A draft webpage to visualise the results
 ```
 
 # How to run

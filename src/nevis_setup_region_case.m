@@ -14,8 +14,10 @@ end
 casename = oo.casename;
 rn = oo.rn;
 fn = oo.fn;
-oo.dataset = cfg.casename;
-oo.dn = cfg.data_root;
+oo.case_root = cfg.case_root;
+oo.dataset = cfg.dataset.name;
+oo.dataset_root = cfg.dataset.root;
+oo.dn = cfg.dataset.root;
 
 [gg, b, s, region, oo] = nevis_import_region_geometry(cfg, ps, oo);
 
@@ -45,6 +47,9 @@ end
 aa.phi_b = max(aa.phi_0, aa.phi_a);
 
 [pp, region] = nevis_import_region_moulins(cfg, pp, gg, oo, ps, region);
+if isfield(vv, 't') && isfield(cfg.lakes, 'drainage_after_start_days')
+    cfg.lakes.initial_time = vv.t;
+end
 [pp, lakes, region] = nevis_import_region_lakes(cfg, pp, pd, ps, gg, oo, region);
 [pp, oo, region] = nevis_import_region_runoff(cfg, pp, pd, ps, gg, lakes, oo, region);
 [pp, oo, region] = nevis_import_region_stations(cfg, pp, gg, oo, ps, region);
@@ -52,10 +57,17 @@ aa.phi_b = max(aa.phi_0, aa.phi_a);
 oo.dt = get_nested(cfg, {'run', 'dt_days'}, 1/24) * pd.td / ps.t;
 oo.save_timesteps = get_nested(cfg, {'run', 'save_timesteps'}, true);
 oo.save_pts_all = get_nested(cfg, {'run', 'save_pts_all'}, true);
-oo.t_span = get_nested(cfg, {'run', 't_span_days'}, 1:365) * pd.td / ps.t;
+if isfield(vv, 't') && isfield(cfg.run, 't_span_after_start_days') && ...
+        ~isempty(cfg.run.t_span_after_start_days)
+    oo.t_span = vv.t + cfg.run.t_span_after_start_days * pd.td / ps.t;
+else
+    oo.t_span = get_nested(cfg, {'run', 't_span_days'}, 1:365) * pd.td / ps.t;
+end
 oo.casename = casename;
-oo.dataset = cfg.casename;
-oo.dn = cfg.data_root;
+oo.case_root = cfg.case_root;
+oo.dataset = cfg.dataset.name;
+oo.dataset_root = cfg.dataset.root;
+oo.dn = cfg.dataset.root;
 oo.rn = rn;
 oo.fn = fn;
 

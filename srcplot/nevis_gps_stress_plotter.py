@@ -85,7 +85,7 @@ class NevisGpsStressPlotter:
         self.stress_path = self.data_dir / f'gps_stresses_{casename}.mat'
         default_matlab = shutil.which('matlab')
         if default_matlab is None:
-            fallback_matlab = Path('/Applications/MATLAB_R2025b.app/bin/matlab')
+            fallback_matlab = Path('/Applications/MATLAB_R2026a.app/bin/matlab')
             if fallback_matlab.exists():
                 default_matlab = str(fallback_matlab)
         self.matlab_path = matlab_path or default_matlab

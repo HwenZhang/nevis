@@ -2,21 +2,37 @@ function [pp, oo, region] = nevis_import_region_stations(cfg, pp, gg, oo, ps, re
 %NEVIS_IMPORT_REGION_STATIONS Load station/GPS points and assemble output nodes.
 
 scfg = cfg.stations;
-station_file = nevis_region_resolve_path(get_opt(scfg, 'file', ''), cfg);
 pp.ni_gps = [];
 
-if ~isempty(station_file) && exist(station_file, 'file') == 2
-    stations = nevis_region_load_var(station_file, get_opt(scfg, 'variable', ''));
-    x = get_values(stations, get_opt(scfg, 'x_field', 'x_m')) / ps.x;
-    y = get_values(stations, get_opt(scfg, 'y_field', 'y_m')) / ps.x;
-    pp.x_gps = x;
-    pp.y_gps = y;
-    pp.ni_gps = nevis_gps_array(x, y, gg, oo);
-    region.stations = stations;
-    region.station_file = station_file;
-else
-    error('nevis_import_region_stations:MissingFile', ...
-        'Station file not found: %s', station_file);
+mode = get_opt(scfg, 'mode', 'file');
+switch lower(mode)
+    case 'none'
+        stations = struct;
+    case 'coordinates'
+        x = scfg.x_m(:)' / ps.x;
+        y = scfg.y_m(:)' / ps.x;
+        pp.x_gps = x;
+        pp.y_gps = y;
+        pp.ni_gps = nevis_gps_array(x, y, gg, oo);
+        stations = struct('x_m', scfg.x_m(:)', 'y_m', scfg.y_m(:)');
+        region.stations = stations;
+    case 'file'
+        station_file = nevis_region_resolve_path(get_opt(scfg, 'file', ''), cfg);
+        if isempty(station_file) || exist(station_file, 'file') ~= 2
+            error('nevis_import_region_stations:MissingFile', ...
+                'Station file not found: %s', station_file);
+        end
+        stations = nevis_region_load_var(station_file, get_opt(scfg, 'variable', ''));
+        x = get_values(stations, get_opt(scfg, 'x_field', 'x_m')) / ps.x;
+        y = get_values(stations, get_opt(scfg, 'y_field', 'y_m')) / ps.x;
+        pp.x_gps = x;
+        pp.y_gps = y;
+        pp.ni_gps = nevis_gps_array(x, y, gg, oo);
+        region.stations = stations;
+        region.station_file = station_file;
+    otherwise
+        error('nevis_import_region_stations:UnsupportedMode', ...
+            'Unsupported station mode: %s', mode);
 end
 
 pts = [];

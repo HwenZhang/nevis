@@ -4,19 +4,44 @@ function [pp, lakes, region] = nevis_import_region_lakes(cfg, pp, pd, ps, gg, oo
 lcfg = cfg.lakes;
 oo.random_lakes = 0;
 mode = get_opt(lcfg, 'mode', 'table');
-lake_file = nevis_region_resolve_path(get_opt(lcfg, 'file', ''), cfg);
-
-if isempty(lake_file) || exist(lake_file, 'file') ~= 2
-    error('nevis_import_region_lakes:MissingFile', ...
-        'Lake file not found: %s', lake_file);
-end
-
-data = nevis_region_load_var(lake_file, get_opt(lcfg, 'variable', ''));
 
 switch lower(mode)
+    case 'manual'
+        lakes = struct;
+        lakes.x_m = lcfg.x_m(:);
+        lakes.y_m = lcfg.y_m(:);
+        lakes.volume_m3 = lcfg.volume_m3(:);
+        if numel(lakes.volume_m3) == 1 && numel(lakes.x_m) > 1
+            lakes.volume_m3 = repmat(lakes.volume_m3, numel(lakes.x_m), 1);
+        end
+        if isfield(lcfg, 'drainage_after_start_days') && ~isempty(lcfg.drainage_after_start_days)
+            lakes.drainage_time_start = lcfg.drainage_after_start_days(:);
+            lakes.drainage_time_end = lcfg.drainage_after_start_days(:);
+            lakes.time_reference = 'after_start';
+        else
+            lakes.drainage_time_start = lcfg.drainage_day(:);
+            lakes.drainage_time_end = lcfg.drainage_day(:);
+            lakes.time_reference = 'absolute';
+        end
+        lakes.drainage_duration_days = lcfg.duration_days(:);
+        if numel(lakes.drainage_duration_days) == 1 && numel(lakes.x_m) > 1
+            lakes.drainage_duration_days = repmat(lakes.drainage_duration_days, numel(lakes.x_m), 1);
+        end
     case 'environs_lakes_catalogue'
+        lake_file = nevis_region_resolve_path(get_opt(lcfg, 'file', ''), cfg);
+        if isempty(lake_file) || exist(lake_file, 'file') ~= 2
+            error('nevis_import_region_lakes:MissingFile', ...
+                'Lake file not found: %s', lake_file);
+        end
+        data = nevis_region_load_var(lake_file, get_opt(lcfg, 'variable', ''));
         lakes = import_environs_lakes(data);
     case 'table'
+        lake_file = nevis_region_resolve_path(get_opt(lcfg, 'file', ''), cfg);
+        if isempty(lake_file) || exist(lake_file, 'file') ~= 2
+            error('nevis_import_region_lakes:MissingFile', ...
+                'Lake file not found: %s', lake_file);
+        end
+        data = nevis_region_load_var(lake_file, get_opt(lcfg, 'variable', ''));
         lakes = import_lake_table(data, lcfg);
     otherwise
         error('nevis_import_region_lakes:UnsupportedMode', ...
@@ -32,7 +57,13 @@ pp.V_l = scale * lakes.volume_m3(:) / (ps.Q0 * ps.t);
 pp.t_drainage = 0.5 * pd.td / ps.t * ...
     (lakes.drainage_time_start(:) + lakes.drainage_time_end(:)) + ...
     time_offset * pd.td / ps.t;
+if isfield(lakes, 'time_reference') && strcmpi(lakes.time_reference, 'after_start')
+    pp.t_drainage = get_opt(lcfg, 'initial_time', 0) + pp.t_drainage;
+end
 pp.t_duration = 0.5 * pd.td / ps.t * lakes.drainage_duration_days(:);
+if strcmpi(mode, 'manual')
+    pp.t_duration = pd.td / ps.t * lakes.drainage_duration_days(:);
+end
 
 if isempty(pp.x_l)
     pp.ni_l = [];
@@ -42,7 +73,7 @@ else
 end
 
 region.lakes = lakes;
-region.lake_file = lake_file;
+if exist('lake_file', 'var'), region.lake_file = lake_file; end
 
 end
 

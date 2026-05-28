@@ -4,7 +4,7 @@
 #  - File-based job state (portable, debuggable: see .jobs/)
 #  - Auto retry on failure
 #  - Timestamped per-job logs
-#  - Spinup → drainage dependency chain
+#  - Spinup to drainage dependency chain
 #  - Clean signal handling
 #  - Works on macOS bash 3.x and Linux bash 4+
 # ============================================================
@@ -16,6 +16,8 @@ MAX_RETRIES=${MAX_RETRIES:-2}         # retry failed jobs up to N times
 SKIP_SPINUP=${SKIP_SPINUP:-false}      # skip spinup, run drainage directly
 POLL_INTERVAL=${POLL_INTERVAL:-5}     # seconds between reap cycles
 JOB_TIMEOUT=${JOB_TIMEOUT:-0}         # per-job wall-clock limit (0 = none)
+CASE_DIR=${CASE_DIR:-cases}           # directory containing case configs
+CASE_WORKFLOW=${CASE_WORKFLOW:-idealized} # idealized | regional
 
 # --- Directories ---
 LOG_DIR="logs"
@@ -79,6 +81,29 @@ queue_size() {
     fi
 }
 
+case_matches_workflow() {
+    local name="$1"
+    case "$CASE_WORKFLOW" in
+        regional)
+            case "$name" in
+                n2d_region*|n2d_regional*) return 0 ;;
+                *) return 1 ;;
+            esac
+            ;;
+        idealized)
+            case "$name" in
+                n2d_region*|n2d_regional*) return 1 ;;
+                n1d*|n2d*) return 0 ;;
+                *) return 1 ;;
+            esac
+            ;;
+        *)
+            log_err "Unknown CASE_WORKFLOW=$CASE_WORKFLOW (expected idealized or regional)"
+            exit 1
+            ;;
+    esac
+}
+
 # ============================================================
 #  Running-job helpers (derived from state dir)
 # ============================================================
@@ -108,7 +133,7 @@ running_count() {
 # ============================================================
 cleanup() {
     echo ""
-    log_warn "Signal received — stopping all running jobs..."
+    log_warn "Signal received - stopping all running jobs..."
     for name in $(get_running_names); do
         local pid
         pid=$(pid_get "$name")
@@ -147,8 +172,12 @@ launch_job() {
     state_set "$name" "RUNNING"
     start_set "$name" "$(date +%s)"
 
-    # Launch MATLAB; stdout+stderr → per-job log
-    matlab -batch "$name" >> "$logfile" 2>&1 &
+    # Launch MATLAB; stdout+stderr -> per-job log
+    if [ "$CASE_WORKFLOW" = "regional" ]; then
+        matlab -batch "n2d_regional_template('$name')" >> "$logfile" 2>&1 &
+    else
+        matlab -batch "n2d_idealized_template('$name')" >> "$logfile" 2>&1 &
+    fi
     local pid=$!
     pid_set "$name" "$pid"
 
@@ -173,7 +202,7 @@ reap_jobs() {
             started=$(start_get "$name")
             elapsed=$((now - started))
             if [ "$elapsed" -gt "$JOB_TIMEOUT" ]; then
-                log_warn "$name timed out (${elapsed}s > ${JOB_TIMEOUT}s) — killing"
+            log_warn "$name timed out (${elapsed}s > ${JOB_TIMEOUT}s) - killing"
                 kill "$pid" 2>/dev/null || true
                 sleep 1
                 kill -9 "$pid" 2>/dev/null || true
@@ -202,7 +231,6 @@ reap_jobs() {
             state_set "$name" "DONE"
             completed_jobs=$((completed_jobs + 1))
             log_ok "$name  (${elapsed}s)  [$completed_jobs/$total_jobs]"
-            mv "${name}.m" "$DONE_DIR/" 2>/dev/null || true
             on_job_success "$name"
         else
             # ---- failure: retry or give up ----
@@ -213,7 +241,7 @@ reap_jobs() {
                 retries_set "$name" "$retries"
                 state_set "$name" "PENDING"
                 queue_push "$name"
-                log_warn "$name failed (exit=$exit_code, ${elapsed}s) — retry $retries/$MAX_RETRIES queued"
+                log_warn "$name failed (exit=$exit_code, ${elapsed}s) - retry $retries/$MAX_RETRIES queued"
             else
                 state_set "$name" "FAILED"
                 completed_jobs=$((completed_jobs + 1))
@@ -225,23 +253,23 @@ reap_jobs() {
 }
 
 # ============================================================
-#  Dependency chain: successful spinup → queue matching drainage
+#  Dependency chain: successful spinup to queue matching drainage
 # ============================================================
 on_job_success() {
     local name="$1"
     case "$name" in *_spinup) ;; *) return 0 ;; esac
 
-    # Extract core parameters shared between spinup and drainage:
-    #   n2d_regional_eps1e_02_kappa1e_11_..._spinup
-    #   n2d_regional_V2e8_eps1e_02_kappa1e_11_..._drainage_highelev
     local core="${name%_spinup}"
-    core="${core#*_eps}"
-    core="eps${core}"
 
-    for f in n[12]d*_drainage*.m; do
+    for f in "$CASE_DIR"/n[12]d*_drainage*.m; do
         [ -f "$f" ] || continue
-        local dname="${f%.m}"
-        if echo "$dname" | grep -qF "$core"; then
+        local dname
+        dname=$(basename "${f%.m}")
+        case_matches_workflow "$dname" || continue
+        case "$dname" in "$core"_*_drainage*) ;;
+            *) continue ;;
+        esac
+        if [ "$(state_get "$dname")" = "NONE" ]; then
             queue_push "$dname"
             retries_set "$dname" "0"
             state_set "$dname" "PENDING"
@@ -256,9 +284,9 @@ on_job_success() {
 # ============================================================
 print_summary() {
     echo ""
-    echo "════════════════════════════════════════════════════"
+    echo "===================================================="
     echo "  JOB SUMMARY"
-    echo "════════════════════════════════════════════════════"
+    echo "===================================================="
     local n_done=0 n_fail=0 n_kill=0 n_other=0
     for sf in "$STATE_DIR"/*.state; do
         [ -f "$sf" ] || continue
@@ -266,29 +294,22 @@ print_summary() {
         jname=$(basename "${sf%.state}")
         st=$(cat "$sf")
         case "$st" in
-            DONE)    n_done=$((n_done+1));   printf '  ✓ %s\n' "$jname" ;;
-            FAILED)  n_fail=$((n_fail+1));   printf '  ✗ %s  → %s/%s.log\n' "$jname" "$LOG_DIR" "$jname" ;;
-            KILLED)  n_kill=$((n_kill+1));   printf '  ⊘ %s  (killed)\n' "$jname" ;;
+            DONE)    n_done=$((n_done+1));   printf '  OK %s\n' "$jname" ;;
+            FAILED)  n_fail=$((n_fail+1));   printf '  FAIL %s  -> %s/%s.log\n' "$jname" "$LOG_DIR" "$jname" ;;
+            KILLED)  n_kill=$((n_kill+1));   printf '  KILLED %s\n' "$jname" ;;
             *)       n_other=$((n_other+1)); printf '  ? %s  (%s)\n' "$jname" "$st" ;;
         esac
     done
-    echo "────────────────────────────────────────────────────"
+    echo "----------------------------------------------------"
     printf '  Done: %d   Failed: %d   Killed: %d\n' "$n_done" "$n_fail" "$n_kill"
-    echo "════════════════════════════════════════════════════"
+    echo "===================================================="
 }
 
 # ============================================================
 #  MAIN
 # ============================================================
 log "NEVIS Job Runner"
-log "Config: parallel=$MAX_PARALLEL  retries=$MAX_RETRIES  timeout=${JOB_TIMEOUT}s  skip_spinup=$SKIP_SPINUP"
-
-# --- Move generated scripts ---
-# mv ./generated_scripts/spinup/* ./ 2>/dev/null || true
-mv ./generated_scripts/spinup/* ./ 2>/dev/null || true
-mv ./generated_scripts/drainage/* ./ 2>/dev/null || true
-# mv ./generated_scripts/ice_dynamics/spinup/* ./ 2>/dev/null || true
-# mv ./generated_scripts/ice_dynamics/drainage/* ./ 2>/dev/null || true
+log "Config: parallel=$MAX_PARALLEL  retries=$MAX_RETRIES  timeout=${JOB_TIMEOUT}s  skip_spinup=$SKIP_SPINUP  case_dir=$CASE_DIR  workflow=$CASE_WORKFLOW"
 
 # --- Prepare directories & clean previous state ---
 mkdir -p "$LOG_DIR" "$STATE_DIR" "$DONE_DIR"
@@ -297,20 +318,22 @@ rm -f "$STATE_DIR"/*.state "$STATE_DIR"/*.pid "$STATE_DIR"/*.retries "$STATE_DIR
 
 # --- Discover and enqueue scripts ---
 if [ "$SKIP_SPINUP" = "true" ]; then
-    for f in n[12]d*.m; do
+    for f in "$CASE_DIR"/n[12]d*.m; do
         [ -f "$f" ] || continue
-        name="${f%.m}"
+        name=$(basename "${f%.m}")
+        case_matches_workflow "$name" || continue
         case "$name" in *_spinup) continue ;; esac
         queue_push "$name"
         retries_set "$name" "0"
         state_set "$name" "PENDING"
         total_jobs=$((total_jobs + 1))
     done
-    log "Skipping spinup — queued $total_jobs jobs directly"
+    log "Skipping spinup - queued $total_jobs jobs directly"
 else
-    for f in n[12]d*.m; do
+    for f in "$CASE_DIR"/n[12]d*.m; do
         [ -f "$f" ] || continue
-        name="${f%.m}"
+        name=$(basename "${f%.m}")
+        case_matches_workflow "$name" || continue
         case "$name" in *_drainage*) continue ;; esac
         queue_push "$name"
         retries_set "$name" "0"
@@ -321,7 +344,7 @@ else
 fi
 
 if [ "$total_jobs" -eq 0 ]; then
-    log_err "No MATLAB scripts found matching n[12]d*.m — exiting."
+    log_err "No case configs found matching $CASE_DIR/n[12]d*.m - exiting."
     exit 1
 fi
 echo ""
@@ -351,7 +374,7 @@ done
 print_summary
 
 if [ "$failed_jobs" -gt 0 ]; then
-    log_err "$failed_jobs job(s) failed — check logs in $LOG_DIR/"
+    log_err "$failed_jobs jobs failed - check logs in $LOG_DIR/"
     exit 1
 fi
 

@@ -1,4 +1,12 @@
-%% NEVIS C-field inversion script
+function [inv, vv_hydro, summary] = nevis_inv_C1(config_file)
+%NEVIS_INV_C1 Invert C with regularised Coulomb sliding and evolving N.
+%
+% Usage:
+%   [inv, vv_hydro, summary] = nevis_inv_C1('./cases/nevis_inversion.m');
+%
+% All inputs, solver options, regularization settings, and output paths are
+% read from the config file.
+%
 % Invert for the spatial basal friction coefficient C(x,y) using adjoint method
 % Given: observed surface velocity (u_obs, v_obs), 
 %        ice geometry (H, s, b),
@@ -13,39 +21,67 @@
 % Author: Hanwen Zhang
 % Date: Feb 2026
 
-clc; clear; close all; format compact;
+if nargin < 1 || isempty(config_file)
+    error('nevis_inv_C1:MissingConfig', ...
+        'Call nevis_inv_C1 with an inversion config file.');
+end
+
+format compact;
+cfg = load_inversion_config(config_file);
+root = cfg.root;
+code = cfg.code;
+addpath(code);
+addpath(fullfile(root, 'inversion'));
 
 %% ============================================================
 %  1. Load spinup results and set up NEVIS framework
 %  ============================================================
-oo.root = './';
-oo.code = './src';
-oo.results = 'results';
-oo.dataset = 'nevis_regional';
-% note: this is a standard case used to initialise the 
-oo.casename = 'n2d_region_ice_inversion_test'; 
-oo.fn = ['/',oo.casename];
-oo.rn = [oo.root,oo.results,oo.fn];
-oo.in = [oo.root, 'data/', oo.casename];
-oo.dn = [oo.root, 'data/', oo.dataset, '/'];
-addpath(oo.code);
+state_file = resolve_project_path(cfg.source.state_file, cfg);
+if exist(state_file, 'file') ~= 2
+    error('nevis_inv_C1:MissingSourceState', ...
+        'Configured inversion source state not found: %s', state_file);
+end
+state = load(state_file, 'pp', 'pd', 'ps', 'gg', 'aa', 'oo');
+required_state = {'pp', 'pd', 'ps', 'gg', 'aa', 'oo'};
+for k_req = 1:numel(required_state)
+    if ~isfield(state, required_state{k_req})
+        error('nevis_inv_C1:MissingSourceVariable', ...
+            'Source state "%s" must contain variable %s.', ...
+            state_file, required_state{k_req});
+    end
+end
+pp = state.pp;
+pd = state.pd;
+ps = state.ps;
+gg = state.gg;
+aa = state.aa;
+oo = state.oo;
+
+oo.root = root;
+oo.code = code;
+oo.results = cfg.results;
+oo.dataset = cfg.dataset.name;
+oo.dataset_root = cfg.dataset.root;
+oo.dn = cfg.dataset.root;
+oo.casename = cfg.source.casename;
+oo.fn = ['/', oo.casename];
+oo.rn = fullfile(oo.root, oo.results, oo.casename);
 
 % set the surface runoff options
-racmo = 0;  % use RACMO runoff data (if 0, use simple sinusoidal function)
-distributed = 1;  % if 1, distribute runoff across the domain; if 0, input to discrete moulins
+racmo = cfg.forward_hydrology.racmo_runoff;
+distributed = cfg.forward_hydrology.distributed_input;
+partition_ratio = cfg.partition_ratio;
 
-% load saved spinup state
-load([oo.in, oo.fn], 'pp','pd','ps','gg','aa','oo');
 [pd,ps,pp,oo] = nevis_update_parameters_ice(pd,ps,pp,oo);
 
 % Picard iteration settings for velocity solver
-oo.iter_max = 100;      % increase from default 10 — essential for convergence
-oo.tol_vel = 1e-6;      % convergence tolerance
-oo.display_norms = 0;   % set to 1 for debugging
-oo.verb = 0;            % suppress Picard iteration messages from nevis_velocity
-oo.display_norms = 0;
-oo.boundary_method = 'stress_l_vel_tbl';
-oo.mask_boundary_method = 'stress_free';  % allow outlet glaciers to flow freely at mask boundary
+oo.iter_max = cfg.solver.iter_max;
+oo.tol_vel = cfg.solver.tol_vel;
+oo.display_norms = cfg.solver.display_norms;
+oo.verb = cfg.solver.verb;
+oo.boundary_method = cfg.solver.boundary_method;
+oo.mask_boundary_method = cfg.solver.mask_boundary_method;
+oo.partition_ratio = partition_ratio;
 
 fprintf('\n=== Key dimensionless parameters ===\n');
 fprintf('pp.n_glen  = %d\n', pp.n_glen);
@@ -59,22 +95,39 @@ fprintf('pp.C (default) = %.4e\n', pp.C);
 fprintf('pp.C2      = %.4e\n', pp.C2);
 fprintf('================================\n\n');
 
-% add regularisation parameters to pp if not already present (for backward compatibility)
-pp.eps_reg = 1e-1;      % regularisation on strain rates
-pp.Ub_reg = 1e-16;      % regularisation on sliding speed (max-based, matches nevis_velocity)
-pp.N_slide_reg = 1e-16; % regularisation on effective pressure (max-based, matches nevis_velocity)
-pp.taud_reg = 1e-16;    % regularisation on basal shear stress [ may not be needed ? ]
-pp.C2 = 0;              % added power-law coefficient in sliding law
+pp.eps_reg = cfg.regularization.eps_reg;
+pp.Ub_reg = cfg.regularization.Ub_reg;
+pp.N_slide_reg = cfg.regularization.N_slide_reg;
+pp.taud_reg = cfg.regularization.taud_reg;
+pp.C2 = cfg.regularization.C2;
 
 %% ============================================================
 %  2. Load or generate observed velocity
 %  ============================================================
 % Option A: load observed velocity from data file
 gg = nevis_label_ice_test(gg, oo);
-load([oo.dn 'measures_for_nevis_140km.mat']);  % [m/yr]
-dd = measures_for_nevis_140km;
-u_obs = dd.u_obs_dim / (ps.u_b * pd.ty);  % non-dimensionalise
-v_obs = dd.v_obs_dim / (ps.u_b * pd.ty);
+velocity_file = resolve_dataset_path(cfg.velocity.file, cfg);
+if exist(velocity_file, 'file') ~= 2
+    error('nevis_inv_C1:MissingVelocityFile', ...
+        'Configured velocity file not found: %s', velocity_file);
+end
+velocity_data = load(velocity_file);
+velocity_var = cfg.velocity.variable;
+if ~isfield(velocity_data, velocity_var)
+    error('nevis_inv_C1:MissingVelocityVariable', ...
+        'Velocity file "%s" does not contain variable "%s".', ...
+        velocity_file, velocity_var);
+end
+dd = velocity_data.(velocity_var);
+u_field = cfg.velocity.u_field;
+v_field = cfg.velocity.v_field;
+if ~isfield(dd, u_field) || ~isfield(dd, v_field)
+    error('nevis_inv_C1:MissingVelocityFields', ...
+        'Velocity variable must contain fields "%s" and "%s".', ...
+        u_field, v_field);
+end
+u_obs = dd.(u_field) / (ps.u_b * pd.ty);  % non-dimensionalise
+v_obs = dd.(v_field) / (ps.u_b * pd.ty);
 u_obs = gg.emean2*u_obs(:);               % project edge vel onto nodes
 v_obs = gg.fmean2*v_obs(:);
 u_obs(gg.eout2) = NaN;
@@ -91,11 +144,19 @@ obs_mask_f(gg.fbdy2) = 0;  % exclude Dirichlet y-boundary edges
 fprintf('Excluded %d ebdy + %d fbdy Dirichlet edges from misfit\n', ...
     length(gg.ebdy2), length(gg.fbdy2));
 
-% effective pressure for forward model (use spinup or assume N=1)
-oo.initname = 'n2d_region_ice_inversion_test';
-init_cond = load(['./data/' oo.initname '/' '0365.mat']); 
-                           % load initial condition
-vv = init_cond.vv;         % load state variables from the initial 
+init_file = resolve_project_path(cfg.initial_hydrology.file, cfg);
+if exist(init_file, 'file') ~= 2
+    error('nevis_inv_C1:MissingInitialHydrology', ...
+        'Configured initial hydrology file not found: %s', init_file);
+end
+init_var = cfg.initial_hydrology.variable;
+init_cond = load(init_file, init_var);
+if ~isfield(init_cond, init_var)
+    error('nevis_inv_C1:MissingInitialHydrologyVariable', ...
+        'Initial hydrology file "%s" does not contain variable "%s".', ...
+        init_file, init_var);
+end
+vv = init_cond.(init_var);
 % N_obs = max(aa.phi_0 - vv.phi, pp.N_slide_reg);
 N_obs = aa.phi_0 - vv.phi;
 % no noise for real observations
@@ -127,35 +188,9 @@ v_obs_noisy = v_obs;
 %% ============================================================
 %  3. Inversion settings
 %  ============================================================
-opts_inv.u0_reg = 1e-1;      % velocity scale for relative misfit (dimensionless)
-
-% Continuation schedule (coarse -> fine): start strongly regularized, then relax
-% opts_inv.alpha_schedule = [1e-3, 3e-4, 1e-4, 3e-5, 1e-5, 3e-6, 1e-7];
-% opts_inv.gamma_schedule = [1e-6, 3e-7, 1e-7, 3e-8, 1e-8, 3e-9, 1e-10];
-% opts_inv.alpha_schedule = [1e-3, 3e-4, 1e-4, 3e-5, 1e-6];
-% opts_inv.gamma_schedule = [1e-6, 3e-7, 1e-7, 3e-8, 1e-9];
-opts_inv.alpha_schedule = [1e-3, 1e-4, 1e-9, 1e-12];
-opts_inv.gamma_schedule = [1e-6, 1e-7, 1e-8, 1e-9];
-opts_inv.max_iter_schedule = [25, 5, 5, 5];  % more iters when reg is strong
-% Iteration controls (per stage)
-opts_inv.max_iter_stage = 50;    % max iterations per continuation stage
-opts_inv.max_iter_total = 200;    % safety cap across all stages
-
-% Convergence thresholds (per stage)
-opts_inv.J_tol = 1e-3;
-opts_inv.dJ_tol = 1e-6;
-
-% Outer loop: iterative C-N coupling
-opts_inv.max_outer_iter = 3;      % max C-N coupling iterations
-opts_inv.C_tol = 1e-3;             % relative change in C for outer convergence
-opts_inv.N_tol = 1e-3;             % relative change in N for outer convergence
-
-% Initialize alpha/gamma with first schedule values (needed for initial test call)
+opts_inv = cfg.opts_inv;
 opts_inv.alpha = opts_inv.alpha_schedule(1);
 opts_inv.gamma = opts_inv.gamma_schedule(1);
-opts_inv.verbose = false;
-opts_inv.check_grad = false;  % set true to run Taylor test & per-component FD check
-opts_inv.speed_misfit = true; % true: misfit on speed |u|; false: misfit on components (u,v)
 
 % History
 history.stage = [];
@@ -169,10 +204,7 @@ outer_history.J_final = [];
 outer_history.C_change = [];
 outer_history.N_change = [];
 
-% initial guess for C (perturbed from truth for synthetic test)
-% load(['./data/C_inversion_results.mat'], 'C_hat_dim');
-% C_init = 0.01*C_hat_dim * (ps.u_b^(1/pp.n_slide) / ps.tau);
-C_init = ones(gg.nIJ,1);  % uniform prior
+C_init = build_initial_C(cfg.prior, gg);
 c_prior = log(C_init);
 
 % % Estimate C value by balancing the driving stress and basal friction
@@ -249,7 +281,7 @@ for outer_iter = 1:opts_inv.max_outer_iter
 
     % Adaptive weight: w = 1 / (1 + beta * |grad(u)|/mean(|grad(u)|))
     % High gradient -> small w -> less regularization
-    beta_adaptive = 0.1;  % tuning parameter (increase to reduce reg more in shear zones)
+    beta_adaptive = cfg.regularization.adaptive_beta;
     w_e = 1 ./ (1 + beta_adaptive * grad_mag_e / mean(grad_mag_e));
     w_f = 1 ./ (1 + beta_adaptive * grad_mag_f / mean(grad_mag_f));
 
@@ -441,9 +473,14 @@ for outer_iter = 1:opts_inv.max_outer_iter
     outer_history.C_change(end+1,1) = C_change;
     
     C_hat_dim = C_hat * (ps.tau / ps.u_b^(1/pp.n_slide));
-    save(sprintf('./data/C_inversion_runoff_30_outer%d.mat', outer_iter), ...
-        'C_hat', 'C_hat_dim', 'N_current', 'outer_history', 'J_hat');
-    fprintf('  Saved intermediate results to C_inversion_runoff_30_outer%d.mat\n', outer_iter);
+    if cfg.output.save_intermediate
+        intermediate_file = resolve_dataset_path( ...
+            sprintf('%s%d.mat', cfg.output.intermediate_prefix, outer_iter), cfg);
+        ensure_parent_dir(intermediate_file);
+        save(intermediate_file, 'C_hat', 'C_hat_dim', 'N_current', ...
+            'outer_history', 'J_hat', 'cfg');
+        fprintf('  Saved intermediate results to %s\n', intermediate_file);
+    end
     
     % --- Update N using forward model with inverted C ---
     fprintf('Running forward model to update N...\n');
@@ -457,10 +494,33 @@ for outer_iter = 1:opts_inv.max_outer_iter
     vv_hydro.u = u_inv;
     vv_hydro.v = v_inv;
     vv_hydro.N = N_current;
-    save('./data/velocity_inverted_runoff_30.mat', 'vv_hydro');
+    if cfg.output.save_intermediate
+        intermediate_hydro_file = resolve_dataset_path( ...
+            cfg.output.intermediate_hydrology_file, cfg);
+        ensure_parent_dir(intermediate_hydro_file);
+        save(intermediate_hydro_file, 'vv_hydro', 'C_hat', 'C_dim', 'cfg');
+    end
 
-    [N_new, vv_hydro] = nevis_run_fwd_hydrology(C_dim, C_hat, vv_hydro, pd.mu_s, racmo, distributed);
-    % N_new = N_old; 
+    if cfg.forward_hydrology.enabled
+        inv_current = struct('C_hat', C_hat, ...
+                             'C_hat_dim', C_dim, ...
+                             'u_obs_noisy', u_obs_noisy, ...
+                             'v_obs_noisy', v_obs_noisy, ...
+                             'N_current', N_current, ...
+                             'aa', aa, ...
+                             'pp', pp, ...
+                             'gg', gg, ...
+                             'oo', oo, ...
+                             'ps', ps, ...
+                             'partition_ratio', partition_ratio, ...
+                             'cfg', cfg);
+        [N_new, vv_hydro] = nevis_run_fwd_hydrology(inv_current, vv_hydro, ...
+            cfg.forward_hydrology.mu_s, racmo, distributed, ...
+            cfg.forward_hydrology.output_casename);
+    else
+        fprintf('  cfg.forward_hydrology.enabled=false; keeping N fixed for this outer update.\n');
+        N_new = N_old;
+    end
 
     N_new(isnan(N_new)) = 0;
     % Compute change in N
@@ -499,38 +559,58 @@ fprintf('========================================\n\n');
 
 fprintf('Inversion complete. Final J = %.6e, exit flag = %d\n', J_hat, exitflag);
 C_hat_dim = C_hat * (ps.tau / ps.u_b^(1/pp.n_slide));
-save('./data/C_inversion_runoff_30_results.mat', 'C_hat_dim', 'c_hat', 'history', 'opts_inv', 'J_hat', 'exitflag');
+inversion_file = resolve_dataset_path(cfg.output.inversion_file, cfg);
+hydrology_file = resolve_dataset_path(cfg.output.initial_hydrology_file, cfg);
+ensure_parent_dir(inversion_file);
+ensure_parent_dir(hydrology_file);
 
-%% Compute final C and print
-% Now we add back C2:
-% 1. compute sliding speed from inverted C and current N
+%% Compute final partitioned C fields
 aa.C = C_hat;
 [u_inv, v_inv] = nevis_velocity(aa.H, u_obs_noisy, v_obs_noisy, N_current, aa, pp, gg, oo);
-U_slide = sqrt((gg.nmeanx2(:,gg.es2)*u_inv(gg.es2)).^2 + (gg.nmeany2(:,gg.fs2)*v_inv(gg.fs2)).^2);
-% 2) compute basal shear stress from velocity and current N
-tau_b = slide_fun_local(U_slide, N_current, C_hat, pp.mu*ones(size(aa.b)), pp).*U_slide;  % basal shear stress magnitude from sliding law
-% 3) partition basal shear stress into C and C2 contributions (25% for C and 75% for C2 for simplicity)
-% define a ratio of mu N to tau_b
-% ratio = pp.mu * N_current ./ (tau_b + pp.N_slide_reg);  % add reg to avoid div by zero
-% taub_c = tau_b.*(ratio - 1)./ratio;
-% taub_c2 = tau_b - taub_c;
-ratio = 0.25;
-taub_c = ratio * tau_b;
-taub_c2 = tau_b - taub_c;
+[C1_hat_dim, C2_hat_dim] = nevis_inv_partition(C_hat, partition_ratio, ...
+    u_obs_noisy, v_obs_noisy, N_current, aa, pp, gg, oo, ps);
 
-C_contrib = (U_slide./(taub_c.^pp.n_slide) - U_slide./(pp.mu.*N_current).^pp.n_slide).^(-1/pp.n_slide);
-C2_contrib = taub_c2./(U_slide.^(1/pp.n_slide));
-C_hat_final = C_contrib;  % final C field consistent with inverted velocity and current N
-C2_hat_final = C2_contrib;  % final C2 field consistent with inverted velocity and current N
-% Dimensionalise C for interpretation
-C1_hat_dim = C_contrib * (ps.tau / ps.u_b^(1/pp.n_slide));
-C2_hat_dim = C2_contrib * (ps.tau / ps.u_b^(1/pp.n_slide));
-% check if C1 and C2 are positive and reasonable
-fprintf('C1 contribution: min=%.2e, max=%.2e\n', min(C1_hat_dim), max(C1_hat_dim));
-fprintf('C2 contribution: min=%.2e, max=%.2e\n', min(C2_hat_dim), max(C2_hat_dim));
+inv = struct('C_hat', C_hat, ...
+             'C_hat_dim', C_hat_dim, ...
+             'C1_hat_dim', C1_hat_dim, ...
+             'C2_hat_dim', C2_hat_dim, ...
+             'u_obs_noisy', u_obs_noisy, ...
+             'v_obs_noisy', v_obs_noisy, ...
+             'N_current', N_current, ...
+             'aa', aa, ...
+             'pp', pp, ...
+             'gg', gg, ...
+             'oo', oo, ...
+             'ps', ps, ...
+             'exitflag', exitflag, ...
+             'partition_ratio', partition_ratio, ...
+             'history', history, ...
+             'outer_history', outer_history, ...
+             'opts_inv', opts_inv, ...
+             'J_hat', J_hat, ...
+             'cfg', cfg);
+save(inversion_file, 'C_hat', 'C_hat_dim', 'C1_hat_dim', 'C2_hat_dim', ...
+    'u_obs_noisy', 'v_obs_noisy', 'N_current', 'aa', 'pp', 'gg', 'oo', ...
+    'ps', 'exitflag', 'partition_ratio', 'history', 'outer_history', ...
+    'opts_inv', 'J_hat', 'cfg', 'inv');
+fprintf('Saved inversion result to %s\n', inversion_file);
 
-save('./data/C_inversion_runoff_30_results.mat', 'C1_hat_dim', 'C2_hat_dim', '-append');
+vv_hydro.u = u_inv;
+vv_hydro.v = v_inv;
+vv_hydro.N = N_current;
+save(hydrology_file, 'vv_hydro', 'C_hat', 'C_hat_dim', 'inv', 'cfg');
+fprintf('Saved reusable initial hydrology to %s\n', hydrology_file);
 
+summary = struct;
+summary.config_file = config_file;
+summary.inversion_file = inversion_file;
+summary.initial_hydrology_file = hydrology_file;
+summary.final_J = J_hat;
+summary.exitflag = exitflag;
+summary.partition_ratio = partition_ratio;
+summary.outer_iterations = outer_iter;
+
+if cfg.plot.enabled
 figure('Name','Convergence','Position',[100 100 1200 400]);
 subplot(1,3,1);
 semilogy(history.iter, history.J, 'o-','LineWidth',1.5);
@@ -946,6 +1026,8 @@ if ~isempty(too_low)
         fprintf('   ⚠️  Most under-predictions near boundary → BC problem\n');
     end
 end
+end
+end
 
 %% ============================================================
 %  Objective function and adjoint gradient
@@ -1333,4 +1415,157 @@ function tau_b_over_Ub = slide_fun_local(Ub, N, C, mu, pp)
     tau_b_over_Ub = Nr .* Ur.^(1/n-1) .* ...
         (mu.^(-n).*Ur + C.^(-n).*Nr.^n).^(-1/n) + ...
         pp.C2 * Ur.^(1/n-1);
+end
+
+function cfg = load_inversion_config(config_file)
+    if exist(config_file, 'file') ~= 2
+        error('nevis_inv_C1:MissingConfig', ...
+            'Inversion config not found: %s', config_file);
+    end
+
+    [~, ~, ext] = fileparts(config_file);
+    switch lower(ext)
+        case '.m'
+            run(config_file);
+            if exist('cfg', 'var') ~= 1
+                error('nevis_inv_C1:MissingCfg', ...
+                    'M-file inversion config must assign variable cfg.');
+            end
+        case '.mat'
+            data = load(config_file);
+            if ~isfield(data, 'cfg')
+                error('nevis_inv_C1:MissingCfg', ...
+                    'MAT inversion config must contain variable cfg.');
+            end
+            cfg = data.cfg;
+        case '.json'
+            cfg = jsondecode(fileread(config_file));
+        otherwise
+            error('nevis_inv_C1:UnsupportedConfig', ...
+                'Unsupported inversion config extension: %s', ext);
+    end
+
+    cfg.config_file = config_file;
+    validate_inversion_config(cfg);
+end
+
+function validate_inversion_config(cfg)
+    required = {'name', 'root', 'code', 'results', 'dataset', 'source', ...
+        'velocity', 'initial_hydrology', 'output', 'solver', ...
+        'regularization', 'opts_inv', 'prior', 'forward_hydrology', ...
+        'plot', 'partition_ratio'};
+    for i = 1:numel(required)
+        if ~isfield(cfg, required{i}) || isempty(cfg.(required{i}))
+            error('nevis_inv_C1:MissingConfigField', ...
+                'Missing inversion config field cfg.%s.', required{i});
+        end
+    end
+    require_fields(cfg.dataset, {'name', 'root', 'manifest'}, 'cfg.dataset');
+    require_fields(cfg.source, {'casename', 'state_file'}, 'cfg.source');
+    require_fields(cfg.velocity, {'file', 'variable', 'u_field', 'v_field'}, 'cfg.velocity');
+    require_fields(cfg.initial_hydrology, {'file', 'variable'}, 'cfg.initial_hydrology');
+    require_fields(cfg.output, {'inversion_file', 'initial_hydrology_file', ...
+        'save_intermediate', 'intermediate_prefix', ...
+        'intermediate_hydrology_file'}, 'cfg.output');
+    require_fields(cfg.solver, {'iter_max', 'tol_vel', 'display_norms', ...
+        'verb', 'boundary_method', 'mask_boundary_method'}, 'cfg.solver');
+    require_fields(cfg.regularization, {'eps_reg', 'Ub_reg', ...
+        'N_slide_reg', 'taud_reg', 'C2', 'adaptive_beta'}, ...
+        'cfg.regularization');
+    require_fields(cfg.opts_inv, {'u0_reg', 'alpha_schedule', ...
+        'gamma_schedule', 'max_iter_schedule', 'max_iter_stage', ...
+        'max_iter_total', 'J_tol', 'dJ_tol', 'verbose', 'check_grad', ...
+        'speed_misfit', 'max_outer_iter', 'C_tol', 'N_tol'}, 'cfg.opts_inv');
+    require_fields(cfg.prior, {'mode'}, 'cfg.prior');
+    require_fields(cfg.forward_hydrology, {'enabled', 'mu_s', ...
+        'racmo_runoff', 'distributed_input', 'output_casename'}, ...
+        'cfg.forward_hydrology');
+    require_fields(cfg.plot, {'enabled'}, 'cfg.plot');
+
+    if numel(cfg.opts_inv.alpha_schedule) ~= numel(cfg.opts_inv.gamma_schedule)
+        error('nevis_inv_C1:ScheduleSizeMismatch', ...
+            'cfg.opts_inv.alpha_schedule and gamma_schedule must have the same length.');
+    end
+    if isempty(cfg.opts_inv.max_iter_schedule)
+        error('nevis_inv_C1:MissingConfigField', ...
+            'cfg.opts_inv.max_iter_schedule must not be empty.');
+    end
+    if cfg.partition_ratio < 0 || cfg.partition_ratio > 1
+        error('nevis_inv_C1:InvalidPartitionRatio', ...
+            'cfg.partition_ratio must be between 0 and 1.');
+    end
+end
+
+function require_fields(s, names, label)
+    for i = 1:numel(names)
+        if ~isfield(s, names{i}) || isempty(s.(names{i}))
+            error('nevis_inv_C1:MissingConfigField', ...
+                'Missing inversion config field %s.%s.', label, names{i});
+        end
+    end
+end
+
+function C_init = build_initial_C(prior, gg)
+    switch lower(prior.mode)
+        case 'uniform'
+            require_fields(prior, {'C'}, 'cfg.prior');
+            C_init = prior.C * ones(gg.nIJ, 1);
+        otherwise
+            error('nevis_inv_C1:UnsupportedPrior', ...
+                'Unsupported cfg.prior.mode: %s', prior.mode);
+    end
+end
+
+function path_out = resolve_dataset_path(path_in, cfg)
+    if isempty(path_in)
+        path_out = '';
+        return
+    end
+    if is_absolute_path(path_in)
+        path_out = path_in;
+    else
+        path_out = fullfile(cfg.dataset.root, path_in);
+    end
+    root_canon = canonical_path(cfg.dataset.root);
+    path_canon = canonical_path(path_out);
+    if ~startsWith([path_canon filesep], [root_canon filesep])
+        error('nevis_inv_C1:PathOutsideDataset', ...
+            'Configured dataset path is outside cfg.dataset.root: %s', path_out);
+    end
+end
+
+function path_out = resolve_project_path(path_in, cfg)
+    if isempty(path_in)
+        path_out = '';
+        return
+    end
+    if is_absolute_path(path_in)
+        path_out = path_in;
+    else
+        path_out = fullfile(cfg.root, path_in);
+    end
+end
+
+function ensure_parent_dir(path_in)
+    parent = fileparts(path_in);
+    if ~isempty(parent) && exist(parent, 'dir') ~= 7
+        mkdir(parent);
+    end
+end
+
+function tf = is_absolute_path(path_in)
+    tf = startsWith(path_in, filesep) || ...
+        ~isempty(regexp(path_in, '^[A-Za-z]:[\\/]', 'once'));
+end
+
+function path_out = canonical_path(path_in)
+    if exist(path_in, 'file') || exist(path_in, 'dir')
+        path_out = char(java.io.File(path_in).getCanonicalPath());
+    else
+        [parent, name, ext] = fileparts(path_in);
+        if isempty(parent)
+            parent = '.';
+        end
+        path_out = fullfile(char(java.io.File(parent).getCanonicalPath()), [name ext]);
+    end
 end

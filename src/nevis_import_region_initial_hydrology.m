@@ -13,6 +13,24 @@ if strcmpi(mode, 'k_factor')
     return
 end
 
+if strcmpi(mode, 'result_timestep')
+    init_file = fullfile('./results', hcfg.result_case, hcfg.timestep_file);
+    if exist(init_file, 'file') ~= 2
+        error('nevis_import_region_initial_hydrology:MissingInitialTimestep', ...
+            'Initial timestep file not found: %s', init_file);
+    end
+    data = load(init_file, 'vv');
+    if ~isfield(data, 'vv')
+        error('nevis_import_region_initial_hydrology:MissingInitialVV', ...
+            'Initial timestep file must contain variable vv: %s', init_file);
+    end
+    vv = data.vv;
+    region.initial_hydrology = struct('mode', 'result_timestep', ...
+        'result_case', hcfg.result_case, 'timestep_file', hcfg.timestep_file);
+    region.initial_hydrology_file = init_file;
+    return
+end
+
 hydro_file = nevis_region_resolve_path(hcfg.file, cfg);
 if exist(hydro_file, 'file') ~= 2
     error('nevis_import_region_initial_hydrology:MissingFile', ...

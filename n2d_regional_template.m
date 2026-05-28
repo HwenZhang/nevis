@@ -1,9 +1,8 @@
 function [tt, vv, info, state] = n2d_regional_template(casename)
 %N2D_REGIONAL_TEMPLATE Run the standardized NEVIS regional workflow.
 %
-% All case-specific parameters and data declarations must live in
-% ./data/<casename>/<casename>.m. This function does not set model parameters
-% directly.
+% All case-specific parameters must live in ./cases/<casename>.m. Heavy data
+% are referenced through the config's shared dataset manifest.
 
 if nargin < 1 || isempty(casename)
     error('n2d_regional_template:MissingCaseName', ...
@@ -18,9 +17,9 @@ code = './src';
 results = 'results';
 addpath(code);
 
-% Read in the config file from ./data/<casename>/<casename>.m.
+% Read in the config file from ./cases/<casename>.m.
 % Note: the user should guarantee the integrity of the data files, including the config
-config_file = fullfile(root, 'data', casename, [casename, '.m']);
+config_file = fullfile(root, 'cases', [casename, '.m']);
 cfg = nevis_load_region_config(config_file, root);
 if ~strcmp(cfg.casename, casename)
     error('n2d_regional_template:CaseNameMismatch', ...

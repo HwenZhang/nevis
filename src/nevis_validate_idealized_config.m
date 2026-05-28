@@ -1,13 +1,13 @@
 function cfg = nevis_validate_idealized_config(cfg)
 %NEVIS_VALIDATE_IDEALIZED_CONFIG Validate the analytical idealized case cfg.
 
-required_top = {'casename', 'data_root', 'oo', 'pd', 'pp', 'geometry', ...
+required_top = {'casename', 'case_root', 'oo', 'pd', 'pp', 'geometry', ...
     'initial_hydrology', 'moulins', 'lakes', 'input', 'run'};
 require_fields(cfg, required_top, 'cfg');
 
-if exist(cfg.data_root, 'dir') ~= 7
-    error('nevis_validate_idealized_config:MissingDataRoot', ...
-        'Case data_root does not exist: %s', cfg.data_root);
+if exist(cfg.case_root, 'dir') ~= 7
+    error('nevis_validate_idealized_config:MissingCaseRoot', ...
+        'Case root does not exist: %s', cfg.case_root);
 end
 
 require_fields(cfg.oo, {'evaluate_variables', 'input_gaussian', ...
@@ -32,7 +32,11 @@ require_fields(cfg.lakes, {'mode', 'x_fraction', 'y_fraction', ...
     'volume_m3', 'drainage_day', 'duration_days'}, 'cfg.lakes');
 require_fields(cfg.input, {'runoff_max_mm_per_day', ...
     'moulin_input_m3_per_s', 'ramp_days'}, 'cfg.input');
-require_fields(cfg.run, {'dt_days', 't_span_days'}, 'cfg.run');
+require_fields(cfg.run, {'dt_days'}, 'cfg.run');
+if ~isfield(cfg.run, 't_span_days') && ~isfield(cfg.run, 't_span_after_start_days')
+    error('nevis_validate_idealized_config:MissingField', ...
+        'Missing required config field: cfg.run.t_span_days or cfg.run.t_span_after_start_days');
+end
 
 switch lower(cfg.geometry.mode)
     case 'hewitt_2013_sqrt'
@@ -53,6 +57,9 @@ switch lower(cfg.initial_hydrology.mode)
     case 'function'
         require_fields(cfg.initial_hydrology, {'function'}, ...
             'cfg.initial_hydrology');
+    case 'result_timestep'
+        require_fields(cfg.initial_hydrology, {'result_case', ...
+            'timestep_file'}, 'cfg.initial_hydrology');
     otherwise
         error('nevis_validate_idealized_config:UnsupportedInitialHydrology', ...
             'Unsupported cfg.initial_hydrology.mode: %s', ...
@@ -75,6 +82,16 @@ end
 if ~strcmpi(cfg.lakes.mode, 'coordinates_fractional')
     error('nevis_validate_idealized_config:UnsupportedLakes', ...
         'Unsupported cfg.lakes.mode: %s', cfg.lakes.mode);
+end
+
+if isfield(cfg, 'stations') && ~isempty(cfg.stations)
+    require_fields(cfg.stations, {'mode'}, 'cfg.stations');
+    if strcmpi(cfg.stations.mode, 'downstream_lake')
+        require_fields(cfg.stations, {'spacing_m'}, 'cfg.stations');
+    else
+        error('nevis_validate_idealized_config:UnsupportedStations', ...
+            'Unsupported cfg.stations.mode: %s', cfg.stations.mode);
+    end
 end
 
 end

@@ -282,7 +282,7 @@ class NevisIceAnimation:
             'filenames': np.array(need_export, dtype=object),
             'casename': self.casename,
         })
-        matlab_path = "/Applications/MATLAB_R2025b.app/bin/matlab"
+        matlab_path = "/Applications/MATLAB_R2026a.app/bin/matlab"
         subprocess.run([
             matlab_path, "-nodisplay", "-nosplash", "-nodesktop",
             "-batch", "run('src/nevis_export_ice_fields')"
