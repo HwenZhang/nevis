@@ -237,8 +237,8 @@ cfg.pp.C2 = 0;
 %   Geometry is currently read from a MATLAB struct variable in a .mat file.
 % Required fields are configured below. Relative file paths are resolved under
 % cfg.dataset.root and checked against cfg.dataset.manifest.
-cfg.geometry.file = 'morlighem_for_nevis_140km.mat';
-cfg.geometry.variable = 'morlighem_for_nevis_140km';
+cfg.geometry.file = 'geometry.mat';
+cfg.geometry.variable = 'geometry';
 cfg.geometry.x_field = 'X_m';
 cfg.geometry.y_field = 'Y_m';
 cfg.geometry.bed_field = 'B_m';
@@ -258,8 +258,8 @@ cfg.geometry.min_thickness_m = 0;
 %   'file' reads observed velocity from cfg.velocity.file.
 % units choices:
 %   'm_per_year' is the currently supported unit in the importer.
-cfg.velocity.file = 'measures_for_nevis_140km.mat';
-cfg.velocity.variable = 'measures_for_nevis_140km';
+cfg.velocity.file = 'velocity.mat';
+cfg.velocity.variable = 'velocity';
 cfg.velocity.u_field = 'u_obs_dim';
 cfg.velocity.v_field = 'v_obs_dim';
 cfg.velocity.units = 'm_per_year';
@@ -348,8 +348,8 @@ cfg.lakes.time_offset_days = 0;
 %   'file' reads a time-by-node runoff matrix from cfg.runoff.file.
 % units choices:
 %   'mm_we_per_day' is the expected unit for the current importer.
-cfg.runoff.file = 'runoff_2022_nevis140.mat';
-cfg.runoff.variable = 'runoff_2022_nevis140';
+cfg.runoff.file = 'racmo_runoff_2022.mat';
+cfg.runoff.variable = 'racmo_runoff_2022';
 cfg.runoff.units = 'mm_we_per_day';
 cfg.runoff.mode = 'file';
 

@@ -30,16 +30,23 @@ cfg.source.casename = 'n2d_region_ice_inversion_ns3';
 cfg.source.state_file = './data/redundant/n2d_region_ice_inversion_ns3/n2d_region_ice_inversion_ns3.mat';
 
 %% Observed velocity from the dataset package
-cfg.velocity.file = 'measures_for_nevis_140km.mat';
-cfg.velocity.variable = 'measures_for_nevis_140km';
+cfg.velocity.file = 'velocity.mat';
+cfg.velocity.variable = 'velocity';
 cfg.velocity.u_field = 'u_obs_dim';
 cfg.velocity.v_field = 'v_obs_dim';
 
 %% Initial effective pressure source
-% This file must contain cfg.initial_hydrology.variable. For timestep files,
-% that variable is normally vv, and N is computed as aa.phi_0 - vv.phi.
-cfg.initial_hydrology.file = './data/redundant/n2d_region_ice_inversion_ns3/0365.mat';
-cfg.initial_hydrology.variable = 'vv';
+% Available choices:
+%   'k_factor'   no external file; phi = phi_a + k_factor*(phi_0 - phi_a)
+%   'constant_N' no external file; uniform dimensionless N
+%   'file'       load variable from MAT file; variable must contain N or phi
+cfg.initial_hydrology.mode = 'k_factor';
+cfg.initial_hydrology.k_factor = 0.9;
+% cfg.initial_hydrology.mode = 'constant_N';
+% cfg.initial_hydrology.N = 1;
+% cfg.initial_hydrology.mode = 'file';
+% cfg.initial_hydrology.file = './data/redundant/n2d_region_ice_inversion_ns3/0365.mat';
+% cfg.initial_hydrology.variable = 'vv';
 
 %% Output products, stored inside cfg.dataset.root
 cfg.output.inversion_file = 'inversions/weertman_ns3_default/C_inversion_results.mat';

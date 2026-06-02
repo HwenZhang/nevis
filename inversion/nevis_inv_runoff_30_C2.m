@@ -52,8 +52,8 @@ pp.taud_reg    = 1e-16;
 %  2. Load observed velocity and effective pressure
 %  ============================================================
 gg = nevis_label_ice_test(gg, oo);
-load([oo.dn 'measures_for_nevis_140km.mat']);
-dd    = measures_for_nevis_140km;
+load([oo.dn 'velocity.mat']);
+dd    = velocity;
 u_obs = dd.u_obs_dim / (ps.u_b * pd.ty);
 v_obs = dd.v_obs_dim / (ps.u_b * pd.ty);
 u_obs = gg.emean2 * u_obs(:);

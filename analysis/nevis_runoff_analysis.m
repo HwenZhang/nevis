@@ -14,8 +14,8 @@ load([oo.dn '/' 'runoff_2008_nevis140.mat']);
 rr = runoff_2008_nevis140;
 
 %% Load grid data
-load([oo.dn '/' 'morlighem_for_nevis_140km']); % load Morlighem bedmap (previously collated)
-dd = morlighem_for_nevis_140km; dd.skip = 6;
+load([oo.dn '/' 'geometry']); % load BedMachine geometry (previously built)
+dd = geometry; dd.skip = 6;
 
 %% Calculate grid area
 dx = abs(dd.X_m(2,1) - dd.X_m(1,1)) * dd.skip;  % grid spacing (m)

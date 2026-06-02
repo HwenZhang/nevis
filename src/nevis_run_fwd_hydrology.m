@@ -142,8 +142,8 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(varargin)
     [ps,pp] = nevis_nondimension(pd,ps,oo);
     
     %% grid and geometry
-    load([oo.dn '/' 'morlighem_for_nevis_140km']); % load Morlighem bedmap (previously collated)
-    dd = morlighem_for_nevis_140km; dd.skip = 6;
+    load([oo.dn '/' 'geometry']); % load BedMachine geometry (previously built)
+    dd = geometry; dd.skip = 6;
     gg = nevis_grid(dd.X_m(1:dd.skip:end,1)/ps.x,dd.Y_m(1,1:dd.skip:end)/ps.x,oo); 
     b = reshape(dd.B_m(1:dd.skip:end,1:dd.skip:end)/ps.z,gg.nIJ,1);
     s = reshape(dd.S_m(1:dd.skip:end,1:dd.skip:end)/ps.z,gg.nIJ,1);
@@ -250,8 +250,8 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(varargin)
 
     %% initial ice velocity
     % Option 1: use observed velocity
-    load([oo.dn '/' 'measures_for_nevis_140km']); 
-    dd = measures_for_nevis_140km;
+    load([oo.dn '/' 'velocity']);
+    dd = velocity;
     un = dd.u_obs_dim/(pd.ty*ps.u);
     vn = dd.v_obs_dim/(pd.ty*ps.u);
     % un = gg.nmeanx2*vv_prev.u;
@@ -320,7 +320,7 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(varargin)
     [pp.ni_l,pp.sum_l] = nevis_lakes(pp.x_l,pp.y_l,gg,oo);          % calculate lake catchments
 
     %% surface runoff
-    load([oo.dn '/' 'runoff_2022_nevis140.mat']);                   % load data for year of interest (previously collated)
+    load([oo.dn '/' 'racmo_runoff_2022.mat']);                      % load runoff for year of interest (previously built)
     % RACMO distributed input
     oo.surface_runoff = 1;                                          % If set to 1 turns on surface runoff input
                                                                     % 0 is prescribe moulin input with a function
@@ -330,7 +330,7 @@ function [N_new, vv_temp] = nevis_run_fwd_hydrology(varargin)
                                                                     % 0 inputs to discrete moulins
 
     pp.meltE = @(t) (30/1000/pd.td/ps.m)*(1-exp(-t/(20*pd.td/ps.t))); 
-    pp.runoff_function = @(t) runoff(((t*ps.t)/pd.td),runoff_2022_nevis140)./ps.m;  % distributed input (m/sec)
+    pp.runoff_function = @(t) runoff(((t*ps.t)/pd.td),racmo_runoff_2022)./ps.m;  % distributed input (m/sec)
     pp.input_function = @(t) 0;
 
     %% timestep 

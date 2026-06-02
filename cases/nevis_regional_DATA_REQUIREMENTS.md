@@ -57,19 +57,19 @@ These files are required by the current shared dataset
 
 | Config section | File | Required variable/fields | Purpose |
 |---|---|---|---|
-| `geometry` | `morlighem_for_nevis_140km.mat` | variable `morlighem_for_nevis_140km` with `X_m`, `Y_m`, `B_m`, `S_m` | Builds the model grid, bed, surface, ice thickness mask, hydrology labels, blister labels, and ice boundary labels. |
-| `velocity` | `measures_for_nevis_140km.mat` | variable `measures_for_nevis_140km` with `u_obs_dim`, `v_obs_dim` | Provides observed surface velocity, in m/yr, mapped onto model edges. |
+| `geometry` | `geometry.mat` | variable `geometry` with `X_m`, `Y_m`, `B_m`, `S_m` | Builds the model grid, bed, surface, ice thickness mask, hydrology labels, blister labels, and ice boundary labels. |
+| `velocity` | `velocity.mat` | variable `velocity` with `u_obs_dim`, `v_obs_dim` | Provides observed surface velocity, in m/yr, mapped onto model edges. |
 | `inversion` | `C_inversion_results.mat` | `C_hat`, `u_obs_noisy`, `v_obs_noisy`, `N_current`, `aa`, `pp`, `gg`, `oo`, `ps` | Provides the inverted basal friction/sliding field used by `nevis_inv_partition`. |
 | `initial_hydrology` | `velocity_inverted.mat` | variable `vv_hydro` with `N`; optionally `u`, `v` | Provides initial effective pressure and, when present, initial velocity fields. |
 | `moulins` | `nevis_170207a.mat` | variable `pp` with `ni_m`, `sum_m` | Provides moulin node indices and catchment matrix. Must match the model grid node count. |
 | `lakes` | `mechanistic_drainage_catalogue_2022-main/catalogues/environs_lakes_2022B_250505_archive.mat` | variable `environs_lakes` | Provides lake positions, drainage type, timing, and volume. |
-| `runoff` | `runoff_2022_nevis140.mat` | variable `runoff_2022_nevis140` | Provides daily surface runoff as `ntime x gg.nIJ`, in mm water equivalent per day. |
+| `runoff` | `racmo_runoff_2022.mat` | variable `racmo_runoff_2022` | Provides daily surface runoff as `ntime x gg.nIJ`, in mm water equivalent per day. |
 | `stations` | `station_timeseries_2022.mat` | variable `station_data` with `x_m`, `y_m` | Provides GPS/station points to save model time series. |
 | manifest | `dataset_manifest.m` | variable `dataset` | Declares this dataset's files, variables, and expected fields. |
 
 ## How To Obtain or Rebuild Each File
 
-### `morlighem_for_nevis_140km.mat`
+### `geometry.mat`
 
 Source: Morlighem/BedMachine-style bed and surface products already subset to
 the target region.
@@ -81,7 +81,7 @@ Required processing:
 3. Set `cfg.geometry.skip` so that the downsampled grid has the intended model
    resolution and matches downstream gridded products.
 
-### `measures_for_nevis_140km.mat`
+### `velocity.mat`
 
 Source: MEaSUREs surface velocity mosaic or another observed velocity product.
 
@@ -150,7 +150,7 @@ Required processing:
 3. Timing fields must be day-of-year indices consistent with the configured
    model `t_span_days`.
 
-### `runoff_2022_nevis140.mat`
+### `racmo_runoff_2022.mat`
 
 Source: RACMO or another surface runoff product, preprocessed onto the model
 node grid.

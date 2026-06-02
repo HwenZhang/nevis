@@ -145,22 +145,9 @@ obs_mask_f(gg.fbdy2) = 0;  % exclude Dirichlet y-boundary edges
 fprintf('Excluded %d ebdy + %d fbdy Dirichlet edges from misfit\n', ...
     length(gg.ebdy2), length(gg.fbdy2));
 
-% effective pressure for forward model (use spinup or assume N=1)
-init_file = resolve_project_path(cfg.initial_hydrology.file, cfg);
-if exist(init_file, 'file') ~= 2
-    error('nevis_inv_C:MissingInitialHydrology', ...
-        'Configured initial hydrology file not found: %s', init_file);
-end
-init_var = cfg.initial_hydrology.variable;
-init_cond = load(init_file, init_var);
-if ~isfield(init_cond, init_var)
-    error('nevis_inv_C:MissingInitialHydrologyVariable', ...
-        'Initial hydrology file "%s" does not contain variable "%s".', ...
-        init_file, init_var);
-end
-vv = init_cond.(init_var);
-% N_obs = max(aa.phi_0 - vv.phi, pp.N_slide_reg);
-N_obs = aa.phi_0 - vv.phi;
+% Initial effective pressure for the inversion.
+[N_obs, initial_hydrology_source] = nevis_inversion_initial_effective_pressure( ...
+    cfg.initial_hydrology, aa, gg, cfg);
 % no noise for real observations
 u_obs_noisy = u_obs;
 v_obs_noisy = v_obs;
@@ -323,7 +310,8 @@ ensure_parent_dir(inversion_file);
 ensure_parent_dir(hydrology_file);
 save(inversion_file, 'C_hat', 'C_hat_dim', 'u_obs_noisy', 'v_obs_noisy', ...
     'N_current', 'aa', 'pp', 'gg', 'oo', 'ps', 'exitflag', ...
-    'partition_ratio', 'history', 'opts_inv', 'J_hat', 'cfg');
+    'partition_ratio', 'history', 'opts_inv', 'J_hat', 'cfg', ...
+    'initial_hydrology_source');
 % save('./data/C_inversion_C2_results.mat', 'c_hat', 'C1_hat', 'C2_hat', 'C1_hat_dim', 'C2_hat_dim', 'history', 'opts_inv', 'J_hat', 'exitflag');
 fprintf('Saved inversion result to %s\n', inversion_file);
 
@@ -956,7 +944,7 @@ function validate_inversion_config(cfg)
     require_fields(cfg.dataset, {'name', 'root', 'manifest'}, 'cfg.dataset');
     require_fields(cfg.source, {'casename', 'state_file'}, 'cfg.source');
     require_fields(cfg.velocity, {'file', 'variable', 'u_field', 'v_field'}, 'cfg.velocity');
-    require_fields(cfg.initial_hydrology, {'file', 'variable'}, 'cfg.initial_hydrology');
+    require_initial_hydrology_fields(cfg.initial_hydrology);
     require_fields(cfg.output, {'inversion_file', 'initial_hydrology_file'}, 'cfg.output');
     require_fields(cfg.solver, {'iter_max', 'tol_vel', 'display_norms', ...
         'verb', 'boundary_method', 'mask_boundary_method'}, 'cfg.solver');
@@ -980,6 +968,25 @@ function validate_inversion_config(cfg)
     if isempty(cfg.opts_inv.max_iter_schedule)
         error('nevis_inv_C:MissingConfigField', ...
             'cfg.opts_inv.max_iter_schedule must not be empty.');
+    end
+end
+
+function require_initial_hydrology_fields(initial_hydrology)
+    require_fields(initial_hydrology, {'mode'}, 'cfg.initial_hydrology');
+    mode = lower(initial_hydrology.mode);
+    switch mode
+        case 'file'
+            require_fields(initial_hydrology, {'file', 'variable'}, ...
+                'cfg.initial_hydrology');
+        case 'k_factor'
+            require_fields(initial_hydrology, {'k_factor'}, ...
+                'cfg.initial_hydrology');
+        case {'constant_n', 'uniform_n'}
+            require_fields(initial_hydrology, {'N'}, 'cfg.initial_hydrology');
+        otherwise
+            error('nevis_inv_C:UnsupportedInitialHydrologyMode', ...
+                ['Unsupported cfg.initial_hydrology.mode "%s". Use "file", ' ...
+                 '"k_factor", or "constant_N".'], initial_hydrology.mode);
     end
 end
 
