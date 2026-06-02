@@ -65,6 +65,7 @@ octave-workspace
 /logs/
 /presentation/
 /results/
+/cases/
 .DS_Store
 
 # all __pycache__
