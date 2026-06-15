@@ -260,7 +260,51 @@ vary them by **which coordinates** are supplied; catchments are rebuilt on the
 current grid (`cfg.moulins.mode = 'coordinates'`), so this is robust to a
 changed `bbox_km`.
 
-### 5a. Use a different set of moulins
+### 5a. The local NEVIS coordinate frame (M1 origin)
+
+Every coordinate field used below — `cfg.moulins.x_m/y_m`,
+`cfg.lakes.x_m/y_m`, the runoff source points, `cfg.stations.x_m/y_m`, and the
+`X_m/Y_m` arrays inside `geometry.mat` — is expressed in **metres in the local
+NEVIS frame**. That frame is a translated Polar Stereographic projection whose
+**origin is the M1 moulin** (Stevens et al. 2015), located at approximately
+**(68.72° N, 49.53° W)** on the Greenland Ice Sheet. The frame is built with
+the standard Greenland Polar Stereographic parameters:
+
+| Parameter | Value | Meaning |
+|---|---|---|
+| origin (lat, lon) | `(68.72, -49.53)` | M1 moulin: `(x, y) = (0, 0)` |
+| `radius` (`a`) | `6378137.0` m | WGS84 semi-major axis |
+| `eccen` (`e`) | `0.08181919` | WGS84 eccentricity |
+| `lat_true` | `70°` | Standard parallel |
+| `lon_posy` | `-45°` | Meridian aligned with +Y |
+
+So when a config says `x_m = -12000`, that point is 12 km west of M1 in the
+Polar Stereographic plane; `y_m = 5000` is 5 km north of M1 along the +Y
+meridian (`-45°`). The `bbox_km` in `test.m` (`[xmin, xmax, ymin, ymax]`) is
+in the same frame.
+
+To convert between latitude/longitude and the NEVIS frame, project with these
+parameters and then translate by `(x_M1, y_M1)`:
+
+```matlab
+% lat/lon -> NEVIS (x_m, y_m)
+[x_M1, y_M1] = polarstereo_fwd(68.72, -49.53, 6378137.0, 0.08181919, 70, -45);
+[x_ps, y_ps] = polarstereo_fwd(lat,   lon,    6378137.0, 0.08181919, 70, -45);
+x_m = x_ps - x_M1;   y_m = y_ps - y_M1;
+
+% NEVIS (x_m, y_m) -> lat/lon
+[lat, lon] = polarstereo_inv(x_m + x_M1, y_m + y_M1, 6378137.0, 0.08181919, 70, -45);
+```
+
+All gridded products in a dataset package (`geometry.mat`, `velocity.mat`,
+`racmo_runoff_2022.mat`, `station_timeseries_2022.mat`) must share this origin
+and these projection parameters, or the importer will place them at the wrong
+location on the model grid. See
+[`docs/GPS_DATA_LOCATIONS_AND_EXTRACTION.md`](docs/GPS_DATA_LOCATIONS_AND_EXTRACTION.md)
+§§1, 8 for the full conversion chain used by the bundled MEaSUREs/BedMachine
+pipelines.
+
+### 5b. Use a different set of moulins
 
 Point the case at a different coordinate file. Put the file in the case's
 dataset directory and declare it in the manifest (see §9), then in
@@ -275,8 +319,8 @@ cfg.moulins.y_field  = 'y_m';   % northing in metres
 ```
 
 The `.mat` must hold a struct (variable `moulins`) with `x_m` and `y_m`
-vectors in metres in the same local frame as `geometry.mat` (M1 at the
-origin). To create a custom set in MATLAB:
+vectors in metres in the same local NEVIS frame as `geometry.mat` — see §5a
+(M1 moulin at the origin). To create a custom set in MATLAB:
 
 ```matlab
 moulins.x_m = [ -12000;  3000;  21000 ];   % metres
@@ -284,13 +328,13 @@ moulins.y_m = [   5000; -8000;  14000 ];
 save('data/datasets/my_run_2022/moulins_alt_set.mat', 'moulins');
 ```
 
-### 5b. Add or remove a few moulins
+### 5c. Add or remove a few moulins
 
 Load the generated `moulins_2022_coordinates.mat`, edit the `x_m`/`y_m`
 vectors, and save under a new name (keep the original for provenance), then
 point the config at the new file as above.
 
-### 5c. Domain-edge handling
+### 5d. Domain-edge handling
 
 Two knobs control what happens to moulins near/outside the domain:
 
