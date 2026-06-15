@@ -25,7 +25,7 @@ A run has two halves:
 `test.m` is the orchestrator. For one `case_name` it:
 
 1. Builds the dataset package (`run_dataset_build`).
-2. Runs the inversion, which auto-runs a hydrology-only spinup (`run_inversion`).
+2. Runs the inversion to obtain basal slipperiness in the sliding law. The inversion auto-runs a hydrology-only spinup (`run_inversion`).
 3. Runs the forward model — lakes off, spinup-like year, with the inverted
    basal field and a hydrology-only spinup timestep as the hydrology state
    (`run_forward`).
@@ -199,21 +199,21 @@ These are physical quantities in SI units. Fields may be **scalars** or
 are set, so a derived parameter can depend on earlier ones:
 
 ```matlab
-cfg.pd.u_b   = @(pd) 100/pd.ty;   % characteristic basal sliding speed: 100 m/yr -> m/s
-cfg.pd.tau_b = 60e3;              % characteristic basal shear stress (Pa)
-cfg.pd.k_s   = 0.1;               % sheet conductivity/permeability coefficient
-cfg.pd.melt  = @(pd) (pd.G + pd.u_b*pd.tau_b)/pd.rho_w/pd.L;  % basal melt (m/s): geothermal + frictional
-cfg.pd.kappa_b = 5e-11;           % blister/hydraulic relaxation coefficient
-cfg.pd.alpha_b = 0;               % blister relaxation rate; 0 disables this contribution
-cfg.pd.mu      = 5.0;             % effective viscosity / frictional resistance
+cfg.pd.u_b     = @(pd) 100/pd.ty;   % sliding speed [m/s] (100 m/yr -> m/s)
+cfg.pd.tau_b   = 60e3;              % characteristic basal shear stress [Pa]
+cfg.pd.k_s     = 0.1;               % sheet flux coefficient [1/Pa/s]
+cfg.pd.melt    = @(pd) (pd.G + pd.u_b*pd.tau_b)/pd.rho_w/pd.L;  % basal melt rate [m/s]: (G + u_b*tau_b)/(rho_w*L)
+cfg.pd.kappa_b = 5e-11;             % blister leakage relaxation coefficient (dimensionless; used when relaxation_term = 1)
+cfg.pd.alpha_b = 0;                 % relaxation rate of the blister [s^-1] (used when relaxation_term = 0); 0 disables it
+cfg.pd.mu      = 5.0;               % water viscosity [Pa s] (blister leakage)
 ```
 
-Length/regularization scales you may tune: `h_r` (sheet thickness scale, m),
-`l_r` (regularization length, m), `l_c` (channel/cavity length, m), `sigma`,
-`hb_reg1`/`hb_reg2` (cavity-opening regularization thicknesses, m), `N_reg1`
-and `deltap_reg` (pressure regularization scales, Pa), and the elastic plate
-stiffness `B_reg` (a handle using `pd.Ye`). `meltinterior` adds an interior
-melt contribution (`0` disables).
+Physical meanings and units above are taken from
+[`src/nevis_defaults.m`](src/nevis_defaults.m) and
+[`src/nevis_nondimension.m`](src/nevis_nondimension.m) — the authoritative
+source for every parameter. Inline comments in
+[`cases/templates/nevis_regional.m`](cases/templates/nevis_regional.m) match
+those.
 
 > **Units matter.** `cfg.pd` is the only struct in dimensional SI. To set a
 > rate in "per year," divide by `pd.ty` (seconds per year) inside a handle, as
