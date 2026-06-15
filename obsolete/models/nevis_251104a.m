@@ -53,7 +53,7 @@ oo.include_ice = 1; % include ice velocity solve
 
 % moulins
 % oo.random_moulins = 50;
-load moulins_120511; % load previously saved moulin locations
+load(fullfile('data','redundant','moulins_120511.mat')); % load previously saved moulin locations
 [pp.ni_m,pp.sum_m] = nevis_moulins(gg.xl+(gg.xr-gg.xl)*x_m,gg.yb+(gg.yt-gg.yb)*y_m,gg,oo);                    
 
 %% surface input
@@ -92,6 +92,5 @@ nevis_summary;
 
 %% animate
 nevis_animate([oo.root,oo.fn],1:100,6,0);
-
 
 
