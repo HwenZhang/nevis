@@ -21,7 +21,7 @@ repo_root = fileparts(script_dir);
 result_dir = fullfile(repo_root, 'results', casename);
 result_file = fullfile(result_dir, [casename '.mat']);
 source_dir = fullfile(repo_root, 'src');
-data_dir = fullfile(repo_root, 'data');
+data_dir = fullfile(repo_root, 'data', 'derived');
 formatSpec = '%04d';
 
 if ~exist(result_file, 'file')

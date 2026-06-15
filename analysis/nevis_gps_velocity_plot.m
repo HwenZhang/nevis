@@ -3,11 +3,14 @@
 clc; clear; close all;
 
 %% Settings
-casename = 'n2d_regional_racmo_eps1e_02_kappa5e_11_mu5e0_partition5e_01_k01e_01_spinup';
-% casename = 'n2d_regional_racmo_V1e1_eps1e_02_kappa5e_11_mu5e0_partition5e_01_k01e_01_drainage_highelev';
+casename = 'nevis_regional_rebuilt_legacy_forward';
+% casename = 'n2d_regional_racmo_eps1e_02_kappa5e_11_mu5e0_partition5e_01_k01e_01_spinup';
 script_dir = fileparts(mfilename('fullpath'));
 repo_root = fileparts(script_dir);
 load(fullfile(repo_root, 'results', casename, casename))
+if exist('region', 'var') ~= 1
+    region = struct;
+end
 oo.fn = ['/',casename];
 oo.rn = [oo.root,oo.results,oo.fn];
 oo.code = fullfile(repo_root, 'src');
@@ -61,9 +64,8 @@ dist_to_c1 = sqrt((gps_x_km - 5).^2 + (gps_y_km + 10).^2);
 [~, idx_c1] = min(dist_to_c1);
 gps_cluster(idx_c1) = 5;
 
-%% Load observations
-stations = load(fullfile(repo_root, 'data', 'station_timeseries_2022'));
-stations = stations.station_data;
+%% Load observations from the dataset package recorded in the result
+stations = nevis_load_result_stations(region, oo);
 n_stations = length(stations);
 
 %% Compute model vertical speed d(h_b+h_s)/dt

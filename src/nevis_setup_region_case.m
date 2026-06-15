@@ -43,6 +43,7 @@ if isfield(region, 'initial_hydrology') && isstruct(region.initial_hydrology)
     if isfield(vv, 'u'), aa.u_obs = vv.u; end
     if isfield(vv, 'v'), aa.v_obs = vv.v; end
 end
+[vv, aa, region] = nevis_import_region_ice_velocity(cfg, vv, aa, gg, region);
 
 aa.phi_b = max(aa.phi_0, aa.phi_a);
 

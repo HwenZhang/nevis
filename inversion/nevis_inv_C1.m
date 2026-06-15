@@ -2,7 +2,7 @@ function [inv, vv_hydro, summary] = nevis_inv_C1(config_file)
 %NEVIS_INV_C1 Invert C with regularised Coulomb sliding and evolving N.
 %
 % Usage:
-%   [inv, vv_hydro, summary] = nevis_inv_C1('./cases/nevis_inversion.m');
+%   [inv, vv_hydro, summary] = nevis_inv_C1('./cases/templates/nevis_inversion.m');
 %
 % All inputs, solver options, regularization settings, and output paths are
 % read from the config file.
@@ -589,7 +589,7 @@ save(hydrology_file, 'vv_hydro', 'C_hat', 'C_hat_dim', 'inv', 'cfg');
 fprintf('Saved reusable initial hydrology to %s\n', hydrology_file);
 
 summary = struct;
-summary.config_file = config_file;
+summary.config_file = cfg.config_file;
 summary.inversion_file = inversion_file;
 summary.initial_hydrology_file = hydrology_file;
 summary.final_J = J_hat;
@@ -1405,6 +1405,15 @@ function tau_b_over_Ub = slide_fun_local(Ub, N, C, mu, pp)
 end
 
 function cfg = load_inversion_config(config_file)
+    if isstruct(config_file)
+        cfg = config_file;
+        if ~isfield(cfg, 'config_file')
+            cfg.config_file = '<struct>';
+        end
+        validate_inversion_config(cfg);
+        return
+    end
+
     if exist(config_file, 'file') ~= 2
         error('nevis_inv_C1:MissingConfig', ...
             'Inversion config not found: %s', config_file);
@@ -1432,7 +1441,9 @@ function cfg = load_inversion_config(config_file)
                 'Unsupported inversion config extension: %s', ext);
     end
 
-    cfg.config_file = config_file;
+    if ~isfield(cfg, 'config_file') || isempty(cfg.config_file)
+        cfg.config_file = config_file;
+    end
     validate_inversion_config(cfg);
 end
 

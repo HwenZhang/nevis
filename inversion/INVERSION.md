@@ -24,11 +24,19 @@ Two sliding laws are supported:
 
 ```matlab
 addpath('inversion');
-[inv, vv_hydro, summary] = nevis_run_inversion('./cases/nevis_inversion.m');
+% Normal path: the per-case config materialized by the demo workflow.
+[inv, vv_hydro, summary] = nevis_run_inversion('./cases/<case_name>/<case_name>_inversion.m');
+% The template under cases/templates/ can also be run directly to validate
+% against the reference dataset it is bound to.
 ```
 
 [nevis_run_inversion.m](nevis_run_inversion.m) loads the config file,
-reads `cfg.sliding_law`, and dispatches to the matching solver. Returns:
+checks `cfg.sliding_law`, ensures file-mode source/hydrology inputs exist,
+and dispatches to the matching solver. If `cfg.initial_hydrology.mode =
+'file'` and either `cfg.source.state_file` or
+`cfg.initial_hydrology.file` is missing, it runs the configured
+hydrology-only spinup case and exports the selected timestep first.
+Returns:
 
 - `inv` — struct with `C_hat`, observed/noisy velocity, current `N`, and
   the solver state needed for downstream cases.
@@ -41,7 +49,7 @@ reads `cfg.sliding_law`, and dispatches to the matching solver. Returns:
 ## Required inputs
 
 The inversion is driven entirely by a single config file (`.m`, `.mat`, or
-`.json`). The template is [cases/nevis_inversion.m](../cases/nevis_inversion.m);
+`.json`). The template is [cases/templates/nevis_inversion.m](../cases/templates/nevis_inversion.m);
 the relevant sections are:
 
 1. **Dataset binding** — `cfg.dataset.name`, `cfg.dataset.root`,
@@ -53,11 +61,17 @@ the relevant sections are:
    regional validator (`nevis_validate_region_config`) refuses to run if
    the manifest's `dataset.name` does not equal `cfg.dataset.name`.
 
-2. **Source model state** — `cfg.source.state_file`. A `.mat` file
-   containing `pp`, `pd`, `ps`, `gg`, `aa`, and `oo` from a prior
-   regional run. The inversion uses **this file's `gg`** as the model
-   grid, not the dataset's geometry. The dataset only supplies observed
-   velocity and forcing; the grid topology is fixed by the source state.
+2. **Source model state** — the file used to initialize grid, parameters,
+   and geometry:
+
+   ```matlab
+   cfg.source.state_file = 'source_states/<regional_spinup_case>_source.mat';
+   ```
+
+   In file mode, `nevis_run_inversion` creates it automatically from
+   `cfg.spinup.casename` and `cfg.spinup.timestep_file` if it is missing.
+   The inversion uses **this file's `gg`** as the model grid, not the
+   dataset's geometry. The dataset supplies observed velocity and forcing.
 
 3. **Observed velocity binding** — `cfg.velocity.file`,
    `cfg.velocity.variable`, `cfg.velocity.u_field`,
@@ -65,14 +79,16 @@ the relevant sections are:
    `velocity.mat` → variable `velocity` with fields
    `u_obs_dim`, `v_obs_dim` (m/yr).
 
-4. **Initial hydrology**, one of three modes via
-   `cfg.initial_hydrology.mode`:
+4. **Initial hydrology**, via `cfg.initial_hydrology.mode`:
 
    | mode | required fields | what it does |
    |---|---|---|
+   | `file` | `file`, `variable` | loads `vv.N` or `vv.phi` from an existing MAT file |
    | `k_factor` | `k_factor` (scalar 0…1) | `phi = phi_a + k_factor * (phi_0 - phi_a)`; no external file |
    | `constant_N` | `N` (scalar) | uniform dimensionless effective pressure; no external file |
-   | `file` | `file`, `variable` | loads `vv.N` (or `phi`) from disk; use a prior `velocity_inverted.mat` to warm-start |
+
+   `k_factor` and `constant_N` are useful bootstraps for the spinup run,
+   but they are usually too crude as direct inversion initial conditions.
 
 5. **Output paths**, relative to `cfg.dataset.root`:
 
@@ -102,60 +118,89 @@ After a successful run the dataset directory contains, under
 A forward regional run bound to the same dataset then references these
 two files via `cfg.inversion.file` and `cfg.initial_hydrology.file`
 inside its case config — see
-[cases/nevis_regional.m](../cases/nevis_regional.m).
+[cases/templates/nevis_regional.m](../cases/templates/nevis_regional.m).
+
+## Recommended Spinup-Then-Inversion Workflow
+
+For each domain/bbox, configure a hydrology-only spinup, then let the
+inversion entry point ensure the needed files:
+
+1. Build the dataset package for the domain.
+2. Create or derive a regional spinup config from
+   [cases/templates/nevis_regional.m](../cases/templates/nevis_regional.m). The default
+   example is [cases/templates/nevis_regional_inversion_spinup.m](../cases/templates/nevis_regional_inversion_spinup.m):
+
+   ```matlab
+   cfg.oo.include_ice = 0;
+   cfg.inversion.mode = 'uniform';
+   cfg.initial_hydrology.mode = 'k_factor';
+   cfg.lakes.spinup_volume_scale = 0;
+   cfg.run.t_span_days = 1:365;
+   ```
+
+3. Configure the spinup source and the inversion file inputs:
+
+   ```matlab
+   cfg.spinup.casename = 'nevis_regional_inversion_spinup';
+   cfg.spinup.timestep_file = '0365.mat';
+   cfg.source.state_file = 'source_states/nevis_regional_inversion_spinup_source.mat';
+
+   cfg.initial_hydrology.mode = 'file';
+   cfg.initial_hydrology.file = 'initial_hydrology/nevis_regional_inversion_spinup_0365.mat';
+   cfg.initial_hydrology.variable = 'vv';
+   ```
+
+4. Run inversion:
+
+   ```matlab
+   [inv, vv_hydro, summary] = nevis_run_inversion('./cases/templates/nevis_inversion.m');
+   ```
+
+If the configured source/hydrology files are missing, `nevis_run_inversion`
+checks that `cfg.spinup.casename` is hydrology-only (`cfg.oo.include_ice =
+0`), runs it if the spinup output/timestep is absent, exports the files,
+and then starts inversion. There is no fallback to another case.
 
 ## Running inversion on a custom-bbox dataset
 
-`build_nevis_dataset(out_dir, [], bbox_km)` produces the four core
-products plus an auto-generated `dataset_manifest.m`, but **does not**
-generate:
+The supported path is the demo workflow ([test.m](../test.m)). Set
+`case_name` and `bbox_km`, keep `run_inversion = true`, and run it. The
+workflow:
 
-- a source model state on the new grid (`cfg.source.state_file`)
-- moulin / lake catalogue files matching the new domain
-- prior inversion / initial-hydrology products
+1. Builds a self-contained dataset under `data/datasets/<case_name>/`,
+   including `moulins_2022_coordinates.mat` (projected from the raw 2022
+   shapefile onto the new domain), the lake catalogue, and a full
+   `dataset_manifest.m`. See [data/DATA_PIPELINES.md](../data/DATA_PIPELINES.md).
+2. Materializes `cases/<case_name>/<case_name>_inversion.m` and
+   `cases/<case_name>/<case_name>_inversion_spinup.m`, both bound to the new
+   dataset, with the source-state and initial-hydrology paths pre-wired.
+3. Calls `nevis_run_inversion` on that config. Because
+   `cfg.initial_hydrology.mode = 'file'` and the source/hydrology files do not
+   exist yet, the runner first runs the hydrology-only spinup case on the new
+   grid, exports the selected timestep, and then starts the inversion.
 
-These have to be brought in before the inversion can run. Concretely:
+So a custom bbox needs no manual file copying — moulins, lakes, manifest,
+spinup, and source state are all produced on the new grid automatically.
 
-1. Run `build_nevis_dataset` to produce `<out_dir>/` with `geometry.mat`,
-   `velocity.mat`, `racmo_runoff_2022.mat`,
-   `station_timeseries_2022.mat`, `dataset_manifest.m`.
-2. Open `<out_dir>/dataset_manifest.m` and append the auxiliary sections
-   modelled on
-   [data/datasets/nevis_2022_140km/dataset_manifest.m](../data/datasets/nevis_2022_140km/dataset_manifest.m):
-   `dataset.moulins`, `dataset.lakes`, `dataset.inversion`,
-   `dataset.initial_hydrology`.
-3. Place the auxiliary files at the paths declared in step 2 (copy or
-   symlink the moulins/lakes files from the reference dataset; produce a
-   source state aligned with the new grid).
-4. Derive a config from the template at runtime (this is what `test.m`
-   does after a custom-bbox build):
+If you drive `nevis_run_inversion` outside `test.m`, reproduce the same
+bindings by hand in a per-case `.m` config:
 
-   ```matlab
-   clear cfg
-   run('./cases/nevis_inversion.m');
-   [~, dataset_name] = fileparts(output_dir);
-   cfg.dataset.name = dataset_name;
-   cfg.dataset.root = output_dir;
-   cfg.name = sprintf('%s_%s', cfg.name, dataset_name);
-   cfg.output.inversion_file = fullfile('inversions', cfg.name, 'C_inversion_results.mat');
-   cfg.output.initial_hydrology_file = fullfile('inversions', cfg.name, 'velocity_inverted.mat');
-   cfg.source.state_file = '<path to source state on the new grid>';
-   inv_config = fullfile(output_dir, 'nevis_inversion.mat');
-   save(inv_config, 'cfg');
-   ```
+```matlab
+cfg.dataset.name = '<case_name>';
+cfg.dataset.root = './data/datasets/<case_name>';
+cfg.spinup.casename = '<case_name>_inversion_spinup';   % hydrology-only, include_ice = 0
+cfg.spinup.timestep_file = '0365.mat';
+cfg.source.state_file = 'source_states/<case_name>_inversion_spinup_source.mat';
+cfg.initial_hydrology.mode = 'file';
+cfg.initial_hydrology.file = 'initial_hydrology/<case_name>_inversion_spinup_0365.mat';
+cfg.initial_hydrology.variable = 'vv';
+cfg.output.inversion_file = 'inversions/<cfg.name>/C_inversion_results.mat';
+cfg.output.initial_hydrology_file = 'inversions/<cfg.name>/velocity_inverted.mat';
+```
 
-   Alternatively, copy `cases/nevis_inversion.m` to a new `.m` config and
-   edit the same fields by hand.
-5. Run:
-
-   ```matlab
-   nevis_run_inversion(inv_config);
-   ```
-
-Until step 3's source state is available, the inversion will error out
-when `nevis_inv_C` loads `cfg.source.state_file`. Reuse the reference
-dataset for end-to-end testing first; only switch to a custom bbox once
-the rebuild and the source state are aligned.
+then `nevis_run_inversion('./cases/<case_name>/<case_name>_inversion.m')`. The
+runner generates the source state from the spinup if it is missing; there is no
+fallback to another case.
 
 ## Common pitfalls
 
@@ -170,6 +215,8 @@ the rebuild and the source state are aligned.
 - **Wrong velocity units** — the importer expects m/yr (`cfg.velocity.units
   = 'm_per_year'`). If your dataset is in m/s, change the units field
   and ensure the importer supports it.
-- **Initial hydrology absent** — `mode = 'file'` requires the file to
-  exist before the run; `mode = 'k_factor'` or `'constant_N'` is the
-  safe choice for the first pass.
+- **Initial hydrology absent** — with `mode = 'file'`,
+  `nevis_run_inversion` generates `cfg.initial_hydrology.file` from
+  `cfg.spinup.casename` if it is missing. `k_factor` or `constant_N`
+  should be used for the spinup bootstrap, not as the default final
+  inversion input.

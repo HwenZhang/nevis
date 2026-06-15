@@ -25,8 +25,15 @@ if strcmpi(mode, 'result_timestep')
             'Initial timestep file must contain variable vv: %s', init_file);
     end
     vv = data.vv;
+    % Full-state restore: both hydrology (vv.phi, vv.hs) and ice velocity
+    % (vv.u, vv.v) come from the saved timestep. Carry u/v into
+    % region.initial_hydrology so nevis_setup_region_case re-applies them
+    % AFTER nevis_import_region_velocity overwrites vv.u/vv.v with the
+    % observed field. Without this, only the hydrology would survive.
     region.initial_hydrology = struct('mode', 'result_timestep', ...
         'result_case', hcfg.result_case, 'timestep_file', hcfg.timestep_file);
+    if isfield(vv, 'u'), region.initial_hydrology.u = vv.u; end
+    if isfield(vv, 'v'), region.initial_hydrology.v = vv.v; end
     region.initial_hydrology_file = init_file;
     return
 end

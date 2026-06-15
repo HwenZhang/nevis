@@ -6,13 +6,24 @@
 clc; clear; close all;
 
 %% Settings
-casename = 'n2d_regional_racmo_V1e1_eps1e_02_kappa5e_11_mu5e0_partition5e_01_k01e_01_drainage_highelev';
+casename = 'nevis_2022_140km_botright30_drainage';
 % casename = 'n2d_regional_racmo_eps1e_02_kappa5e_11_mu5e0_partition5e_01_k01e_01_spinup';
-load(['./results/' casename '/' casename])
+script_dir = fileparts(mfilename('fullpath'));
+repo_root = script_dir;
+result_dir = fullfile(repo_root, 'results', casename);
+result_file = fullfile(result_dir, [casename '.mat']);
+if exist(result_file, 'file') ~= 2
+    error('nevis_2d_animation_ice:MissingResultFile', ...
+        'Missing result file: %s', result_file);
+end
+load(result_file)
+if exist('region', 'var') ~= 1
+    region = struct;
+end
 oo.fn = ['/',casename];
-oo.rn = [oo.root,oo.results,oo.fn];
-oo.code = '../nevis/src';
-filepath = [oo.rn,'/'];
+oo.rn = result_dir;
+oo.code = fullfile(repo_root, 'src');
+filepath = [oo.rn filesep];
 addpath(oo.code);
 formatSpec = '%04d';
 
@@ -25,17 +36,24 @@ cmap = [linspace(0,1,n)', linspace(0,1,n)', ones(n,1);
 clusters_to_plot = [5];
 
 %% Time range
-tmin_yr = 0.0;           % start time in years
-tmax_yr = tmin_yr + 1;  % end time in years
-tmin = tmin_yr * 365;  % in days
-tmax = tmax_yr * 365;
+t = (ps.t/(24*60*60))*[tt.t];               % dimensional time series (days)
+tspan = (ps.t/pd.td)*oo.t_span;
+tmin = 0.4*365*pd.td/ps.t;
+tmax = 1.0*365*pd.td/ps.t;
+tmin_d = tmin*ps.t/pd.td;
+tmax_d = tmax*ps.t/pd.td;                   % time range for the plot
 
-tspan_d = (ps.t/pd.td) * oo.t_span;  % t_span in days
-index = find(tspan_d >= tmin & tspan_d <= tmax);
-if isempty(index)
-    error('No frames found in the specified time range [%.1f, %.1f] days', tmin, tmax);
+% Controllable time step: pick frames on a regular dt_plot grid and snap each
+% to the nearest saved timestep. Set dt_plot smaller for a slower animation.
+dt_plot = 1.0; % use 1.0 for fast animation, 0.1 for slow ones
+t_plot = tmin_d:dt_plot:tmax_d;
+
+frame_indices = zeros(size(t_plot));
+for k = 1:length(t_plot)
+    [~, idx] = min(abs(tspan - t_plot(k)));
+    frame_indices(k) = idx;
 end
-fprintf('Found %d frames in time range [%.1f, %.1f] days\n', length(index), tmin, tmax);
+frame_indices = unique(frame_indices);
 
 %% Read time series data
 t = (ps.t/pd.td) * [tt.t];  % dimensional time (days)
@@ -60,7 +78,7 @@ p_b = ps.phi*[tt.pts_pb];      %
 V_b = ps.x^2*ps.hb*[tt.Vb];
 
 %% Read initial frame
-nframe = index(100);
+nframe = frame_indices(1);
 vva = load([filepath num2str(nframe,formatSpec)], 'vv');
 vva = vva.vv;
 aa = nevis_inputs(vva.t,aa,vva,pp,gg,oo);
@@ -122,7 +140,7 @@ x1 = xline(tframe_d,'k--','LineWidth',1.5);
 xlabel('t [d]'); ylabel('Q [m^3/s]');
 legend('Q_{out}','Q_{out,b}','Q_{in}','NumColumns',2,'Location','northeast');
 text(0.025,0.85,'(a) flux','Units','normalized','FontSize',12);
-xlim([tmin tmax]); set(gca,'YScale','log'); ylim([1e-2 1e4]);
+xlim([tmin_d tmax_d]); set(gca,'YScale','log'); ylim([1e-2 1e4]);
 grid on; grid minor;
 
 % (b) Effective pressure
@@ -133,7 +151,7 @@ x2 = xline(tframe_d,'--k','LineWidth',1.5);
 xlabel('t [d]'); ylabel('N [MPa]');
 legend('averaged N','Location','northeast');
 text(0.025,0.85,'(b) effective pressure','Units','normalized','FontSize',12);
-xlim([tmin tmax]); 
+xlim([tmin_d tmax_d]); 
 ylim([0.5 2.5]);
 grid on; grid minor;
 
@@ -148,7 +166,7 @@ hold on; x3 = xline(tframe_d,'--k','LineWidth',1.5);
 ylabel('S/A [m]');
 legend('h_{cav}','h_e','S','NumColumns',3,'Location','northeast');
 text(0.025,0.85,'(c) averaged h and S','Units','normalized','FontSize',12);
-xlim([tmin tmax]); grid on; grid minor;
+xlim([tmin_d tmax_d]); grid on; grid minor;
 
 % (d) Ice speed time series (if available)
 ax_d = nexttile(leftLayout);
@@ -157,7 +175,7 @@ plot(ax_d, t, U*pd.ty, 'b-', 'LineWidth',1.5);
 x4 = xline(tframe_d,'--k','LineWidth',1.5);
 ylabel('U [m/yr]');
 text(0.025,0.85,'(d) blister volume and ice speed','Units','normalized','FontSize',12);
-xlim([tmin tmax]); 
+xlim([tmin_d tmax_d]); 
 ylim([50 150]); 
 grid on; grid minor;
 
@@ -202,9 +220,8 @@ dist_to_c1 = sqrt((gps_x_km - 5).^2 + (gps_y_km + 10).^2);
 [~, idx_c1] = min(dist_to_c1);
 gps_cluster(idx_c1) = 5;  % assign to cluster 5
 
-% load observations for these GPS stations
-stations = load(['./data/' 'station_timeseries_2022']);
-stations = stations.station_data;
+% Load observations from the dataset package recorded in the result.
+stations = nevis_load_result_stations(region, oo);
 n_stations = length(stations);
 
 %% (e) GPS station blister thicknesses h_b + h_s
@@ -221,7 +238,7 @@ end
 ylabel('h_b + h_s [m]');
 x5 = xline(tframe_d,'--k','LineWidth',1.5);
 text(0.025,0.85,'(e) h_b+h_s & N at GPS','Units','normalized','FontSize',12);
-xlim([tmin tmax]);
+xlim([tmin_d tmax_d]);
 
 yyaxis right
 for kc = clusters_to_plot
@@ -294,7 +311,7 @@ legend(ax_e, 'Location', 'southwest', 'NumColumns', 2, 'FontSize', 7);
 % ylabel('w [m/yr]');
 % x6 = xline(tframe_d,'--k','LineWidth',1.5);
 % text(0.025,0.85,'(f) vertical speed at GPS','Units','normalized','FontSize',12);
-% xlim([tmin tmax]);
+% xlim([tmin_d tmax_d]);
 % ylim([-100 100]);
 % grid on; grid minor;
 % legend(ax_f, 'Location', 'southwest', 'NumColumns', 2, 'FontSize', 7);
@@ -345,7 +362,7 @@ legend(ax_e, 'Location', 'southwest', 'NumColumns', 2, 'FontSize', 7);
 % x7 = xline(tframe_d,'--k','LineWidth',1.5);
 % xlabel('t [d]');
 % text(0.025,0.85,'(g) U at GPS','Units','normalized','FontSize',12);
-% xlim([tmin tmax]);
+% xlim([tmin_d tmax_d]);
 % ylim([0 300]);
 % grid on; grid minor;
 % legend(ax_g, 'Location', 'southwest', 'NumColumns', 2, 'FontSize', 7);
@@ -530,17 +547,21 @@ axis equal; axis tight;
 set(gca, 'XLimMode','manual', 'YLimMode','manual');
 
 %% ===== Animation loop =====
-v = VideoWriter(['./results/videos/' casename],'MPEG-4');
+video_dir = fullfile(repo_root, 'results', 'videos');
+if exist(video_dir, 'dir') ~= 7
+    mkdir(video_dir);
+end
+v = VideoWriter(fullfile(video_dir, casename), 'MPEG-4');
 v.FrameRate = 3;
 open(v);
 
-for i_idx = 1:length(index)
+for i_idx = 1:length(frame_indices)
     if ~isvalid(f)
         disp('Figure closed. Animation stopped.');
         break
     end
-    i_t = index(i_idx);
-    fprintf('Frame %d / %d ...\n', i_idx, length(index));
+    i_t = frame_indices(i_idx);
+    fprintf('Frame %d / %d ...\n', i_idx, length(frame_indices));
 
     % Load timestep
     vva = load([filepath num2str(i_t,formatSpec)], 'vv');

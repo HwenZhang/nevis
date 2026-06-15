@@ -101,6 +101,27 @@ switch lower(cfg.initial_hydrology.mode)
             cfg.initial_hydrology.mode);
 end
 
+if isfield(cfg, 'initial_ice_velocity') && isstruct(cfg.initial_ice_velocity)
+    switch lower(get_opt(cfg.initial_ice_velocity, 'mode', 'none'))
+        case {'none', 'keep'}
+        case 'file'
+            require_fields(cfg.initial_ice_velocity, {'file', 'variable'}, ...
+                'cfg.initial_ice_velocity');
+            path = nevis_region_resolve_path(cfg.initial_ice_velocity.file, cfg);
+            if exist(path, 'file') ~= 2
+                error('nevis_validate_region_config:MissingDataFile', ...
+                    ['Configured initial_ice_velocity file does not exist ' ...
+                     'for case "%s": %s'], cfg.casename, path);
+            end
+            assert_manifest_file(dataset, 'initial_hydrology', ...
+                cfg.initial_ice_velocity.file, cfg.casename);
+        otherwise
+            error('nevis_validate_region_config:UnsupportedInitialIceVelocity', ...
+                'Unsupported cfg.initial_ice_velocity.mode: %s', ...
+                cfg.initial_ice_velocity.mode);
+    end
+end
+
 switch lower(cfg.lakes.mode)
     case {'environs_lakes_catalogue', 'table'}
         require_fields(cfg.lakes, {'file', 'variable'}, 'cfg.lakes');

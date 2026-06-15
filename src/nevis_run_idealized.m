@@ -1,12 +1,12 @@
-function [tt, vv, info, state] = n2d_idealized_template(casename)
-%N2D_IDEALIZED_TEMPLATE Run the standardized NEVIS idealized workflow.
+function [tt, vv, info, state] = nevis_run_idealized(casename)
+%NEVIS_RUN_IDEALIZED Run the standardized NEVIS idealized workflow.
 %
 % All case-specific analytical setup and parameters must live in
 % ./cases/<casename>.m. This runner contains only the fixed workflow.
 
 if nargin < 1 || isempty(casename)
-    error('n2d_idealized_template:MissingCaseName', ...
-        'Call n2d_idealized_template with a casename.');
+    error('nevis_run_idealized:MissingCaseName', ...
+        'Call nevis_run_idealized with a casename.');
 end
 
 format compact
@@ -16,10 +16,10 @@ code = './src';
 results = 'results';
 addpath(code);
 
-config_file = fullfile(root, 'cases', [casename, '.m']);
+config_file = nevis_resolve_case_config(casename, root);
 cfg = nevis_load_idealized_config(config_file, root);
 if ~strcmp(cfg.casename, casename)
-    error('n2d_idealized_template:CaseNameMismatch', ...
+    error('nevis_run_idealized:CaseNameMismatch', ...
         'Config casename "%s" does not match requested case "%s".', ...
         cfg.casename, casename);
 end
