@@ -25,7 +25,7 @@ oo.initname = initname;                      % initial condition filename, for s
 
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
-oo.dn = [oo.root, 'data/', oo.dataset, '/'];   % path to the data
+oo.dn = [oo.root, 'data/datasets/', oo.dataset, '/'];   % path to the data
 addpath(oo.code);                              % add path to code
 mkdir(oo.rn);                                  % create directory for results    
 pp.c0 = 0;

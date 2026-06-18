@@ -8,11 +8,11 @@ format compact
 oo.root = './';                                % filename root
 oo.code = './src';                             % code directory   
 oo.results = 'results';                        % path to the results folders
-oo.dataset = 'nevis_regional';                 % dataset name
+oo.dataset = 'nevis_2022_140km';                 % dataset name
 oo.casename = 'n2d_regional_analytic_eps1e_02_kappa5e_11_mu5e0_partition7e_01_k01e_01_spinup';                     % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
-oo.dn = [oo.root, 'data/', oo.dataset, '/'];   % path to the data
+oo.dn = [oo.root, 'data/datasets/', oo.dataset, '/'];   % path to the data
 addpath(oo.code);                              % add path to code
 mkdir(oo.rn);                                  % create directory for results 
 
@@ -118,7 +118,7 @@ if ~isfield(pp,'taud_reg'), pp.taud_reg = 1e-16; end % regularisation on basal s
 if ~isfield(pp,'C2'), pp.C2 = 0; end % added power-law coefficient in sliding law
 
 %% load the slipperiness field for the inversion test
-inv = load(['./data/C_inversion_results.mat']);
+inv = load([oo.dn 'C_inversion_results.mat']);
 % partition the total slipperiness coefficient C_total into two components C1 and C2 based on the specified partition ratio, dimensionalize C1 and C2 with the inversion scales. The dimensional C1 and C2 will be nondimensionalized again with the forward model scales below
 [C1_hat_dim, C2_hat_dim] = nevis_inv_partition(inv.C_hat, oo.partition_ratio, inv.u_obs_noisy, inv.v_obs_noisy, inv.N_current, inv.aa, inv.pp, inv.gg, inv.oo, inv.ps);
 
@@ -132,7 +132,7 @@ aa.C2 = C2_hat_dim * (ps.u_b^(1/pp.n_slide) / ps.tau); % added power-law coeffic
 % pcolor(gg.nx, gg.ny, reshape(aa.C, gg.nI, gg.nJ)); shading flat; colorbar();
 % title('Nondimensional slipperiness field C');
 
-load(['./data/velocity_inverted.mat'], 'vv_hydro');
+load([oo.dn 'velocity_inverted.mat'], 'vv_hydro');
 % pd.k_f = 0.9;                                     % percent overburden (k-factor) 
 % vv.phi = aa.phi_a+pd.k_f*(aa.phi_0-aa.phi_a);     % initial pressure  k_f*phi_0
 % N = aa.phi_0-vv.phi;                              % N for initial cavity sheet size 
@@ -248,7 +248,7 @@ oo.save_pts_all = 1;
 
 % Add GPS station points downstream of the moulin every 5km
 % pp.ni_gps = nevis_gps_array([40e3,40e3,20e3,0,-40e3]/ps.x, [-15e3,-5e3,-15e3,-25e3,-30e3]/ps.x, gg, oo);
-stations = load(['./data/' 'station_timeseries_2022']);
+stations = load([oo.dn 'station_timeseries_2022']);
 stations = stations.station_data;
 pp.x_gps = [stations.x_m]/ps.x;
 pp.y_gps = [stations.y_m]/ps.x;

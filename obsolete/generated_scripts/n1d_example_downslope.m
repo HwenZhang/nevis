@@ -12,12 +12,12 @@ clear,clc
 oo.root = './';                                % filename root
 oo.code = '../nevis/src';                      % code directory   
 oo.results = 'results';                        % path to the results folders
-oo.dataset = 'nevis_regional';                 % dataset name     
+oo.dataset = 'nevis_2022_140km';                 % dataset name     
 oo.casename = 'n1d_E0_mu1e0_kappa1e_99_V1e7_theta1e_2_DX250_convergence';
                                                % casename
 oo.fn = ['/',oo.casename];                     % filename (same as casename)
 oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
-oo.dn = [oo.root, 'data/', oo.dataset, '/'];   % path to the data
+oo.dn = [oo.root, 'data/datasets/', oo.dataset, '/'];   % path to the data
 addpath(oo.code);                              % add path to code
 mkdir(oo.rn);                                  % create directory for results 
 

@@ -13,11 +13,11 @@
     oo.root = './';                                % filename root
     oo.code = './src';                             % code directory   
     oo.results = 'results';                        % path to the results folders
-    oo.dataset = 'nevis_regional';                 % dataset name
+    oo.dataset = 'nevis_2022_140km';                 % dataset name
     oo.casename = 'n2d_region_melt_meanperms1_Hreg1000_kappa1e_20_ks1e_02_mu2e1_spinup';    % casename
     oo.fn = ['/',oo.casename];                     % filename (same as casename)
     oo.rn = [oo.root,oo.results,oo.fn];            % path to the case results
-    oo.dn = [oo.root, 'data/', oo.dataset, '/'];   % path to the data
+    oo.dn = [oo.root, 'data/datasets/', oo.dataset, '/'];   % path to the data
     addpath(oo.code);                              % add path to code
     mkdir(oo.rn);                                  % create directory for results 
 

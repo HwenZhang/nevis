@@ -21,8 +21,8 @@ function lakes = nevis_import_lakes(yr)
     oo.data = '../nevis/data';                     % code directory 
     oo.dataset = ['mechanistic_drainage_catalogue_', yr_str, '-main/catalogues/environs_lakes_', yr_str, 'B_250505_archive.mat'];
                                                  % dataset name  
-    oo.dn = [oo.root, 'data/', oo.dataset];        % path to the data file
-    load(oo.dn);                                   % load lake 
+    oo.dn = [oo.root, 'data/datasets/nevis_2022_140km/', oo.dataset];   % catalogue under the reference dataset package
+    load(oo.dn);                                   % load lake
     
     % filter out lakes which drain through moulins and hydrofractures, 1=HF, 2=moulin, 3=overflow
     overflow_inds = find(environs_lakes.drainage_type_num == 1 | environs_lakes.drainage_type_num == 2); % environs_lakes.drainage_type_num == 2
