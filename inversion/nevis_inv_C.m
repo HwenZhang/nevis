@@ -75,6 +75,13 @@ distributed = cfg.forward_hydrology.distributed_input;
 partition_ratio = cfg.partition_ratio;
 [pd,ps,pp,oo] = nevis_update_parameters_ice(pd,ps,pp,oo);
 
+% nevis_inv_C is the pure-Weertman backend. nevis_update_parameters_ice hard-codes
+% pd.mu_s = 0.25 (Coulomb cap); override it here to a huge value so the Coulomb
+% term mu^(-n) is negligible and the sliding law reduces to Weertman
+% (tau_b ~ C*u_b^(1/n)). A large finite value is used instead of Inf to avoid NaNs.
+pd.mu_s = 1e30;                                 % effectively infinite Coulomb coefficient
+pp.mu = pd.mu_s*ps.N/ps.tau;                   % recompute dimensionless mu consistently
+
 % Picard iteration settings for velocity solver
 oo.iter_max = cfg.solver.iter_max;
 oo.tol_vel = cfg.solver.tol_vel;

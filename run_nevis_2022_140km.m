@@ -19,8 +19,8 @@ addpath('inversion');
 %% USER SETTINGS
 case_name = 'nevis_2022_140km';
 
-run_dataset_build = false;  % false preserves the existing reference package/manifest
-run_inversion = false;       % auto-runs nevis_2022_140km_inversion_spinup if needed
+run_dataset_build = true;  % false preserves the existing reference package/manifest
+run_inversion = true;       % auto-runs nevis_2022_140km_inversion_spinup if needed
 run_forward = true;         % migrated spinup-like annual run, lakes off
 run_drainage = true;        % migrated high-elevation manual drainage case
 
